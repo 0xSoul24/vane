@@ -1,6 +1,7 @@
 package org.oddlama.vane.portals;
 
 import java.util.UUID;
+
 import org.oddlama.vane.annotation.config.ConfigBoolean;
 import org.oddlama.vane.annotation.lang.LangMessage;
 import org.oddlama.vane.core.lang.TranslatedMessage;

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
+
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bukkit.Material;
@@ -21,20 +22,20 @@ public class ConfigMaterialSetField extends ConfigField<Set<Material>> {
     public ConfigMaterialSet annotation;
 
     public ConfigMaterialSetField(
-        Object owner,
-        Field field,
-        Function<String, String> map_name,
-        ConfigMaterialSet annotation
+            Object owner,
+            Field field,
+            Function<String, String> map_name,
+            ConfigMaterialSet annotation
     ) {
         super(owner, field, map_name, "set of materials", annotation.desc());
         this.annotation = annotation;
     }
 
     private void append_material_set_definition(
-        StringBuilder builder,
-        String indent,
-        String prefix,
-        Set<Material> def
+            StringBuilder builder,
+            String indent,
+            String prefix,
+            Set<Material> def
     ) {
         append_list_definition(builder, indent, prefix, def, (b, m) -> {
             b.append("\"");
@@ -69,13 +70,13 @@ public class ConfigMaterialSetField extends ConfigField<Set<Material>> {
     public void register_metrics(Metrics metrics) {
         if (!this.metrics()) return;
         metrics.addCustomChart(
-            new AdvancedPie(yaml_path(), () -> {
-                final var values = new HashMap<String, Integer>();
-                for (final var v : get()) {
-                    values.put(v.getKey().toString(), 1);
-                }
-                return values;
-            })
+                new AdvancedPie(yaml_path(), () -> {
+                    final var values = new HashMap<String, Integer>();
+                    for (final var v : get()) {
+                        values.put(v.getKey().toString(), 1);
+                    }
+                    return values;
+                })
         );
     }
 
@@ -93,8 +94,8 @@ public class ConfigMaterialSetField extends ConfigField<Set<Material>> {
         builder.append(basename());
         builder.append(":\n");
         final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
-            : def();
+                ? load_from_yaml(existing_compatible_config)
+                : def();
         append_material_set_definition(builder, indent, "", def);
     }
 
@@ -115,14 +116,14 @@ public class ConfigMaterialSetField extends ConfigField<Set<Material>> {
             final var split = str.split(":");
             if (split.length != 2) {
                 throw new YamlLoadException(
-                    "Invalid material entry in list '" + yaml_path() + "': '" + str + "' is not a valid namespaced key"
+                        "Invalid material entry in list '" + yaml_path() + "': '" + str + "' is not a valid namespaced key"
                 );
             }
 
             final var mat = material_from(namespaced_key(split[0], split[1]));
             if (mat == null) {
                 throw new YamlLoadException(
-                    "Invalid material entry in list '" + yaml_path() + "': '" + str + "' does not exist"
+                        "Invalid material entry in list '" + yaml_path() + "': '" + str + "' does not exist"
                 );
             }
         }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.oddlama.vane.core.functional.Consumer2;
@@ -12,7 +13,8 @@ public class LootTable {
 
     private Map<NamespacedKey, List<LootTableEntry>> possible_loot = new HashMap<>();
 
-    public LootTable() {}
+    public LootTable() {
+    }
 
     public LootTable put(final NamespacedKey key, final LootTableEntry entry) {
         possible_loot.put(key, List.of(entry));

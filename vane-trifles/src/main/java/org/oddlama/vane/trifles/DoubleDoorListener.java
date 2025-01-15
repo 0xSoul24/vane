@@ -14,10 +14,10 @@ public class DoubleDoorListener extends Listener<Trifles> {
 
     public DoubleDoorListener(Context<Trifles> context) {
         super(
-            context.group(
-                "doubledoor",
-                "Enable updating of double doors automatically when one of the doors is changed."
-            )
+                context.group(
+                        "doubledoor",
+                        "Enable updating of double doors automatically when one of the doors is changed."
+                )
         );
     }
 

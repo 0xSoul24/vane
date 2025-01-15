@@ -6,6 +6,7 @@ import static org.oddlama.vane.util.PlayerUtil.swing_arm;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.UUID;
+
 import net.kyori.adventure.key.Key;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -67,8 +68,8 @@ public class SlimeBucket extends CustomItem<Trifles> {
         final var new_stack = newStack();
         new_stack.editMeta(meta -> {
             final var correct_model_data = player.getChunk().isSlimeChunk()
-                ? CUSTOM_MODEL_DATA_JUMPY
-                : CUSTOM_MODEL_DATA_QUIET;
+                    ? CUSTOM_MODEL_DATA_JUMPY
+                    : CUSTOM_MODEL_DATA_QUIET;
             meta.setCustomModelData(correct_model_data);
         });
 
@@ -104,12 +105,12 @@ public class SlimeBucket extends CustomItem<Trifles> {
         // Place slime back into the world
         final var loc = event.getInteractionPoint();
         loc
-            .getWorld()
-            .spawnEntity(loc, EntityType.SLIME, CreatureSpawnEvent.SpawnReason.CUSTOM, entity -> {
-                if (entity instanceof Slime slime) {
-                    slime.setSize(1);
-                }
-            });
+                .getWorld()
+                .spawnEntity(loc, EntityType.SLIME, CreatureSpawnEvent.SpawnReason.CUSTOM, entity -> {
+                    if (entity instanceof Slime slime) {
+                        slime.setSize(1);
+                    }
+                });
 
         player.playSound(player, Sound.ENTITY_SLIME_JUMP, SoundCategory.MASTER, 1.0f, 2.0f);
         swing_arm(player, event.getHand());

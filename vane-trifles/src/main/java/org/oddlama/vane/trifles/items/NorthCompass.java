@@ -3,6 +3,7 @@ package org.oddlama.vane.trifles.items;
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
+
 import net.kyori.adventure.key.Key;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Location;
@@ -32,11 +33,11 @@ public class NorthCompass extends CustomItem<Trifles> {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape(" m ", "mrm", " m ")
-                .set_ingredient('m', Material.COPPER_INGOT)
-                .set_ingredient('r', Material.REDSTONE)
-                .result(key().toString())
+                new ShapedRecipeDefinition("generic")
+                        .shape(" m ", "mrm", " m ")
+                        .set_ingredient('m', Material.COPPER_INGOT)
+                        .set_ingredient('r', Material.REDSTONE)
+                        .result(key().toString())
         );
     }
 

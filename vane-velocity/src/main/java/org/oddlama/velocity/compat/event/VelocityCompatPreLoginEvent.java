@@ -1,6 +1,7 @@
 package org.oddlama.velocity.compat.event;
 
 import java.util.logging.Level;
+
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.oddlama.vane.proxycore.ProxyPendingConnection;
 import org.oddlama.vane.proxycore.VaneProxyPlugin;
@@ -11,8 +12,8 @@ public class VelocityCompatPreLoginEvent extends PreLoginEvent {
     final com.velocitypowered.api.event.connection.PreLoginEvent event;
 
     public VelocityCompatPreLoginEvent(
-        VaneProxyPlugin plugin,
-        com.velocitypowered.api.event.connection.PreLoginEvent event
+            VaneProxyPlugin plugin,
+            com.velocitypowered.api.event.connection.PreLoginEvent event
     ) {
         super(plugin);
         this.event = event;
@@ -26,20 +27,20 @@ public class VelocityCompatPreLoginEvent extends PreLoginEvent {
     @Override
     public void cancel(String reason) {
         plugin
-            .get_logger()
-            .log(
-                Level.WARNING,
-                "Denying multiplexer connection from " +
-                event.getConnection().getRemoteAddress() +
-                ": " +
-                (reason.isEmpty() ? "No reason provided" : reason)
-            );
+                .get_logger()
+                .log(
+                        Level.WARNING,
+                        "Denying multiplexer connection from " +
+                                event.getConnection().getRemoteAddress() +
+                                ": " +
+                                (reason.isEmpty() ? "No reason provided" : reason)
+                );
 
         event.setResult(
-            com.velocitypowered.api.event.connection.PreLoginEvent.PreLoginComponentResult.denied(
-                LegacyComponentSerializer.legacySection()
-                    .deserialize(reason.isEmpty() ? "Failed to authorize multiplexer connection" : reason)
-            )
+                com.velocitypowered.api.event.connection.PreLoginEvent.PreLoginComponentResult.denied(
+                        LegacyComponentSerializer.legacySection()
+                                .deserialize(reason.isEmpty() ? "Failed to authorize multiplexer connection" : reason)
+                )
         );
     }
 

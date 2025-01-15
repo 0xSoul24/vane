@@ -21,14 +21,14 @@ public class RegionEconomyDelegate {
 
     public boolean setup(final Plugin plugin) {
         RegisteredServiceProvider<Economy> rsp = get_module()
-            .getServer()
-            .getServicesManager()
-            .getRegistration(Economy.class);
+                .getServer()
+                .getServicesManager()
+                .getRegistration(Economy.class);
         if (rsp == null) {
             get_module()
-                .log.severe(
-                    "Economy was selected as the currency provider, but no Economy service provider is registered via VaultAPI! Falling back to material currency."
-                );
+                    .log.severe(
+                            "Economy was selected as the currency provider, but no Economy service provider is registered via VaultAPI! Falling back to material currency."
+                    );
             return false;
         }
 

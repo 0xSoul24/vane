@@ -3,14 +3,17 @@ title = "Region Creation"
 icon = "minecraft:writable_book"
 module = "vane-regions"
 ```
+
 ---
+
 ## Preparation
 
 ![](images/region_create.png)
 
 Opening the region menu with `/rg` and start selecting a region by clicking on **Create Region** on the left.
 
-A region costs diamonds {{ item:minecraft:diamond }}, but when you remove the region again, you will get all your diamonds back.
+A region costs diamonds {{ item:minecraft:diamond }}, but when you remove the region again, you will get all your
+diamonds back.
 
 ## Select Region
 

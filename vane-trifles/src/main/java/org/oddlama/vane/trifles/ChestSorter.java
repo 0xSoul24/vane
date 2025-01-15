@@ -3,6 +3,7 @@ package org.oddlama.vane.trifles;
 import static org.oddlama.vane.util.ItemUtil.ItemStackComparator;
 
 import java.util.Arrays;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.block.Barrel;
@@ -35,26 +36,26 @@ public class ChestSorter extends Listener<Trifles> {
     private CooldownData cooldown_data = null;
 
     @ConfigInt(
-        def = 1,
-        min = 0,
-        max = 16,
-        desc = "Chest sorting radius in X-direction from the button (left-right when looking at the button). A radius of 0 means a column of the block including the button. It is advised to NEVER set the three radius values to more than THREE (3), as sorting a huge area of chests can lead to SEVERE lag! Ideally always keep the Z-radius set to 0 or 1, while only adjusting X and Y. You've been warned."
+            def = 1,
+            min = 0,
+            max = 16,
+            desc = "Chest sorting radius in X-direction from the button (left-right when looking at the button). A radius of 0 means a column of the block including the button. It is advised to NEVER set the three radius values to more than THREE (3), as sorting a huge area of chests can lead to SEVERE lag! Ideally always keep the Z-radius set to 0 or 1, while only adjusting X and Y. You've been warned."
     )
     public int config_radius_x;
 
     @ConfigInt(
-        def = 1,
-        min = 0,
-        max = 16,
-        desc = "Chest sorting radius in Y-direction from the button (up-down when looking at the button - this can be a horizontal direction if the button is on the ground). A radius of 0 means a column of the block including the button. It is advised to NEVER set the three radius values to more than THREE (3), as sorting a huge area of chests can lead to SEVERE lag! Ideally always keep the Z-radius set to 0 or 1, while only adjusting X and Y. You've been warned."
+            def = 1,
+            min = 0,
+            max = 16,
+            desc = "Chest sorting radius in Y-direction from the button (up-down when looking at the button - this can be a horizontal direction if the button is on the ground). A radius of 0 means a column of the block including the button. It is advised to NEVER set the three radius values to more than THREE (3), as sorting a huge area of chests can lead to SEVERE lag! Ideally always keep the Z-radius set to 0 or 1, while only adjusting X and Y. You've been warned."
     )
     public int config_radius_y;
 
     @ConfigInt(
-        def = 1,
-        min = 0,
-        max = 16,
-        desc = "Chest sorting radius in Z-direction from the button (into/out-of the attached block). A radius of 0 means a column of the block including the button. It is advised to NEVER set the three radius values to more than THREE (3), as sorting a huge area of chests can lead to SEVERE lag! Ideally always keep the Z-radius set to 0 or 1, while only adjusting X and Y. You've been warned."
+            def = 1,
+            min = 0,
+            max = 16,
+            desc = "Chest sorting radius in Z-direction from the button (into/out-of the attached block). A radius of 0 means a column of the block including the button. It is advised to NEVER set the three radius values to more than THREE (3), as sorting a huge area of chests can lead to SEVERE lag! Ideally always keep the Z-radius set to 0 or 1, while only adjusting X and Y. You've been warned."
     )
     public int config_radius_z;
 
@@ -144,7 +145,8 @@ public class ChestSorter extends Listener<Trifles> {
         sort_inventory(inventory);
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false) // ignoreCancelled = false to catch right-click-air events
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
+    // ignoreCancelled = false to catch right-click-air events
     public void on_player_right_click(final PlayerInteractEvent event) {
         if (!event.hasBlock() || event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.oddlama.vane.annotation.config.ConfigStringListMap;
 import org.oddlama.vane.annotation.config.ConfigStringListMapEntry;
@@ -18,20 +19,20 @@ public class ConfigStringListMapField extends ConfigField<Map<String, List<Strin
     public ConfigStringListMap annotation;
 
     public ConfigStringListMapField(
-        Object owner,
-        Field field,
-        Function<String, String> map_name,
-        ConfigStringListMap annotation
+            Object owner,
+            Field field,
+            Function<String, String> map_name,
+            ConfigStringListMap annotation
     ) {
         super(owner, field, map_name, "map of string to string list", annotation.desc());
         this.annotation = annotation;
     }
 
     private void append_string_list_map_definition(
-        StringBuilder builder,
-        String indent,
-        String prefix,
-        Map<String, List<String>> def
+            StringBuilder builder,
+            String indent,
+            String prefix,
+            Map<String, List<String>> def
     ) {
         def.forEach((k, list) -> {
             builder.append(indent);
@@ -57,7 +58,7 @@ public class ConfigStringListMapField extends ConfigField<Map<String, List<Strin
             return override;
         } else {
             return Arrays.stream(annotation.def()).collect(
-                Collectors.toMap(ConfigStringListMapEntry::key, e -> Arrays.asList(e.list()))
+                    Collectors.toMap(ConfigStringListMapEntry::key, e -> Arrays.asList(e.list()))
             );
         }
     }
@@ -86,8 +87,8 @@ public class ConfigStringListMapField extends ConfigField<Map<String, List<Strin
         builder.append(basename());
         builder.append(":\n");
         final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
-            : def();
+                ? load_from_yaml(existing_compatible_config)
+                : def();
         append_string_list_map_definition(builder, indent, "", def);
     }
 

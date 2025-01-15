@@ -27,24 +27,24 @@ public class HellBent extends CustomEnchantment<Enchantments> {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("m", "b", "t")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_knowledge")
-                .set_ingredient('t', Material.TURTLE_HELMET)
-                .set_ingredient('m', Material.MUSIC_DISC_PIGSTEP)
-                .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
+                new ShapedRecipeDefinition("generic")
+                        .shape("m", "b", "t")
+                        .set_ingredient('b', "vane_enchantments:ancient_tome_of_knowledge")
+                        .set_ingredient('t', Material.TURTLE_HELMET)
+                        .set_ingredient('m', Material.MUSIC_DISC_PIGSTEP)
+                        .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
         );
     }
 
     @Override
     public LootTableList default_loot_tables() {
         return LootTableList.of(
-            new LootDefinition("generic")
-                .in(LootTables.BASTION_BRIDGE)
-                .in(LootTables.BASTION_HOGLIN_STABLE)
-                .in(LootTables.BASTION_OTHER)
-                .in(LootTables.BASTION_TREASURE)
-                .add(1.0 / 50, 1, 1, on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
+                new LootDefinition("generic")
+                        .in(LootTables.BASTION_BRIDGE)
+                        .in(LootTables.BASTION_HOGLIN_STABLE)
+                        .in(LootTables.BASTION_OTHER)
+                        .in(LootTables.BASTION_TREASURE)
+                        .add(1.0 / 50, 1, 1, on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
         );
     }
 

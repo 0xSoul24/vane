@@ -1,6 +1,7 @@
 package org.oddlama.vane.core.menu;
 
 import java.util.List;
+
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -28,18 +29,19 @@ public class GenericSelector<T, F extends Filter<T>> {
     private int last_page = 0;
     private List<T> filtered_things = null;
 
-    private GenericSelector() {}
+    private GenericSelector() {
+    }
 
     public static <T, F extends Filter<T>> Menu create(
-        final Context<?> context,
-        final Player player,
-        final String title,
-        final String filter_title,
-        final List<T> things,
-        final Function1<T, ItemStack> to_item,
-        final F filter,
-        final Function4<Player, Menu, T, InventoryClickEvent, ClickResult> on_click,
-        final Consumer1<Player> on_cancel
+            final Context<?> context,
+            final Player player,
+            final String title,
+            final String filter_title,
+            final List<T> things,
+            final Function1<T, ItemStack> to_item,
+            final F filter,
+            final Function4<Player, Menu, T, InventoryClickEvent, ClickResult> on_click,
+            final Consumer1<Player> on_cancel
     ) {
         final var columns = 9;
 
@@ -52,8 +54,8 @@ public class GenericSelector<T, F extends Filter<T>> {
         generic_selector.page_size = 5 * columns;
 
         final var generic_selector_menu = new Menu(
-            context,
-            Bukkit.createInventory(null, 6 * columns, LegacyComponentSerializer.legacySection().deserialize(title))
+                context,
+                Bukkit.createInventory(null, 6 * columns, LegacyComponentSerializer.legacySection().deserialize(title))
         ) {
             @Override
             public void update(boolean force_update) {
@@ -62,7 +64,7 @@ public class GenericSelector<T, F extends Filter<T>> {
                     generic_selector.filtered_things = generic_selector.filter.filter(generic_selector.things);
                     generic_selector.page = 0;
                     generic_selector.last_page =
-                        Math.max(0, generic_selector.filtered_things.size() - 1) / generic_selector.page_size;
+                            Math.max(0, generic_selector.filtered_things.size() - 1) / generic_selector.page_size;
                     generic_selector.update_filter = false;
                 }
                 super.update(force_update);
@@ -74,44 +76,44 @@ public class GenericSelector<T, F extends Filter<T>> {
 
         // Page selector
         generic_selector_menu.add(
-            new PageSelector<>(generic_selector, generic_selector.page_size + 1, generic_selector.page_size + 8)
+                new PageSelector<>(generic_selector, generic_selector.page_size + 1, generic_selector.page_size + 8)
         );
 
         // Filter item
         generic_selector_menu.add(
-            new MenuItem(
-                generic_selector.page_size,
-                generic_selector.menu_manager.generic_selector_filter.item(),
-                (p, menu, self, event) -> {
-                    if (!Menu.is_left_or_right_click(event)) {
-                        return ClickResult.INVALID_CLICK;
-                    }
+                new MenuItem(
+                        generic_selector.page_size,
+                        generic_selector.menu_manager.generic_selector_filter.item(),
+                        (p, menu, self, event) -> {
+                            if (!Menu.is_left_or_right_click(event)) {
+                                return ClickResult.INVALID_CLICK;
+                            }
 
-                    if (event.getClick() == ClickType.RIGHT) {
-                        generic_selector.filter.reset();
-                        generic_selector.update_filter = true;
-                        menu.update();
-                    } else {
-                        menu.close(p);
-                        generic_selector.filter.open_filter_settings(context, p, filter_title, menu);
-                        generic_selector.update_filter = true;
-                    }
-                    return ClickResult.SUCCESS;
-                }
-            )
+                            if (event.getClick() == ClickType.RIGHT) {
+                                generic_selector.filter.reset();
+                                generic_selector.update_filter = true;
+                                menu.update();
+                            } else {
+                                menu.close(p);
+                                generic_selector.filter.open_filter_settings(context, p, filter_title, menu);
+                                generic_selector.update_filter = true;
+                            }
+                            return ClickResult.SUCCESS;
+                        }
+                )
         );
 
         // Cancel item
         generic_selector_menu.add(
-            new MenuItem(
-                generic_selector.page_size + 8,
-                generic_selector.menu_manager.generic_selector_cancel.item(),
-                (p, menu, self) -> {
-                    menu.close(p);
-                    on_cancel.apply(player);
-                    return ClickResult.SUCCESS;
-                }
-            )
+                new MenuItem(
+                        generic_selector.page_size + 8,
+                        generic_selector.menu_manager.generic_selector_cancel.item(),
+                        (p, menu, self) -> {
+                            menu.close(p);
+                            on_cancel.apply(player);
+                            return ClickResult.SUCCESS;
+                        }
+                )
         );
 
         // On natural close call cancel
@@ -153,16 +155,16 @@ public class GenericSelector<T, F extends Filter<T>> {
                 if (i == (slot_to - slot_from) / 2) {
                     // Current page indicator
                     item = generic_selector.menu_manager.generic_selector_current_page.item(
-                        "§6" + (page + 1),
-                        "§6" + (generic_selector.last_page + 1),
-                        "§6" + generic_selector.filtered_things.size()
+                            "§6" + (page + 1),
+                            "§6" + (generic_selector.last_page + 1),
+                            "§6" + generic_selector.filtered_things.size()
                     );
                 } else if (no_op) {
                     item = null;
                 } else {
                     item = generic_selector.menu_manager.generic_selector_page.item_amount(
-                        Math.abs(actual_offset),
-                        "§6" + (page + 1)
+                            Math.abs(actual_offset),
+                            "§6" + (page + 1)
                     );
                 }
 
@@ -196,11 +198,11 @@ public class GenericSelector<T, F extends Filter<T>> {
 
         @Override
         public ClickResult click(
-            final Player player,
-            final Menu menu,
-            final ItemStack item,
-            int slot,
-            final InventoryClickEvent event
+                final Player player,
+                final Menu menu,
+                final ItemStack item,
+                int slot,
+                final InventoryClickEvent event
         ) {
             if (slot < slot_from || slot >= slot_to) {
                 return ClickResult.IGNORE;
@@ -240,11 +242,11 @@ public class GenericSelector<T, F extends Filter<T>> {
                     menu.inventory().setItem(first_slot + i, null);
                 } else {
                     menu
-                        .inventory()
-                        .setItem(
-                            first_slot + i,
-                            generic_selector.to_item.apply(generic_selector.filtered_things.get(idx))
-                        );
+                            .inventory()
+                            .setItem(
+                                    first_slot + i,
+                                    generic_selector.to_item.apply(generic_selector.filtered_things.get(idx))
+                            );
                 }
             }
             return true;
@@ -252,11 +254,11 @@ public class GenericSelector<T, F extends Filter<T>> {
 
         @Override
         public ClickResult click(
-            final Player player,
-            final Menu menu,
-            final ItemStack item,
-            int slot,
-            final InventoryClickEvent event
+                final Player player,
+                final Menu menu,
+                final ItemStack item,
+                int slot,
+                final InventoryClickEvent event
         ) {
             if (slot < first_slot || slot >= first_slot + generic_selector.page_size) {
                 return ClickResult.IGNORE;

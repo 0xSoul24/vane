@@ -1,6 +1,7 @@
 package org.oddlama.vane.proxycore;
 
 import java.util.UUID;
+
 import org.jetbrains.annotations.Nullable;
 
 public interface ProxyPendingConnection {
@@ -17,10 +18,10 @@ public interface ProxyPendingConnection {
 
     default boolean can_start_server(ProxyServer server, String serverName) {
         return has_permission(
-            server,
-            "vane_proxy.start_server",
-            "vane_proxy.start_server.*",
-            "vane_proxy.start_server." + serverName
+                server,
+                "vane_proxy.start_server",
+                "vane_proxy.start_server.*",
+                "vane_proxy.start_server." + serverName
         );
     }
 }

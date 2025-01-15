@@ -69,65 +69,65 @@ menus:
 
     rename:
       name: "§b§lUmbenennen"
-      lore: []
+      lore: [ ]
 
     select_icon:
       name: "§b§lIcon auswählen"
-      lore: []
+      lore: [ ]
 
     select_style:
       name: "§b§lStil auswählen"
-      lore: []
+      lore: [ ]
 
     exit_orientation_lock_on:
       name: "§b§lRichtungssperre umschalten"
-      lore: ["", "§bAktuell: §e§lGelGesperrt (Ausgang immer vorne)§r"]
+      lore: [ "", "§bAktuell: §e§lGelGesperrt (Ausgang immer vorne)§r" ]
 
     exit_orientation_lock_off:
       name: "§b§lRichtungssperre umschalten"
-      lore: ["", "§bAktuell: §a§lEntsperrt (Ausgangseite ist betretene Seite)§r"]
+      lore: [ "", "§bAktuell: §a§lEntsperrt (Ausgangseite ist betretene Seite)§r" ]
 
     visibility_public:
       name: "§b§lSichtbarkeit umschalten"
-      lore: ["", "§bAktuell: §a§lÖffentlich§r"]
+      lore: [ "", "§bAktuell: §a§lÖffentlich§r" ]
 
     visibility_group:
       name: "§b§lSichtbarkeit umschalten"
-      lore: ["", "§bAktuell: §e§lGruppe (Mitglieder)§r"]
+      lore: [ "", "§bAktuell: §e§lGruppe (Mitglieder)§r" ]
 
     visibility_group_internal:
       name: "§b§lSichtbarkeit umschalten"
-      lore: ["", "§bAktuell: §e§lGruppe (Nur intern sichtbar)§r"]
+      lore: [ "", "§bAktuell: §e§lGruppe (Nur intern sichtbar)§r" ]
 
     visibility_private:
       name: "§b§lSichtbarkeit umschalten"
-      lore: ["", "§bAktuell: §c§lPrivat§r"]
+      lore: [ "", "§bAktuell: §c§lPrivat§r" ]
 
     target_lock_on:
       name: "§b§lZielsperre umschalten"
-      lore: ["", "§bAktuell: §c§lGesperrt§r"]
+      lore: [ "", "§bAktuell: §c§lGesperrt§r" ]
 
     target_lock_off:
       name: "§b§lZielsperre umschalten"
-      lore: ["", "§bAktuell: §a§lEntsperrt§r"]
+      lore: [ "", "§bAktuell: §a§lEntsperrt§r" ]
 
     back:
       name: "§6↩ §lZurück"
-      lore: []
+      lore: [ ]
 
   style:
     title: "§8§lStil für: %1$s"
-    select_block_console_active_title:       "Aktive Konsole auswählen."
-    select_block_origin_active_title:        "Aktiven Hauptblock auswählen."
-    select_block_portal_active_title:        "Aktiven Portalbereich auswählen."
-    select_block_boundary_1_active_title:   "Aktiven Portalrahmen Variante 1 auswählen."
-    select_block_boundary_2_active_title:   "Aktiven Portalrahmen Variante 2 auswählen."
-    select_block_boundary_3_active_title:   "Aktiven Portalrahmen Variante 3 auswählen."
-    select_block_boundary_4_active_title:   "Aktiven Portalrahmen Variante 4 auswählen."
-    select_block_boundary_5_active_title:   "Aktiven Portalrahmen Variante 5 auswählen."
-    select_block_console_inactive_title:     "Inaktive Konsole auswählen."
-    select_block_origin_inactive_title:      "Inaktiven Hauptblock auswählen."
-    select_block_portal_inactive_title:      "Inaktiven Portalbereich auswählen."
+    select_block_console_active_title: "Aktive Konsole auswählen."
+    select_block_origin_active_title: "Aktiven Hauptblock auswählen."
+    select_block_portal_active_title: "Aktiven Portalbereich auswählen."
+    select_block_boundary_1_active_title: "Aktiven Portalrahmen Variante 1 auswählen."
+    select_block_boundary_2_active_title: "Aktiven Portalrahmen Variante 2 auswählen."
+    select_block_boundary_3_active_title: "Aktiven Portalrahmen Variante 3 auswählen."
+    select_block_boundary_4_active_title: "Aktiven Portalrahmen Variante 4 auswählen."
+    select_block_boundary_5_active_title: "Aktiven Portalrahmen Variante 5 auswählen."
+    select_block_console_inactive_title: "Inaktive Konsole auswählen."
+    select_block_origin_inactive_title: "Inaktiven Hauptblock auswählen."
+    select_block_portal_inactive_title: "Inaktiven Portalbereich auswählen."
     select_block_boundary_1_inactive_title: "Inaktiven Portalrahmen Variante 1 auswählen."
     select_block_boundary_2_inactive_title: "Inaktiven Portalrahmen Variante 2 auswählen."
     select_block_boundary_3_inactive_title: "Inaktiven Portalrahmen Variante 3 auswählen."
@@ -136,80 +136,80 @@ menus:
 
     block_console_active:
       name: "§b§lKonsole §a(aktiv)"
-      lore: []
+      lore: [ ]
     block_origin_active:
       name: "§b§lHauptblock §a(aktiv)"
-      lore: []
+      lore: [ ]
     block_portal_active:
       name: "§b§lPortalbereich §a(aktiv)"
-      lore: []
+      lore: [ ]
     block_boundary_1_active:
       name: "§b§lPortalrahmen §a(aktiv)"
-      lore: ["", "§aVariante 1", "§7Baumaterial: %1$s"]
+      lore: [ "", "§aVariante 1", "§7Baumaterial: %1$s" ]
     block_boundary_2_active:
       name: "§b§lPortalrahmen §a(aktiv)"
-      lore: ["", "§aVariante 2", "§7Baumaterial: %1$s"]
+      lore: [ "", "§aVariante 2", "§7Baumaterial: %1$s" ]
     block_boundary_3_active:
       name: "§b§lPortalrahmen §a(aktiv)"
-      lore: ["", "§aVariante 3", "§7Baumaterial: %1$s"]
+      lore: [ "", "§aVariante 3", "§7Baumaterial: %1$s" ]
     block_boundary_4_active:
       name: "§b§lPortalrahmen §a(aktiv)"
-      lore: ["", "§aVariante 4", "§7Baumaterial: %1$s"]
+      lore: [ "", "§aVariante 4", "§7Baumaterial: %1$s" ]
     block_boundary_5_active:
       name: "§b§lPortalrahmen §a(aktiv)"
-      lore: ["", "§aVariante 5", "§7Baumaterial: %1$s"]
+      lore: [ "", "§aVariante 5", "§7Baumaterial: %1$s" ]
     block_console_inactive:
       name: "§b§lKonsole §e(inaktiv)"
-      lore: []
+      lore: [ ]
     block_origin_inactive:
       name: "§b§lHauptblock §e(inaktiv)"
-      lore: []
+      lore: [ ]
     block_portal_inactive:
       name: "§b§lPortalbereich §e(inaktiv)"
-      lore: []
+      lore: [ ]
     block_boundary_1_inactive:
       name: "§b§lPortalrahmen §e(inaktiv)"
-      lore: ["", "§aVariante 1", "§7Baumaterial: %1$s"]
+      lore: [ "", "§aVariante 1", "§7Baumaterial: %1$s" ]
     block_boundary_2_inactive:
       name: "§b§lPortalrahmen §e(inaktiv)"
-      lore: ["", "§aVariante 2", "§7Baumaterial: %1$s"]
+      lore: [ "", "§aVariante 2", "§7Baumaterial: %1$s" ]
     block_boundary_3_inactive:
       name: "§b§lPortalrahmen §e(inaktiv)"
-      lore: ["", "§aVariante 3", "§7Baumaterial: %1$s"]
+      lore: [ "", "§aVariante 3", "§7Baumaterial: %1$s" ]
     block_boundary_4_inactive:
       name: "§b§lPortalrahmen §e(inaktiv)"
-      lore: ["", "§aVariante 4", "§7Baumaterial: %1$s"]
+      lore: [ "", "§aVariante 4", "§7Baumaterial: %1$s" ]
     block_boundary_5_inactive:
       name: "§b§lPortalrahmen §e(inaktiv)"
-      lore: ["", "§aVariante 5", "§7Baumaterial: %1$s"]
+      lore: [ "", "§aVariante 5", "§7Baumaterial: %1$s" ]
 
     accept:
       name: "§a§lStil anwenden"
-      lore: []
+      lore: [ ]
 
     reset:
       name: "§6§lÄnderungen zurücksetzen"
-      lore: []
+      lore: [ ]
 
     select_style_title: "§8§lStil auswählen"
     filter_styles_title: "§8§lStile filtern"
     select_defined:
       name: "§b§lVordefinierten Stil auswählen"
-      lore: []
+      lore: [ ]
     select_style:
       name: "%1$s"
-      lore: []
+      lore: [ ]
 
     cancel:
       name: "§6↩ §lVerwerfen"
-      lore: []
+      lore: [ ]
 
   console:
     title: "§8§lPortal: %1$s"
 
     settings:
       name: "§b§lEinstellungen"
-      lore: []
+      lore: [ ]
 
     select_target:
       name: "§d§lZiel auswählen"
@@ -239,22 +239,22 @@ menus:
 
     unlink_console:
       name: "§c§lKonsole Entfernen"
-      lore: []
+      lore: [ ]
     unlink_console_confirm_title: "§c§lKonsole entfernen?"
     unlink_console_confirm_accept:
       name: "§c§lKONSOLE ENTFERNEN"
-      lore: []
+      lore: [ ]
     unlink_console_confirm_cancel:
       name: "§a§lAbbrechen"
-      lore: []
+      lore: [ ]
 
     destroy_portal:
       name: "§c§lPortal Zerstören"
-      lore: []
+      lore: [ ]
     destroy_portal_confirm_title: "§c§lPortal zerstören?"
     destroy_portal_confirm_accept:
       name: "§c§lPORTAL ZERSTÖREN"
-      lore: []
+      lore: [ ]
     destroy_portal_confirm_cancel:
       name: "§a§lAbbrechen"
-      lore: []
+      lore: [ ]

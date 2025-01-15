@@ -33,15 +33,15 @@ import org.oddlama.vane.util.StorageUtil;
 public class Soulbound extends CustomEnchantment<Enchantments> {
 
     @ConfigLong(
-        def = 2000,
-        min = 0,
-        desc = "Window to allow Soulbound item drop immediately after a previous drop in milliseconds"
+            def = 2000,
+            min = 0,
+            desc = "Window to allow Soulbound item drop immediately after a previous drop in milliseconds"
     )
     public long config_cooldown;
 
     private static final NamespacedKey IGNORE_SOULBOUND_DROP = StorageUtil.namespaced_key(
-        "vane_enchantments",
-        "ignore_soulbound_drop"
+            "vane_enchantments",
+            "ignore_soulbound_drop"
     );
     private CooldownData drop_cooldown = new CooldownData(IGNORE_SOULBOUND_DROP, config_cooldown);
 
@@ -67,26 +67,26 @@ public class Soulbound extends CustomEnchantment<Enchantments> {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("cqc", "obe", "rgt")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_the_gods")
-                .set_ingredient('c', Material.CHAIN)
-                .set_ingredient('q', Material.WRITABLE_BOOK)
-                .set_ingredient('o', Material.BONE)
-                .set_ingredient('r', "minecraft:enchanted_book#enchants{minecraft:binding_curse*1}")
-                .set_ingredient('g', Material.GHAST_TEAR)
-                .set_ingredient('t', Material.TOTEM_OF_UNDYING)
-                .set_ingredient('e', Material.ENDER_EYE)
-                .result(on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
+                new ShapedRecipeDefinition("generic")
+                        .shape("cqc", "obe", "rgt")
+                        .set_ingredient('b', "vane_enchantments:ancient_tome_of_the_gods")
+                        .set_ingredient('c', Material.CHAIN)
+                        .set_ingredient('q', Material.WRITABLE_BOOK)
+                        .set_ingredient('o', Material.BONE)
+                        .set_ingredient('r', "minecraft:enchanted_book#enchants{minecraft:binding_curse*1}")
+                        .set_ingredient('g', Material.GHAST_TEAR)
+                        .set_ingredient('t', Material.TOTEM_OF_UNDYING)
+                        .set_ingredient('e', Material.ENDER_EYE)
+                        .result(on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
         );
     }
 
     @Override
     public LootTableList default_loot_tables() {
         return LootTableList.of(
-            new LootDefinition("generic")
-                .in(LootTables.BASTION_TREASURE)
-                .add(1.0 / 15, 1, 1, on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
+                new LootDefinition("generic")
+                        .in(LootTables.BASTION_TREASURE)
+                        .add(1.0 / 15, 1, 1, on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
         );
     }
 
@@ -115,7 +115,7 @@ public class Soulbound extends CustomEnchantment<Enchantments> {
         if (event.getCursor() == null) return;
         if (!is_soulbound(event.getCursor())) return;
         if (
-            event.getAction() == InventoryAction.DROP_ALL_CURSOR || event.getAction() == InventoryAction.DROP_ONE_CURSOR
+                event.getAction() == InventoryAction.DROP_ALL_CURSOR || event.getAction() == InventoryAction.DROP_ONE_CURSOR
         ) {
             boolean too_slow = drop_cooldown.peek_cooldown(event.getCursor().getItemMeta());
             if (too_slow) {
@@ -151,8 +151,8 @@ public class Soulbound extends CustomEnchantment<Enchantments> {
                 // We still have space in the inventory, so the player tried to drop it with Q.
                 event.setCancelled(true);
                 lang_drop_lock_warning.send_action_bar(
-                    event.getPlayer(),
-                    event.getItemDrop().getItemStack().displayName()
+                        event.getPlayer(),
+                        event.getItemDrop().getItemStack().displayName()
                 );
             } else {
                 // Inventory is full (e.g., when exiting crafting table with soulbound item in it)

@@ -109,65 +109,65 @@ menus:
 
     rename:
       name: "§b§lПереименовать"
-      lore: []
+      lore: [ ]
 
     select_icon:
       name: "§b§lВыберите значок"
-      lore: []
+      lore: [ ]
 
     select_style:
       name: "§b§lВыберите стиль"
-      lore: []
+      lore: [ ]
 
     exit_orientation_lock_on:
       name: "§b§lПереключить фиксацию направления выхода"
-      lore: ["", "§bТекущая: §e§lФиксированно (выход всегда спереди)§r"]
+      lore: [ "", "§bТекущая: §e§lФиксированно (выход всегда спереди)§r" ]
 
     exit_orientation_lock_off:
       name: "§b§lПереключить фиксацию направления выхода"
-      lore: ["", "§bТекушая: §a§lСвободно (выход с той же стороны что и вход)§r"]
+      lore: [ "", "§bТекушая: §a§lСвободно (выход с той же стороны что и вход)§r" ]
 
     visibility_public:
       name: "§b§lПереключить видимость"
-      lore: ["", "§bТекущая: §a§lПубличный§r"]
+      lore: [ "", "§bТекущая: §a§lПубличный§r" ]
 
     visibility_group:
       name: "§b§lПереключить видимость"
-      lore: ["", "§bТекущая: §e§lГруппа региона (участники)§r"]
+      lore: [ "", "§bТекущая: §e§lГруппа региона (участники)§r" ]
 
     visibility_group_internal:
       name: "§b§lПереключить видимость"
-      lore: ["", "§bТекущая: §e§lГруппа региона (видимый только внутри)§r"]
+      lore: [ "", "§bТекущая: §e§lГруппа региона (видимый только внутри)§r" ]
 
     visibility_private:
       name: "§b§lПереключить видимость"
-      lore: ["", "§bТекущая: §c§lЧастный§r"]
+      lore: [ "", "§bТекущая: §c§lЧастный§r" ]
 
     target_lock_on:
       name: "§b§lПереключить фиксацию выбора цели"
-      lore: ["", "§bТекущая §c§lФиксированно§r"]
+      lore: [ "", "§bТекущая §c§lФиксированно§r" ]
 
     target_lock_off:
       name: "§b§lПереключить фиксацию выбора цели"
-      lore: ["", "§bТекущая: §a§lСвободно§r"]
+      lore: [ "", "§bТекущая: §a§lСвободно§r" ]
 
     back:
       name: "§6↩ §lНазад"
-      lore: []
+      lore: [ ]
 
   style:
     title: "§8§lСтиль для: %1$s"
-    select_block_console_active_title:       "Выберите активный блок консоли."
-    select_block_origin_active_title:        "Выберите активный основной блок."
-    select_block_portal_active_title:        "Выберите активный блок заполнения."
-    select_block_boundary_1_active_title:   "Выберите активную рамку портала - 1 вариант."
-    select_block_boundary_2_active_title:   "Выберите активную рамку портала - 2 вариант."
-    select_block_boundary_3_active_title:   "Выберите активную рамку портала - 3 вариант."
-    select_block_boundary_4_active_title:   "Выберите активную рамку портала - 4 вариант."
-    select_block_boundary_5_active_title:   "Выберите активную рамку портала - 5 вариант."
-    select_block_console_inactive_title:     "Выберите неактивный блок консоли."
-    select_block_origin_inactive_title:      "Выберите неактивный основной блок."
-    select_block_portal_inactive_title:      "Выберите неактивный блок заполнения."
+    select_block_console_active_title: "Выберите активный блок консоли."
+    select_block_origin_active_title: "Выберите активный основной блок."
+    select_block_portal_active_title: "Выберите активный блок заполнения."
+    select_block_boundary_1_active_title: "Выберите активную рамку портала - 1 вариант."
+    select_block_boundary_2_active_title: "Выберите активную рамку портала - 2 вариант."
+    select_block_boundary_3_active_title: "Выберите активную рамку портала - 3 вариант."
+    select_block_boundary_4_active_title: "Выберите активную рамку портала - 4 вариант."
+    select_block_boundary_5_active_title: "Выберите активную рамку портала - 5 вариант."
+    select_block_console_inactive_title: "Выберите неактивный блок консоли."
+    select_block_origin_inactive_title: "Выберите неактивный основной блок."
+    select_block_portal_inactive_title: "Выберите неактивный блок заполнения."
     select_block_boundary_1_inactive_title: "Выберите неактивную рамку портала - 1 вариант."
     select_block_boundary_2_inactive_title: "Выберите неактивную рамку портала - 2 вариант."
     select_block_boundary_3_inactive_title: "Выберите неактивную рамку портала - 3 вариант."
@@ -176,80 +176,80 @@ menus:
 
     block_console_active:
       name: "§b§lКонсоль §a(активная)"
-      lore: []
+      lore: [ ]
     block_origin_active:
       name: "§b§lОсновной блок §a(активный)"
-      lore: []
+      lore: [ ]
     block_portal_active:
       name: "§b§lБлок заполнения §a(активный)"
-      lore: []
+      lore: [ ]
     block_boundary_1_active:
       name: "§b§lРамка §a(активная)"
-      lore: ["", "§aВариант 1", "§7Строительный материал: %1$s"]
+      lore: [ "", "§aВариант 1", "§7Строительный материал: %1$s" ]
     block_boundary_2_active:
       name: "§b§lРамка §a(активная)"
-      lore: ["", "§aВариант 2", "§7Строительный материал: %1$s"]
+      lore: [ "", "§aВариант 2", "§7Строительный материал: %1$s" ]
     block_boundary_3_active:
       name: "§b§lРамка §a(активная)"
-      lore: ["", "§aВариант 3", "§7Строительный материал: %1$s"]
+      lore: [ "", "§aВариант 3", "§7Строительный материал: %1$s" ]
     block_boundary_4_active:
       name: "§b§lРамка §a(активная)"
-      lore: ["", "§aВариант 4", "§7Строительный материал: %1$s"]
+      lore: [ "", "§aВариант 4", "§7Строительный материал: %1$s" ]
     block_boundary_5_active:
       name: "§b§lРамка §a(активная)"
-      lore: ["", "§aВариант 5", "§7Строительный материал: %1$s"]
+      lore: [ "", "§aВариант 5", "§7Строительный материал: %1$s" ]
     block_console_inactive:
       name: "§b§lКонсоль §e(неактивная)"
-      lore: []
+      lore: [ ]
     block_origin_inactive:
       name: "§b§lОсновной блок §e(неактивный)"
-      lore: []
+      lore: [ ]
     block_portal_inactive:
       name: "§b§lБлок заполнения §e(неактивный)"
-      lore: []
+      lore: [ ]
     block_boundary_1_inactive:
       name: "§b§lРамка §e(неактивная)"
-      lore: ["", "§aВариант 1", "§7Строительный материал: %1$s"]
+      lore: [ "", "§aВариант 1", "§7Строительный материал: %1$s" ]
     block_boundary_2_inactive:
       name: "§b§lРамка §e(неактивная)"
-      lore: ["", "§aВариант 2", "§7Строительный материал: %1$s"]
+      lore: [ "", "§aВариант 2", "§7Строительный материал: %1$s" ]
     block_boundary_3_inactive:
       name: "§b§lРамка §e(неактивная)"
-      lore: ["", "§aВариант 3", "§7Строительный материал: %1$s"]
+      lore: [ "", "§aВариант 3", "§7Строительный материал: %1$s" ]
     block_boundary_4_inactive:
       name: "§b§lРамка §e(неактивная)"
-      lore: ["", "§aВариант 4", "§7Строительный материал: %1$s"]
+      lore: [ "", "§aВариант 4", "§7Строительный материал: %1$s" ]
     block_boundary_5_inactive:
       name: "§b§lРамка §e(неактивная)"
-      lore: ["", "§aВариант 5", "§7Строительный материал: %1$s"]
+      lore: [ "", "§aВариант 5", "§7Строительный материал: %1$s" ]
 
     accept:
       name: "§a§lПрименить стиль"
-      lore: []
+      lore: [ ]
 
     reset:
       name: "§6§lСбросить изменения"
-      lore: []
+      lore: [ ]
 
     select_style_title: "§8§lВыбрать стиль"
     filter_styles_title: "§8§lФильтр стилей"
     select_defined:
       name: "§b§lВыбрать подготовленный стиль"
-      lore: []
+      lore: [ ]
     select_style:
       name: "%1$s"
-      lore: []
+      lore: [ ]
 
     cancel:
       name: "§6↩ §lОтменить изменения"
-      lore: []
+      lore: [ ]
 
   console:
     title: "§8§lПортал: %1$s"
 
     settings:
       name: "§b§lНастройки"
-      lore: []
+      lore: [ ]
 
     select_target:
       name: "§d§lВыберите цель"
@@ -279,22 +279,22 @@ menus:
 
     unlink_console:
       name: "§c§lОтвязать консоль"
-      lore: []
+      lore: [ ]
     unlink_console_confirm_title: "§c§lОтвязать консоль?"
     unlink_console_confirm_accept:
       name: "§c§lОТВЯЗАТЬ КОНСОЛЬ"
-      lore: []
+      lore: [ ]
     unlink_console_confirm_cancel:
       name: "§a§lОтмена"
-      lore: []
+      lore: [ ]
 
     destroy_portal:
       name: "§c§lРазрушить портал"
-      lore: []
+      lore: [ ]
     destroy_portal_confirm_title: "§c§lРазрушить портал?"
     destroy_portal_confirm_accept:
       name: "§c§lРАЗРУШИТЬ ПОРТАЛ"
-      lore: []
+      lore: [ ]
     destroy_portal_confirm_cancel:
       name: "§a§lОтмена"
-      lore: []
+      lore: [ ]

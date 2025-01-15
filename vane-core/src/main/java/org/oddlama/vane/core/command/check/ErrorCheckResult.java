@@ -1,6 +1,7 @@
 package org.oddlama.vane.core.command.check;
 
 import java.util.Objects;
+
 import org.bukkit.command.CommandSender;
 import org.oddlama.vane.core.command.Command;
 

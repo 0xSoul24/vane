@@ -5,6 +5,7 @@ import static org.oddlama.vane.core.persistent.PersistentSerializer.to_json;
 
 import java.io.IOException;
 import java.util.UUID;
+
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -48,22 +49,22 @@ public class RegionExtent {
 
         // Sort coordinates along axes.
         this.min = new LazyBlock(
-            from
-                .getWorld()
-                .getBlockAt(
-                    Math.min(from.getX(), to.getX()),
-                    Math.min(from.getY(), to.getY()),
-                    Math.min(from.getZ(), to.getZ())
-                )
+                from
+                        .getWorld()
+                        .getBlockAt(
+                                Math.min(from.getX(), to.getX()),
+                                Math.min(from.getY(), to.getY()),
+                                Math.min(from.getZ(), to.getZ())
+                        )
         );
         this.max = new LazyBlock(
-            from
-                .getWorld()
-                .getBlockAt(
-                    Math.max(from.getX(), to.getX()),
-                    Math.max(from.getY(), to.getY()),
-                    Math.max(from.getZ(), to.getZ())
-                )
+                from
+                        .getWorld()
+                        .getBlockAt(
+                                Math.max(from.getX(), to.getX()),
+                                Math.max(from.getY(), to.getY()),
+                                Math.max(from.getZ(), to.getZ())
+                        )
         );
     }
 
@@ -87,12 +88,12 @@ public class RegionExtent {
         final var l = min();
         final var h = max();
         return (
-            loc.getX() >= l.getX() &&
-            loc.getX() < (h.getX() + 1) &&
-            loc.getY() >= l.getY() &&
-            loc.getY() < (h.getY() + 1) &&
-            loc.getZ() >= l.getZ() &&
-            loc.getZ() < (h.getZ() + 1)
+                loc.getX() >= l.getX() &&
+                        loc.getX() < (h.getX() + 1) &&
+                        loc.getY() >= l.getY() &&
+                        loc.getY() < (h.getY() + 1) &&
+                        loc.getZ() >= l.getZ() &&
+                        loc.getZ() < (h.getZ() + 1)
         );
     }
 
@@ -104,12 +105,12 @@ public class RegionExtent {
         final var l = min();
         final var h = max();
         return (
-            block.getX() >= l.getX() &&
-            block.getX() <= h.getX() &&
-            block.getY() >= l.getY() &&
-            block.getY() <= h.getY() &&
-            block.getZ() >= l.getZ() &&
-            block.getZ() <= h.getZ()
+                block.getX() >= l.getX() &&
+                        block.getX() <= h.getX() &&
+                        block.getY() >= l.getY() &&
+                        block.getY() <= h.getY() &&
+                        block.getZ() >= l.getZ() &&
+                        block.getZ() <= h.getZ()
         );
     }
 

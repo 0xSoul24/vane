@@ -3,6 +3,7 @@ package org.oddlama.vane.regions;
 import static org.oddlama.vane.util.PlayerUtil.take_items;
 
 import com.google.common.collect.Sets;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+
 import net.minecraft.core.BlockPos;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Chunk;
@@ -126,35 +128,35 @@ public class Regions extends Module<Regions> {
     public boolean config_economy_as_currency;
 
     @ConfigBoolean(
-        def = false,
-        desc = "Enable this to prevent players without the container permission from being able to view chests."
+            def = false,
+            desc = "Enable this to prevent players without the container permission from being able to view chests."
     )
     public boolean config_prohibit_viewing_containers;
 
     @ConfigInt(
-        def = 0,
-        min = -1,
-        desc = "The amount of decimal places the costs will be rounded to. If set to -1, it will round to the amount of decimal places specified by your economy plugin. If set to 0, costs will simply be rounded up to the nearest integer."
+            def = 0,
+            min = -1,
+            desc = "The amount of decimal places the costs will be rounded to. If set to -1, it will round to the amount of decimal places specified by your economy plugin. If set to 0, costs will simply be rounded up to the nearest integer."
     )
     public int config_economy_decimal_places;
 
     @ConfigMaterial(
-        def = Material.DIAMOND,
-        desc = "The currency material for regions. The alternative option to an economy plugin."
+            def = Material.DIAMOND,
+            desc = "The currency material for regions. The alternative option to an economy plugin."
     )
     public Material config_currency;
 
     @ConfigDouble(
-        def = 2.0,
-        min = 0.0,
-        desc = "The base amount of currency required to buy an area equal to one chunk (256 blocks)."
+            def = 2.0,
+            min = 0.0,
+            desc = "The base amount of currency required to buy an area equal to one chunk (256 blocks)."
     )
     public double config_cost_xz_base;
 
     @ConfigDouble(
-        def = 1.15,
-        min = 1.0,
-        desc = "The multiplicator determines how much the cost increases for each additional 16 blocks of height. A region of height h will cost multiplicator^(h / 16.0) * base_amount. Rounding is applied at the end."
+            def = 1.15,
+            min = 1.0,
+            desc = "The multiplicator determines how much the cost increases for each additional 16 blocks of height. A region of height h will cost multiplicator^(h / 16.0) * base_amount. Rounding is applied at the end."
     )
     public double config_cost_y_multiplicator;
 
@@ -215,9 +217,9 @@ public class Regions extends Module<Regions> {
 
         // Register admin permission
         admin_permission = new Permission(
-            "vane." + get_module().get_name() + ".admin",
-            "Allows administration of any region",
-            PermissionDefault.OP
+                "vane." + get_module().get_name() + ".admin",
+                "Allows administration of any region",
+                PermissionDefault.OP
         );
         get_module().register_permission(admin_permission);
     }
@@ -236,9 +238,9 @@ public class Regions extends Module<Regions> {
         Plugin vault_api_plugin = get_module().getServer().getPluginManager().getPlugin("Vault");
         if (vault_api_plugin == null) {
             get_module()
-                .log.severe(
-                    "Economy was selected as the currency provider, but the Vault plugin wasn't found! Falling back to material currency."
-                );
+                    .log.severe(
+                            "Economy was selected as the currency provider, but the Vault plugin wasn't found! Falling back to material currency."
+                    );
             return false;
         }
 
@@ -261,10 +263,10 @@ public class Regions extends Module<Regions> {
 
     public Collection<Region> all_regions() {
         return regions
-            .values()
-            .stream()
-            .filter(p -> getServer().getWorld(p.extent().world()) != null)
-            .collect(Collectors.toList());
+                .values()
+                .stream()
+                .filter(p -> getServer().getWorld(p.extent().world()) != null)
+                .collect(Collectors.toList());
     }
 
     public Collection<RegionGroup> all_region_groups() {
@@ -315,32 +317,32 @@ public class Regions extends Module<Regions> {
 
         // Spawn base particles
         world.spawnParticle(
-            Particle.END_ROD,
-            mx,
-            my,
-            mz,
-            count,
-            dx,
-            dy,
-            dz,
-            0.0, // speed
-            null, // data
-            true
+                Particle.END_ROD,
+                mx,
+                my,
+                mz,
+                count,
+                dx,
+                dy,
+                dz,
+                0.0, // speed
+                null, // data
+                true
         ); // force
 
         // Spawn colored particles indicating validity
         world.spawnParticle(
-            Particle.DUST,
-            mx,
-            my,
-            mz,
-            count,
-            dx,
-            dy,
-            dz,
-            0.0, // speed
-            valid ? visualize_dust_valid : visualize_dust_invalid, // data
-            true
+                Particle.DUST,
+                mx,
+                my,
+                mz,
+                count,
+                dx,
+                dy,
+                dz,
+                0.0, // speed
+                valid ? visualize_dust_valid : visualize_dust_invalid, // data
+                true
         ); // force
     }
 
@@ -439,15 +441,15 @@ public class Regions extends Module<Regions> {
 
         // Close and taint all related open menus
         get_module()
-            .core.menu_manager.for_each_open((player, menu) -> {
-                if (
-                    menu.tag() instanceof RegionGroupMenuTag &&
-                    Objects.equals(((RegionGroupMenuTag) menu.tag()).region_group_id(), group.id())
-                ) {
-                    menu.taint();
-                    menu.close(player);
-                }
-            });
+                .core.menu_manager.for_each_open((player, menu) -> {
+                    if (
+                            menu.tag() instanceof RegionGroupMenuTag &&
+                                    Objects.equals(((RegionGroupMenuTag) menu.tag()).region_group_id(), group.id())
+                    ) {
+                        menu.taint();
+                        menu.close(player);
+                    }
+                });
     }
 
     public RegionGroup get_region_group(final UUID region_group) {
@@ -467,13 +469,13 @@ public class Regions extends Module<Regions> {
                 final var transaction = economy.withdraw(player, price);
                 if (!transaction.transactionSuccess()) {
                     log.warning(
-                        "Player " +
-                        player +
-                        " tried to create region '" +
-                        name +
-                        "' (cost " +
-                        price +
-                        ") but the economy plugin failed to withdraw:"
+                            "Player " +
+                                    player +
+                                    " tried to create region '" +
+                                    name +
+                                    "' (cost " +
+                                    price +
+                                    ") but the economy plugin failed to withdraw:"
                     );
                     log.warning("Error message: " + transaction.errorMessage);
                     return false;
@@ -520,15 +522,15 @@ public class Regions extends Module<Regions> {
 
         // Close and taint all related open menus
         get_module()
-            .core.menu_manager.for_each_open((player, menu) -> {
-                if (
-                    menu.tag() instanceof RegionMenuTag &&
-                    Objects.equals(((RegionMenuTag) menu.tag()).region_id(), region.id())
-                ) {
-                    menu.taint();
-                    menu.close(player);
-                }
-            });
+                .core.menu_manager.for_each_open((player, menu) -> {
+                    if (
+                            menu.tag() instanceof RegionMenuTag &&
+                                    Objects.equals(((RegionMenuTag) menu.tag()).region_id(), region.id())
+                    ) {
+                        menu.taint();
+                        menu.close(player);
+                    }
+                });
 
         // Remove a region from index
         index_remove_region(region);
@@ -646,8 +648,8 @@ public class Regions extends Module<Regions> {
 
     public boolean may_administrate(final Player player, final RegionGroup group) {
         return (
-            player.getUniqueId().equals(group.owner()) ||
-            (group != null && group.get_role(player.getUniqueId()).get_setting(RoleSetting.ADMIN))
+                player.getUniqueId().equals(group.owner()) ||
+                        (group != null && group.get_role(player.getUniqueId()).get_setting(RoleSetting.ADMIN))
         );
     }
 
@@ -703,17 +705,17 @@ public class Regions extends Module<Regions> {
 
         // Load all currently stored regions.
         final var pdc_regions = data
-            .getKeys()
-            .stream()
-            .filter(key -> key.toString().startsWith(storage_region_prefix))
-            .map(key -> StringUtils.removeStart(key.toString(), storage_region_prefix))
-            .map(uuid -> UUID.fromString(uuid))
-            .collect(Collectors.toSet());
+                .getKeys()
+                .stream()
+                .filter(key -> key.toString().startsWith(storage_region_prefix))
+                .map(key -> StringUtils.removeStart(key.toString(), storage_region_prefix))
+                .map(uuid -> UUID.fromString(uuid))
+                .collect(Collectors.toSet());
 
         for (final var region_id : pdc_regions) {
             final var json_bytes = data.get(
-                NamespacedKey.fromString(storage_region_prefix + region_id.toString()),
-                PersistentDataType.BYTE_ARRAY
+                    NamespacedKey.fromString(storage_region_prefix + region_id.toString()),
+                    PersistentDataType.BYTE_ARRAY
             );
             try {
                 final var region = PersistentSerializer.from_json(Region.class, new JSONObject(new String(json_bytes)));
@@ -723,8 +725,8 @@ public class Regions extends Module<Regions> {
             }
         }
         log.log(
-            Level.INFO,
-            "Loaded " + pdc_regions.size() + " regions for world " + world.getName() + "(" + world.getUID() + ")"
+                Level.INFO,
+                "Loaded " + pdc_regions.size() + " regions for world " + world.getName() + "(" + world.getUID() + ")"
         );
 
         // Convert regions from legacy storage
@@ -769,37 +771,37 @@ public class Regions extends Module<Regions> {
 
         // Update invalidated regions
         regions
-            .values()
-            .stream()
-            .filter(x -> x.invalidated && x.extent().world().equals(world.getUID()))
-            .forEach(region -> {
-                try {
-                    final var json = PersistentSerializer.to_json(Region.class, region);
-                    data.set(
-                        NamespacedKey.fromString(storage_region_prefix + region.id().toString()),
-                        PersistentDataType.BYTE_ARRAY,
-                        json.toString().getBytes()
-                    );
-                } catch (IOException e) {
-                    log.log(Level.SEVERE, "error while serializing persistent data!", e);
-                    return;
-                }
+                .values()
+                .stream()
+                .filter(x -> x.invalidated && x.extent().world().equals(world.getUID()))
+                .forEach(region -> {
+                    try {
+                        final var json = PersistentSerializer.to_json(Region.class, region);
+                        data.set(
+                                NamespacedKey.fromString(storage_region_prefix + region.id().toString()),
+                                PersistentDataType.BYTE_ARRAY,
+                                json.toString().getBytes()
+                        );
+                    } catch (IOException e) {
+                        log.log(Level.SEVERE, "error while serializing persistent data!", e);
+                        return;
+                    }
 
-                region.invalidated = false;
-            });
+                    region.invalidated = false;
+                });
 
         // Get all currently stored regions.
         final var stored_regions = data
-            .getKeys()
-            .stream()
-            .filter(key -> key.toString().startsWith(storage_region_prefix))
-            .map(key -> StringUtils.removeStart(key.toString(), storage_region_prefix))
-            .map(uuid -> UUID.fromString(uuid))
-            .collect(Collectors.toSet());
+                .getKeys()
+                .stream()
+                .filter(key -> key.toString().startsWith(storage_region_prefix))
+                .map(key -> StringUtils.removeStart(key.toString(), storage_region_prefix))
+                .map(uuid -> UUID.fromString(uuid))
+                .collect(Collectors.toSet());
 
         // Remove all regions that no longer exist
         Sets.difference(stored_regions, regions.keySet()).forEach(id ->
-            data.remove(NamespacedKey.fromString(storage_region_prefix + id.toString()))
+                data.remove(NamespacedKey.fromString(storage_region_prefix + id.toString()))
         );
     }
 

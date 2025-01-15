@@ -2,6 +2,7 @@ package org.oddlama.vane.core.lang;
 
 import java.lang.reflect.Field;
 import java.util.function.Function;
+
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.oddlama.vane.annotation.lang.LangVersion;
 import org.oddlama.vane.core.YamlLoadException;
@@ -13,11 +14,11 @@ public class LangVersionField extends LangField<Long> {
     public LangVersion annotation;
 
     public LangVersionField(
-        Module<?> module,
-        Object owner,
-        Field field,
-        Function<String, String> map_name,
-        LangVersion annotation
+            Module<?> module,
+            Object owner,
+            Field field,
+            Function<String, String> map_name,
+            LangVersion annotation
     ) {
         super(module, owner, field, map_name);
         this.annotation = annotation;
@@ -34,8 +35,8 @@ public class LangVersionField extends LangField<Long> {
         var val = yaml.getLong(yaml_path());
         if (val < 1) {
             throw new YamlLoadException.Lang(
-                "Entry '" + yaml_path() + "' has an invalid value: Value must be >= 1",
-                this
+                    "Entry '" + yaml_path() + "' has an invalid value: Value must be >= 1",
+                    this
             );
         }
     }
@@ -51,5 +52,6 @@ public class LangVersionField extends LangField<Long> {
 
     @Override
     public void add_translations(final ResourcePackGenerator pack, final YamlConfiguration yaml, String lang_code)
-        throws YamlLoadException {}
+            throws YamlLoadException {
+    }
 }

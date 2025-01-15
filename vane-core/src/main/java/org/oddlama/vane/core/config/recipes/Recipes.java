@@ -1,6 +1,7 @@
 package org.oddlama.vane.core.config.recipes;
 
 import java.util.function.Supplier;
+
 import org.bukkit.NamespacedKey;
 import org.oddlama.vane.annotation.config.ConfigBoolean;
 import org.oddlama.vane.annotation.config.ConfigDict;
@@ -13,8 +14,8 @@ public class Recipes<T extends Module<T>> extends ModuleComponent<T> {
     private final NamespacedKey base_recipe_key;
 
     @ConfigBoolean(
-        def = true,
-        desc = "Whether these recipes should be registered at all. Set to false to quickly disable all associated recipes."
+            def = true,
+            desc = "Whether these recipes should be registered at all. Set to false to quickly disable all associated recipes."
     )
     public boolean config_register_recipes;
 
@@ -25,23 +26,23 @@ public class Recipes<T extends Module<T>> extends ModuleComponent<T> {
     private String desc;
 
     public Recipes(
-        final Context<T> context,
-        final NamespacedKey base_recipe_key,
-        final Supplier<RecipeList> def_recipes
+            final Context<T> context,
+            final NamespacedKey base_recipe_key,
+            final Supplier<RecipeList> def_recipes
     ) {
         this(
-            context,
-            base_recipe_key,
-            def_recipes,
-            "The associated recipes. This is a map of recipe name to recipe definitions."
+                context,
+                base_recipe_key,
+                def_recipes,
+                "The associated recipes. This is a map of recipe name to recipe definitions."
         );
     }
 
     public Recipes(
-        final Context<T> context,
-        final NamespacedKey base_recipe_key,
-        final Supplier<RecipeList> def_recipes,
-        final String desc
+            final Context<T> context,
+            final NamespacedKey base_recipe_key,
+            final Supplier<RecipeList> def_recipes,
+            final String desc
     ) {
         super(context);
         this.base_recipe_key = base_recipe_key;
@@ -64,14 +65,16 @@ public class Recipes<T extends Module<T>> extends ModuleComponent<T> {
         config_recipes.recipes().forEach(recipe -> get_module().getServer().removeRecipe(recipe.key(base_recipe_key)));
         if (enabled() && config_register_recipes) {
             config_recipes
-                .recipes()
-                .forEach(recipe -> get_module().getServer().addRecipe(recipe.to_recipe(base_recipe_key)));
+                    .recipes()
+                    .forEach(recipe -> get_module().getServer().addRecipe(recipe.to_recipe(base_recipe_key)));
         }
     }
 
     @Override
-    protected void on_enable() {}
+    protected void on_enable() {
+    }
 
     @Override
-    protected void on_disable() {}
+    protected void on_disable() {
+    }
 }

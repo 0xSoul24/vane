@@ -66,7 +66,7 @@ public class ExtendedMaterial {
         final var custom_item = Core.instance().item_registry().get(key);
         if (custom_item == null) {
             throw new IllegalStateException(
-                "ExtendedMaterial '" + key + "' is neither a classic material, a head nor a custom item!"
+                    "ExtendedMaterial '" + key + "' is neither a classic material, a head nor a custom item!"
             );
         }
 

@@ -1,6 +1,7 @@
 package org.oddlama.vane.trifles.items;
 
 import java.util.EnumSet;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -43,9 +44,9 @@ public abstract class Scroll extends CustomItem<Trifles> {
     @Override
     public EnumSet<InhibitBehavior> inhibitedBehaviors() {
         final var set = EnumSet.of(
-            InhibitBehavior.USE_IN_VANILLA_RECIPE,
-            InhibitBehavior.TEMPT,
-            InhibitBehavior.USE_OFFHAND
+                InhibitBehavior.USE_IN_VANILLA_RECIPE,
+                InhibitBehavior.TEMPT,
+                InhibitBehavior.USE_OFFHAND
         );
         if (!config_allow_mending) {
             set.add(InhibitBehavior.MEND);

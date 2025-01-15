@@ -5,8 +5,10 @@ import de.bluecolored.bluemap.api.markers.ExtrudeMarker;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
 import de.bluecolored.bluemap.api.math.Color;
 import de.bluecolored.bluemap.api.math.Shape;
+
 import java.util.HashMap;
 import java.util.UUID;
+
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.oddlama.vane.regions.region.Region;
@@ -59,18 +61,18 @@ public class RegionBlueMapLayerDelegate {
         }
 
         final var marker_set = MarkerSet.builder()
-            .label(parent.lang_layer_label.str())
-            .toggleable(true)
-            .defaultHidden(parent.config_hide_by_default)
-            .build();
+                .label(parent.lang_layer_label.str())
+                .toggleable(true)
+                .defaultHidden(parent.config_hide_by_default)
+                .build();
 
         api
-            .getWorld(world)
-            .ifPresent(bm_world -> {
-                for (final var map : bm_world.getMaps()) {
-                    map.getMarkerSets().put(MARKER_SET_ID, marker_set);
-                }
-            });
+                .getWorld(world)
+                .ifPresent(bm_world -> {
+                    for (final var map : bm_world.getMaps()) {
+                        map.getMarkerSets().put(MARKER_SET_ID, marker_set);
+                    }
+                });
 
         marker_sets.put(world.getUID(), marker_set);
     }
@@ -82,14 +84,14 @@ public class RegionBlueMapLayerDelegate {
         final var shape = Shape.createRect(min.getX(), min.getZ(), max.getX() + 1, max.getZ() + 1);
 
         final var marker = ExtrudeMarker.builder()
-            .shape(shape, min.getY(), max.getY() + 1)
-            .label(parent.lang_marker_label.str(region.name()))
-            .lineWidth(parent.config_line_width)
-            .lineColor(new Color(parent.config_line_color, (float) parent.config_line_opacity))
-            .fillColor(new Color(parent.config_fill_color, (float) parent.config_fill_opacity))
-            .depthTestEnabled(parent.config_depth_test)
-            .centerPosition()
-            .build();
+                .shape(shape, min.getY(), max.getY() + 1)
+                .label(parent.lang_marker_label.str(region.name()))
+                .lineWidth(parent.config_line_width)
+                .lineColor(new Color(parent.config_line_color, (float) parent.config_line_opacity))
+                .fillColor(new Color(parent.config_fill_color, (float) parent.config_fill_opacity))
+                .depthTestEnabled(parent.config_depth_test)
+                .centerPosition()
+                .build();
 
         // Existing markers will be overwritten.
         marker_sets.get(min.getWorld().getUID()).getMarkers().put(region.id().toString(), marker);

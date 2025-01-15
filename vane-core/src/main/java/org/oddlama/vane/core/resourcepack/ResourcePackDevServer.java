@@ -4,6 +4,7 @@ import com.google.common.hash.Hashing;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -21,7 +22,7 @@ public class ResourcePackDevServer implements HttpHandler {
         this.file = file;
     }
 
-    @SuppressWarnings({ "deprecation", "UnstableApiUsage" })
+    @SuppressWarnings({"deprecation", "UnstableApiUsage"})
     public void serve() {
         try {
             final HttpServer httpServer = HttpServer.create(new InetSocketAddress(9000), 0);

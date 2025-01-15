@@ -6,6 +6,7 @@ import static org.oddlama.vane.util.BlockUtil.texture_from_skull;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
+
 import org.apache.commons.io.IOUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Skull;
@@ -21,8 +22,8 @@ import org.oddlama.vane.core.module.Context;
 public class HeadLibrary extends Listener<Core> {
 
     @ConfigBoolean(
-        def = true,
-        desc = "When a player head is broken by a player that exists in /heads, drop the correctly named item as seen in /heads. You can disable this if it interferes with similarly textured heads from other plugins."
+            def = true,
+            desc = "When a player head is broken by a player that exists in /heads, drop the correctly named item as seen in /heads. You can disable this if it interferes with similarly textured heads from other plugins."
     )
     public boolean config_player_head_drops;
 
@@ -32,7 +33,7 @@ public class HeadLibrary extends Listener<Core> {
         get_module().log.info("Loading head library...");
         try {
             HeadMaterialLibrary.load(
-                IOUtils.toString(get_module().getResource("head_library.json"), StandardCharsets.UTF_8)
+                    IOUtils.toString(get_module().getResource("head_library.json"), StandardCharsets.UTF_8)
             );
         } catch (IOException e) {
             get_module().log.log(Level.SEVERE, "Error while loading head_library.json! Shutting down.", e);

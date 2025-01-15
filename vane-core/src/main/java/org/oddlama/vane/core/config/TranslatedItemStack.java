@@ -4,6 +4,7 @@ import static org.oddlama.vane.util.ItemUtil.name_item;
 
 import java.util.List;
 import java.util.function.Consumer;
+
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -25,8 +26,8 @@ public class TranslatedItemStack<T extends Module<T>> extends ModuleComponent<T>
     public int config_amount;
 
     @ConfigExtendedMaterial(
-        def = "minecraft:barrier",
-        desc = "The item stack material. Also accepts heads from the head library or from defined custom items."
+            def = "minecraft:barrier",
+            desc = "The item stack material. Also accepts heads from the head library or from defined custom items."
     )
     public ExtendedMaterial config_material;
 
@@ -40,31 +41,31 @@ public class TranslatedItemStack<T extends Module<T>> extends ModuleComponent<T>
     private int def_amount;
 
     public TranslatedItemStack(
-        final Context<T> context,
-        final String config_namespace,
-        final NamespacedKey def_material,
-        int def_amount,
-        final String desc
+            final Context<T> context,
+            final String config_namespace,
+            final NamespacedKey def_material,
+            int def_amount,
+            final String desc
     ) {
         this(context, config_namespace, ExtendedMaterial.from(def_material), def_amount, desc);
     }
 
     public TranslatedItemStack(
-        final Context<T> context,
-        final String config_namespace,
-        final Material def_material,
-        int def_amount,
-        final String desc
+            final Context<T> context,
+            final String config_namespace,
+            final Material def_material,
+            int def_amount,
+            final String desc
     ) {
         this(context, config_namespace, ExtendedMaterial.from(def_material), def_amount, desc);
     }
 
     public TranslatedItemStack(
-        final Context<T> context,
-        final String config_namespace,
-        final ExtendedMaterial def_material,
-        int def_amount,
-        final String desc
+            final Context<T> context,
+            final String config_namespace,
+            final ExtendedMaterial def_material,
+            int def_amount,
+            final String desc
     ) {
         super(context.namespace(config_namespace, desc));
         this.def_material = def_material;
@@ -98,8 +99,10 @@ public class TranslatedItemStack<T extends Module<T>> extends ModuleComponent<T>
     }
 
     @Override
-    public void on_enable() {}
+    public void on_enable() {
+    }
 
     @Override
-    public void on_disable() {}
+    public void on_disable() {
+    }
 }

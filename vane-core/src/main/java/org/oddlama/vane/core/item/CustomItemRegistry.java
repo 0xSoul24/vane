@@ -3,6 +3,7 @@ package org.oddlama.vane.core.item;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -50,7 +51,7 @@ public class CustomItemRegistry implements org.oddlama.vane.core.item.api.Custom
         model_data_registry.reserveSingle(customItem.key(), customItem.customModelData());
         if (has(customItem.key())) {
             throw new IllegalArgumentException(
-                "A custom item with the same key '" + customItem.key() + "' has already been registered"
+                    "A custom item with the same key '" + customItem.key() + "' has already been registered"
             );
         }
         items.put(customItem.key(), customItem);

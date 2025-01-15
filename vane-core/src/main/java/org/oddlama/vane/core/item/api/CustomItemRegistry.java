@@ -1,17 +1,24 @@
 package org.oddlama.vane.core.item.api;
 
 import java.util.Collection;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.oddlama.vane.core.Core;
 
-/** This is the registry with which you can register your custom items. */
+/**
+ * This is the registry with which you can register your custom items.
+ */
 public interface CustomItemRegistry {
-    /** Returns true if a custom item with the given resourceKey has been registered. */
+    /**
+     * Returns true if a custom item with the given resourceKey has been registered.
+     */
     public @Nullable boolean has(NamespacedKey resourceKey);
 
-    /** Returns all registered custom items. */
+    /**
+     * Returns all registered custom items.
+     */
     public @Nullable Collection<CustomItem> all();
 
     /**
@@ -53,10 +60,14 @@ public interface CustomItemRegistry {
      */
     public boolean shouldRemove(NamespacedKey key);
 
-    /** Returns the custom model data registry. */
+    /**
+     * Returns the custom model data registry.
+     */
     public CustomModelDataRegistry dataRegistry();
 
-    /** Retrieves the global registry instance from the running vane-core instance, if any. */
+    /**
+     * Retrieves the global registry instance from the running vane-core instance, if any.
+     */
     public static CustomItemRegistry instance() {
         return Core.instance().item_registry();
         // final var core = Bukkit.getServer().getPluginManager().getPlugin("vane-core");

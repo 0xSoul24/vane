@@ -1,9 +1,11 @@
 package org.oddlama.vane.core.enchantments;
 
 import com.destroystokyo.paper.event.inventory.PrepareResultEvent;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.NamespacedKey;
@@ -40,9 +42,9 @@ public class EnchantmentManager extends Listener<Core> {
     }
 
     public ItemStack update_enchanted_item(
-        ItemStack item_stack,
-        Map<Enchantment, Integer> additional_enchantments,
-        boolean only_if_enchanted
+            ItemStack item_stack,
+            Map<Enchantment, Integer> additional_enchantments,
+            boolean only_if_enchanted
     ) {
         remove_old_lore(item_stack);
         return item_stack;
@@ -101,8 +103,8 @@ public class EnchantmentManager extends Listener<Core> {
         // FIXME legacy If the component begins with a translated lore from vane enchantments, it is
         // always from us. (needed for backward compatibility)
         if (
-            component instanceof TranslatableComponent translatable_component &&
-            translatable_component.key().startsWith("vane_enchantments.")
+                component instanceof TranslatableComponent translatable_component &&
+                        translatable_component.key().startsWith("vane_enchantments.")
         ) {
             return true;
         }
@@ -139,12 +141,12 @@ public class EnchantmentManager extends Listener<Core> {
 
         // Create a new recipe
         final var new_recipe = new MerchantRecipe(
-            update_enchanted_item(result, true),
-            recipe.getUses(),
-            recipe.getMaxUses(),
-            recipe.hasExperienceReward(),
-            recipe.getVillagerExperience(),
-            recipe.getPriceMultiplier()
+                update_enchanted_item(result, true),
+                recipe.getUses(),
+                recipe.getMaxUses(),
+                recipe.hasExperienceReward(),
+                recipe.getVillagerExperience(),
+                recipe.getPriceMultiplier()
         );
         recipe.getIngredients().forEach(i -> new_recipe.addIngredient(i));
         return new_recipe;

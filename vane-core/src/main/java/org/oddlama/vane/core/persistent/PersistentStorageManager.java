@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
+
 import org.json.JSONObject;
 import org.oddlama.vane.annotation.persistent.Persistent;
 import org.oddlama.vane.core.module.Module;
@@ -87,11 +88,11 @@ public class PersistentStorageManager {
     public void compile(Object owner, Function<String, String> map_name) {
         // Compile all annotated fields
         persistent_fields.addAll(
-            getAllFields(owner.getClass())
-                .stream()
-                .filter(this::has_persistent_annotation)
-                .map(f -> compile_field(owner, f, map_name))
-                .toList()
+                getAllFields(owner.getClass())
+                        .stream()
+                        .filter(this::has_persistent_annotation)
+                        .map(f -> compile_field(owner, f, map_name))
+                        .toList()
         );
     }
 
@@ -134,13 +135,13 @@ public class PersistentStorageManager {
             // Sort migrations by target version,
             // then apply new migrations in order.
             migrations
-                .stream()
-                .filter(m -> m.to >= version)
-                .sorted((a, b) -> Long.compare(a.to, b.to))
-                .forEach(m -> {
-                    module.log.info("  → §b" + m.to + "§r : Applying migration '§a" + m.name + "§r'");
-                    m.migrator.accept(json);
-                });
+                    .stream()
+                    .filter(m -> m.to >= version)
+                    .sorted((a, b) -> Long.compare(a.to, b.to))
+                    .forEach(m -> {
+                        module.log.info("  → §b" + m.to + "§r : Applying migration '§a" + m.name + "§r'");
+                        m.migrator.accept(json);
+                    });
         }
 
         // Overwrite new version
@@ -199,18 +200,18 @@ public class PersistentStorageManager {
         // Move atomically to prevent corruption.
         try {
             Files.move(
-                tmp_file.toPath(),
-                file.toPath(),
-                StandardCopyOption.REPLACE_EXISTING,
-                StandardCopyOption.ATOMIC_MOVE
+                    tmp_file.toPath(),
+                    file.toPath(),
+                    StandardCopyOption.REPLACE_EXISTING,
+                    StandardCopyOption.ATOMIC_MOVE
             );
         } catch (IOException e) {
             module.log.log(
-                Level.SEVERE,
-                "error while atomically replacing '" +
-                file +
-                "' with temporary file (very recent changes might be lost)!",
-                e
+                    Level.SEVERE,
+                    "error while atomically replacing '" +
+                            file +
+                            "' with temporary file (very recent changes might be lost)!",
+                    e
             );
         }
     }

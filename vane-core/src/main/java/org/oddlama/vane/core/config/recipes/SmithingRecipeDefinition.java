@@ -2,6 +2,7 @@ package org.oddlama.vane.core.config.recipes;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
@@ -72,7 +73,7 @@ public class SmithingRecipeDefinition extends RecipeDefinition {
     public RecipeDefinition from_dict(Object dict) {
         if (!(dict instanceof Map<?, ?>)) {
             throw new IllegalArgumentException(
-                "Invalid smithing recipe dictionary: Argument must be a Map<String, Object>!"
+                    "Invalid smithing recipe dictionary: Argument must be a Map<String, Object>!"
             );
         }
         final var dict_map = (Map<?, ?>) dict;
@@ -106,12 +107,12 @@ public class SmithingRecipeDefinition extends RecipeDefinition {
     @Override
     public Recipe to_recipe(NamespacedKey base_key) {
         return new SmithingTransformRecipe(
-            key(base_key),
-            ItemUtil.itemstack_from_string(this.result).getLeft(),
-            new RecipeChoice.MaterialChoice(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE),
-            RecipeDefinition.recipe_choice(base),
-            RecipeDefinition.recipe_choice(addition),
-            copy_nbt
+                key(base_key),
+                ItemUtil.itemstack_from_string(this.result).getLeft(),
+                new RecipeChoice.MaterialChoice(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE),
+                RecipeDefinition.recipe_choice(base),
+                RecipeDefinition.recipe_choice(addition),
+                copy_nbt
         );
     }
 }

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
@@ -42,8 +43,8 @@ public class Role {
         role.role_type = from_json(RoleType.class, json.get("role_type"));
         try {
             role.settings = (Map<RoleSetting, Boolean>) from_json(
-                Role.class.getDeclaredField("settings"),
-                json.get("settings")
+                    Role.class.getDeclaredField("settings"),
+                    json.get("settings")
             );
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Invalid field. This is a bug.", e);
@@ -56,7 +57,8 @@ public class Role {
     private RoleType role_type;
     private Map<RoleSetting, Boolean> settings = new HashMap<>();
 
-    private Role() {}
+    private Role() {
+    }
 
     public Role(final String name, final RoleType role_type) {
         this.id = UUID.randomUUID();

@@ -22,7 +22,7 @@ public class FloatingItem extends ItemEntity {
     }
 
     public FloatingItem(EntityType<?> entitytypes, Level world) {
-        super((EntityType<? extends ItemEntity>)entitytypes, world);
+        super((EntityType<? extends ItemEntity>) entitytypes, world);
         setSilent(true);
         setInvulnerable(true);
         setNoGravity(true);
@@ -61,17 +61,21 @@ public class FloatingItem extends ItemEntity {
     }
 
     @Override
-    public void tick() {}
+    public void tick() {
+    }
 
     @Override
-    public void inactiveTick() {}
+    public void inactiveTick() {
+    }
 
     // Don't save or load
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {}
+    public void readAdditionalSaveData(CompoundTag nbt) {
+    }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {}
+    public void addAdditionalSaveData(CompoundTag nbt) {
+    }
 
     @Override
     public boolean save(CompoundTag nbt) {
@@ -84,7 +88,8 @@ public class FloatingItem extends ItemEntity {
     }
 
     @Override
-    public void load(CompoundTag nbt) {}
+    public void load(CompoundTag nbt) {
+    }
 
     @Override
     public void setItem(ItemStack itemStack) {

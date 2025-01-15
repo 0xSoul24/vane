@@ -19,11 +19,11 @@ import org.oddlama.vane.core.module.Context;
 import org.oddlama.vane.enchantments.Enchantments;
 
 @VaneEnchantment(
-    name = "lightning",
-    max_level = 1,
-    rarity = Rarity.RARE,
-    treasure = true,
-    target = EnchantmentTarget.WEAPON
+        name = "lightning",
+        max_level = 1,
+        rarity = Rarity.RARE,
+        treasure = true,
+        target = EnchantmentTarget.WEAPON
 )
 public class Lightning extends CustomEnchantment<Enchantments> {
 
@@ -32,8 +32,8 @@ public class Lightning extends CustomEnchantment<Enchantments> {
     }
 
     @ConfigBoolean(
-        def = true,
-        desc = "Toggle lightning enchantment to cancel lightning damage for wielders of the enchant"
+            def = true,
+            desc = "Toggle lightning enchantment to cancel lightning damage for wielders of the enchant"
     )
     private boolean config_lightning_protection;
 
@@ -46,13 +46,13 @@ public class Lightning extends CustomEnchantment<Enchantments> {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("r r", "utu", " b ")
-                .set_ingredient('r', Material.LIGHTNING_ROD)
-                .set_ingredient('t', "vane_enchantments:ancient_tome_of_knowledge")
-                .set_ingredient('b', Material.BEACON)
-                .set_ingredient('u', Material.TOTEM_OF_UNDYING)
-                .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
+                new ShapedRecipeDefinition("generic")
+                        .shape("r r", "utu", " b ")
+                        .set_ingredient('r', Material.LIGHTNING_ROD)
+                        .set_ingredient('t', "vane_enchantments:ancient_tome_of_knowledge")
+                        .set_ingredient('b', Material.BEACON)
+                        .set_ingredient('u', Material.TOTEM_OF_UNDYING)
+                        .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
         );
     }
 

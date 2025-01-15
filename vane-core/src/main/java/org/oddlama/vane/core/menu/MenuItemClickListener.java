@@ -22,8 +22,8 @@ public class MenuItemClickListener implements MenuWidget {
     }
 
     public MenuItemClickListener(
-        int slot,
-        final Function4<Player, Menu, ItemStack, InventoryClickEvent, ClickResult> on_click
+            int slot,
+            final Function4<Player, Menu, ItemStack, InventoryClickEvent, ClickResult> on_click
     ) {
         this.slot = slot;
         this.on_click = on_click;
@@ -38,11 +38,11 @@ public class MenuItemClickListener implements MenuWidget {
     }
 
     public ClickResult click(
-        final Player player,
-        final Menu menu,
-        final ItemStack item,
-        int slot,
-        final InventoryClickEvent event
+            final Player player,
+            final Menu menu,
+            final ItemStack item,
+            int slot,
+            final InventoryClickEvent event
     ) {
         if (this.slot != slot) {
             return ClickResult.IGNORE;

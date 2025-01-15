@@ -26,8 +26,8 @@ public class FastWalkingListener extends Listener<Trifles> {
     public boolean config_villager_speedwalk;
 
     @ConfigBoolean(
-        def = false,
-        desc = "Whether players should be the only entities allowed to fast walk on paths (will override other path walk settings)."
+            def = false,
+            desc = "Whether players should be the only entities allowed to fast walk on paths (will override other path walk settings)."
     )
     public boolean config_players_only_speedwalk;
 

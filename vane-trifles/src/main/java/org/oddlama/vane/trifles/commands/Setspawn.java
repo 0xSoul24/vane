@@ -25,12 +25,12 @@ public class Setspawn extends Command<Trifles> {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
         return super.get_command_base()
-            .requires(ctx -> ctx.getSender() instanceof Player)
-            .then(help())
-            .executes(ctx -> {
-                set_spawn((Player) ctx.getSource().getSender());
-                return SINGLE_SUCCESS;
-            });
+                .requires(ctx -> ctx.getSender() instanceof Player)
+                .then(help())
+                .executes(ctx -> {
+                    set_spawn((Player) ctx.getSource().getSender());
+                    return SINGLE_SUCCESS;
+                });
     }
 
     private void set_spawn(Player player) {

@@ -21,17 +21,19 @@ public class HeadSelectorGroup extends ModuleComponent<Core> {
     public HeadSelectorGroup(Context<Core> context) {
         super(context.namespace("head_selector", "Menu configuration for the head selector menu."));
         item_select_head = new TranslatedItemStack<>(
-            get_context(),
-            "select_head",
-            Material.BARRIER,
-            1,
-            "Used to represent a head in the head library."
+                get_context(),
+                "select_head",
+                Material.BARRIER,
+                1,
+                "Used to represent a head in the head library."
         );
     }
 
     @Override
-    public void on_enable() {}
+    public void on_enable() {
+    }
 
     @Override
-    public void on_disable() {}
+    public void on_disable() {
+    }
 }

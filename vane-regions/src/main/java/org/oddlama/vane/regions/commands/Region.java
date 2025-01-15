@@ -12,7 +12,7 @@ import org.oddlama.vane.core.module.Context;
 import org.oddlama.vane.regions.Regions;
 
 @Name("region")
-@Aliases({ "regions", "rg" })
+@Aliases({"regions", "rg"})
 public class Region extends Command<Regions> {
 
     public Region(Context<Regions> context) {
@@ -22,12 +22,12 @@ public class Region extends Command<Regions> {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
         return super.get_command_base()
-            .then(help())
-            .requires(ctx -> ctx.getSender() instanceof Player)
-            .executes(ctx -> {
-                open_menu((Player) ctx.getSource().getSender());
-                return SINGLE_SUCCESS;
-            });
+                .then(help())
+                .requires(ctx -> ctx.getSender() instanceof Player)
+                .executes(ctx -> {
+                    open_menu((Player) ctx.getSource().getSender());
+                    return SINGLE_SUCCESS;
+                });
     }
 
     private void open_menu(Player player) {

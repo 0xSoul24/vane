@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.bukkit.command.CommandSender;
 import org.oddlama.vane.core.command.Command;
 import org.oddlama.vane.core.command.Executor;
@@ -31,10 +32,10 @@ public class SentinelExecutorParam<T> extends BaseParam implements Executor {
     }
 
     public SentinelExecutorParam(
-        Command<?> command,
-        T function,
-        Function1<CommandSender, Boolean> check_requirements,
-        Function1<Integer, Boolean> skip_argument_check
+            Command<?> command,
+            T function,
+            Function1<CommandSender, Boolean> check_requirements,
+            Function1<Integer, Boolean> skip_argument_check
     ) {
         super(command);
         this.function = function;
@@ -46,20 +47,20 @@ public class SentinelExecutorParam<T> extends BaseParam implements Executor {
         // Assert the same number of given and expected parameters
         if (args.size() != method.getParameters().length) {
             throw new RuntimeException(
-                "Invalid command functor " +
-                method.getDeclaringClass().getName() +
-                "::" +
-                method.getName() +
-                "!" +
-                "\nFunctor takes " +
-                method.getParameters().length +
-                " parameters, but " +
-                args.size() +
-                " were given." +
-                "\nRequired: " +
-                Arrays.stream(method.getParameters()).map(p -> p.getType().getName()).toList() +
-                "\nGiven: " +
-                args.stream().map(p -> p.getClass().getName()).toList()
+                    "Invalid command functor " +
+                            method.getDeclaringClass().getName() +
+                            "::" +
+                            method.getName() +
+                            "!" +
+                            "\nFunctor takes " +
+                            method.getParameters().length +
+                            " parameters, but " +
+                            args.size() +
+                            " were given." +
+                            "\nRequired: " +
+                            Arrays.stream(method.getParameters()).map(p -> p.getType().getName()).toList() +
+                            "\nGiven: " +
+                            args.stream().map(p -> p.getClass().getName()).toList()
             );
         }
 
@@ -72,17 +73,17 @@ public class SentinelExecutorParam<T> extends BaseParam implements Executor {
             var got = args.get(i).getClass();
             if (!needs.isAssignableFrom(got)) {
                 throw new RuntimeException(
-                    "Invalid command functor " +
-                    method.getDeclaringClass().getName() +
-                    "::" +
-                    method.getName() +
-                    "!" +
-                    "\nArgument " +
-                    (i + 1) +
-                    " (" +
-                    needs.getName() +
-                    ") is not assignable from " +
-                    got.getName()
+                        "Invalid command functor " +
+                                method.getDeclaringClass().getName() +
+                                "::" +
+                                method.getName() +
+                                "!" +
+                                "\nArgument " +
+                                (i + 1) +
+                                " (" +
+                                needs.getName() +
+                                ") is not assignable from " +
+                                got.getName()
                 );
             }
         }
@@ -126,8 +127,8 @@ public class SentinelExecutorParam<T> extends BaseParam implements Executor {
             return result == null || (boolean) result;
         } catch (Exception e) {
             throw new RuntimeException(
-                "Error while invoking functor " + method.getDeclaringClass().getName() + "::" + method.getName() + "!",
-                e
+                    "Error while invoking functor " + method.getDeclaringClass().getName() + "::" + method.getName() + "!",
+                    e
             );
         }
     }
@@ -157,10 +158,10 @@ public class SentinelExecutorParam<T> extends BaseParam implements Executor {
             // module" over
             // excess arguments.
             return new ErrorCheckResult(
-                offset - 1,
-                "§6excess arguments: {" +
-                Arrays.stream(args, offset, args.length).map(s -> "§4" + s + "§6").collect(Collectors.joining(", ")) +
-                "}§r"
+                    offset - 1,
+                    "§6excess arguments: {" +
+                            Arrays.stream(args, offset, args.length).map(s -> "§4" + s + "§6").collect(Collectors.joining(", ")) +
+                            "}§r"
             );
         } else if (args.length < offset) {
             throw new RuntimeException("Sentinel executor received missing arguments! This is a bug.");

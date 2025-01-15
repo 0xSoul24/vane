@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -116,7 +117,8 @@ public class Portal {
     // Not a saved field.
     public boolean invalidated = true;
 
-    private Portal() {}
+    private Portal() {
+    }
 
     public Portal(final UUID owner, final Orientation orientation, final Location spawn) {
         this.id = UUID.randomUUID();
@@ -342,8 +344,8 @@ public class Portal {
         if (sound_volume > 0.0f) {
             // Play sound
             spawn()
-                .getWorld()
-                .playSound(spawn(), Sound.BLOCK_END_PORTAL_SPAWN, SoundCategory.BLOCKS, sound_volume, 0.8f);
+                    .getWorld()
+                    .playSound(spawn(), Sound.BLOCK_END_PORTAL_SPAWN, SoundCategory.BLOCKS, sound_volume, 0.8f);
         }
     }
 
@@ -358,8 +360,8 @@ public class Portal {
         if (sound_volume > 0.0f) {
             // Play sound
             spawn()
-                .getWorld()
-                .playSound(spawn(), Sound.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, sound_volume, 0.5f);
+                    .getWorld()
+                    .playSound(spawn(), Sound.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, sound_volume, 0.5f);
         }
     }
 

@@ -6,6 +6,7 @@ import static org.oddlama.vane.util.PlayerUtil.swing_arm;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -31,9 +32,9 @@ public class Scrolls extends Listener<Trifles> {
     private Set<Material> base_materials = new HashSet<>();
 
     @ConfigInt(
-        def = 15000,
-        min = 0,
-        desc = "A cooldown in milliseconds that is applied when the player takes damage (prevents combat logging). Set to 0 to allow combat logging."
+            def = 15000,
+            min = 0,
+            desc = "A cooldown in milliseconds that is applied when the player takes damage (prevents combat logging). Set to 0 to allow combat logging."
     )
     private int config_damage_cooldown;
 
@@ -52,7 +53,8 @@ public class Scrolls extends Listener<Trifles> {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = false) // ignoreCancelled = false to catch right-click-air events
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = false)
+    // ignoreCancelled = false to catch right-click-air events
     public void on_player_right_click(final PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) {
             return;

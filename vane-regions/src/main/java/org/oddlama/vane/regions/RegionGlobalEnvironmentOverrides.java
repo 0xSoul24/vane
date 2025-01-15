@@ -30,10 +30,10 @@ public class RegionGlobalEnvironmentOverrides extends ModuleComponent<Regions> {
 
     public RegionGlobalEnvironmentOverrides(Context<Regions> context) {
         super(
-            context.namespace(
-                "global_environment_overrides",
-                "This controls global environment setting overrides for all regions on the server. `0` means no-override, the player-configured values are used normally, `1` force-enables this setting for all regions, `-1` force-disables respectively."
-            )
+                context.namespace(
+                        "global_environment_overrides",
+                        "This controls global environment setting overrides for all regions on the server. `0` means no-override, the player-configured values are used normally, `1` force-enables this setting for all regions, `-1` force-disables respectively."
+                )
         );
     }
 
@@ -58,8 +58,10 @@ public class RegionGlobalEnvironmentOverrides extends ModuleComponent<Regions> {
     }
 
     @Override
-    public void on_enable() {}
+    public void on_enable() {
+    }
 
     @Override
-    public void on_disable() {}
+    public void on_disable() {
+    }
 }

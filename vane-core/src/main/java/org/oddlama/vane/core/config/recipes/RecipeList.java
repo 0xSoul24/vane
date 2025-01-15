@@ -5,13 +5,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.oddlama.vane.core.config.ConfigDictSerializable;
 
 public class RecipeList implements ConfigDictSerializable {
 
     private List<RecipeDefinition> recipes = new ArrayList<>();
 
-    public RecipeList() {}
+    public RecipeList() {
+    }
 
     public RecipeList(List<RecipeDefinition> recipes) {
         this.recipes = recipes;

@@ -2,6 +2,7 @@ package org.oddlama.vane.proxycore.config;
 
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
@@ -16,10 +17,10 @@ public class Config {
 
     public Config(File file) throws IOException {
         CommentedFileConfig config = CommentedFileConfig.builder(file)
-            .autosave()
-            .preserveInsertionOrder()
-            .sync()
-            .build();
+                .autosave()
+                .preserveInsertionOrder()
+                .sync()
+                .build();
 
         config.load();
 
@@ -39,12 +40,12 @@ public class Config {
 
             final var value = multiplexer_conf.getValue();
             if (!(value instanceof final CommentedConfig multiplexer_config)) throw new IllegalArgumentException(
-                "Multiplexer '" + key + "' has an invalid configuration!"
+                    "Multiplexer '" + key + "' has an invalid configuration!"
             );
 
             final var port = multiplexer_config.getInt("port");
             if (registered_ports.contains(port)) throw new IllegalArgumentException(
-                "Multiplexer ID '" + key_string + "' uses an already registered port!"
+                    "Multiplexer ID '" + key_string + "' uses an already registered port!"
             );
 
             final var multiplexer = new AuthMultiplex(port, multiplexer_config.get("allowed_uuids"));
@@ -61,15 +62,15 @@ public class Config {
 
             final var value = server_conf.getValue();
             if (!(value instanceof final CommentedConfig managed_server_config)) throw new IllegalArgumentException(
-                "Managed server '" + key + "' has an invalid configuration!"
+                    "Managed server '" + key + "' has an invalid configuration!"
             );
 
             final var managed_server = new ManagedServer(
-                key,
-                managed_server_config.get("display_name"),
-                managed_server_config.get("online"),
-                managed_server_config.get("offline"),
-                managed_server_config.get("start")
+                    key,
+                    managed_server_config.get("display_name"),
+                    managed_server_config.get("online"),
+                    managed_server_config.get("offline"),
+                    managed_server_config.get("start")
             );
 
             managed_servers.put(key, managed_server);

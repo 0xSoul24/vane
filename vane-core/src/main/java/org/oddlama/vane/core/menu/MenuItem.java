@@ -28,9 +28,9 @@ public class MenuItem implements MenuWidget {
     }
 
     public MenuItem(
-        int slot,
-        final ItemStack item,
-        final Function4<Player, Menu, MenuItem, InventoryClickEvent, ClickResult> on_click
+            int slot,
+            final ItemStack item,
+            final Function4<Player, Menu, MenuItem, InventoryClickEvent, ClickResult> on_click
     ) {
         this.slot = slot;
         this.on_click = on_click;
@@ -72,11 +72,11 @@ public class MenuItem implements MenuWidget {
 
     @Override
     public ClickResult click(
-        final Player player,
-        final Menu menu,
-        final ItemStack item,
-        int slot,
-        final InventoryClickEvent event
+            final Player player,
+            final Menu menu,
+            final ItemStack item,
+            int slot,
+            final InventoryClickEvent event
     ) {
         if (this.slot != slot) {
             return ClickResult.IGNORE;

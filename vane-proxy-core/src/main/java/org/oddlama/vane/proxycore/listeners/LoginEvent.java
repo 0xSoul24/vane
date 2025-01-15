@@ -1,6 +1,7 @@
 package org.oddlama.vane.proxycore.listeners;
 
 import java.util.logging.Level;
+
 import org.oddlama.vane.proxycore.Maintenance;
 import org.oddlama.vane.proxycore.ProxyPendingConnection;
 import org.oddlama.vane.proxycore.VaneProxyPlugin;
@@ -32,11 +33,11 @@ public abstract class LoginEvent implements ProxyEvent, ProxyCancellableEvent {
         }
 
         plugin
-            .get_logger()
-            .log(
-                Level.INFO,
-                "Connection '" + connection.get_name() + "' is connecting to '" + server_info.getName() + "'"
-            );
+                .get_logger()
+                .log(
+                        Level.INFO,
+                        "Connection '" + connection.get_name() + "' is connecting to '" + server_info.getName() + "'"
+                );
 
         // Start server if necessary
         if (!plugin.is_online(server_info)) {
@@ -45,15 +46,15 @@ public abstract class LoginEvent implements ProxyEvent, ProxyCancellableEvent {
 
             if (!cms.start.allow_anyone && !connection.can_start_server(plugin.get_proxy(), server_info.getName())) {
                 plugin
-                    .get_logger()
-                    .log(
-                        Level.INFO,
-                        "Disconnecting '" +
-                        connection.get_name() +
-                        "' because they don't have the permission to start server '" +
-                        server_info.getName() +
-                        "'"
-                    );
+                        .get_logger()
+                        .log(
+                                Level.INFO,
+                                "Disconnecting '" +
+                                        connection.get_name() +
+                                        "' because they don't have the permission to start server '" +
+                                        server_info.getName() +
+                                        "'"
+                        );
                 // TODO: This could probably use a configurable message?
                 this.cancel("Server is offline and you don't have the permission to start it");
                 return;
@@ -61,11 +62,11 @@ public abstract class LoginEvent implements ProxyEvent, ProxyCancellableEvent {
 
             if (cms == null || cms.start_cmd() == null) {
                 plugin
-                    .get_logger()
-                    .log(
-                        Level.SEVERE,
-                        "Could not start server '" + server_info.getName() + "', no start command was set!"
-                    );
+                        .get_logger()
+                        .log(
+                                Level.SEVERE,
+                                "Could not start server '" + server_info.getName() + "', no start command was set!"
+                        );
                 this.cancel("Could not start server");
             } else {
                 // Client is connecting while startup

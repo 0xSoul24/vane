@@ -26,10 +26,10 @@ public class RegionPortalRoleSettingEnforcer extends Listener<Regions> {
     }
 
     public boolean check_setting_at(
-        final Location location,
-        final Player player,
-        final RoleSetting setting,
-        final boolean check_against
+            final Location location,
+            final Player player,
+            final RoleSetting setting,
+            final boolean check_against
     ) {
         final var region = get_module().region_at(location);
         if (region == null) {
@@ -41,10 +41,10 @@ public class RegionPortalRoleSettingEnforcer extends Listener<Regions> {
     }
 
     public boolean check_setting_at(
-        final Block block,
-        final Player player,
-        final RoleSetting setting,
-        final boolean check_against
+            final Block block,
+            final Player player,
+            final RoleSetting setting,
+            final boolean check_against
     ) {
         final var region = get_module().region_at(block);
         if (region == null) {
@@ -126,8 +126,8 @@ public class RegionPortalRoleSettingEnforcer extends Listener<Regions> {
 
         // Check permission on portal if any
         if (
-            event.getPortal() != null &&
-            check_setting_at(event.getPortal().spawn(), event.getPlayer(), RoleSetting.ADMIN, false)
+                event.getPortal() != null &&
+                        check_setting_at(event.getPortal().spawn(), event.getPlayer(), RoleSetting.ADMIN, false)
         ) {
             event.setCancelled(true);
         }
@@ -193,8 +193,8 @@ public class RegionPortalRoleSettingEnforcer extends Listener<Regions> {
 
         // Check permission on target portal
         if (
-            event.getTarget() != null &&
-            check_setting_at(event.getTarget().spawn(), event.getPlayer(), RoleSetting.PORTAL, false)
+                event.getTarget() != null &&
+                        check_setting_at(event.getTarget().spawn(), event.getPlayer(), RoleSetting.PORTAL, false)
         ) {
             event.setCancelled(true);
         }

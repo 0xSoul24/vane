@@ -27,20 +27,20 @@ public class Time extends Command<Admin> {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
         return super.get_command_base()
-            .then(help())
-            .then(
-                argument("time", TimeValueArgumentType.timeValue())
-                    .executes(ctx -> {
-                        set_time_current_world((Player) ctx.getSource().getSender(), time_value(ctx));
-                        return SINGLE_SUCCESS;
-                    })
-                    .then(
-                        argument("world", ArgumentTypes.world()).executes(ctx -> {
-                            set_time(time_value(ctx), ctx.getArgument("world", World.class));
-                            return SINGLE_SUCCESS;
-                        })
-                    )
-            );
+                .then(help())
+                .then(
+                        argument("time", TimeValueArgumentType.timeValue())
+                                .executes(ctx -> {
+                                    set_time_current_world((Player) ctx.getSource().getSender(), time_value(ctx));
+                                    return SINGLE_SUCCESS;
+                                })
+                                .then(
+                                        argument("world", ArgumentTypes.world()).executes(ctx -> {
+                                            set_time(time_value(ctx), ctx.getArgument("world", World.class));
+                                            return SINGLE_SUCCESS;
+                                        })
+                                )
+                );
     }
 
     private TimeValue time_value(CommandContext<CommandSourceStack> ctx) {

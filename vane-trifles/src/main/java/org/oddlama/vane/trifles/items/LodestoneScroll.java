@@ -3,6 +3,7 @@ package org.oddlama.vane.trifles.items;
 import static org.oddlama.vane.util.PlayerUtil.swing_arm;
 
 import java.util.List;
+
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,11 +29,11 @@ import org.oddlama.vane.trifles.Trifles;
 import org.oddlama.vane.util.StorageUtil;
 
 @VaneItem(
-    name = "lodestone_scroll",
-    base = Material.WARPED_FUNGUS_ON_A_STICK,
-    durability = 15,
-    model_data = 0x760011,
-    version = 1
+        name = "lodestone_scroll",
+        base = Material.WARPED_FUNGUS_ON_A_STICK,
+        durability = 15,
+        model_data = 0x760011,
+        version = 1
 )
 public class LodestoneScroll extends Scroll {
 
@@ -54,13 +55,13 @@ public class LodestoneScroll extends Scroll {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("aba", "epe")
-                .set_ingredient('p', "vane_trifles:papyrus_scroll")
-                .set_ingredient('e', Material.ENDER_PEARL)
-                .set_ingredient('a', Material.AMETHYST_SHARD)
-                .set_ingredient('b', Material.NETHERITE_INGOT)
-                .result(key().toString())
+                new ShapedRecipeDefinition("generic")
+                        .shape("aba", "epe")
+                        .set_ingredient('p', "vane_trifles:papyrus_scroll")
+                        .set_ingredient('e', Material.ENDER_PEARL)
+                        .set_ingredient('a', Material.AMETHYST_SHARD)
+                        .set_ingredient('b', Material.NETHERITE_INGOT)
+                        .result(key().toString())
         );
     }
 
@@ -69,9 +70,9 @@ public class LodestoneScroll extends Scroll {
             return null;
         }
         return StorageUtil.storage_get_location(
-            scroll.getItemMeta().getPersistentDataContainer(),
-            LODESTONE_LOCATION,
-            null
+                scroll.getItemMeta().getPersistentDataContainer(),
+                LODESTONE_LOCATION,
+                null
         );
     }
 
@@ -101,9 +102,9 @@ public class LodestoneScroll extends Scroll {
     public void on_player_interact(final PlayerInteractEvent event) {
         // Skip if no block clicked or the item is allowed to be used (e.g., torches in offhand)
         if (
-            !event.hasBlock() ||
-            event.getAction() != Action.RIGHT_CLICK_BLOCK ||
-            event.useItemInHand() == Event.Result.ALLOW
+                !event.hasBlock() ||
+                        event.getAction() != Action.RIGHT_CLICK_BLOCK ||
+                        event.useItemInHand() == Event.Result.ALLOW
         ) {
             return;
         }
@@ -129,32 +130,32 @@ public class LodestoneScroll extends Scroll {
         // Save lodestone location
         item.editMeta(meta -> {
             StorageUtil.storage_set_location(
-                meta.getPersistentDataContainer(),
-                LODESTONE_LOCATION,
-                block.getLocation().add(0.5, 0.5, 0.5)
+                    meta.getPersistentDataContainer(),
+                    LODESTONE_LOCATION,
+                    block.getLocation().add(0.5, 0.5, 0.5)
             );
             meta.lore(
-                List.of(
-                    lang_bound_lore
-                        .format(
-                            "§a" + block.getWorld().getName(),
-                            "§b" + block.getX(),
-                            "§b" + block.getY(),
-                            "§b" + block.getZ()
-                        )
-                        .decoration(TextDecoration.ITALIC, false)
-                )
+                    List.of(
+                            lang_bound_lore
+                                    .format(
+                                            "§a" + block.getWorld().getName(),
+                                            "§b" + block.getX(),
+                                            "§b" + block.getY(),
+                                            "§b" + block.getZ()
+                                    )
+                                    .decoration(TextDecoration.ITALIC, false)
+                    )
             );
         });
 
         // Effects and sound
         swing_arm(player, event.getHand());
         block
-            .getWorld()
-            .spawnParticle(Particle.ENCHANT, block.getLocation().add(0.5, 2.0, 0.5), 100, 0.1, 0.3, 0.1, 2.0);
+                .getWorld()
+                .spawnParticle(Particle.ENCHANT, block.getLocation().add(0.5, 2.0, 0.5), 100, 0.1, 0.3, 0.1, 2.0);
         block
-            .getWorld()
-            .playSound(block.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, SoundCategory.BLOCKS, 1.0f, 3.0f);
+                .getWorld()
+                .playSound(block.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, SoundCategory.BLOCKS, 1.0f, 3.0f);
 
         // Prevent offhand from triggering (e.g., placing torches)
         event.setUseInteractedBlock(Event.Result.DENY);

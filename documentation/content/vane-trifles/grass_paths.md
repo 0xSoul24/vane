@@ -3,6 +3,7 @@ title = "Grass Paths"
 icon = "minecraft:dirt_path"
 module = "vane-trifles"
 ```
+
 ---
 ![](assets/gifs/grass-paths.gif)
 

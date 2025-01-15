@@ -19,12 +19,12 @@ public class RecipeUnlock extends Listener<Trifles> {
         final var count = Nms.unlock_all_recipes(event.getPlayer());
         if (count > 0) {
             get_module()
-                .log.info(
-                    "Given " +
-                    count +
-                    " recipes to " +
-                    LegacyComponentSerializer.legacySection().serialize(event.getPlayer().displayName())
-                );
+                    .log.info(
+                            "Given " +
+                                    count +
+                                    " recipes to " +
+                                    LegacyComponentSerializer.legacySection().serialize(event.getPlayer().displayName())
+                    );
         }
     }
 }

@@ -2,12 +2,14 @@ package org.oddlama.vane.core.resourcepack;
 
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
 import java.util.UUID;
+
 import net.kyori.adventure.resource.ResourcePackInfo;
 import net.kyori.adventure.resource.ResourcePackRequest;
 import org.bukkit.entity.Player;
@@ -32,11 +34,11 @@ public class ResourcePackDistributor extends Listener<Core> {
     // a better way.
     // https://github.com/jpenilla/run-paper/issues/14
     private static final boolean localDev =
-        Nms.server_handle().options.hasArgument("add-plugin") && Boolean.getBoolean("disable.watchdog");
+            Nms.server_handle().options.hasArgument("add-plugin") && Boolean.getBoolean("disable.watchdog");
 
     @ConfigBoolean(
-        def = true,
-        desc = "Kick players if they deny to use the specified resource pack (if set). Individual players can be exempt from this rule by giving them the permission 'vane.core.resource_pack.bypass'."
+            def = true,
+            desc = "Kick players if they deny to use the specified resource pack (if set). Individual players can be exempt from this rule by giving them the permission 'vane.core.resource_pack.bypass'."
     )
     public boolean config_force;
 
@@ -68,9 +70,9 @@ public class ResourcePackDistributor extends Listener<Core> {
 
         // Register bypass permission
         bypass_permission = new Permission(
-            "vane." + get_module().get_name() + ".resource_pack.bypass",
-            "Allows bypassing an enforced resource pack",
-            PermissionDefault.FALSE
+                "vane." + get_module().get_name() + ".resource_pack.bypass",
+                "Allows bypassing an enforced resource pack",
+                PermissionDefault.FALSE
         );
         get_module().register_permission(bypass_permission);
     }
@@ -117,13 +119,13 @@ public class ResourcePackDistributor extends Listener<Core> {
         // Check sha1 sum validity
         if (sha1.length() != 40) {
             get_module()
-                .log.warning(
-                    "Invalid resource pack SHA-1 sum '" +
-                    sha1 +
-                    "', should be 40 characters long but has " +
-                    sha1.length() +
-                    " characters"
-                );
+                    .log.warning(
+                            "Invalid resource pack SHA-1 sum '" +
+                                    sha1 +
+                                    "', should be 40 characters long but has " +
+                                    sha1.length() +
+                                    " characters"
+                    );
             get_module().log.warning("Disabling resource pack serving and message delaying");
 
             // Disable resource pack
@@ -145,15 +147,15 @@ public class ResourcePackDistributor extends Listener<Core> {
             // Check if the server has a manually configured resource pack.
             // This would conflict.
             Nms.server_handle()
-                .settings.getProperties()
-                .serverResourcePackInfo.ifPresent(rp_info -> {
-                    if (!rp_info.url().trim().isEmpty()) {
-                        get_module()
-                            .log.warning(
-                                "You have manually configured a resource pack in your server.properties. This cannot be used together with vane, as servers only allow serving a single resource pack."
-                            );
-                    }
-                });
+                    .settings.getProperties()
+                    .serverResourcePackInfo.ifPresent(rp_info -> {
+                        if (!rp_info.url().trim().isEmpty()) {
+                            get_module()
+                                    .log.warning(
+                                            "You have manually configured a resource pack in your server.properties. This cannot be used together with vane, as servers only allow serving a single resource pack."
+                                    );
+                        }
+                    });
 
             get_module().log.info("Distributing resource pack from '" + url + "' with sha1 " + sha1);
         }
@@ -200,12 +202,13 @@ public class ResourcePackDistributor extends Listener<Core> {
         }
     }
 
-    @SuppressWarnings({ "deprecation", "UnstableApiUsage" })
+    @SuppressWarnings({"deprecation", "UnstableApiUsage"})
     public void update_sha1(File file) {
         if (!localDev) return;
         try {
             var hash = Files.asByteSource(file).hash(Hashing.sha1());
             ResourcePackDistributor.this.sha1 = hash.toString();
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
     }
 }

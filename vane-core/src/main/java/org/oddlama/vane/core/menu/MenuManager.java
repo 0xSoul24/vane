@@ -2,6 +2,7 @@ package org.oddlama.vane.core.menu;
 
 import java.util.HashMap;
 import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,58 +42,58 @@ public class MenuManager extends Listener<Core> {
 
         final var ctx_item_selector = ctx.namespace("item_selector", "Menu configuration for item selector menus.");
         item_selector_accept = new TranslatedItemStack<>(
-            ctx_item_selector,
-            "accept",
-            Material.LIME_TERRACOTTA,
-            1,
-            "Used to confirm item selection."
+                ctx_item_selector,
+                "accept",
+                Material.LIME_TERRACOTTA,
+                1,
+                "Used to confirm item selection."
         );
         item_selector_cancel = new TranslatedItemStack<>(
-            ctx_item_selector,
-            "cancel",
-            Material.RED_TERRACOTTA,
-            1,
-            "Used to cancel item selection."
+                ctx_item_selector,
+                "cancel",
+                Material.RED_TERRACOTTA,
+                1,
+                "Used to cancel item selection."
         );
         item_selector_selected = new TranslatedItemStack<>(
-            ctx_item_selector,
-            "selected",
-            Material.BARRIER,
-            1,
-            "Represents the selected item. Left-clicking will reset the selection to the initial value, and right-clicking will clear the selected item. The given stack is used as the 'empty', cleared item."
+                ctx_item_selector,
+                "selected",
+                Material.BARRIER,
+                1,
+                "Represents the selected item. Left-clicking will reset the selection to the initial value, and right-clicking will clear the selected item. The given stack is used as the 'empty', cleared item."
         );
 
         final var ctx_generic_selector = ctx.namespace(
-            "generic_selector",
-            "Menu configuration for generic selector menus."
+                "generic_selector",
+                "Menu configuration for generic selector menus."
         );
         generic_selector_page = new TranslatedItemStack<>(
-            ctx_generic_selector,
-            "page",
-            Material.PAPER,
-            1,
-            "Used to select pages."
+                ctx_generic_selector,
+                "page",
+                Material.PAPER,
+                1,
+                "Used to select pages."
         );
         generic_selector_current_page = new TranslatedItemStack<>(
-            ctx_generic_selector,
-            "current_page",
-            Material.MAP,
-            1,
-            "Used to indicate current page."
+                ctx_generic_selector,
+                "current_page",
+                Material.MAP,
+                1,
+                "Used to indicate current page."
         );
         generic_selector_filter = new TranslatedItemStack<>(
-            ctx_generic_selector,
-            "filter",
-            Material.HOPPER,
-            1,
-            "Used to filter items."
+                ctx_generic_selector,
+                "filter",
+                Material.HOPPER,
+                1,
+                "Used to filter items."
         );
         generic_selector_cancel = new TranslatedItemStack<>(
-            ctx_generic_selector,
-            "cancel",
-            Material.PRISMARINE_SHARD,
-            1,
-            "Used to cancel selection."
+                ctx_generic_selector,
+                "cancel",
+                Material.PRISMARINE_SHARD,
+                1,
+                "Used to cancel selection."
         );
     }
 
@@ -105,15 +106,15 @@ public class MenuManager extends Listener<Core> {
         final var open = open_menus.get(player.getUniqueId());
         if (open != menu && menu != null) {
             get_module()
-                .log.warning(
-                    "Menu inconsistency: entity " +
-                    player +
-                    " accessed a menu '" +
-                    open_menus.get(player.getUniqueId()) +
-                    "' that isn't registered to it. The registered menu is '" +
-                    menu +
-                    "'"
-                );
+                    .log.warning(
+                            "Menu inconsistency: entity " +
+                                    player +
+                                    " accessed a menu '" +
+                                    open_menus.get(player.getUniqueId()) +
+                                    "' that isn't registered to it. The registered menu is '" +
+                                    menu +
+                                    "'"
+                    );
             return menu;
         }
         return menu == null ? open : menu;
@@ -147,11 +148,11 @@ public class MenuManager extends Listener<Core> {
 
     public void update(final Menu menu) {
         get_module()
-            .getServer()
-            .getOnlinePlayers()
-            .stream()
-            .filter(p -> open_menus.get(p.getUniqueId()) == menu)
-            .forEach(p -> p.updateInventory());
+                .getServer()
+                .getOnlinePlayers()
+                .stream()
+                .filter(p -> open_menus.get(p.getUniqueId()) == menu)
+                .forEach(p -> p.updateInventory());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

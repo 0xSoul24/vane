@@ -13,11 +13,11 @@ import org.oddlama.vane.core.module.Context;
 import org.oddlama.vane.trifles.Trifles;
 
 @VaneItem(
-    name = "home_scroll",
-    base = Material.WARPED_FUNGUS_ON_A_STICK,
-    durability = 25,
-    model_data = 0x760000,
-    version = 1
+        name = "home_scroll",
+        base = Material.WARPED_FUNGUS_ON_A_STICK,
+        durability = 25,
+        model_data = 0x760000,
+        version = 1
 )
 public class HomeScroll extends Scroll {
 
@@ -28,14 +28,14 @@ public class HomeScroll extends Scroll {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("abc", "epe")
-                .set_ingredient('p', "vane_trifles:papyrus_scroll")
-                .set_ingredient('e', Material.ENDER_PEARL)
-                .set_ingredient('a', Material.CAMPFIRE)
-                .set_ingredient('b', Material.GOAT_HORN)
-                .set_ingredient('c', Tag.BEDS)
-                .result(key().toString())
+                new ShapedRecipeDefinition("generic")
+                        .shape("abc", "epe")
+                        .set_ingredient('p', "vane_trifles:papyrus_scroll")
+                        .set_ingredient('e', Material.ENDER_PEARL)
+                        .set_ingredient('a', Material.CAMPFIRE)
+                        .set_ingredient('b', Material.GOAT_HORN)
+                        .set_ingredient('c', Tag.BEDS)
+                        .result(key().toString())
         );
     }
 

@@ -2,6 +2,7 @@ package org.oddlama.vane.core.item.api;
 
 import java.io.IOException;
 import java.util.EnumSet;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -86,8 +87,8 @@ public interface CustomItem {
      */
     public default @Nullable TranslatableComponent durabilityLore() {
         return Component.translatable("item.durability")
-            .color(NamedTextColor.WHITE)
-            .decoration(TextDecoration.ITALIC, false);
+                .color(NamedTextColor.WHITE)
+                .decoration(TextDecoration.ITALIC, false);
     }
 
     /**
@@ -131,7 +132,9 @@ public interface CustomItem {
         return itemStack;
     }
 
-    /** Returns true if the given itemstack is an "instance" this custom item. */
+    /**
+     * Returns true if the given itemstack is an "instance" this custom item.
+     */
     public default boolean isInstance(@Nullable final ItemStack itemStack) {
         return CustomItemRegistry.instance().get(itemStack) == this;
     }

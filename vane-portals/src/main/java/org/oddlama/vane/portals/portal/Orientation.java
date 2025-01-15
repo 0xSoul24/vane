@@ -53,9 +53,9 @@ public enum Orientation {
     }
 
     public Location apply(
-        final Orientation reference,
-        final Location location,
-        final boolean flip_source_if_not_opposing
+            final Orientation reference,
+            final Location location,
+            final boolean flip_source_if_not_opposing
     ) {
         final var l = location.clone();
         l.setDirection(apply(reference, location.getDirection(), flip_source_if_not_opposing));
@@ -178,10 +178,10 @@ public enum Orientation {
     }
 
     public static Orientation from(
-        final Plane plane,
-        final Block origin,
-        final Block console,
-        final Location entity_location
+            final Plane plane,
+            final Block origin,
+            final Block console,
+            final Location entity_location
     ) {
         switch (plane) {
             case XY: {

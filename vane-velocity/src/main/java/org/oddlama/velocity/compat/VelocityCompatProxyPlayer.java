@@ -1,7 +1,9 @@
 package org.oddlama.velocity.compat;
 
 import com.velocitypowered.api.proxy.Player;
+
 import java.util.UUID;
+
 import net.kyori.adventure.text.Component;
 import org.oddlama.vane.proxycore.ProxyPlayer;
 

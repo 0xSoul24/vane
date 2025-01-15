@@ -53,7 +53,9 @@ public class SingleDoor {
         };
     }
 
-    /** Validates the door structure, and returns the half of the door we are examining. */
+    /**
+     * Validates the door structure, and returns the half of the door we are examining.
+     */
     private static boolean validate_single_door(final Block originBlock) {
         // block must be door.
         if (!is_door(originBlock)) {
@@ -274,9 +276,9 @@ public class SingleDoor {
         var should_be_us = potentialOtherDoor.getRelative(other_pointing);
 
         var is_us =
-            should_be_us.getX() == lower_block.getX() &&
-            should_be_us.getY() == lower_block.getY() &&
-            should_be_us.getZ() == lower_block.getZ();
+                should_be_us.getX() == lower_block.getX() &&
+                        should_be_us.getY() == lower_block.getY() &&
+                        should_be_us.getZ() == lower_block.getZ();
 
         return is_us ? create_door_from_block(potentialOtherDoor) : null;
     }

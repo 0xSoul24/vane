@@ -4,10 +4,12 @@ import static org.oddlama.vane.util.StorageUtil.namespaced_key;
 
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -183,9 +185,9 @@ public interface Param {
     }
 
     public default <T> ChoiceParam<T> choice(
-        String argument_type,
-        Collection<? extends T> choices,
-        Function1<T, String> to_string
+            String argument_type,
+            Collection<? extends T> choices,
+            Function1<T, String> to_string
     ) {
         var p = new ChoiceParam<>(get_command(), argument_type, choices, to_string);
         add_param(p);
@@ -193,10 +195,10 @@ public interface Param {
     }
 
     public default <T> DynamicChoiceParam<T> choice(
-        String argument_type,
-        Function1<CommandSender, Collection<? extends T>> choices,
-        Function2<CommandSender, T, String> to_string,
-        Function2<CommandSender, String, ? extends T> from_string
+            String argument_type,
+            Function1<CommandSender, Collection<? extends T>> choices,
+            Function2<CommandSender, T, String> to_string,
+            Function2<CommandSender, String, ? extends T> from_string
     ) {
         var p = new DynamicChoiceParam<>(get_command(), argument_type, choices, to_string, from_string);
         add_param(p);
@@ -205,67 +207,67 @@ public interface Param {
 
     public default DynamicChoiceParam<Module<?>> choose_module() {
         return choice(
-            "module",
-            sender -> get_command().get_module().core.get_modules(),
-            (sender, m) -> m.get_name(),
-            (sender, str) ->
-                get_command()
-                    .get_module()
-                    .core.get_modules()
-                    .stream()
-                    .filter(k -> k.get_name().equalsIgnoreCase(str))
-                    .findFirst()
-                    .orElse(null)
+                "module",
+                sender -> get_command().get_module().core.get_modules(),
+                (sender, m) -> m.get_name(),
+                (sender, str) ->
+                        get_command()
+                                .get_module()
+                                .core.get_modules()
+                                .stream()
+                                .filter(k -> k.get_name().equalsIgnoreCase(str))
+                                .findFirst()
+                                .orElse(null)
         );
     }
 
     public default DynamicChoiceParam<World> choose_world() {
         return choice(
-            "world",
-            sender -> get_command().get_module().getServer().getWorlds(),
-            (sender, w) -> w.getName().toLowerCase(),
-            (sender, str) ->
-                get_command()
-                    .get_module()
-                    .getServer()
-                    .getWorlds()
-                    .stream()
-                    .filter(w -> w.getName().equalsIgnoreCase(str))
-                    .findFirst()
-                    .orElse(null)
+                "world",
+                sender -> get_command().get_module().getServer().getWorlds(),
+                (sender, w) -> w.getName().toLowerCase(),
+                (sender, str) ->
+                        get_command()
+                                .get_module()
+                                .getServer()
+                                .getWorlds()
+                                .stream()
+                                .filter(w -> w.getName().equalsIgnoreCase(str))
+                                .findFirst()
+                                .orElse(null)
         );
     }
 
     public default DynamicChoiceParam<OfflinePlayer> choose_any_player() {
         return choice(
-            "any_player",
-            sender -> get_command().get_module().get_offline_players_with_valid_name(),
-            (sender, p) -> p.getName(),
-            (sender, str) ->
-                get_command()
-                    .get_module()
-                    .get_offline_players_with_valid_name()
-                    .stream()
-                    .filter(k -> k.getName().equalsIgnoreCase(str))
-                    .findFirst()
-                    .orElse(null)
+                "any_player",
+                sender -> get_command().get_module().get_offline_players_with_valid_name(),
+                (sender, p) -> p.getName(),
+                (sender, str) ->
+                        get_command()
+                                .get_module()
+                                .get_offline_players_with_valid_name()
+                                .stream()
+                                .filter(k -> k.getName().equalsIgnoreCase(str))
+                                .findFirst()
+                                .orElse(null)
         );
     }
 
     public default DynamicChoiceParam<Player> choose_online_player() {
         return choice(
-            "online_player",
-            sender -> get_command().get_module().getServer().getOnlinePlayers(),
-            (sender, p) -> p.getName(),
-            (sender, str) ->
-                get_command()
-                    .get_module()
-                    .getServer()
-                    .getOnlinePlayers()
-                    .stream()
-                    .filter(k -> k.getName().equalsIgnoreCase(str))
-                    .findFirst()
-                    .orElse(null)
+                "online_player",
+                sender -> get_command().get_module().getServer().getOnlinePlayers(),
+                (sender, p) -> p.getName(),
+                (sender, str) ->
+                        get_command()
+                                .get_module()
+                                .getServer()
+                                .getOnlinePlayers()
+                                .stream()
+                                .filter(k -> k.getName().equalsIgnoreCase(str))
+                                .findFirst()
+                                .orElse(null)
         );
     }
 
@@ -273,10 +275,10 @@ public interface Param {
     // specified player.
     public default DynamicChoiceParam<Permission> choose_permission() {
         return choice(
-            "permission",
-            sender -> get_command().get_module().getServer().getPluginManager().getPermissions(),
-            (sender, p) -> p.getName(),
-            (sender, str) -> get_command().get_module().getServer().getPluginManager().getPermission(str)
+                "permission",
+                sender -> get_command().get_module().getServer().getPluginManager().getPermissions(),
+                (sender, p) -> p.getName(),
+                (sender, str) -> get_command().get_module().getServer().getPluginManager().getPermission(str)
         );
     }
 
@@ -289,30 +291,30 @@ public interface Param {
     }
 
     public default DynamicChoiceParam<Enchantment> choose_enchantment(
-        final Function2<CommandSender, Enchantment, Boolean> filter
+            final Function2<CommandSender, Enchantment, Boolean> filter
     ) {
         return choice(
-            "enchantment",
-            sender ->
-                RegistryAccess.registryAccess()
-                    .getRegistry(RegistryKey.ENCHANTMENT)
-                    .stream()
-                    .filter(e -> filter.apply(sender, e))
-                    .collect(Collectors.toList()),
-            (sender, e) -> e.getKey().toString(),
-            (sender, str) -> {
-                var parts = str.split(":");
-                if (parts.length != 2) {
-                    return null;
+                "enchantment",
+                sender ->
+                        RegistryAccess.registryAccess()
+                                .getRegistry(RegistryKey.ENCHANTMENT)
+                                .stream()
+                                .filter(e -> filter.apply(sender, e))
+                                .collect(Collectors.toList()),
+                (sender, e) -> e.getKey().toString(),
+                (sender, str) -> {
+                    var parts = str.split(":");
+                    if (parts.length != 2) {
+                        return null;
+                    }
+                    var e = RegistryAccess.registryAccess()
+                            .getRegistry(RegistryKey.ENCHANTMENT)
+                            .get(namespaced_key(parts[0], parts[1]));
+                    if (!filter.apply(sender, e)) {
+                        return null;
+                    }
+                    return e;
                 }
-                var e = RegistryAccess.registryAccess()
-                    .getRegistry(RegistryKey.ENCHANTMENT)
-                    .get(namespaced_key(parts[0], parts[1]));
-                if (!filter.apply(sender, e)) {
-                    return null;
-                }
-                return e;
-            }
         );
     }
 
@@ -335,10 +337,10 @@ public interface Param {
         var max_depth = results.stream().map(r -> r.depth()).reduce(0, Integer::max);
 
         var errors = results
-            .stream()
-            .filter(r -> r.depth() == max_depth)
-            .map(ErrorCheckResult.class::cast)
-            .collect(Collectors.toList());
+                .stream()
+                .filter(r -> r.depth() == max_depth)
+                .map(ErrorCheckResult.class::cast)
+                .collect(Collectors.toList());
 
         // If there is only a single max-depth sub-error, propagate it.
         // Otherwise, combine multiple errors into new error.
@@ -366,10 +368,10 @@ public interface Param {
 
         // Delegate to children
         return get_params()
-            .stream()
-            .map(p -> p.build_completions(sender, args, offset + 1))
-            .flatMap(Collection::stream)
-            .collect(Collectors.toList());
+                .stream()
+                .map(p -> p.build_completions(sender, args, offset + 1))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     public default List<String> build_completions(CommandSender sender, String[] args, int offset) {

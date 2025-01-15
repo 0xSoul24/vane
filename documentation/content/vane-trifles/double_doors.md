@@ -3,6 +3,7 @@ title = "Double Doors"
 icon = "minecraft:oak_door"
 module = "vane-trifles"
 ```
+
 ---
 ![](assets/gifs/double-doors.gif)
 

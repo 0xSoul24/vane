@@ -7,6 +7,7 @@ import static org.oddlama.vane.util.PlayerUtil.remove_one_item_from_hand;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
@@ -110,8 +111,8 @@ public class XpBottles extends Listener<Trifles> {
         get_module().last_xp_bottle_consume_time.put(player.getUniqueId(), System.currentTimeMillis());
         player.giveExp(exp_for_level(bottle.config_capacity), false);
         player
-            .getWorld()
-            .playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0f, 1.0f);
+                .getWorld()
+                .playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0f, 1.0f);
 
         // Do not consume actual base item
         event.setCancelled(true);

@@ -2,6 +2,7 @@ package org.oddlama.vane.core.module;
 
 import java.io.IOException;
 import java.util.function.Consumer;
+
 import org.bukkit.scheduler.BukkitTask;
 import org.json.JSONObject;
 import org.oddlama.vane.core.functional.Consumer1;
@@ -19,22 +20,30 @@ public interface Context<T extends Module<T>> {
         return ns1 + separator + ns2;
     }
 
-    /** create a sub-context namespace */
+    /**
+     * create a sub-context namespace
+     */
     public default ModuleContext<T> namespace(String name) {
         return new ModuleContext<T>(this, name, null, ".");
     }
 
-    /** create a sub-context namespace */
+    /**
+     * create a sub-context namespace
+     */
     public default ModuleContext<T> namespace(String name, String description) {
         return new ModuleContext<T>(this, name, description, ".");
     }
 
-    /** create a sub-context namespace */
+    /**
+     * create a sub-context namespace
+     */
     public default ModuleContext<T> namespace(String name, String description, String separator) {
         return new ModuleContext<T>(this, name, description, separator);
     }
 
-    /** create a sub-context group */
+    /**
+     * create a sub-context group
+     */
     public default ModuleGroup<T> group(String group, String description) {
         return new ModuleGroup<T>(this, group, description);
     }
@@ -45,7 +54,9 @@ public interface Context<T extends Module<T>> {
         return g;
     }
 
-    /** create a sub-context group */
+    /**
+     * create a sub-context group
+     */
     public default ModuleGroup<T> group_default_disabled(String group, String description) {
         final var g = group(group, description);
         g.config_enabled_def = false;
@@ -80,13 +91,17 @@ public interface Context<T extends Module<T>> {
 
     public void for_each_module_component(final Consumer1<ModuleComponent<?>> f);
 
-    public default void on_enable() {}
+    public default void on_enable() {
+    }
 
-    public default void on_disable() {}
+    public default void on_disable() {
+    }
 
-    public default void on_config_change() {}
+    public default void on_config_change() {
+    }
 
-    public default void on_generate_resource_pack(final ResourcePackGenerator pack) throws IOException {}
+    public default void on_generate_resource_pack(final ResourcePackGenerator pack) throws IOException {
+    }
 
     public default BukkitTask schedule_task_timer(Runnable task, long delay_ticks, long period_ticks) {
         return get_module().getServer().getScheduler().runTaskTimer(get_module(), task, delay_ticks, period_ticks);

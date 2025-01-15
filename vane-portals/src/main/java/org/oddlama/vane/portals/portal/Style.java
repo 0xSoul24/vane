@@ -6,6 +6,7 @@ import static org.oddlama.vane.core.persistent.PersistentSerializer.to_json;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
@@ -20,12 +21,12 @@ public class Style {
         json.put("key", to_json(NamespacedKey.class, style.key));
         try {
             json.put(
-                "active_materials",
-                to_json(Style.class.getDeclaredField("active_materials"), style.active_materials)
+                    "active_materials",
+                    to_json(Style.class.getDeclaredField("active_materials"), style.active_materials)
             );
             json.put(
-                "inactive_materials",
-                to_json(Style.class.getDeclaredField("inactive_materials"), style.inactive_materials)
+                    "inactive_materials",
+                    to_json(Style.class.getDeclaredField("inactive_materials"), style.inactive_materials)
             );
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Invalid field. This is a bug.", e);
@@ -40,12 +41,12 @@ public class Style {
         style.key = from_json(NamespacedKey.class, json.get("key"));
         try {
             style.active_materials = (Map<PortalBlock.Type, Material>) from_json(
-                Style.class.getDeclaredField("active_materials"),
-                json.get("active_materials")
+                    Style.class.getDeclaredField("active_materials"),
+                    json.get("active_materials")
             );
             style.inactive_materials = (Map<PortalBlock.Type, Material>) from_json(
-                Style.class.getDeclaredField("inactive_materials"),
-                json.get("inactive_materials")
+                    Style.class.getDeclaredField("inactive_materials"),
+                    json.get("inactive_materials")
             );
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Invalid field. This is a bug.", e);
@@ -91,7 +92,7 @@ public class Style {
 
         if (!overwrite && map.containsKey(type)) {
             throw new RuntimeException(
-                "Invalid style definition! PortalBlock.Type." + type + " was specified multiple times."
+                    "Invalid style definition! PortalBlock.Type." + type + " was specified multiple times."
             );
         }
         map.put(type, material);
@@ -102,12 +103,12 @@ public class Style {
         for (final var type : PortalBlock.Type.values()) {
             if (!active_materials.containsKey(type)) {
                 throw new RuntimeException(
-                    "Invalid style definition! Active state for PortalBlock.Type." + type + " was not specified!"
+                        "Invalid style definition! Active state for PortalBlock.Type." + type + " was not specified!"
                 );
             }
             if (!inactive_materials.containsKey(type)) {
                 throw new RuntimeException(
-                    "Invalid style definition! Inactive state for PortalBlock.Type." + type + " was not specified!"
+                        "Invalid style definition! Inactive state for PortalBlock.Type." + type + " was not specified!"
                 );
             }
         }

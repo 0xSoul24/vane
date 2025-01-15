@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
+
 import net.kyori.adventure.key.Key;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -40,11 +41,11 @@ import org.oddlama.vane.trifles.Trifles;
 import org.oddlama.vane.util.BlockUtil;
 
 @VaneItem(
-    name = "file",
-    base = Material.WARPED_FUNGUS_ON_A_STICK,
-    durability = 4000,
-    model_data = 0x760003,
-    version = 1
+        name = "file",
+        base = Material.WARPED_FUNGUS_ON_A_STICK,
+        durability = 4000,
+        model_data = 0x760003,
+        version = 1
 )
 public class File extends CustomItem<Trifles> {
 
@@ -55,11 +56,11 @@ public class File extends CustomItem<Trifles> {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape(" m", "s ")
-                .set_ingredient('m', Material.IRON_INGOT)
-                .set_ingredient('s', Material.STICK)
-                .result(key().toString())
+                new ShapedRecipeDefinition("generic")
+                        .shape(" m", "s ")
+                        .set_ingredient('m', Material.IRON_INGOT)
+                        .set_ingredient('s', Material.STICK)
+                        .result(key().toString())
         );
     }
 
@@ -103,10 +104,10 @@ public class File extends CustomItem<Trifles> {
     }
 
     private Sound change_stair_shape(
-        final Player player,
-        final Block block,
-        final Stairs stairs,
-        final BlockFace clicked_face
+            final Player player,
+            final Block block,
+            final Stairs stairs,
+            final BlockFace clicked_face
     ) {
         // Check which eighth of the block was clicked
         final var oct = raytrace_oct(player, block);
@@ -255,10 +256,10 @@ public class File extends CustomItem<Trifles> {
     }
 
     private Sound change_multiple_facing(
-        final Player player,
-        final Block block,
-        final MultipleFacing mf,
-        BlockFace clicked_face
+            final Player player,
+            final Block block,
+            final MultipleFacing mf,
+            BlockFace clicked_face
     ) {
         final int min_faces;
         if (mf instanceof Fence || mf instanceof GlassPane) {
@@ -358,10 +359,10 @@ public class File extends CustomItem<Trifles> {
     }
 
     private Sound change_directional_facing(
-        final Player player,
-        final Block block,
-        final Directional directional,
-        final BlockFace clicked_face
+            final Player player,
+            final Block block,
+            final Directional directional,
+            final BlockFace clicked_face
     ) {
         // Toggle facing
         directional.setFacing(next_facing(directional.getFaces(), directional.getFacing()));

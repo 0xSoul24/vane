@@ -5,8 +5,10 @@ import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
 import de.bluecolored.bluemap.api.BlueMapAPI;
 import de.bluecolored.bluemap.api.markers.HtmlMarker;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
+
 import java.util.HashMap;
 import java.util.UUID;
+
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
@@ -59,18 +61,18 @@ public class BedtimeBlueMapLayerDelegate {
         }
 
         final var marker_set = MarkerSet.builder()
-            .label(parent.lang_layer_label.str())
-            .toggleable(true)
-            .defaultHidden(parent.config_hide_by_default)
-            .build();
+                .label(parent.lang_layer_label.str())
+                .toggleable(true)
+                .defaultHidden(parent.config_hide_by_default)
+                .build();
 
         api
-            .getWorld(world)
-            .ifPresent(bm_world -> {
-                for (final var map : bm_world.getMaps()) {
-                    map.getMarkerSets().put(MARKER_SET_ID, marker_set);
-                }
-            });
+                .getWorld(world)
+                .ifPresent(bm_world -> {
+                    for (final var map : bm_world.getMaps()) {
+                        map.getMarkerSets().put(MARKER_SET_ID, marker_set);
+                    }
+                });
 
         marker_sets.put(world.getUID(), marker_set);
     }
@@ -83,10 +85,10 @@ public class BedtimeBlueMapLayerDelegate {
         }
 
         final var marker = HtmlMarker.builder()
-            .position(loc.getX(), loc.getY(), loc.getZ())
-            .label("Bed for " + player.getName())
-            .html(parent.lang_marker_label.str(escapeHtml(player.getName())))
-            .build();
+                .position(loc.getX(), loc.getY(), loc.getZ())
+                .label("Bed for " + player.getName())
+                .html(parent.lang_marker_label.str(escapeHtml(player.getName())))
+                .build();
 
         // Existing markers will be overwritten.
         marker_sets.get(loc.getWorld().getUID()).getMarkers().put(player.getUniqueId().toString(), marker);

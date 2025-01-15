@@ -6,6 +6,7 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
@@ -40,7 +41,7 @@ public abstract class RecipeDefinition {
     public static RecipeDefinition from_dict(final String name, final Object dict) {
         if (!(dict instanceof Map<?, ?>)) {
             throw new IllegalArgumentException(
-                "Invalid recipe dictionary: Argument must be a Map<String, Object>, but is " + dict.getClass() + "!"
+                    "Invalid recipe dictionary: Argument must be a Map<String, Object>, but is " + dict.getClass() + "!"
             );
         }
         final var type = ((Map<?, ?>) dict).get("type");
@@ -99,16 +100,16 @@ public abstract class RecipeDefinition {
         // Tuple of materials
         if (definition.startsWith("(") && definition.endsWith(")")) {
             final var parts = Arrays.stream(definition.substring(1, definition.length() - 1).split(","))
-                .map(key -> {
-                    final var mat = material_from(NamespacedKey.fromString(key.strip()));
-                    if (mat == null) {
-                        throw new IllegalArgumentException(
-                            "Unknown material (only normal materials are allowed in tags): " + key
-                        );
-                    }
-                    return mat;
-                })
-                .collect(Collectors.toList());
+                    .map(key -> {
+                        final var mat = material_from(NamespacedKey.fromString(key.strip()));
+                        if (mat == null) {
+                            throw new IllegalArgumentException(
+                                    "Unknown material (only normal materials are allowed in tags): " + key
+                            );
+                        }
+                        return mat;
+                    })
+                    .collect(Collectors.toList());
             return new RecipeChoice.MaterialChoice(parts);
         }
 
@@ -125,7 +126,8 @@ public abstract class RecipeDefinition {
 
                 // Remove amount from definition for parsing
                 definition = definition.substring(mult + 1).strip();
-            } catch (NumberFormatException e) {}
+            } catch (NumberFormatException e) {
+            }
         }
 
         // Exact choice of itemstack including NBT

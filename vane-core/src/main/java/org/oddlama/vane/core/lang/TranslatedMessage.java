@@ -1,6 +1,7 @@
 package org.oddlama.vane.core.lang;
 
 import java.util.ArrayList;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -35,10 +36,10 @@ public class TranslatedMessage {
                     args_as_strings[i] = args[i];
                 } else {
                     throw new RuntimeException(
-                        "Error while formatting message '" +
-                        key() +
-                        "', invalid argument to str() serializer: " +
-                        args[i]
+                            "Error while formatting message '" +
+                                    key() +
+                                    "', invalid argument to str() serializer: " +
+                                    args[i]
                     );
                 }
             }

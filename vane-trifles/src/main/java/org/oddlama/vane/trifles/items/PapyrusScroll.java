@@ -1,6 +1,7 @@
 package org.oddlama.vane.trifles.items;
 
 import java.util.EnumSet;
+
 import org.bukkit.Material;
 import org.oddlama.vane.annotation.item.VaneItem;
 import org.oddlama.vane.core.config.recipes.RecipeList;
@@ -20,13 +21,13 @@ public class PapyrusScroll extends CustomItem<Trifles> {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("rpp", "pep", "ppg")
-                .set_ingredient('p', Material.PAPER)
-                .set_ingredient('r', Material.RABBIT_HIDE)
-                .set_ingredient('e', Material.ECHO_SHARD)
-                .set_ingredient('g', Material.GOLD_NUGGET)
-                .result(key().toString())
+                new ShapedRecipeDefinition("generic")
+                        .shape("rpp", "pep", "ppg")
+                        .set_ingredient('p', Material.PAPER)
+                        .set_ingredient('r', Material.RABBIT_HIDE)
+                        .set_ingredient('e', Material.ECHO_SHARD)
+                        .set_ingredient('g', Material.GOLD_NUGGET)
+                        .result(key().toString())
         );
     }
 

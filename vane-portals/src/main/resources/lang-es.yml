@@ -122,58 +122,58 @@ menus:
     # Este ítem se utiliza para cambiar el nombre del portal.
     rename:
       name: "§b§lRenombrar"
-      lore: []
+      lore: [ ]
     # Este ítem se utiliza para seleccionar el ícono del portal.
     select_icon:
       name: "§b§lSeleccionar ícono"
-      lore: []
+      lore: [ ]
     # Este ítem se utiliza para cambiar el estilo del portal.
     select_style:
       name: "§b§lSeleccionar estilo"
-      lore: []
+      lore: [ ]
     # Este ítem se utiliza para cambiar e indicar el bloqueo de orientación de salida activado.
     exit_orientation_lock_on:
       name: "§b§lAlternar bloqueo de orientación de salida"
-      lore: ["", "§bActual: §e§lBloqueado (siempre hacia adelante)§r"]
+      lore: [ "", "§bActual: §e§lBloqueado (siempre hacia adelante)§r" ]
     # Este ítem se utiliza para cambiar e indicar el bloqueo de orientación de salida desactivado.
     exit_orientation_lock_off:
       name: "§b§lAlternar bloqueo de orientación de salida"
-      lore: ["", "§bActual: §a§lDesbloqueado (salida en el mismo lado que la entrada)§r"]
+      lore: [ "", "§bActual: §a§lDesbloqueado (salida en el mismo lado que la entrada)§r" ]
 
     # Este ítem se utiliza para alternar la visibilidad e indicar visibilidad pública.
     visibility_public:
       name: "§b§lAlternar Visibilidad"
-      lore: ["", "§bActual: §a§lPública§r"]
+      lore: [ "", "§bActual: §a§lPública§r" ]
 
     # Este ítem se utiliza para alternar la visibilidad e indicar visibilidad de grupo.
     visibility_group:
       name: "§b§lAlternar Visibilidad"
-      lore: ["", "§bActual: §e§lGrupo de región (miembros)§r"]
+      lore: [ "", "§bActual: §e§lGrupo de región (miembros)§r" ]
 
     # Este ítem se utiliza para alternar la visibilidad e indicar visibilidad de grupo interna.
     visibility_group_internal:
       name: "§b§lAlternar Visibilidad"
-      lore: ["", "§bActual: §e§lGrupo de región (solo visible internamente)§r"]
+      lore: [ "", "§bActual: §e§lGrupo de región (solo visible internamente)§r" ]
 
     # Este ítem se utiliza para alternar la visibilidad e indicar visibilidad privada.
     visibility_private:
       name: "§b§lAlternar Visibilidad"
-      lore: ["", "§bActual: §c§lPrivada§r"]
+      lore: [ "", "§bActual: §c§lPrivada§r" ]
 
     # Este ítem se utiliza para cambiar e indicar el bloqueo de destino activado.
     target_lock_on:
       name: "§b§lAlternar Bloqueo de Destino"
-      lore: ["", "§bActual: §c§lBloqueado§r"]
+      lore: [ "", "§bActual: §c§lBloqueado§r" ]
 
     # Este ítem se utiliza para cambiar e indicar el bloqueo de destino desactivado.
     target_lock_off:
       name: "§b§lAlternar Bloqueo de Destino"
-      lore: ["", "§bActual: §a§lDesbloqueado§r"]
+      lore: [ "", "§bActual: §a§lDesbloqueado§r" ]
 
     # Este ítem se utiliza para volver al menú anterior.
     back:
       name: "§6↩ §lVolver"
-      lore: []
+      lore: [ ]
 
     # Configuraciones para el menú de estilo del portal.
   style:
@@ -181,27 +181,27 @@ menus:
     # %1$s: Nombre del portal
     title: "§8§lEstilo para: %1$s"
     # El título para el selector de bloque para el bloque de consola activo.
-    select_block_console_active_title:     "Seleccionar bloque de consola activo."
+    select_block_console_active_title: "Seleccionar bloque de consola activo."
     # El título para el selector de bloque para el bloque de origen activo.
-    select_block_origin_active_title:      "Seleccionar bloque de origen activo."
+    select_block_origin_active_title: "Seleccionar bloque de origen activo."
     # El título para el selector de bloque para el bloque de área de portal activo.
-    select_block_portal_active_title:      "Seleccionar bloque de área de portal activo."
+    select_block_portal_active_title: "Seleccionar bloque de área de portal activo."
     # El título para el selector de bloque para el bloque de variante de límite activo 1.
-    select_block_boundary_1_active_title:   "Seleccionar bloque de variante de límite activo 1."
+    select_block_boundary_1_active_title: "Seleccionar bloque de variante de límite activo 1."
     # El título para el selector de bloque para el bloque de variante de límite activo 2.
-    select_block_boundary_2_active_title:   "Seleccionar bloque de variante de límite activo 2."
+    select_block_boundary_2_active_title: "Seleccionar bloque de variante de límite activo 2."
     # El título para el selector de bloque para el bloque de variante de límite activo 3.
-    select_block_boundary_3_active_title:   "Seleccionar bloque de variante de límite activo 3."
+    select_block_boundary_3_active_title: "Seleccionar bloque de variante de límite activo 3."
     # El título para el selector de bloque para el bloque de variante de límite activo 4.
-    select_block_boundary_4_active_title:   "Seleccionar bloque de variante de límite activo 4."
+    select_block_boundary_4_active_title: "Seleccionar bloque de variante de límite activo 4."
     # El título para el selector de bloque para el bloque de variante de límite activo 5.
-    select_block_boundary_5_active_title:   "Seleccionar bloque de variante de límite activo 5."
+    select_block_boundary_5_active_title: "Seleccionar bloque de variante de límite activo 5."
     # El título para el selector de bloque para el bloque de consola inactivo.
-    select_block_console_inactive_title:   "Seleccionar bloque de consola inactivo."
+    select_block_console_inactive_title: "Seleccionar bloque de consola inactivo."
     # El título para el selector de bloque para el bloque de origen inactivo.
-    select_block_origin_inactive_title:    "Seleccionar bloque de origen inactivo."
+    select_block_origin_inactive_title: "Seleccionar bloque de origen inactivo."
     # El título para el selector de bloque para el bloque de área de portal inactivo.
-    select_block_portal_inactive_title:    "Seleccionar bloque de área de portal inactivo."
+    select_block_portal_inactive_title: "Seleccionar bloque de área de portal inactivo."
     # El título para el selector de bloque para el bloque de variante de límite inactivo 1.
     select_block_boundary_1_inactive_title: "Seleccionar bloque de variante de límite inactivo 1."
     # El título para el selector de bloque para el bloque de variante de límite inactivo 2.
@@ -217,103 +217,103 @@ menus:
     # %1$s: Material de construcción
     block_console_active:
       name: "§b§lConsola §a(activo)"
-      lore: []
+      lore: [ ]
 
     # El ítem utilizado para representar el bloque de origen activo seleccionado.
     # %1$s: Material de construcción
     block_origin_active:
       name: "§b§lOrigen §a(activo)"
-      lore: []
+      lore: [ ]
 
     # El ítem utilizado para representar el área de portal activa seleccionada.
     # %1$s: Material de construcción
     block_portal_active:
       name: "§b§lÁrea del portal §a(activo)"
-      lore: []
+      lore: [ ]
 
     # El ítem utilizado para representar el bloque de límite activo de variante 1 seleccionado.
     # %1$s: Material de construcción
     block_boundary_1_active:
       name: "§b§lLímite §a(activo)"
-      lore: ["", "§aVariante 1", "§7Material de construcción: %1$s"]
+      lore: [ "", "§aVariante 1", "§7Material de construcción: %1$s" ]
 
     # El ítem utilizado para representar el bloque de límite activo de variante 2 seleccionado.
     # %1$s: Material de construcción
     block_boundary_2_active:
       name: "§b§lLímite §a(activo)"
-      lore: ["", "§aVariante 2", "§7Material de construcción: %1$s"]
+      lore: [ "", "§aVariante 2", "§7Material de construcción: %1$s" ]
 
     # El ítem utilizado para representar el bloque de límite activo de variante 3 seleccionado.
     # %1$s: Material de construcción
     block_boundary_3_active:
       name: "§b§lLímite §a(activo)"
-      lore: ["", "§aVariante 3", "§7Material de construcción: %1$s"]
+      lore: [ "", "§aVariante 3", "§7Material de construcción: %1$s" ]
 
     # El ítem utilizado para representar el bloque de límite activo de variante 4 seleccionado.
     # %1$s: Material de construcción
     block_boundary_4_active:
       name: "§b§lLímite §a(activo)"
-      lore: ["", "§aVariante 4", "§7Material de construcción: %1$s"]
+      lore: [ "", "§aVariante 4", "§7Material de construcción: %1$s" ]
 
     # El ítem utilizado para representar el bloque de límite activo de variante 5 seleccionado.
     # %1$s: Material de construcción
     block_boundary_5_active:
       name: "§b§lLímite §a(activo)"
-      lore: ["", "§aVariante 5", "§7Material de construcción: %1$s"]
+      lore: [ "", "§aVariante 5", "§7Material de construcción: %1$s" ]
 
     # El ítem utilizado para representar el bloque de consola inactivo seleccionado.
     # %1$s: Material de construcción
     block_console_inactive:
       name: "§b§lConsola §e(inactivo)"
-      lore: []
+      lore: [ ]
 
     # El ítem utilizado para representar el bloque de origen inactivo seleccionado.
     # %1$s: Material de construcción
     block_origin_inactive:
       name: "§b§lOrigen §e(inactivo)"
-      lore: []
+      lore: [ ]
 
     # El ítem utilizado para representar el área de portal inactiva seleccionada.
     # %1$s: Material de construcción
     block_portal_inactive:
       name: "§b§lÁrea del portal §e(inactivo)"
-      lore: []
+      lore: [ ]
 
     # El ítem utilizado para representar el bloque de límite inactivo de variante 1 seleccionado.
     # %1$s: Material de construcción
     block_boundary_1_inactive:
       name: "§b§lLímite §e(inactivo)"
-      lore: ["", "§aVariante 1", "§7Material de construcción: %1$s"]
+      lore: [ "", "§aVariante 1", "§7Material de construcción: %1$s" ]
     # El ítem utilizado para representar el bloque de límite inactivo de la variante 2 seleccionado.
     # %1$s: Material de construcción
     block_boundary_2_inactive:
       name: "§b§lLímite §e(inactivo)"
-      lore: ["", "§aVariante 2", "§7Material de construcción: %1$s"]
+      lore: [ "", "§aVariante 2", "§7Material de construcción: %1$s" ]
     # El ítem utilizado para representar el bloque de límite inactivo de la variante 3 seleccionado.
     # %1$s: Material de construcción
     block_boundary_3_inactive:
       name: "§b§lLímite §e(inactivo)"
-      lore: ["", "§aVariante 3", "§7Material de construcción: %1$s"]
+      lore: [ "", "§aVariante 3", "§7Material de construcción: %1$s" ]
     # El ítem utilizado para representar el bloque de límite inactivo de la variante 4 seleccionado.
     # %1$s: Material de construcción
     block_boundary_4_inactive:
       name: "§b§lLímite §e(inactivo)"
-      lore: ["", "§aVariante 4", "§7Material de construcción: %1$s"]
+      lore: [ "", "§aVariante 4", "§7Material de construcción: %1$s" ]
     # El ítem utilizado para representar el bloque de límite inactivo de la variante 5 seleccionado.
     # %1$s: Material de construcción
     block_boundary_5_inactive:
       name: "§b§lLímite §e(inactivo)"
-      lore: ["", "§aVariante 5", "§7Material de construcción: %1$s"]
+      lore: [ "", "§aVariante 5", "§7Material de construcción: %1$s" ]
 
     # El ítem utilizado para aplicar el estilo al portal.
     accept:
       name: "§a§lAplicar Estilo"
-      lore: []
+      lore: [ ]
 
     # El ítem utilizado para restablecer todos los cambios realizados en este menú.
     reset:
       name: "§6§lRestablecer Cambios"
-      lore: []
+      lore: [ ]
 
     # El título para el selector de estilos predefinidos.
     select_style_title: "§8§lSeleccionar Estilo"
@@ -322,17 +322,17 @@ menus:
     # El ítem utilizado para abrir el selector de estilos para estilos predefinidos.
     select_defined:
       name: "§b§lSeleccionar Estilo Definido"
-      lore: []
+      lore: [ ]
     # El ítem utilizado para representar un estilo predefinido.
     # %1$s: Nombre del estilo
     select_style:
       name: "%1$s"
-      lore: []
+      lore: [ ]
 
     # El ítem utilizado para descartar cualquier cambio y volver al menú anterior.
     cancel:
       name: "§6↩ §lDescartar Cambios"
-      lore: []
+      lore: [ ]
 
   # Configuración para el menú de consola del portal.
   console:
@@ -343,7 +343,7 @@ menus:
     # El ítem utilizado para abrir la configuración del portal.
     settings:
       name: "§b§lConfiguración"
-      lore: []
+      lore: [ ]
 
     # El ítem utilizado para abrir el selector de destino del portal.
     # %1$s: El destino actualmente seleccionado
@@ -384,29 +384,29 @@ menus:
     # El ítem utilizado para desvincular la consola actual.
     unlink_console:
       name: "§c§lDesvincular Consola"
-      lore: []
+      lore: [ ]
     # El título para el diálogo de confirmación de desvinculación.
     unlink_console_confirm_title: "§c§l¿Desvincular consola?"
     # El ítem para aceptar la desvinculación.
     unlink_console_confirm_accept:
       name: "§c§lDESVINCULAR CONSOLA"
-      lore: []
+      lore: [ ]
     # El ítem para cancelar la desvinculación.
     unlink_console_confirm_cancel:
       name: "§a§lCancelar"
-      lore: []
+      lore: [ ]
 
     # El ítem utilizado para destruir el portal.
     destroy_portal:
       name: "§c§lDestruir Portal"
-      lore: []
+      lore: [ ]
     # El título para el diálogo de confirmación de destrucción del portal.
     destroy_portal_confirm_title: "§c§l¿Destruir portal?"
     # El ítem para aceptar la destrucción.
     destroy_portal_confirm_accept:
       name: "§c§lDESTRUIR PORTAL"
-      lore: []
+      lore: [ ]
     # El ítem para cancelar la destrucción.
     destroy_portal_confirm_cancel:
       name: "§a§lCancelar"
-      lore: []
+      lore: [ ]

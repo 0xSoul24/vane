@@ -4,6 +4,7 @@ import static org.oddlama.vane.util.StorageUtil.namespaced_key;
 
 import java.lang.reflect.Field;
 import java.util.function.Function;
+
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.oddlama.vane.annotation.config.ConfigExtendedMaterial;
 import org.oddlama.vane.core.YamlLoadException;
@@ -14,10 +15,10 @@ public class ConfigExtendedMaterialField extends ConfigField<ExtendedMaterial> {
     public ConfigExtendedMaterial annotation;
 
     public ConfigExtendedMaterialField(
-        Object owner,
-        Field field,
-        Function<String, String> map_name,
-        ConfigExtendedMaterial annotation
+            Object owner,
+            Field field,
+            Function<String, String> map_name,
+            ConfigExtendedMaterial annotation
     ) {
         super(owner, field, map_name, "extended material", annotation.desc());
         this.annotation = annotation;
@@ -32,11 +33,11 @@ public class ConfigExtendedMaterialField extends ConfigField<ExtendedMaterial> {
             final var split = annotation.def().split(":");
             if (split.length != 2) {
                 throw new RuntimeException(
-                    "Invalid default extended material entry for '" +
-                    yaml_path() +
-                    "': '" +
-                    annotation.def() +
-                    "' is not a valid namespaced key"
+                        "Invalid default extended material entry for '" +
+                                yaml_path() +
+                                "': '" +
+                                annotation.def() +
+                                "' is not a valid namespaced key"
                 );
             }
             return ExtendedMaterial.from(namespaced_key(split[0], split[1]));
@@ -57,17 +58,17 @@ public class ConfigExtendedMaterialField extends ConfigField<ExtendedMaterial> {
     public void generate_yaml(StringBuilder builder, String indent, YamlConfiguration existing_compatible_config) {
         append_description(builder, indent);
         append_default_value(
-            builder,
-            indent,
-            "\"" + escape_yaml(def().key().getNamespace()) + ":" + escape_yaml(def().key().getKey()) + "\""
+                builder,
+                indent,
+                "\"" + escape_yaml(def().key().getNamespace()) + ":" + escape_yaml(def().key().getKey()) + "\""
         );
         final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
-            : def();
+                ? load_from_yaml(existing_compatible_config)
+                : def();
         append_field_definition(
-            builder,
-            indent,
-            "\"" + escape_yaml(def.key().getNamespace()) + ":" + escape_yaml(def.key().getKey()) + "\""
+                builder,
+                indent,
+                "\"" + escape_yaml(def.key().getNamespace()) + ":" + escape_yaml(def.key().getKey()) + "\""
         );
     }
 
@@ -83,18 +84,18 @@ public class ConfigExtendedMaterialField extends ConfigField<ExtendedMaterial> {
         final var split = str.split(":");
         if (split.length != 2) {
             throw new YamlLoadException(
-                "Invalid extended material entry in list '" +
-                yaml_path() +
-                "': '" +
-                str +
-                "' is not a valid namespaced key"
+                    "Invalid extended material entry in list '" +
+                            yaml_path() +
+                            "': '" +
+                            str +
+                            "' is not a valid namespaced key"
             );
         }
 
         final var mat = ExtendedMaterial.from(namespaced_key(split[0], split[1]));
         if (mat == null) {
             throw new YamlLoadException(
-                "Invalid extended material entry in list '" + yaml_path() + "': '" + str + "' does not exist"
+                    "Invalid extended material entry in list '" + yaml_path() + "': '" + str + "' does not exist"
             );
         }
     }

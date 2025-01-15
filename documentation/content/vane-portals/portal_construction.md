@@ -3,16 +3,18 @@ title = "Portal Construction"
 icon = "minecraft:crying_obsidian"
 module = "vane-portals"
 ```
+
 ---
+
 ## Materials
 
 Before you can build a portal, you need to gather the following materials:
 
-| Item | Amount | Description |
-|------|--------|-------------|
-| {{ item:minecraft:enchanting_table }} | 1 | Portal console |
-| {{ item:minecraft:netherite_block }} | 1 | Origin block |
-| {{ item:minecraft:lever }} | 1 | A switch |
+| Item                                                                                                                                                                         | Amount  | Description         |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|---------------------|
+| {{ item:minecraft:enchanting_table }}                                                                                                                                        | 1       | Portal console      |
+| {{ item:minecraft:netherite_block }}                                                                                                                                         | 1       | Origin block        |
+| {{ item:minecraft:lever }}                                                                                                                                                   | 1       | A switch            |
 | {{ item:minecraft:obsidian }} {{ item:minecraft:crying_obsidian }} {{ item:minecraft:gold_block }} {{ item:minecraft:gilded_blackstone }} {{ item:minecraft:emerald_block }} | Several | Portal frame blocks |
 
 The portal frame may be built from any of the boundary blocks.
@@ -35,7 +37,8 @@ The enclosed air will become the portal area.
 
 The netherite block, also called the origin block, marks the block on which a traveling player arrives.
 There have to be at least 1x3 blocks of portal area above the netherite block, so a player can pass through
-without suffocating. With horizontal portals, the nethrite block location doesn't matter as the player always arrives in the middle.
+without suffocating. With horizontal portals, the nethrite block location doesn't matter as the player always arrives in
+the middle.
 
 ## Console & Lever
 

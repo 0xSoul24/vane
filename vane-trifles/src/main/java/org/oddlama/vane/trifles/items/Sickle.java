@@ -1,6 +1,7 @@
 package org.oddlama.vane.trifles.items;
 
 import java.util.EnumSet;
+
 import net.kyori.adventure.key.Key;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -33,16 +34,16 @@ public abstract class Sickle extends CustomItem<Trifles> {
     public ItemStack updateItemStack(ItemStack item_stack) {
         item_stack.editMeta(meta -> {
             final var modifier_damage = new AttributeModifier(
-                namespaced_key("attack_damage"),
-                config_attack_damage,
-                AttributeModifier.Operation.ADD_NUMBER,
-                EquipmentSlotGroup.HAND
+                    namespaced_key("attack_damage"),
+                    config_attack_damage,
+                    AttributeModifier.Operation.ADD_NUMBER,
+                    EquipmentSlotGroup.HAND
             );
             final var modifier_speed = new AttributeModifier(
-                namespaced_key("attack_speed"),
-                config_attack_speed,
-                AttributeModifier.Operation.ADD_NUMBER,
-                EquipmentSlotGroup.HAND
+                    namespaced_key("attack_speed"),
+                    config_attack_speed,
+                    AttributeModifier.Operation.ADD_NUMBER,
+                    EquipmentSlotGroup.HAND
             );
             meta.removeAttributeModifier(Attribute.ATTACK_DAMAGE, modifier_damage);
             meta.addAttributeModifier(Attribute.ATTACK_DAMAGE, modifier_damage);

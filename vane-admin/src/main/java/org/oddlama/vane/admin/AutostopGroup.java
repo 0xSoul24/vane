@@ -82,11 +82,11 @@ public class AutostopGroup extends ModuleGroup<Admin> {
         start_time = System.currentTimeMillis();
         stop_time = start_time + delay;
         task = schedule_task(
-            () -> {
-                lang_shutdown.send_and_log(null);
-                get_module().getServer().shutdown();
-            },
-            ms_to_ticks(delay)
+                () -> {
+                    lang_shutdown.send_and_log(null);
+                    get_module().getServer().shutdown();
+                },
+                ms_to_ticks(delay)
         );
 
         lang_scheduled.send_and_log(sender, "§b" + format_time(delay));

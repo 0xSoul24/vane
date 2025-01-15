@@ -31,7 +31,7 @@ It will run on any [PaperMC](https://papermc.io) based minecraft server.
 
 ## 📷 Gallery
 
-Visit the [**Gallery on Modrinth**](https://modrinth.com/mod/vane/gallery) to view a selection of features or 
+Visit the [**Gallery on Modrinth**](https://modrinth.com/mod/vane/gallery) to view a selection of features or
 refer to [**the official website**](https://oddlama.github.io/vane/) for a complete overview.
 
 <p float="left">
@@ -49,21 +49,29 @@ refer to [**the official website**](https://oddlama.github.io/vane/) for a compl
 
 ## 📥 Installation
 
-<sup><sub>If you are setting up a new server, check out our [Server Installer](https://oddlama.github.io/minecraft-server)
-for an easy way to properly set up a minecraft server with vane, autostart, 3D online map, and more awesome features.</sub></sup>
+<sup><sub>If you are setting up a new server, check out
+our [Server Installer](https://oddlama.github.io/minecraft-server)
+for an easy way to properly set up a minecraft server with vane, autostart, 3D online map, and more awesome
+features.</sub></sup>
 
-Download all desired jars files from the [Releases](https://github.com/oddlama/vane/releases/latest) and put them into the `plugins/` directory.
-Grab the `all-plugins.zip` if you don't want to download each file by hand. You can also download vane from [Modrinth](https://modrinth.com/plugin/vane). Make sure that:
+Download all desired jars files from the [Releases](https://github.com/oddlama/vane/releases/latest) and put them into
+the `plugins/` directory.
+Grab the `all-plugins.zip` if you don't want to download each file by hand. You can also download vane
+from [Modrinth](https://modrinth.com/plugin/vane). Make sure that:
 
-- You are using the correct Paper (or Purpur) server version (compatible versions are listed in the title on the download page)
+- You are using the correct Paper (or Purpur) server version (compatible versions are listed in the title on the
+  download page)
 - You have the latest version of [ProtocolLib](https://ci.dmulloy2.net/job/ProtocolLib/).
-- Beware that `vane-velocity` and `vane-plexmap` (plexmap addon) are not classical server plugins! Use them only if you know what you are doing.
+- Beware that `vane-velocity` and `vane-plexmap` (plexmap addon) are not classical server plugins! Use them only if you
+  know what you are doing.
 
-For a comprehensive guide, visit the [Installation Guide](https://github.com/oddlama/vane/wiki/Installation-Guide) on the wiki.
+For a comprehensive guide, visit the [Installation Guide](https://github.com/oddlama/vane/wiki/Installation-Guide) on
+the wiki.
 
 ## Proxy Installation (vane-velocity)
 
-Download `vane-velocity.jar` and place it in the velocity proxy server's `plugins/` directory. The configuration will be generated on first start.
+Download `vane-velocity.jar` and place it in the velocity proxy server's `plugins/` directory. The configuration will be
+generated on first start.
 All configuration is handled in the plugin's `config.toml`.
 
 There are permissions players will need to perform certain actions, such as starting offline
@@ -92,7 +100,8 @@ I would like to thank the following projects and people maintaining them:
 - [PaperMC](https://papermc.io/) for the valuable additions missing from Spigot.
 - [ProtocolLib](https://github.com/dmulloy2/ProtocolLib) for the awesome protocol layer library.
 - [DynmapCoreAPI](https://github.com/webbukkit/DynmapCoreAPI) (Apache-2.0), dynmap integration
-- [BlueMapAPI](https://github.com/BlueMap-Minecraft/BlueMapAPI) (MIT), [BlueMap](https://bluemap.bluecolored.de/) integration
+- [BlueMapAPI](https://github.com/BlueMap-Minecraft/BlueMapAPI) (MIT), [BlueMap](https://bluemap.bluecolored.de/)
+  integration
 - [Quark](https://quarkmod.net) (CC-BY-NC-SA 3.0) Assets and texts for the Slime Bucket
 
 #### Included software
@@ -100,7 +109,8 @@ I would like to thank the following projects and people maintaining them:
 The following projects will be included in the compilation step:
 
 - [org.json](https://github.com/stleary/JSON-java) (MIT), Java json implementation
-- [night-config](https://github.com/TheElectronWill/night-config) (LGPL3), Java configuration library, TOML implementation used
+- [night-config](https://github.com/TheElectronWill/night-config) (LGPL3), Java configuration library, TOML
+  implementation used
 - [ronmamo reflections](https://github.com/ronmamo/reflections) (WTFPL), Java reflection helper
 - [PacketWrapper](https://github.com/dmulloy2/PacketWrapper) (LGPL3), only specific parts are included
 - [bStats](https://bstats.org/) (LGPL3), plugin metrics

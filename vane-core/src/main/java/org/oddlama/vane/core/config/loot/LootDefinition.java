@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.loot.LootTables;
 import org.oddlama.vane.core.LootTable.LootTableEntry;
@@ -88,20 +89,20 @@ public class LootDefinition {
     public static LootDefinition deserialize(String name, Object raw_dict) {
         if (!(raw_dict instanceof Map<?, ?> dict)) {
             throw new IllegalArgumentException(
-                "Invalid loot table: Argument must be a Map<String, Object>, but is " + raw_dict.getClass() + "!"
+                    "Invalid loot table: Argument must be a Map<String, Object>, but is " + raw_dict.getClass() + "!"
             );
         }
 
         final var table_dict = (Map<String, Object>) dict;
         if (!(table_dict.get("tables") instanceof List<?> tables)) {
             throw new IllegalArgumentException(
-                "Invalid loot table: Argument must be a Map<String, Object>, but is " + raw_dict.getClass() + "!"
+                    "Invalid loot table: Argument must be a Map<String, Object>, but is " + raw_dict.getClass() + "!"
             );
         }
 
         if (!(table_dict.get("items") instanceof List<?> items)) {
             throw new IllegalArgumentException(
-                "Invalid loot table: Argument must be a Map<String, Object>, but is " + raw_dict.getClass() + "!"
+                    "Invalid loot table: Argument must be a Map<String, Object>, but is " + raw_dict.getClass() + "!"
             );
         }
 
@@ -122,15 +123,15 @@ public class LootDefinition {
 
     public List<LootTableEntry> entries() {
         return entries
-            .stream()
-            .map(e ->
-                new LootTableEntry(
-                    e.chance,
-                    ItemUtil.itemstack_from_string(e.item_definition).getLeft(),
-                    e.amount_min,
-                    e.amount_max
+                .stream()
+                .map(e ->
+                        new LootTableEntry(
+                                e.chance,
+                                ItemUtil.itemstack_from_string(e.item_definition).getLeft(),
+                                e.amount_min,
+                                e.amount_max
+                        )
                 )
-            )
-            .toList();
+                .toList();
     }
 }

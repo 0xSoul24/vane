@@ -3,6 +3,7 @@ package org.oddlama.vane.regions;
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.logging.Level;
+
 import org.bukkit.plugin.Plugin;
 import org.dynmap.DynmapCommonAPI;
 import org.dynmap.DynmapCommonAPIListener;
@@ -32,13 +33,13 @@ public class RegionDynmapLayerDelegate {
     public void on_enable(final Plugin plugin) {
         try {
             DynmapCommonAPIListener.register(
-                new DynmapCommonAPIListener() {
-                    @Override
-                    public void apiEnabled(DynmapCommonAPI api) {
-                        dynmap_api = api;
-                        marker_api = dynmap_api.getMarkerAPI();
+                    new DynmapCommonAPIListener() {
+                        @Override
+                        public void apiEnabled(DynmapCommonAPI api) {
+                            dynmap_api = api;
+                            marker_api = dynmap_api.getMarkerAPI();
+                        }
                     }
-                }
             );
         } catch (Exception e) {
             get_module().log.log(Level.WARNING, "Error while enabling dynmap integration!", e);
@@ -70,10 +71,10 @@ public class RegionDynmapLayerDelegate {
         marker_set = marker_api.getMarkerSet(RegionDynmapLayer.LAYER_ID);
         if (marker_set == null) {
             marker_set = marker_api.createMarkerSet(
-                RegionDynmapLayer.LAYER_ID,
-                parent.lang_layer_label.str(),
-                null,
-                false
+                    RegionDynmapLayer.LAYER_ID,
+                    parent.lang_layer_label.str(),
+                    null,
+                    false
             );
         }
 
@@ -113,8 +114,8 @@ public class RegionDynmapLayerDelegate {
         final var marker_id = id_for(region);
         final var marker_label = parent.lang_marker_label.str(region.name());
 
-        final var xs = new double[] { min.getX(), max.getX() + 1 };
-        final var zs = new double[] { min.getZ(), max.getZ() + 1 };
+        final var xs = new double[]{min.getX(), max.getX() + 1};
+        final var zs = new double[]{min.getZ(), max.getZ() + 1};
         final var area = marker_set.createAreaMarker(marker_id, marker_label, false, world_name, xs, zs, false);
         area.setRangeY(max.getY() + 1, min.getY());
         area.setLineStyle(parent.config_line_weight, parent.config_line_opacity, parent.config_line_color);

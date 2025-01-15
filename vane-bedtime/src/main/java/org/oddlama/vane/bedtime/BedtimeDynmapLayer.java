@@ -1,6 +1,7 @@
 package org.oddlama.vane.bedtime;
 
 import java.util.UUID;
+
 import org.bukkit.OfflinePlayer;
 import org.oddlama.vane.annotation.config.ConfigBoolean;
 import org.oddlama.vane.annotation.config.ConfigInt;
@@ -33,10 +34,10 @@ public class BedtimeDynmapLayer extends ModuleComponent<Bedtime> {
 
     public BedtimeDynmapLayer(final Context<Bedtime> context) {
         super(
-            context.group(
-                "dynmap",
-                "Enable dynmap integration. Player spawnpoints (beds) will then be shown on a separate dynmap layer."
-            )
+                context.group(
+                        "dynmap",
+                        "Enable dynmap integration. Player spawnpoints (beds) will then be shown on a separate dynmap layer."
+                )
         );
     }
 

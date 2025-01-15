@@ -23,11 +23,11 @@ import org.oddlama.vane.core.module.Context;
 import org.oddlama.vane.enchantments.Enchantments;
 
 @VaneEnchantment(
-    name = "seeding",
-    max_level = 4,
-    rarity = Rarity.COMMON,
-    treasure = true,
-    target = EnchantmentTarget.TOOL
+        name = "seeding",
+        max_level = 4,
+        rarity = Rarity.COMMON,
+        treasure = true,
+        target = EnchantmentTarget.TOOL
 )
 public class Seeding extends CustomEnchantment<Enchantments> {
 
@@ -38,17 +38,17 @@ public class Seeding extends CustomEnchantment<Enchantments> {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("1 7", "2b6", "345")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_knowledge")
-                .set_ingredient('1', Material.PUMPKIN_SEEDS)
-                .set_ingredient('2', Material.CARROT)
-                .set_ingredient('3', Material.WHEAT_SEEDS)
-                .set_ingredient('4', Material.NETHER_WART)
-                .set_ingredient('5', Material.BEETROOT_SEEDS)
-                .set_ingredient('6', Material.POTATO)
-                .set_ingredient('7', Material.MELON_SEEDS)
-                .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
+                new ShapedRecipeDefinition("generic")
+                        .shape("1 7", "2b6", "345")
+                        .set_ingredient('b', "vane_enchantments:ancient_tome_of_knowledge")
+                        .set_ingredient('1', Material.PUMPKIN_SEEDS)
+                        .set_ingredient('2', Material.CARROT)
+                        .set_ingredient('3', Material.WHEAT_SEEDS)
+                        .set_ingredient('4', Material.NETHER_WART)
+                        .set_ingredient('5', Material.BEETROOT_SEEDS)
+                        .set_ingredient('6', Material.POTATO)
+                        .set_ingredient('7', Material.MELON_SEEDS)
+                        .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
         );
     }
 

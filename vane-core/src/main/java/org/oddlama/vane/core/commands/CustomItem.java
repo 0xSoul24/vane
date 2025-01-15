@@ -25,26 +25,26 @@ public class CustomItem extends Command<Core> {
     public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
         // Help
         return super.get_command_base()
-            .executes(stack -> {
-                print_help2(stack);
-                return SINGLE_SUCCESS;
-            })
-            .then(help())
-            // Give custom item
-            .then(
-                literal("give")
-                    .requires(stack -> stack.getSender() instanceof Player)
-                    .then(
-                        argument("custom_item", CustomItemArgumentType.customItem(get_module())).executes(ctx -> {
-                            org.oddlama.vane.core.item.api.CustomItem item = ctx.getArgument(
-                                "custom_item",
-                                org.oddlama.vane.core.item.api.CustomItem.class
-                            );
-                            give_custom_item((Player) ctx.getSource().getSender(), item);
-                            return SINGLE_SUCCESS;
-                        })
-                    )
-            );
+                .executes(stack -> {
+                    print_help2(stack);
+                    return SINGLE_SUCCESS;
+                })
+                .then(help())
+                // Give custom item
+                .then(
+                        literal("give")
+                                .requires(stack -> stack.getSender() instanceof Player)
+                                .then(
+                                        argument("custom_item", CustomItemArgumentType.customItem(get_module())).executes(ctx -> {
+                                            org.oddlama.vane.core.item.api.CustomItem item = ctx.getArgument(
+                                                    "custom_item",
+                                                    org.oddlama.vane.core.item.api.CustomItem.class
+                                            );
+                                            give_custom_item((Player) ctx.getSource().getSender(), item);
+                                            return SINGLE_SUCCESS;
+                                        })
+                                )
+                );
     }
 
     private void give_custom_item(final Player player, final org.oddlama.vane.core.item.api.CustomItem custom_item) {

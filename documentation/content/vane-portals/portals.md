@@ -3,7 +3,9 @@ title = "Portals"
 icon = "minecraft:ender_pearl"
 module = "vane-portals"
 ```
+
 ---
+
 ## Overview
 
 ![](images/portal_boundary.png)
@@ -24,5 +26,6 @@ Afterwards, activate the portal lever and step through.
 - Public portals can be activated by a redstone repeater.
 - A portal can have multiple consoles.
 - Any lever attached to the portal or next to the console can be used to control the portal.
-- If a portal is in a vane-region, it gains two new visibility options to make it visible only to other portals in the same region or to players that have portal access in the region.
+- If a portal is in a vane-region, it gains two new visibility options to make it visible only to other portals in the
+  same region or to players that have portal access in the region.
 - Portals can be visible to only some players, but while a portal is opened, everyone may pass through.

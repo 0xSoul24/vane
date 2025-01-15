@@ -12,6 +12,7 @@ import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Level;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -49,7 +50,9 @@ import org.oddlama.vane.core.resourcepack.ResourcePackGenerator;
 @VaneModule(name = "core", bstats = 8637, config_version = 6, lang_version = 4, storage_version = 1)
 public class Core extends Module<Core> {
 
-    /** Use sparingly. */
+    /**
+     * Use sparingly.
+     */
     private static Core INSTANCE = null;
 
     public static Core instance() {
@@ -61,8 +64,8 @@ public class Core extends Module<Core> {
     private CustomItemRegistry item_registry;
 
     @ConfigBoolean(
-        def = true,
-        desc = "Allow loading of player heads in relevant menus. Disabling this will show all player heads using the Steve skin, which may perform better on low-performance servers and clients."
+            def = true,
+            desc = "Allow loading of player heads in relevant menus. Disabling this will show all player heads using the Steve skin, which may perform better on low-performance servers and clients."
     )
     public boolean config_player_heads_in_menus;
 
@@ -94,17 +97,17 @@ public class Core extends Module<Core> {
 
     // Vane global command catch-all permission
     public Permission permission_command_catchall = new Permission(
-        "vane.*.commands.*",
-        "Allow access to all vane commands (ONLY FOR ADMINS!)",
-        PermissionDefault.FALSE
+            "vane.*.commands.*",
+            "Allow access to all vane commands (ONLY FOR ADMINS!)",
+            PermissionDefault.FALSE
     );
 
     public MenuManager menu_manager;
 
     // core-config
     @ConfigBoolean(
-        def = true,
-        desc = "Let the client translate messages using the generated resource pack. This allows every player to select their preferred language, and all plugin messages will also be translated. Disabling this won't allow you to skip generating the resource pack, as it will be needed for custom item textures."
+            def = true,
+            desc = "Let the client translate messages using the generated resource pack. This allows every player to select their preferred language, and all plugin messages will also be translated. Disabling this won't allow you to skip generating the resource pack, as it will be needed for custom item textures."
     )
     public boolean config_client_side_translations;
 
@@ -161,16 +164,16 @@ public class Core extends Module<Core> {
             final var frozen = MappedRegistry.class.getDeclaredField("l"/* frozen */);
             frozen.setAccessible(true);
             final var intrusive_holder_cache =
-                MappedRegistry.class.getDeclaredField(
-                        "m"/* unregisteredIntrusiveHolders (1.19.3+), intrusiveHolderCache (until 1.19.2) */
+                    MappedRegistry.class.getDeclaredField(
+                            "m"/* unregisteredIntrusiveHolders (1.19.3+), intrusiveHolderCache (until 1.19.2) */
                     );
             intrusive_holder_cache.setAccessible(true);
 
             // Unfreeze required registries
             frozen.set(BuiltInRegistries.ENTITY_TYPE, false);
             intrusive_holder_cache.set(
-                BuiltInRegistries.ENTITY_TYPE,
-                new IdentityHashMap<EntityType<?>, Holder.Reference<EntityType<?>>>()
+                    BuiltInRegistries.ENTITY_TYPE,
+                    new IdentityHashMap<EntityType<?>, Holder.Reference<EntityType<?>>>()
             );
             // Since 1.20.2 this is also needed for enchantments:
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
@@ -179,7 +182,8 @@ public class Core extends Module<Core> {
     }
 
     @Override
-    public void on_disable() {}
+    public void on_disable() {
+    }
 
     public File generate_resource_pack() {
         try {
@@ -229,11 +233,11 @@ public class Core extends Module<Core> {
             latest_version = json.getString("tag_name");
             if (latest_version != null && !latest_version.equals(current_version)) {
                 log.warning(
-                    "A newer version of vane is available online! (current=" +
-                    current_version +
-                    ", new=" +
-                    latest_version +
-                    ")"
+                        "A newer version of vane is available online! (current=" +
+                                current_version +
+                                ", new=" +
+                                latest_version +
+                                ")"
                 );
                 log.warning("Please update as soon as possible to get the latest features and fixes.");
                 log.warning("Get the latest release here: https://github.com/oddlama/vane/releases/latest");
@@ -254,22 +258,22 @@ public class Core extends Module<Core> {
             // This message is intentionally not translated to ensure it will
             // be displayed correctly and so that everyone understands it.
             event
-                .getPlayer()
-                .sendMessage(
-                    Component.text("A new version of vane ", NamedTextColor.GREEN)
-                        .append(Component.text("(" + latest_version + ")", NamedTextColor.AQUA))
-                        .append(Component.text(" is available!", NamedTextColor.GREEN))
-                );
+                    .getPlayer()
+                    .sendMessage(
+                            Component.text("A new version of vane ", NamedTextColor.GREEN)
+                                    .append(Component.text("(" + latest_version + ")", NamedTextColor.AQUA))
+                                    .append(Component.text(" is available!", NamedTextColor.GREEN))
+                    );
             event
-                .getPlayer()
-                .sendMessage(Component.text("Please update soon to get the latest features.", NamedTextColor.GREEN));
+                    .getPlayer()
+                    .sendMessage(Component.text("Please update soon to get the latest features.", NamedTextColor.GREEN));
             event
-                .getPlayer()
-                .sendMessage(
-                    Component.text("Click here to go to the download page", NamedTextColor.AQUA).clickEvent(
-                        ClickEvent.openUrl("https://github.com/oddlama/vane/releases/latest")
-                    )
-                );
+                    .getPlayer()
+                    .sendMessage(
+                            Component.text("Click here to go to the download page", NamedTextColor.AQUA).clickEvent(
+                                    ClickEvent.openUrl("https://github.com/oddlama/vane/releases/latest")
+                            )
+                    );
         }
     }
 }

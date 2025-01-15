@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -24,19 +25,19 @@ import org.jetbrains.annotations.NotNull;
 public class BlockUtil {
 
     public static final List<BlockFace> BLOCK_FACES = Arrays.asList(
-        BlockFace.NORTH,
-        BlockFace.EAST,
-        BlockFace.SOUTH,
-        BlockFace.WEST,
-        BlockFace.UP,
-        BlockFace.DOWN
+            BlockFace.NORTH,
+            BlockFace.EAST,
+            BlockFace.SOUTH,
+            BlockFace.WEST,
+            BlockFace.UP,
+            BlockFace.DOWN
     );
 
     public static final List<BlockFace> XZ_FACES = Arrays.asList(
-        BlockFace.NORTH,
-        BlockFace.EAST,
-        BlockFace.SOUTH,
-        BlockFace.WEST
+            BlockFace.NORTH,
+            BlockFace.EAST,
+            BlockFace.SOUTH,
+            BlockFace.WEST
     );
 
     public static final int NEAREST_RELATIVE_BLOCKS_FOR_RADIUS_MAX = 6;
@@ -58,9 +59,9 @@ public class BlockUtil {
 
     public static void drop_naturally(Location loc, ItemStack drop) {
         loc
-            .getWorld()
-            .dropItem(loc.add(Vector.getRandom().subtract(new Vector(.5, .5, .5)).multiply(0.5)), drop)
-            .setVelocity(Vector.getRandom().add(new Vector(-.5, +.5, -.5)).normalize().multiply(.15));
+                .getWorld()
+                .dropItem(loc.add(Vector.getRandom().subtract(new Vector(.5, .5, .5)).multiply(0.5)), drop)
+                .setVelocity(Vector.getRandom().add(new Vector(-.5, +.5, -.5)).normalize().multiply(.15));
     }
 
     public static List<BlockVector> nearest_blocks_for_radius(int radius) {
@@ -220,7 +221,9 @@ public class BlockUtil {
             return new Corner(x, y, south);
         }
 
-        /** Rotates the corner as if it were on a north facing block given the block's rotation. */
+        /**
+         * Rotates the corner as if it were on a north facing block given the block's rotation.
+         */
         public Corner rotate_to_north_reference(final BlockFace rotation) {
             switch (rotation) {
                 default:
@@ -236,7 +239,9 @@ public class BlockUtil {
             }
         }
 
-        /** Returns {NORTH, SOUTH}_{EAST, WEST} to indicate the XZ corner. */
+        /**
+         * Returns {NORTH, SOUTH}_{EAST, WEST} to indicate the XZ corner.
+         */
         public BlockFace xz_face() {
             if (x) {
                 if (z) {
@@ -300,9 +305,9 @@ public class BlockUtil {
         // a bit inside the clicked face, so we don't get ambiguous results.
         final var block_middle = block.getLocation().toVector().add(new Vector(0.5, 0.5, 0.5));
         final var hit = result
-            .getHitPosition()
-            .subtract(block_middle)
-            .subtract(result.getHitBlockFace().getDirection().multiply(0.25));
+                .getHitPosition()
+                .subtract(block_middle)
+                .subtract(result.getHitBlockFace().getDirection().multiply(0.25));
 
         return new Oct(hit, result.getHitBlockFace());
     }
@@ -364,8 +369,8 @@ public class BlockUtil {
         @Override
         public int compare(BlockVector a, BlockVector b) {
             return (
-                (a.getBlockX() * a.getBlockX() + a.getBlockY() * a.getBlockY() + a.getBlockZ() * a.getBlockZ()) -
-                (b.getBlockX() * b.getBlockX() + b.getBlockY() * b.getBlockY() + b.getBlockZ() * b.getBlockZ())
+                    (a.getBlockX() * a.getBlockX() + a.getBlockY() * a.getBlockY() + a.getBlockZ() * a.getBlockZ()) -
+                            (b.getBlockX() * b.getBlockX() + b.getBlockY() * b.getBlockY() + b.getBlockZ() * b.getBlockZ())
             );
         }
     }

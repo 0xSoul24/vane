@@ -3,6 +3,7 @@ package org.oddlama.vane.core.lang;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -38,10 +39,10 @@ public class TranslatedMessageArray {
                     args_as_strings[i] = args[i];
                 } else {
                     throw new RuntimeException(
-                        "Error while formatting message '" +
-                        key() +
-                        "', invalid argument to str() serializer: " +
-                        args[i]
+                            "Error while formatting message '" +
+                                    key() +
+                                    "', invalid argument to str() serializer: " +
+                                    args[i]
                     );
                 }
             }
@@ -59,9 +60,9 @@ public class TranslatedMessageArray {
     public List<Component> format(Object... args) {
         if (!module.core.config_client_side_translations) {
             return str(args)
-                .stream()
-                .map(s -> LegacyComponentSerializer.legacySection().deserialize(s))
-                .collect(Collectors.toList());
+                    .stream()
+                    .map(s -> LegacyComponentSerializer.legacySection().deserialize(s))
+                    .collect(Collectors.toList());
         }
 
         final var arr = new ArrayList<Component>();
@@ -74,7 +75,7 @@ public class TranslatedMessageArray {
                     list.add(LegacyComponentSerializer.legacySection().deserialize((String) o));
                 } else {
                     throw new RuntimeException(
-                        "Error while formatting message '" + key() + "', got invalid argument " + o
+                            "Error while formatting message '" + key() + "', got invalid argument " + o
                     );
                 }
             }

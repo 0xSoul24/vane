@@ -2,6 +2,7 @@ package org.oddlama.vane.portals.menu;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
+
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -71,74 +72,74 @@ public class ConsoleMenu extends ModuleComponent<Portals> {
         super(context.namespace("console"));
         final var ctx = get_context();
         item_settings = new TranslatedItemStack<>(
-            ctx,
-            "settings",
-            Material.WRITABLE_BOOK,
-            1,
-            "Used to enter portal settings."
+                ctx,
+                "settings",
+                Material.WRITABLE_BOOK,
+                1,
+                "Used to enter portal settings."
         );
         item_select_target = new TranslatedItemStack<>(
-            ctx,
-            "select_target",
-            Material.COMPASS,
-            1,
-            "Used to enter portal target selection."
+                ctx,
+                "select_target",
+                Material.COMPASS,
+                1,
+                "Used to enter portal target selection."
         );
         item_select_target_portal = new TranslatedItemStack<>(
-            ctx,
-            "select_target_portal",
-            Material.COMPASS,
-            1,
-            "Used to represent a portal in the target selection menu."
+                ctx,
+                "select_target_portal",
+                Material.COMPASS,
+                1,
+                "Used to represent a portal in the target selection menu."
         );
         item_select_target_locked = new TranslatedItemStack<>(
-            ctx,
-            "select_target_locked",
-            Material.FIREWORK_STAR,
-            1,
-            "Used to show portal target selection when the target is locked."
+                ctx,
+                "select_target_locked",
+                Material.FIREWORK_STAR,
+                1,
+                "Used to show portal target selection when the target is locked."
         );
         item_unlink_console = new TranslatedItemStack<>(
-            ctx,
-            "unlink_console",
-            StorageUtil.namespaced_key("vane", "decoration_tnt_1"),
-            1,
-            "Used to unlink the current console."
+                ctx,
+                "unlink_console",
+                StorageUtil.namespaced_key("vane", "decoration_tnt_1"),
+                1,
+                "Used to unlink the current console."
         );
         item_unlink_console_confirm_accept = new TranslatedItemStack<>(
-            ctx,
-            "unlink_console_confirm_accept",
-            StorageUtil.namespaced_key("vane", "decoration_tnt_1"),
-            1,
-            "Used to confirm unlinking the current console."
+                ctx,
+                "unlink_console_confirm_accept",
+                StorageUtil.namespaced_key("vane", "decoration_tnt_1"),
+                1,
+                "Used to confirm unlinking the current console."
         );
         item_unlink_console_confirm_cancel = new TranslatedItemStack<>(
-            ctx,
-            "unlink_console_confirm_cancel",
-            Material.PRISMARINE_SHARD,
-            1,
-            "Used to cancel unlinking the current console."
+                ctx,
+                "unlink_console_confirm_cancel",
+                Material.PRISMARINE_SHARD,
+                1,
+                "Used to cancel unlinking the current console."
         );
         item_destroy_portal = new TranslatedItemStack<>(
-            ctx,
-            "destroy_portal",
-            Material.TNT,
-            1,
-            "Used to destroy the portal."
+                ctx,
+                "destroy_portal",
+                Material.TNT,
+                1,
+                "Used to destroy the portal."
         );
         item_destroy_portal_confirm_accept = new TranslatedItemStack<>(
-            ctx,
-            "destroy_portal_confirm_accept",
-            Material.TNT,
-            1,
-            "Used to confirm destroying the portal."
+                ctx,
+                "destroy_portal_confirm_accept",
+                Material.TNT,
+                1,
+                "Used to confirm destroying the portal."
         );
         item_destroy_portal_confirm_cancel = new TranslatedItemStack<>(
-            ctx,
-            "destroy_portal_confirm_cancel",
-            Material.PRISMARINE_SHARD,
-            1,
-            "Used to cancel destroying the portal."
+                ctx,
+                "destroy_portal_confirm_cancel",
+                Material.PRISMARINE_SHARD,
+                1,
+                "Used to cancel destroying the portal."
         );
     }
 
@@ -196,12 +197,12 @@ public class ConsoleMenu extends ModuleComponent<Portals> {
 
     private Component portal_visibility(Portal.Visibility visibility) {
         return (
-            switch (visibility) {
-                case PUBLIC -> lang_select_target_portal_visibility_public;
-                case GROUP -> lang_select_target_portal_visibility_group;
-                case GROUP_INTERNAL -> lang_select_target_portal_visibility_group_internal;
-                case PRIVATE -> lang_select_target_portal_visibility_private;
-            }
+                switch (visibility) {
+                    case PUBLIC -> lang_select_target_portal_visibility_public;
+                    case GROUP -> lang_select_target_portal_visibility_group;
+                    case GROUP_INTERNAL -> lang_select_target_portal_visibility_group_internal;
+                    case PRIVATE -> lang_select_target_portal_visibility_private;
+                }
         ).format();
     }
 
@@ -212,69 +213,69 @@ public class ConsoleMenu extends ModuleComponent<Portals> {
             } else {
                 menu.close(player);
                 final var all_portals = get_module()
-                    .all_available_portals()
-                    .stream()
-                    .filter(p -> {
-                        switch (p.visibility()) {
-                            case PUBLIC:
-                                return true;
-                            case GROUP:
-                                return get_module().player_can_use_portals_in_region_group_of(player, p);
-                            case GROUP_INTERNAL:
-                                return get_module().is_in_same_region_group(portal, p);
-                            case PRIVATE:
-                                return player.getUniqueId().equals(p.owner());
-                        }
-                        return false;
-                    })
-                    .filter(p -> !Objects.equals(p.id(), portal.id()))
-                    .sorted(new Portal.TargetSelectionComparator(player))
-                    .collect(Collectors.toList());
+                        .all_available_portals()
+                        .stream()
+                        .filter(p -> {
+                            switch (p.visibility()) {
+                                case PUBLIC:
+                                    return true;
+                                case GROUP:
+                                    return get_module().player_can_use_portals_in_region_group_of(player, p);
+                                case GROUP_INTERNAL:
+                                    return get_module().is_in_same_region_group(portal, p);
+                                case PRIVATE:
+                                    return player.getUniqueId().equals(p.owner());
+                            }
+                            return false;
+                        })
+                        .filter(p -> !Objects.equals(p.id(), portal.id()))
+                        .sorted(new Portal.TargetSelectionComparator(player))
+                        .collect(Collectors.toList());
 
                 final var filter = new Filter.StringFilter<Portal>((p, str) -> p.name().toLowerCase().contains(str));
                 MenuFactory.generic_selector(
-                    get_context(),
-                    player,
-                    lang_select_target_title.str(),
-                    lang_filter_portals_title.str(),
-                    all_portals,
-                    p -> {
-                        final var dist = p
-                            .spawn()
-                            .toVector()
-                            .setY(0.0)
-                            .distance(player.getLocation().toVector().setY(0.0));
-                        return item_select_target_portal.alternative(
-                            get_module().icon_for(p),
-                            "§a§l" + p.name(),
-                            "§6" + String.format("%.1f", dist),
-                            "§b" + p.spawn().getWorld().getName(),
-                            portal_visibility(p.visibility())
-                        );
-                    },
-                    filter,
-                    (player2, m, t) -> {
-                        m.close(player2);
+                                get_context(),
+                                player,
+                                lang_select_target_title.str(),
+                                lang_filter_portals_title.str(),
+                                all_portals,
+                                p -> {
+                                    final var dist = p
+                                            .spawn()
+                                            .toVector()
+                                            .setY(0.0)
+                                            .distance(player.getLocation().toVector().setY(0.0));
+                                    return item_select_target_portal.alternative(
+                                            get_module().icon_for(p),
+                                            "§a§l" + p.name(),
+                                            "§6" + String.format("%.1f", dist),
+                                            "§b" + p.spawn().getWorld().getName(),
+                                            portal_visibility(p.visibility())
+                                    );
+                                },
+                                filter,
+                                (player2, m, t) -> {
+                                    m.close(player2);
 
-                        final var select_target_event = new PortalSelectTargetEvent(player2, portal, t, false);
-                        get_module().getServer().getPluginManager().callEvent(select_target_event);
-                        if (
-                            select_target_event.isCancelled() && !player2.hasPermission(get_module().admin_permission)
-                        ) {
-                            get_module().lang_select_target_restricted.send(player2);
-                            return ClickResult.ERROR;
-                        }
+                                    final var select_target_event = new PortalSelectTargetEvent(player2, portal, t, false);
+                                    get_module().getServer().getPluginManager().callEvent(select_target_event);
+                                    if (
+                                            select_target_event.isCancelled() && !player2.hasPermission(get_module().admin_permission)
+                                    ) {
+                                        get_module().lang_select_target_restricted.send(player2);
+                                        return ClickResult.ERROR;
+                                    }
 
-                        portal.target_id(t.id());
+                                    portal.target_id(t.id());
 
-                        // Update portal block to reflect new target on consoles
-                        portal.update_blocks(get_module());
-                        return ClickResult.SUCCESS;
-                    },
-                    player2 -> menu.open(player2)
-                )
-                    .tag(new PortalMenuTag(portal.id()))
-                    .open(player);
+                                    // Update portal block to reflect new target on consoles
+                                    portal.update_blocks(get_module());
+                                    return ClickResult.SUCCESS;
+                                },
+                                player2 -> menu.open(player2)
+                        )
+                        .tag(new PortalMenuTag(portal.id()))
+                        .open(player);
                 return ClickResult.SUCCESS;
             }
         }) {
@@ -295,33 +296,33 @@ public class ConsoleMenu extends ModuleComponent<Portals> {
         return new MenuItem(7, item_unlink_console.item(), (player, menu, self) -> {
             menu.close(player);
             MenuFactory.confirm(
-                get_context(),
-                lang_unlink_console_confirm_title.str(),
-                item_unlink_console_confirm_accept.item(),
-                player2 -> {
-                    // Call event
-                    final var event = new PortalUnlinkConsoleEvent(player2, console, portal, false);
-                    get_module().getServer().getPluginManager().callEvent(event);
-                    if (event.isCancelled() && !player2.hasPermission(get_module().admin_permission)) {
-                        get_module().lang_unlink_restricted.send(player2);
-                        return ClickResult.ERROR;
-                    }
+                            get_context(),
+                            lang_unlink_console_confirm_title.str(),
+                            item_unlink_console_confirm_accept.item(),
+                            player2 -> {
+                                // Call event
+                                final var event = new PortalUnlinkConsoleEvent(player2, console, portal, false);
+                                get_module().getServer().getPluginManager().callEvent(event);
+                                if (event.isCancelled() && !player2.hasPermission(get_module().admin_permission)) {
+                                    get_module().lang_unlink_restricted.send(player2);
+                                    return ClickResult.ERROR;
+                                }
 
-                    final var portal_block = portal.portal_block_for(console);
-                    if (portal_block == null) {
-                        // The Console was likely already removed by another
-                        // player
-                        return ClickResult.ERROR;
-                    }
+                                final var portal_block = portal.portal_block_for(console);
+                                if (portal_block == null) {
+                                    // The Console was likely already removed by another
+                                    // player
+                                    return ClickResult.ERROR;
+                                }
 
-                    get_module().remove_portal_block(portal, portal_block);
-                    return ClickResult.SUCCESS;
-                },
-                item_unlink_console_confirm_cancel.item(),
-                player2 -> menu.open(player2)
-            )
-                .tag(new PortalMenuTag(portal.id()))
-                .open(player);
+                                get_module().remove_portal_block(portal, portal_block);
+                                return ClickResult.SUCCESS;
+                            },
+                            item_unlink_console_confirm_cancel.item(),
+                            player2 -> menu.open(player2)
+                    )
+                    .tag(new PortalMenuTag(portal.id()))
+                    .open(player);
             return ClickResult.SUCCESS;
         });
     }
@@ -330,33 +331,35 @@ public class ConsoleMenu extends ModuleComponent<Portals> {
         return new MenuItem(8, item_destroy_portal.item(), (player, menu, self) -> {
             menu.close(player);
             MenuFactory.confirm(
-                get_context(),
-                lang_destroy_portal_confirm_title.str(),
-                item_destroy_portal_confirm_accept.item(),
-                player2 -> {
-                    // Call event
-                    final var event = new PortalDestroyEvent(player2, portal, false);
-                    get_module().getServer().getPluginManager().callEvent(event);
-                    if (event.isCancelled() && !player2.hasPermission(get_module().admin_permission)) {
-                        get_module().lang_destroy_restricted.send(player2);
-                        return ClickResult.ERROR;
-                    }
+                            get_context(),
+                            lang_destroy_portal_confirm_title.str(),
+                            item_destroy_portal_confirm_accept.item(),
+                            player2 -> {
+                                // Call event
+                                final var event = new PortalDestroyEvent(player2, portal, false);
+                                get_module().getServer().getPluginManager().callEvent(event);
+                                if (event.isCancelled() && !player2.hasPermission(get_module().admin_permission)) {
+                                    get_module().lang_destroy_restricted.send(player2);
+                                    return ClickResult.ERROR;
+                                }
 
-                    get_module().remove_portal(portal);
-                    return ClickResult.SUCCESS;
-                },
-                item_destroy_portal_confirm_cancel.item(),
-                player2 -> menu.open(player2)
-            )
-                .tag(new PortalMenuTag(portal.id()))
-                .open(player);
+                                get_module().remove_portal(portal);
+                                return ClickResult.SUCCESS;
+                            },
+                            item_destroy_portal_confirm_cancel.item(),
+                            player2 -> menu.open(player2)
+                    )
+                    .tag(new PortalMenuTag(portal.id()))
+                    .open(player);
             return ClickResult.SUCCESS;
         });
     }
 
     @Override
-    public void on_enable() {}
+    public void on_enable() {
+    }
 
     @Override
-    public void on_disable() {}
+    public void on_disable() {
+    }
 }

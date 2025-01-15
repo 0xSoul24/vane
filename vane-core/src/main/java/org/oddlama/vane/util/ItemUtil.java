@@ -10,11 +10,13 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -91,9 +93,9 @@ public class ItemUtil {
     public static ItemStack set_lore(final ItemStack item, final List<Component> lore) {
         item.editMeta(meta -> {
             final var list = lore
-                .stream()
-                .map(x -> x.decoration(TextDecoration.ITALIC, false))
-                .collect(Collectors.toList());
+                    .stream()
+                    .map(x -> x.decoration(TextDecoration.ITALIC, false))
+                    .collect(Collectors.toList());
             meta.lore(list);
         });
 
@@ -102,19 +104,19 @@ public class ItemUtil {
 
     public static ItemStack name_item(final ItemStack item, Component name, final List<Component> lore) {
         var meta = item.getItemMeta();
-		if (meta == null) {
-			// Cannot name item without meta (probably air)
-			return item;
-		}
+        if (meta == null) {
+            // Cannot name item without meta (probably air)
+            return item;
+        }
 
         name = name.decoration(TextDecoration.ITALIC, false);
         meta.displayName(name);
 
         if (lore != null) {
             final var list = lore
-                .stream()
-                .map(x -> x.decoration(TextDecoration.ITALIC, false))
-                .collect(Collectors.toList());
+                    .stream()
+                    .map(x -> x.decoration(TextDecoration.ITALIC, false))
+                    .collect(Collectors.toList());
             meta.lore(list);
         }
 
@@ -159,23 +161,23 @@ public class ItemUtil {
         }
 
         final var a_sorted = ae
-            .entrySet()
-            .stream()
-            .sorted(
-                Map.Entry.<Enchantment, Integer>comparingByKey((a, b) ->
-                    a.getKey().toString().compareTo(b.getKey().toString())
-                ).thenComparing(Map.Entry.comparingByValue())
-            )
-            .toList();
+                .entrySet()
+                .stream()
+                .sorted(
+                        Map.Entry.<Enchantment, Integer>comparingByKey((a, b) ->
+                                a.getKey().toString().compareTo(b.getKey().toString())
+                        ).thenComparing(Map.Entry.comparingByValue())
+                )
+                .toList();
         final var b_sorted = be
-            .entrySet()
-            .stream()
-            .sorted(
-                Map.Entry.<Enchantment, Integer>comparingByKey((a, b) ->
-                    a.getKey().toString().compareTo(b.getKey().toString())
-                ).thenComparing(Map.Entry.comparingByValue())
-            )
-            .toList();
+                .entrySet()
+                .stream()
+                .sorted(
+                        Map.Entry.<Enchantment, Integer>comparingByKey((a, b) ->
+                                a.getKey().toString().compareTo(b.getKey().toString())
+                        ).thenComparing(Map.Entry.comparingByValue())
+                )
+                .toList();
 
         // Lastly, compare names and levels
         final var ait = a_sorted.iterator();
@@ -265,15 +267,17 @@ public class ItemUtil {
         final var item = new ItemStack(Material.PLAYER_HEAD);
         final var meta = (SkullMeta) item.getItemMeta();
         final var name_component = Component.text(name)
-            .decoration(TextDecoration.ITALIC, false)
-            .color(NamedTextColor.YELLOW);
+                .decoration(TextDecoration.ITALIC, false)
+                .color(NamedTextColor.YELLOW);
         meta.displayName(name_component);
         meta.setPlayerProfile(profile);
         item.setItemMeta(meta);
         return item;
     }
 
-    /** Returns true if the given component is guarded by the given sentinel. */
+    /**
+     * Returns true if the given component is guarded by the given sentinel.
+     */
     public static boolean has_sentinel(final Component component, final NamespacedKey sentiel) {
         if (component == null) {
             return false;
@@ -308,7 +312,7 @@ public class ItemUtil {
         enchants = enchants.trim();
         if (!enchants.startsWith("{") || !enchants.endsWith("}")) {
             throw new IllegalArgumentException(
-                "enchantments must be of form {<namespace:enchant>[*<level>][,<namespace:enchant>[*<level>]]...}"
+                    "enchantments must be of form {<namespace:enchant>[*<level>][,<namespace:enchant>[*<level>]]...}"
             );
         }
 
@@ -325,11 +329,11 @@ public class ItemUtil {
             }
 
             final var ench = RegistryAccess.registryAccess()
-                .getRegistry(RegistryKey.ENCHANTMENT)
-                .get(NamespacedKey.fromString(key));
+                    .getRegistry(RegistryKey.ENCHANTMENT)
+                    .get(NamespacedKey.fromString(key));
             if (ench == null) {
                 throw new IllegalArgumentException(
-                    "Cannot apply unknown enchantment '" + key + "' to item '" + item_stack + "'"
+                        "Cannot apply unknown enchantment '" + key + "' to item '" + item_stack + "'"
                 );
             }
 
@@ -347,7 +351,9 @@ public class ItemUtil {
         return item_stack;
     }
 
-    /** Returns the itemstack and a boolean indicating whether it was just as simlpe material. */
+    /**
+     * Returns the itemstack and a boolean indicating whether it was just as simlpe material.
+     */
     public static @NotNull Pair<ItemStack, Boolean> itemstack_from_string(String definition) {
         // namespace:key[[components]][#enchants{}], where the key can reference a
         // material, head material or customitem.
@@ -384,8 +390,8 @@ public class ItemUtil {
         final var vanilla_definition = item_stack.getType().key() + definition.substring(nbt_delim);
         try {
             final var parsed_nbt = new ItemParser(Commands.createValidationContext(VanillaRegistries.createLookup()))
-                .parse(new StringReader(vanilla_definition))
-                .components();
+                    .parse(new StringReader(vanilla_definition))
+                    .components();
 
             // Now apply the NBT be parsed by minecraft's internal parser to the itemstack.
             final var nms_item = item_handle(item_stack).copy();

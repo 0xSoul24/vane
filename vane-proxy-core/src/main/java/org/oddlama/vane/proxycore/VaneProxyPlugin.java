@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.oddlama.vane.proxycore.config.ConfigManager;
@@ -22,7 +23,7 @@ public abstract class VaneProxyPlugin {
     public static final String CHANNEL_AUTH_MULTIPLEX_NAMESPACE = "vane_proxy";
     public static final String CHANNEL_AUTH_MULTIPLEX_NAME = "auth_multiplex";
     public static final String CHANNEL_AUTH_MULTIPLEX =
-        CHANNEL_AUTH_MULTIPLEX_NAMESPACE + ":" + CHANNEL_AUTH_MULTIPLEX_NAME;
+            CHANNEL_AUTH_MULTIPLEX_NAMESPACE + ":" + CHANNEL_AUTH_MULTIPLEX_NAME;
 
     public ConfigManager config = new ConfigManager(this);
     public Maintenance maintenance = new Maintenance(this);
@@ -32,7 +33,7 @@ public abstract class VaneProxyPlugin {
 
     private final LinkedHashMap<UUID, UUID> multiplexedUUIDs = new LinkedHashMap<>();
     private final LinkedHashMap<UUID, PreLoginEvent.MultiplexedPlayer> pending_multiplexer_logins =
-        new LinkedHashMap<>();
+            new LinkedHashMap<>();
     private boolean server_starting;
 
     public boolean is_online(final IVaneProxyServerInfo server) {
@@ -112,41 +113,41 @@ public abstract class VaneProxyPlugin {
         if (server_starting) return;
 
         this.server.get_scheduler()
-            .runAsync(this, () -> {
-                try {
-                    server_starting = true;
-                    get_logger()
-                        .log(
-                            Level.INFO,
-                            "Running start command for server '" +
-                            server.id() +
-                            "': " +
-                            Arrays.toString(server.start_cmd())
-                        );
-                    final var timeout = server.command_timeout();
-
-                    final var processBuilder = new ProcessBuilder(server.start_cmd());
-                    processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-                    processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
-                    final var process = processBuilder.start();
-
-                    if (!process.waitFor(timeout, TimeUnit.SECONDS)) {
-                        get_logger().log(Level.SEVERE, "Server '" + server.id() + "'s start command timed out!");
-                    }
-
-                    if (process.exitValue() != 0) {
+                .runAsync(this, () -> {
+                    try {
+                        server_starting = true;
                         get_logger()
-                            .log(
-                                Level.SEVERE,
-                                "Server '" + server.id() + "'s start command returned a nonzero exit code!"
-                            );
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                                .log(
+                                        Level.INFO,
+                                        "Running start command for server '" +
+                                                server.id() +
+                                                "': " +
+                                                Arrays.toString(server.start_cmd())
+                                );
+                        final var timeout = server.command_timeout();
 
-                server_starting = false;
-            });
+                        final var processBuilder = new ProcessBuilder(server.start_cmd());
+                        processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+                        processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
+                        final var process = processBuilder.start();
+
+                        if (!process.waitFor(timeout, TimeUnit.SECONDS)) {
+                            get_logger().log(Level.SEVERE, "Server '" + server.id() + "'s start command timed out!");
+                        }
+
+                        if (process.exitValue() != 0) {
+                            get_logger()
+                                    .log(
+                                            Level.SEVERE,
+                                            "Server '" + server.id() + "'s start command returned a nonzero exit code!"
+                                    );
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    server_starting = false;
+                });
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")

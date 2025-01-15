@@ -48,11 +48,11 @@ public class Sickles extends Listener<Trifles> {
         @Override
         public RecipeList default_recipes() {
             return RecipeList.of(
-                new ShapedRecipeDefinition("generic")
-                    .shape(" mm", "  m", " s ")
-                    .set_ingredient('m', Tag.PLANKS)
-                    .set_ingredient('s', Material.STICK)
-                    .result(key().toString())
+                    new ShapedRecipeDefinition("generic")
+                            .shape(" mm", "  m", " s ")
+                            .set_ingredient('m', Tag.PLANKS)
+                            .set_ingredient('s', Material.STICK)
+                            .result(key().toString())
             );
         }
     }
@@ -79,11 +79,11 @@ public class Sickles extends Listener<Trifles> {
         @Override
         public RecipeList default_recipes() {
             return RecipeList.of(
-                new ShapedRecipeDefinition("generic")
-                    .shape(" mm", "  m", " s ")
-                    .set_ingredient('m', Tag.ITEMS_STONE_TOOL_MATERIALS)
-                    .set_ingredient('s', Material.STICK)
-                    .result(key().toString())
+                    new ShapedRecipeDefinition("generic")
+                            .shape(" mm", "  m", " s ")
+                            .set_ingredient('m', Tag.ITEMS_STONE_TOOL_MATERIALS)
+                            .set_ingredient('s', Material.STICK)
+                            .result(key().toString())
             );
         }
     }
@@ -110,11 +110,11 @@ public class Sickles extends Listener<Trifles> {
         @Override
         public RecipeList default_recipes() {
             return RecipeList.of(
-                new ShapedRecipeDefinition("generic")
-                    .shape(" mm", "  m", " s ")
-                    .set_ingredient('m', Material.IRON_INGOT)
-                    .set_ingredient('s', Material.STICK)
-                    .result(key().toString())
+                    new ShapedRecipeDefinition("generic")
+                            .shape(" mm", "  m", " s ")
+                            .set_ingredient('m', Material.IRON_INGOT)
+                            .set_ingredient('s', Material.STICK)
+                            .result(key().toString())
             );
         }
     }
@@ -141,11 +141,11 @@ public class Sickles extends Listener<Trifles> {
         @Override
         public RecipeList default_recipes() {
             return RecipeList.of(
-                new ShapedRecipeDefinition("generic")
-                    .shape(" mm", "  m", " s ")
-                    .set_ingredient('m', Material.GOLD_INGOT)
-                    .set_ingredient('s', Material.STICK)
-                    .result(key().toString())
+                    new ShapedRecipeDefinition("generic")
+                            .shape(" mm", "  m", " s ")
+                            .set_ingredient('m', Material.GOLD_INGOT)
+                            .set_ingredient('s', Material.STICK)
+                            .result(key().toString())
             );
         }
     }
@@ -172,11 +172,11 @@ public class Sickles extends Listener<Trifles> {
         @Override
         public RecipeList default_recipes() {
             return RecipeList.of(
-                new ShapedRecipeDefinition("generic")
-                    .shape(" mm", "  m", " s ")
-                    .set_ingredient('m', Material.DIAMOND)
-                    .set_ingredient('s', Material.STICK)
-                    .result(key().toString())
+                    new ShapedRecipeDefinition("generic")
+                            .shape(" mm", "  m", " s ")
+                            .set_ingredient('m', Material.DIAMOND)
+                            .set_ingredient('s', Material.STICK)
+                            .result(key().toString())
             );
         }
     }
@@ -203,11 +203,11 @@ public class Sickles extends Listener<Trifles> {
         @Override
         public RecipeList default_recipes() {
             return RecipeList.of(
-                new SmithingRecipeDefinition("generic")
-                    .base("vane_trifles:diamond_sickle")
-                    .addition(Material.NETHERITE_INGOT)
-                    .copy_nbt(true)
-                    .result(key().toString())
+                    new SmithingRecipeDefinition("generic")
+                            .base("vane_trifles:diamond_sickle")
+                            .addition(Material.NETHERITE_INGOT)
+                            .copy_nbt(true)
+                            .result(key().toString())
             );
         }
     }
@@ -261,8 +261,8 @@ public class Sickles extends Listener<Trifles> {
             damage_item(player, item, 1 + (int) (0.25 * total_harvested));
             swing_arm(player, event.getHand());
             root_block
-                .getWorld()
-                .playSound(root_block.getLocation(), Sound.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0f, 2.0f);
+                    .getWorld()
+                    .playSound(root_block.getLocation(), Sound.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0f, 2.0f);
         }
 
         // Prevent offhand from triggering (e.g., placing torches)

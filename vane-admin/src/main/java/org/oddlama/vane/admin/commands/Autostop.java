@@ -27,36 +27,36 @@ public class Autostop extends Command<Admin> {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
         return super.get_command_base()
-            .executes(ctx -> {
-                status(ctx.getSource().getSender());
-                return SINGLE_SUCCESS;
-            })
-            .then(help())
-            .then(
-                literal("status").executes(ctx -> {
+                .executes(ctx -> {
                     status(ctx.getSource().getSender());
                     return SINGLE_SUCCESS;
                 })
-            )
-            .then(
-                literal("abort").executes(ctx -> {
-                    abort(ctx.getSource().getSender());
-                    return SINGLE_SUCCESS;
-                })
-            )
-            .then(
-                literal("schedule")
-                    .executes(ctx -> {
-                        schedule(ctx.getSource().getSender());
-                        return SINGLE_SUCCESS;
-                    })
-                    .then(
-                        argument("time", ArgumentTypes.time()).executes(ctx -> {
-                            schedule_delay(ctx.getSource().getSender(), ctx.getArgument("time", Integer.class));
+                .then(help())
+                .then(
+                        literal("status").executes(ctx -> {
+                            status(ctx.getSource().getSender());
                             return SINGLE_SUCCESS;
                         })
-                    )
-            );
+                )
+                .then(
+                        literal("abort").executes(ctx -> {
+                            abort(ctx.getSource().getSender());
+                            return SINGLE_SUCCESS;
+                        })
+                )
+                .then(
+                        literal("schedule")
+                                .executes(ctx -> {
+                                    schedule(ctx.getSource().getSender());
+                                    return SINGLE_SUCCESS;
+                                })
+                                .then(
+                                        argument("time", ArgumentTypes.time()).executes(ctx -> {
+                                            schedule_delay(ctx.getSource().getSender(), ctx.getArgument("time", Integer.class));
+                                            return SINGLE_SUCCESS;
+                                        })
+                                )
+                );
     }
 
     private void status(CommandSender sender) {

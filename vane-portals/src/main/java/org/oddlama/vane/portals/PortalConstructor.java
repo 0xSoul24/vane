@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -48,8 +49,8 @@ public class PortalConstructor extends Listener<Portals> {
     public Material config_material_boundary_3;
 
     @ConfigMaterial(
-        def = Material.GILDED_BLACKSTONE,
-        desc = "The block used to build the portal boundary. Variation 4."
+            def = Material.GILDED_BLACKSTONE,
+            desc = "The block used to build the portal boundary. Variation 4."
     )
     public Material config_material_boundary_4;
 
@@ -69,9 +70,9 @@ public class PortalConstructor extends Listener<Portals> {
     public int config_console_max_distance_y;
 
     @ConfigInt(
-        def = 1024,
-        min = 256,
-        desc = "Maximum steps for the floodfill algorithm. This should only be increased if you want really big portals. It's recommended to keep this as low as possible."
+            def = 1024,
+            min = 256,
+            desc = "Maximum steps for the floodfill algorithm. This should only be increased if you want really big portals. It's recommended to keep this as low as possible."
     )
     public int config_area_floodfill_max_steps = 1024;
 
@@ -186,36 +187,36 @@ public class PortalConstructor extends Listener<Portals> {
     }
 
     private boolean can_link_console(
-        final Player player,
-        final PortalBoundary boundary,
-        final Block console,
-        boolean check_only
+            final Player player,
+            final PortalBoundary boundary,
+            final Block console,
+            boolean check_only
     ) {
         return can_link_console(player, boundary.all_blocks(), console, null, check_only);
     }
 
     private boolean can_link_console(
-        final Player player,
-        final Portal portal,
-        final Block console,
-        boolean check_only
+            final Player player,
+            final Portal portal,
+            final Block console,
+            boolean check_only
     ) {
         // Gather all portal blocks that aren't consoles
         final var blocks = portal
-            .blocks()
-            .stream()
-            .filter(pb -> pb.type() != PortalBlock.Type.CONSOLE)
-            .map(pb -> pb.block())
-            .collect(Collectors.toList());
+                .blocks()
+                .stream()
+                .filter(pb -> pb.type() != PortalBlock.Type.CONSOLE)
+                .map(pb -> pb.block())
+                .collect(Collectors.toList());
         return can_link_console(player, blocks, console, portal, check_only);
     }
 
     private boolean can_link_console(
-        final Player player,
-        final List<Block> blocks,
-        final Block console,
-        @Nullable final Portal existing_portal,
-        boolean check_only
+            final Player player,
+            final List<Block> blocks,
+            final Block console,
+            @Nullable final Portal existing_portal,
+            boolean check_only
     ) {
         // Check a console block type
         if (console.getType() != config_material_console) {
@@ -233,9 +234,9 @@ public class PortalConstructor extends Listener<Portals> {
         boolean found_valid_block = false;
         for (final var block : blocks) {
             if (
-                Math.abs(console.getX() - block.getX()) <= config_console_max_distance_xz &&
-                Math.abs(console.getY() - block.getY()) <= config_console_max_distance_y &&
-                Math.abs(console.getZ() - block.getZ()) <= config_console_max_distance_xz
+                    Math.abs(console.getX() - block.getX()) <= config_console_max_distance_xz &&
+                            Math.abs(console.getY() - block.getY()) <= config_console_max_distance_y &&
+                            Math.abs(console.getZ() - block.getZ()) <= config_console_max_distance_xz
             ) {
                 found_valid_block = true;
                 break;
@@ -281,7 +282,8 @@ public class PortalConstructor extends Listener<Portals> {
         // Check for error
         switch (boundary.error_state()) {
             case NONE:
-                /* The Boundary is fine */break;
+                /* The Boundary is fine */
+                break;
             case NO_ORIGIN:
                 lang_no_origin.send(player);
                 return null;
@@ -317,9 +319,9 @@ public class PortalConstructor extends Listener<Portals> {
                 return null;
             case TOO_MANY_PORTAL_AREA_BLOCKS:
                 lang_too_many_portal_area_blocks.send(
-                    player,
-                    "§6" + boundary.portal_area_blocks().size(),
-                    "§6" + config_area_max_blocks
+                        player,
+                        "§6" + boundary.portal_area_blocks().size(),
+                        "§6" + config_area_max_blocks
                 );
                 return null;
         }
@@ -334,11 +336,11 @@ public class PortalConstructor extends Listener<Portals> {
 
     public boolean is_type_part_of_boundary(final Material material) {
         return (
-            material == config_material_boundary_1 ||
-            material == config_material_boundary_2 ||
-            material == config_material_boundary_3 ||
-            material == config_material_boundary_4 ||
-            material == config_material_boundary_5
+                material == config_material_boundary_1 ||
+                        material == config_material_boundary_2 ||
+                        material == config_material_boundary_3 ||
+                        material == config_material_boundary_4 ||
+                        material == config_material_boundary_5
         );
     }
 
@@ -347,16 +349,16 @@ public class PortalConstructor extends Listener<Portals> {
     }
 
     private PortalBoundary check_construction_conditions(
-        final Player player,
-        final Block console,
-        final Block boundary_block,
-        boolean check_only
+            final Player player,
+            final Block console,
+            final Block boundary_block,
+            boolean check_only
     ) {
         if (get_module().is_portal_block(boundary_block)) {
             get_module()
-                .log.severe(
-                    "construct_portal() was called on a boundary that already belongs to a portal! This is a bug."
-                );
+                    .log.severe(
+                            "construct_portal() was called on a boundary that already belongs to a portal! This is a bug."
+                    );
             return null;
         }
 
@@ -407,11 +409,11 @@ public class PortalConstructor extends Listener<Portals> {
             type = PortalBlock.Type.PORTAL;
         } else {
             get_module()
-                .log.warning(
-                    "Invalid block type '" +
-                    mat +
-                    "' encountered in portal block creation. Assuming boundary variant 1."
-                );
+                    .log.warning(
+                            "Invalid block type '" +
+                                    mat +
+                                    "' encountered in portal block creation. Assuming boundary variant 1."
+                    );
             type = PortalBlock.Type.BOUNDARY_1;
         }
         return new PortalBlock(block, type);
@@ -424,43 +426,43 @@ public class PortalConstructor extends Listener<Portals> {
 
         // Show name chooser
         get_module()
-            .menus.enter_name_menu.create(player, (p, name) -> {
-                // Re-check conditions, as someone could have changed blocks. This
-                // prevents this race condition.
-                final var boundary = check_construction_conditions(p, console, boundary_block, false);
-                if (boundary == null) {
-                    return ClickResult.ERROR;
-                }
+                .menus.enter_name_menu.create(player, (p, name) -> {
+                    // Re-check conditions, as someone could have changed blocks. This
+                    // prevents this race condition.
+                    final var boundary = check_construction_conditions(p, console, boundary_block, false);
+                    if (boundary == null) {
+                        return ClickResult.ERROR;
+                    }
 
-                // Determine orientation
-                final var orientation = Orientation.from(
-                    boundary.plane(),
-                    boundary.origin_block(),
-                    console,
-                    player.getLocation()
-                );
+                    // Determine orientation
+                    final var orientation = Orientation.from(
+                            boundary.plane(),
+                            boundary.origin_block(),
+                            console,
+                            player.getLocation()
+                    );
 
-                // Construct portal
-                final var portal = new Portal(p.getUniqueId(), orientation, boundary.spawn());
-                portal.name(name);
-                get_module().add_new_portal(portal);
+                    // Construct portal
+                    final var portal = new Portal(p.getUniqueId(), orientation, boundary.spawn());
+                    portal.name(name);
+                    get_module().add_new_portal(portal);
 
-                // Add portal blocks
-                for (final var block : boundary.all_blocks()) {
-                    get_module().add_new_portal_block(portal, create_portal_block(block));
-                }
+                    // Add portal blocks
+                    for (final var block : boundary.all_blocks()) {
+                        get_module().add_new_portal_block(portal, create_portal_block(block));
+                    }
 
-                // Link console
-                link_console(p, console, portal);
+                    // Link console
+                    link_console(p, console, portal);
 
-                // Force update storage now, as a precaution.
-                get_module().update_persistent_data();
+                    // Force update storage now, as a precaution.
+                    get_module().update_persistent_data();
 
-                // Update portal blocks once
-                portal.update_blocks(get_module());
-                return ClickResult.SUCCESS;
-            })
-            .open(player);
+                    // Update portal blocks once
+                    portal.update_blocks(get_module());
+                    return ClickResult.SUCCESS;
+                })
+                .open(player);
 
         return true;
     }

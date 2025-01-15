@@ -9,10 +9,10 @@ public interface MenuWidget {
     public boolean update(final Menu menu);
 
     public ClickResult click(
-        final Player player,
-        final Menu menu,
-        final ItemStack item,
-        int slot,
-        final InventoryClickEvent event
+            final Player player,
+            final Menu menu,
+            final ItemStack item,
+            int slot,
+            final InventoryClickEvent event
     );
 }

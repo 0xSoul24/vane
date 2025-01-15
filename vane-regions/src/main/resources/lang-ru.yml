@@ -88,17 +88,17 @@ menus:
 
     cancel_selection:
       name: "§c§lОтменить выделение"
-      lore: []
+      lore: [ ]
 
     list_regions:
       name: "§b§lВыбрать регион"
-      lore: []
+      lore: [ ]
 
     select_region_title: "§8§lВыбор региона"
     filter_regions_title: "§8§lФильтр регионов"
     select_region:
       name: "%1$s"
-      lore: []
+      lore: [ ]
 
     current_region:
       name: "§b§lТекущий регион"
@@ -119,7 +119,7 @@ menus:
 
     list_region_groups:
       name: "§b§lВыбрать группу региона"
-      lore: []
+      lore: [ ]
 
     current_region_group:
       name: "§b§lТекущая группа региона"
@@ -134,45 +134,45 @@ menus:
     filter_region_groups_title: "§8§lФильтр групп регионов"
     select_region_group:
       name: "%1$s"
-      lore: []
+      lore: [ ]
 
   region:
     title: "§8§lРегион: %1$s"
 
     rename:
       name: "§b§lПереименовать регион"
-      lore: []
+      lore: [ ]
 
     delete:
       name: "§c§lУдалить регион"
-      lore: []
+      lore: [ ]
     delete_confirm_title: "§c§lУдалить регион?"
     delete_confirm_accept:
       name: "§c§lУДАЛИТЬ РЕГИОН"
-      lore: []
+      lore: [ ]
     delete_confirm_cancel:
       name: "§a§lОтмена"
-      lore: []
+      lore: [ ]
 
     assign_region_group:
       name: "§b§lПрисвоить группу"
-      lore: []
+      lore: [ ]
 
     select_region_group_title: "§8§lВыбор группы региона"
     filter_region_groups_title: "§8§lФильтр группы регионов"
     select_region_group:
       name: "%1$s"
-      lore: []
+      lore: [ ]
 
   region_group:
     title: "§8§lГруппа: %1$s"
 
     setting_toggle_on:
       name: "§a§lВКЛЮЧЕНА"
-      lore: []
+      lore: [ ]
     setting_toggle_off:
       name: "§c§lОТКЛЮЧЕНА"
-      lore: []
+      lore: [ ]
     setting_info_animals:
       name: "§b§lЖивотные"
       lore:
@@ -211,7 +211,7 @@ menus:
 
     rename:
       name: "§b§lПереименовать группу"
-      lore: []
+      lore: [ ]
 
     delete:
       name: "§c§lУдалить группу"
@@ -222,10 +222,10 @@ menus:
     delete_confirm_title: "§c§lУдалить группу региона?"
     delete_confirm_accept:
       name: "§c§lУДАЛИТЬ ГРУППУ РЕГИОНА"
-      lore: []
+      lore: [ ]
     delete_confirm_cancel:
       name: "§a§lОтмена"
-      lore: []
+      lore: [ ]
 
     create_role:
       name: "§a§lСоздать роль"
@@ -236,23 +236,23 @@ menus:
 
     list_roles:
       name: "§b§lРоли"
-      lore: []
+      lore: [ ]
 
     select_role_title: "§8§lВыбор роли"
     filter_roles_title: "§8§lФильр ролей"
     select_role:
       name: "%1$s"
-      lore: []
+      lore: [ ]
 
   role:
     title: "§8§lГруппа: %1$s"
 
     setting_toggle_on:
       name: "§a§lВКЛЮЧЕНА"
-      lore: []
+      lore: [ ]
     setting_toggle_off:
       name: "§c§lВЫКЛЮЧЕНА"
-      lore: []
+      lore: [ ]
     setting_info_admin:
       name: "§b§lАдмин"
       lore:
@@ -286,18 +286,18 @@ menus:
 
     rename:
       name: "§b§lПереименовать роль"
-      lore: []
+      lore: [ ]
 
     delete:
       name: "§c§lУдалить роль"
-      lore: []
+      lore: [ ]
     delete_confirm_title: "§c§lУдалить роль?"
     delete_confirm_accept:
       name: "§c§lУДАЛИТЬ РОЛЬ"
-      lore: []
+      lore: [ ]
     delete_confirm_cancel:
       name: "§a§lОтмена"
-      lore: []
+      lore: [ ]
 
     assign_player:
       name: "§b§lНазначение игроков"
@@ -321,4 +321,4 @@ menus:
     filter_players_title: "§8§lФильтр игроков"
     select_player:
       name: "%1$s"
-      lore: []
+      lore: [ ]

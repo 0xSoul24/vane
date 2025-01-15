@@ -2,6 +2,7 @@ package org.oddlama.vane.trifles;
 
 import java.util.HashMap;
 import java.util.UUID;
+
 import org.oddlama.vane.annotation.VaneModule;
 import org.oddlama.vane.core.module.Module;
 import org.oddlama.vane.trifles.items.XpBottles;

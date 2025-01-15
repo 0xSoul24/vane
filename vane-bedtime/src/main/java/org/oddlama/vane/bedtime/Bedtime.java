@@ -5,6 +5,7 @@ import static org.oddlama.vane.util.WorldUtil.change_time_smoothly;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
+
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -29,18 +30,18 @@ public class Bedtime extends Module<Bedtime> {
 
     // Configuration
     @ConfigDouble(
-        def = 0.5,
-        min = 0.0,
-        max = 1.0,
-        desc = "The percentage of sleeping players required to advance time."
+            def = 0.5,
+            min = 0.0,
+            max = 1.0,
+            desc = "The percentage of sleeping players required to advance time."
     )
     double config_sleep_threshold;
 
     @ConfigLong(
-        def = 1000,
-        min = 0,
-        max = 12000,
-        desc = "The target time in ticks to advance to. 1000 is just after sunrise."
+            def = 1000,
+            min = 0,
+            max = 12000,
+            desc = "The target time in ticks to advance to. 1000 is just after sunrise."
     )
     long config_target_time;
 
@@ -65,13 +66,13 @@ public class Bedtime extends Module<Bedtime> {
     public void start_check_world_task(final World world) {
         if (enough_players_sleeping(world)) {
             schedule_task(
-                () -> {
-                    check_world_now(world);
-                    // Subtract two ticks so this runs one tick before minecraft would
-                    // advance time (if all players are asleep), which would effectively cancel
-                    // the task.
-                },
-                100 - 2
+                    () -> {
+                        check_world_now(world);
+                        // Subtract two ticks so this runs one tick before minecraft would
+                        // advance time (if all players are asleep), which would effectively cancel
+                        // the task.
+                    },
+                    100 - 2
             );
         }
     }
@@ -92,14 +93,14 @@ public class Bedtime extends Module<Bedtime> {
 
         // Wakeup players as if they were actually sleeping through the night
         world
-            .getPlayers()
-            .stream()
-            .filter(Player::isSleeping)
-            .forEach(p -> {
-                // skipSleepTimer = false (-> set sleepCounter to 100)
-                // updateSleepingPlayers = false
-                Nms.get_player(p).stopSleepInBed(false, false);
-            });
+                .getPlayers()
+                .stream()
+                .filter(Player::isSleeping)
+                .forEach(p -> {
+                    // skipSleepTimer = false (-> set sleepCounter to 100)
+                    // updateSleepingPlayers = false
+                    Nms.get_player(p).stopSleepInBed(false, false);
+                });
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -177,12 +178,12 @@ public class Bedtime extends Module<Bedtime> {
         var count_sleeping = get_amount_sleeping(world);
         var count_required = (int) Math.ceil(get_potential_sleepers_in_world(world) * config_sleep_threshold);
         lang_player_bed_enter.broadcast_world_action_bar(
-            world,
-            "§6" + player.getName(),
-            "§6" + percentage_str(percent),
-            String.valueOf(count_sleeping),
-            String.valueOf(count_required),
-            "§6" + world.getName()
+                world,
+                "§6" + player.getName(),
+                "§6" + percentage_str(percent),
+                String.valueOf(count_sleeping),
+                String.valueOf(count_required),
+                "§6" + world.getName()
         );
     }
 
@@ -203,12 +204,12 @@ public class Bedtime extends Module<Bedtime> {
             var count_sleeping = get_amount_sleeping(world);
             var count_required = (int) Math.ceil(get_potential_sleepers_in_world(world) * config_sleep_threshold);
             lang_player_bed_leave.broadcast_world_action_bar(
-                world,
-                "§6" + player.getName(),
-                "§6" + percentage_str(percent),
-                String.valueOf(count_sleeping),
-                String.valueOf(count_required),
-                "§6" + world.getName()
+                    world,
+                    "§6" + player.getName(),
+                    "§6" + percentage_str(percent),
+                    String.valueOf(count_sleeping),
+                    String.valueOf(count_required),
+                    "§6" + world.getName()
             );
         }
     }

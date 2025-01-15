@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.logging.Level;
+
 import org.jetbrains.annotations.Nullable;
 import org.oddlama.vane.proxycore.VaneProxyPlugin;
 
@@ -67,9 +68,9 @@ public class ConfigManager {
         try {
             file.getParentFile().mkdirs();
             Files.copy(
-                Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("config.toml")),
-                file.toPath(),
-                StandardCopyOption.REPLACE_EXISTING
+                    Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("config.toml")),
+                    file.toPath(),
+                    StandardCopyOption.REPLACE_EXISTING
             );
             return true;
         } catch (Exception e) {

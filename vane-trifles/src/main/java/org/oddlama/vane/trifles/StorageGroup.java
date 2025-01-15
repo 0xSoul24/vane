@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Nameable;
@@ -33,7 +34,7 @@ import org.oddlama.vane.trifles.items.storage.Pouch;
 public class StorageGroup extends Listener<Trifles> {
 
     private Map<Inventory, Pair<UUID, ItemStack>> open_block_state_inventories = Collections.synchronizedMap(
-        new HashMap<Inventory, Pair<UUID, ItemStack>>()
+            new HashMap<Inventory, Pair<UUID, ItemStack>>()
     );
 
     @LangMessage
@@ -59,10 +60,10 @@ public class StorageGroup extends Listener<Trifles> {
 
         // Put non-storage items in a right-clicked storage item
         if (
-            event.getClick() == ClickType.RIGHT &&
-            event.getAction() == InventoryAction.SWAP_WITH_CURSOR &&
-            is_storage_item(event.getCurrentItem()) &&
-            event.getCurrentItem().getAmount() == 1
+                event.getClick() == ClickType.RIGHT &&
+                        event.getAction() == InventoryAction.SWAP_WITH_CURSOR &&
+                        is_storage_item(event.getCurrentItem()) &&
+                        event.getCurrentItem().getAmount() == 1
         ) {
             // Allow putting in any items that are not a storage item.
             if (!is_storage_item(event.getCursor())) {
@@ -71,19 +72,19 @@ public class StorageGroup extends Listener<Trifles> {
                 // Only if the clicked storage item is a custom item
                 if (custom_item != null) {
                     event
-                        .getCurrentItem()
-                        .editMeta(BlockStateMeta.class, meta -> {
-                            final var block_state = meta.getBlockState();
-                            if (block_state instanceof Container container) {
-                                final var leftovers = container.getInventory().addItem(event.getCursor());
-                                if (leftovers.size() == 0) {
-                                    event.setCursor(null);
-                                } else {
-                                    event.setCursor(leftovers.get(0));
+                            .getCurrentItem()
+                            .editMeta(BlockStateMeta.class, meta -> {
+                                final var block_state = meta.getBlockState();
+                                if (block_state instanceof Container container) {
+                                    final var leftovers = container.getInventory().addItem(event.getCursor());
+                                    if (leftovers.size() == 0) {
+                                        event.setCursor(null);
+                                    } else {
+                                        event.setCursor(leftovers.get(0));
+                                    }
+                                    meta.setBlockState(block_state);
                                 }
-                                meta.setBlockState(block_state);
-                            }
-                        });
+                            });
                 }
             }
 
@@ -230,8 +231,8 @@ public class StorageGroup extends Listener<Trifles> {
     public boolean open_block_state_inventory(@NotNull final Player player, @NotNull ItemStack item) {
         // Require correct block state meta
         if (
-            !(item.getItemMeta() instanceof BlockStateMeta meta) ||
-            !(meta.getBlockState() instanceof Container container)
+                !(item.getItemMeta() instanceof BlockStateMeta meta) ||
+                        !(meta.getBlockState() instanceof Container container)
         ) {
             return false;
         }
@@ -258,8 +259,8 @@ public class StorageGroup extends Listener<Trifles> {
 
         // Create transient inventory
         final var transient_inventory = get_module()
-            .getServer()
-            .createInventory(player, container.getInventory().getType(), name);
+                .getServer()
+                .createInventory(player, container.getInventory().getType(), name);
         transient_inventory.setContents(container.getInventory().getContents());
 
         // Open inventory

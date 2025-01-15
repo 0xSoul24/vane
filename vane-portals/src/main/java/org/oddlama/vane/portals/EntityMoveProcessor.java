@@ -1,10 +1,12 @@
 package org.oddlama.vane.portals;
 
 import com.google.common.collect.Sets;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.UUID;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -41,12 +43,12 @@ public class EntityMoveProcessor extends ModuleComponent<Portals> {
     private static boolean is_movement(final Location l1, final Location l2) {
         // Different worlds = not a movement event.
         return (
-            l1.getWorld() == l2.getWorld() &&
-            (l1.getX() != l2.getX() ||
-                l1.getY() != l2.getY() ||
-                l1.getZ() != l2.getZ() ||
-                l1.getPitch() != l2.getPitch() ||
-                l1.getYaw() != l2.getYaw())
+                l1.getWorld() == l2.getWorld() &&
+                        (l1.getX() != l2.getX() ||
+                                l1.getY() != l2.getY() ||
+                                l1.getZ() != l2.getZ() ||
+                                l1.getPitch() != l2.getPitch() ||
+                                l1.getYaw() != l2.getYaw())
         );
     }
 
@@ -97,15 +99,15 @@ public class EntityMoveProcessor extends ModuleComponent<Portals> {
         // If the processing queue already contained the entity, we remove it before iterating
         // as there is nothing to do - we simply lose information about the intermediate position.
         for (final var eid : Sets.difference(
-            Sets.intersection(move_event_old_positions.keySet(), move_event_current_positions.keySet()),
-            move_event_processing_queue.keySet()
+                Sets.intersection(move_event_old_positions.keySet(), move_event_current_positions.keySet()),
+                move_event_processing_queue.keySet()
         )) {
             final var old_entity_and_loc = move_event_old_positions.get(eid);
             final var new_entity_and_loc = move_event_current_positions.get(eid);
             if (
-                old_entity_and_loc == null ||
-                new_entity_and_loc == null ||
-                !is_movement(old_entity_and_loc.getRight(), new_entity_and_loc.getRight())
+                    old_entity_and_loc == null ||
+                            new_entity_and_loc == null ||
+                            !is_movement(old_entity_and_loc.getRight(), new_entity_and_loc.getRight())
             ) {
                 continue;
             }

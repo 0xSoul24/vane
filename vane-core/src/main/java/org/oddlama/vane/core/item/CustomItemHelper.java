@@ -12,13 +12,17 @@ import org.oddlama.vane.util.StorageUtil;
 
 public class CustomItemHelper {
 
-    /** Used in persistent item storage to identify custom items. */
+    /**
+     * Used in persistent item storage to identify custom items.
+     */
     public static final NamespacedKey CUSTOM_ITEM_IDENTIFIER = StorageUtil.namespaced_key(
-        "vane",
-        "custom_item_identifier"
+            "vane",
+            "custom_item_identifier"
     );
 
-    /** Used in persistent item storage to store a custom item version. */
+    /**
+     * Used in persistent item storage to store a custom item version.
+     */
     public static final NamespacedKey CUSTOM_ITEM_VERSION = StorageUtil.namespaced_key("vane", "custom_item_version");
 
     /**
@@ -61,25 +65,33 @@ public class CustomItemHelper {
         return Pair.of(StorageUtil.namespaced_key(parts[0], parts[1]), version);
     }
 
-    /** Creates a new item stack with a single item of this custom item. */
+    /**
+     * Creates a new item stack with a single item of this custom item.
+     */
     public static ItemStack newStack(final String custom_item_key) {
         return CustomItemHelper.newStack(custom_item_key, 1);
     }
 
-    /** Creates a new item stack with the given number of items of this custom item. */
+    /**
+     * Creates a new item stack with the given number of items of this custom item.
+     */
     public static ItemStack newStack(final String custom_item_key, final int amount) {
         return CustomItemHelper.newStack(
-            Core.instance().item_registry().get(NamespacedKey.fromString(custom_item_key)),
-            amount
+                Core.instance().item_registry().get(NamespacedKey.fromString(custom_item_key)),
+                amount
         );
     }
 
-    /** Creates a new item stack with a single item of this custom item. */
+    /**
+     * Creates a new item stack with a single item of this custom item.
+     */
     public static ItemStack newStack(final CustomItem customItem) {
         return CustomItemHelper.newStack(customItem, 1);
     }
 
-    /** Creates a new item stack with the given number of items of this custom item. */
+    /**
+     * Creates a new item stack with the given number of items of this custom item.
+     */
     public static ItemStack newStack(final CustomItem customItem, final int amount) {
         final var itemStack = new ItemStack(customItem.baseMaterial(), amount);
         itemStack.editMeta(meta -> meta.itemName(customItem.displayName()));

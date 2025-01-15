@@ -3,6 +3,7 @@ package org.oddlama.vane.core.module;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.oddlama.vane.core.functional.Consumer1;
 import org.oddlama.vane.core.resourcepack.ResourcePackGenerator;
 

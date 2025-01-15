@@ -1,6 +1,7 @@
 package org.oddlama.vane.regions;
 
 import java.util.UUID;
+
 import org.oddlama.vane.annotation.config.ConfigBoolean;
 import org.oddlama.vane.annotation.config.ConfigDouble;
 import org.oddlama.vane.annotation.config.ConfigInt;
@@ -16,8 +17,8 @@ public class RegionBlueMapLayer extends ModuleComponent<Regions> {
     public boolean config_hide_by_default;
 
     @ConfigBoolean(
-        def = true,
-        desc = "Set to false to make the area markers visible through terrain and other objects."
+            def = true,
+            desc = "Set to false to make the area markers visible through terrain and other objects."
     )
     public boolean config_depth_test;
 

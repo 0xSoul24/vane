@@ -3,6 +3,7 @@ package org.oddlama.vane.core.menu;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
@@ -110,12 +111,12 @@ public class Menu {
                 throw new RuntimeException("Invalid close from unrelated menu.");
             } catch (RuntimeException e) {
                 manager
-                    .get_module()
-                    .log.log(
-                        Level.WARNING,
-                        "Tried to close menu inventory that isn't opened by the player " + player,
-                        e
-                    );
+                        .get_module()
+                        .log.log(
+                                Level.WARNING,
+                                "Tried to close menu inventory that isn't opened by the player " + player,
+                                e
+                        );
             }
             return false;
         }

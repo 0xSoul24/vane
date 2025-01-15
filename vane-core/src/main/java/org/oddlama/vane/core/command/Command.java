@@ -9,8 +9,10 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+
 import java.util.Collections;
 import java.util.List;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.permissions.Permission;
@@ -67,7 +69,7 @@ public abstract class Command<T extends Module<T>> extends ModuleComponent<T> {
                 return root_param.check_accept(sender, prepend(args, alias), 0).apply(Command.this, sender);
             } catch (Exception e) {
                 sender.sendMessage(
-                    "§cAn unexpected error occurred. Please examine the console log and/or notify a server administrator."
+                        "§cAn unexpected error occurred. Please examine the console log and/or notify a server administrator."
                 );
                 throw e;
             }
@@ -75,7 +77,7 @@ public abstract class Command<T extends Module<T>> extends ModuleComponent<T> {
 
         @Override
         public List<String> tabComplete(CommandSender sender, String alias, String[] args)
-            throws IllegalArgumentException {
+                throws IllegalArgumentException {
             // Don't allow information exfiltration!
             if (!sender.hasPermission(getPermission())) {
                 return Collections.emptyList();
@@ -85,7 +87,7 @@ public abstract class Command<T extends Module<T>> extends ModuleComponent<T> {
                 return root_param.build_completions(sender, prepend(args, alias), 0);
             } catch (Exception e) {
                 sender.sendMessage(
-                    "§cAn unexpected error occurred. Please examine the console log and/or notify a server administrator."
+                        "§cAn unexpected error occurred. Please examine the console log and/or notify a server administrator."
                 );
                 throw e;
             }
@@ -126,9 +128,9 @@ public abstract class Command<T extends Module<T>> extends ModuleComponent<T> {
 
         // Register permission
         permission = new Permission(
-            "vane." + get_module().get_name() + ".commands." + name,
-            "Allow access to /" + name,
-            permission_default
+                "vane." + get_module().get_name() + ".commands." + name,
+                "Allow access to /" + name,
+                permission_default
         );
         get_module().register_permission(permission);
         permission.addParent(get_module().permission_command_catchall_module, true);
@@ -180,8 +182,8 @@ public abstract class Command<T extends Module<T>> extends ModuleComponent<T> {
         var cmd = get_command_base();
         var old_requirement = cmd.getRequirement();
         return cmd
-            .requires(stack -> stack.getSender().hasPermission(permission) && old_requirement.test(stack))
-            .build();
+                .requires(stack -> stack.getSender().hasPermission(permission) && old_requirement.test(stack))
+                .build();
     }
 
     public List<String> get_aliases() {

@@ -40,10 +40,10 @@ public class RegionRoleSettingEnforcer extends Listener<Regions> {
     }
 
     public boolean check_setting_at(
-        final Location location,
-        final Player player,
-        final RoleSetting setting,
-        final boolean check_against
+            final Location location,
+            final Player player,
+            final RoleSetting setting,
+            final boolean check_against
     ) {
         final var region = get_module().region_at(location);
         if (region == null) {
@@ -55,10 +55,10 @@ public class RegionRoleSettingEnforcer extends Listener<Regions> {
     }
 
     public boolean check_setting_at(
-        final Block block,
-        final Player player,
-        final RoleSetting setting,
-        final boolean check_against
+            final Block block,
+            final Player player,
+            final RoleSetting setting,
+            final boolean check_against
     ) {
         final var region = get_module().region_at(block);
         if (region == null) {
@@ -115,7 +115,7 @@ public class RegionRoleSettingEnforcer extends Listener<Regions> {
                 if (item.getType() != Material.AIR) {
                     // This is a player taking the item out of an item-frame
                     if (
-                        check_setting_at(damaged.getLocation().getBlock(), player_damager, RoleSetting.CONTAINER, false)
+                            check_setting_at(damaged.getLocation().getBlock(), player_damager, RoleSetting.CONTAINER, false)
                     ) {
                         event.setCancelled(true);
                     }

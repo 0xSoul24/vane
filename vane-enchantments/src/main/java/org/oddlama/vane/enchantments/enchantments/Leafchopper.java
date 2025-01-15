@@ -28,18 +28,18 @@ public class Leafchopper extends CustomEnchantment<Enchantments> {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape(" s ", "sbs", " s ")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_knowledge")
-                .set_ingredient('s', Material.SHEARS)
-                .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
+                new ShapedRecipeDefinition("generic")
+                        .shape(" s ", "sbs", " s ")
+                        .set_ingredient('b', "vane_enchantments:ancient_tome_of_knowledge")
+                        .set_ingredient('s', Material.SHEARS)
+                        .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
         );
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void on_player_left_click_leaves(PlayerInteractEvent event) {
         if (
-            !event.hasBlock() || event.getHand() != EquipmentSlot.HAND || event.getAction() != Action.LEFT_CLICK_BLOCK
+                !event.hasBlock() || event.getHand() != EquipmentSlot.HAND || event.getAction() != Action.LEFT_CLICK_BLOCK
         ) {
             return;
         }

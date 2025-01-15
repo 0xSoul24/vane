@@ -3,6 +3,7 @@ title = "Creeper Protection with Style"
 icon = "minecraft:creeper_head"
 module = "vane-admin"
 ```
+
 ---
 ![](assets/gifs/creeper-protection.gif)
 

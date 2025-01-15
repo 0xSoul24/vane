@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.bukkit.command.CommandSender;
 import org.oddlama.vane.core.command.Command;
 import org.oddlama.vane.core.command.check.CheckResult;
@@ -20,10 +21,10 @@ public class ChoiceParam<T> extends BaseParam {
     private boolean ignore_case = false;
 
     public ChoiceParam(
-        Command<?> command,
-        String argument_type,
-        Collection<? extends T> choices,
-        Function1<T, String> to_string
+            Command<?> command,
+            String argument_type,
+            Collection<? extends T> choices,
+            Function1<T, String> to_string
     ) {
         super(command);
         this.argument_type = argument_type;
@@ -34,7 +35,9 @@ public class ChoiceParam<T> extends BaseParam {
         }
     }
 
-    /** Will ignore the case of the given argument when matching */
+    /**
+     * Will ignore the case of the given argument when matching
+     */
     public ChoiceParam<T> ignore_case() {
         this.ignore_case = true;
         from_string.clear();
@@ -59,10 +62,10 @@ public class ChoiceParam<T> extends BaseParam {
     @Override
     public List<String> completions_for(CommandSender sender, String[] args, int offset) {
         return choices
-            .stream()
-            .map(choice -> to_string.apply(choice))
-            .filter(str -> str.toLowerCase().contains(args[offset].toLowerCase()))
-            .collect(Collectors.toList());
+                .stream()
+                .map(choice -> to_string.apply(choice))
+                .filter(str -> str.toLowerCase().contains(args[offset].toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     private T parse(String arg) {

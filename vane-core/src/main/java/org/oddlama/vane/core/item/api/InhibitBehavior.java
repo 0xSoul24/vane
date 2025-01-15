@@ -11,18 +11,28 @@ public enum InhibitBehavior {
      * held in the main or offhand.
      */
     TEMPT,
-    /** Prevents the item from burning. */
+    /**
+     * Prevents the item from burning.
+     */
     ITEM_BURN,
-    /** Prevents hoes from creating farmland. */
+    /**
+     * Prevents hoes from creating farmland.
+     */
     HOE_TILL,
-    /** Prevents players from using the offhand item when holding this in the main hand. */
+    /**
+     * Prevents players from using the offhand item when holding this in the main hand.
+     */
     USE_OFFHAND,
     /**
      * Prevents players from mending this item (and prevents it from gaining mending in the anvil).
      */
     MEND,
-    /** Prevents players from adding new enchantments via the anvil. */
+    /**
+     * Prevents players from adding new enchantments via the anvil.
+     */
     NEW_ENCHANTS,
-    /** Prevents dispensers from dispense this item */
+    /**
+     * Prevents dispensers from dispense this item
+     */
     DISPENSE,
 }
