@@ -2,8 +2,10 @@ package org.oddlama.vane.core.enchantments;
 
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -66,17 +68,23 @@ public class CustomEnchantment<T extends Module<T>> extends Listener<T> {
         loot_tables = new LootTables<T>(get_context(), this.key, this::default_loot_tables);
     }
 
-    /** Returns the bukkit wrapper for this enchantment. */
+    /**
+     * Returns the bukkit wrapper for this enchantment.
+     */
     public final Enchantment bukkit() {
         return RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).get(key);
     }
 
-    /** Returns the namespaced key for this enchantment. */
+    /**
+     * Returns the namespaced key for this enchantment.
+     */
     public final NamespacedKey key() {
         return key;
     }
 
-    /** Only for internal use. */
+    /**
+     * Only for internal use.
+     */
     final String get_name() {
         return name;
     }
@@ -107,7 +115,7 @@ public class CustomEnchantment<T extends Module<T>> extends Listener<T> {
 
         if (level != 1 || max_level() != 1) {
             final var chat_level = apply_display_format(
-                Component.translatable("enchantment.level." + level).decoration(TextDecoration.ITALIC, false)
+                    Component.translatable("enchantment.level." + level).decoration(TextDecoration.ITALIC, false)
             );
             display_name = display_name.append(Component.text(" ")).append(chat_level);
         }
@@ -115,7 +123,9 @@ public class CustomEnchantment<T extends Module<T>> extends Listener<T> {
         return display_name;
     }
 
-    /** The minimum level this enchantment can have. Always fixed to 1. */
+    /**
+     * The minimum level this enchantment can have. Always fixed to 1.
+     */
     public final int min_level() {
         return 1;
     }
@@ -193,7 +203,9 @@ public class CustomEnchantment<T extends Module<T>> extends Listener<T> {
         return annotation.rarity();
     }
 
-    /** Weather custom items are allowed to be enchanted with this enchantment. */
+    /**
+     * Weather custom items are allowed to be enchanted with this enchantment.
+     */
     public final boolean allow_custom() {
         return annotation.allow_custom();
     }
@@ -225,7 +237,9 @@ public class CustomEnchantment<T extends Module<T>> extends Listener<T> {
         return LootTableList.of();
     }
 
-    /** Applies this enchantment to the given string item definition. */
+    /**
+     * Applies this enchantment to the given string item definition.
+     */
     protected String on(String item_definition) {
         return on(item_definition, 1);
     }

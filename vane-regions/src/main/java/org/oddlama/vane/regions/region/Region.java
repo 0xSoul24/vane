@@ -5,6 +5,7 @@ import static org.oddlama.vane.core.persistent.PersistentSerializer.to_json;
 
 import java.io.IOException;
 import java.util.UUID;
+
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.oddlama.vane.regions.Regions;
@@ -34,7 +35,8 @@ public class Region {
         return region;
     }
 
-    private Region() {}
+    private Region() {
+    }
 
     public Region(final String name, final UUID owner, final RegionExtent extent, final UUID region_group) {
         this.id = UUID.randomUUID();

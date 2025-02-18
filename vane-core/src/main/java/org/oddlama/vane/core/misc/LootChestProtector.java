@@ -3,6 +3,7 @@ package org.oddlama.vane.core.misc;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,8 +24,8 @@ public class LootChestProtector extends Listener<Core> {
     // TODO(legacy): this should become a separate group instead of having
     // this boolean.
     @ConfigBoolean(
-        def = true,
-        desc = "Prevent players from breaking blocks with loot-tables (like treasure chests) when they first attempt to destroy it. They still can break it, but must do so within a short timeframe."
+            def = true,
+            desc = "Prevent players from breaking blocks with loot-tables (like treasure chests) when they first attempt to destroy it. They still can break it, but must do so within a short timeframe."
     )
     public boolean config_warn_breaking_loot_blocks;
 

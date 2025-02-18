@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.oddlama.vane.annotation.config.ConfigStringList;
 import org.oddlama.vane.core.YamlLoadException;
@@ -14,10 +15,10 @@ public class ConfigStringListField extends ConfigField<List<String>> {
     public ConfigStringList annotation;
 
     public ConfigStringListField(
-        Object owner,
-        Field field,
-        Function<String, String> map_name,
-        ConfigStringList annotation
+            Object owner,
+            Field field,
+            Function<String, String> map_name,
+            ConfigStringList annotation
     ) {
         super(owner, field, map_name, "list of strings", annotation.desc());
         this.annotation = annotation;
@@ -65,8 +66,8 @@ public class ConfigStringListField extends ConfigField<List<String>> {
         builder.append(basename());
         builder.append(":\n");
         final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
-            : def();
+                ? load_from_yaml(existing_compatible_config)
+                : def();
         append_string_list_definition(builder, indent, "", def);
     }
 

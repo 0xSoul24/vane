@@ -13,93 +13,93 @@ vane-velocity = "gray"
 id = "gameplay"
 title = "Gameplay"
 content = [
-	"vane-trifles/double_doors.md",
-	"vane-trifles/better_harvesting.md",
-	"vane-trifles/item_finder.md",
-	"vane-trifles/chest_sorting.md",
-	"vane-trifles/grass_paths.md",
-	"vane-admin/creeper_protection.md",
-	"vane-trifles/decorative_heads.md",
-	"vane-bedtime/night_to_day.md",
-	"vane-trifles/recipe_unlock.md",
-	"vane-trifles/repair_cost_limiter.md",
+    "vane-trifles/double_doors.md",
+    "vane-trifles/better_harvesting.md",
+    "vane-trifles/item_finder.md",
+    "vane-trifles/chest_sorting.md",
+    "vane-trifles/grass_paths.md",
+    "vane-admin/creeper_protection.md",
+    "vane-trifles/decorative_heads.md",
+    "vane-bedtime/night_to_day.md",
+    "vane-trifles/recipe_unlock.md",
+    "vane-trifles/repair_cost_limiter.md",
 ]
 
 [[categories]]
 id = "custom_items"
 title = "Custom Items"
 content = [
-	"vane-trifles/sickle.md",
-	"vane-trifles/file.md",
-	"vane-trifles/trowel.md",
-	"vane-trifles/north_compass.md",
-	"vane-trifles/slime_bucket.md",
-	"vane-trifles/pouch.md",
-	"vane-trifles/backpack.md",
-	"vane-trifles/papyrus_scroll.md",
-	"vane-trifles/portal_scroll_home.md",
-	"vane-trifles/portal_scroll_unstable.md",
-	"vane-trifles/portal_scroll_spawn.md",
-	"vane-trifles/portal_scroll_death.md",
-	"vane-trifles/portal_scroll_lodestone.md",
-	"vane-trifles/xp_bottles.md",
-	"vane-trifles/netherite_elytra.md",
-	"vane-enchantments/ancient_tome.md",
-	"vane-enchantments/ancient_tome_of_knowledge.md",
-	"vane-enchantments/ancient_tome_of_the_gods.md",
+    "vane-trifles/sickle.md",
+    "vane-trifles/file.md",
+    "vane-trifles/trowel.md",
+    "vane-trifles/north_compass.md",
+    "vane-trifles/slime_bucket.md",
+    "vane-trifles/pouch.md",
+    "vane-trifles/backpack.md",
+    "vane-trifles/papyrus_scroll.md",
+    "vane-trifles/portal_scroll_home.md",
+    "vane-trifles/portal_scroll_unstable.md",
+    "vane-trifles/portal_scroll_spawn.md",
+    "vane-trifles/portal_scroll_death.md",
+    "vane-trifles/portal_scroll_lodestone.md",
+    "vane-trifles/xp_bottles.md",
+    "vane-trifles/netherite_elytra.md",
+    "vane-enchantments/ancient_tome.md",
+    "vane-enchantments/ancient_tome_of_knowledge.md",
+    "vane-enchantments/ancient_tome_of_the_gods.md",
 ]
 
 [[categories]]
 id = "enchantments"
 title = "Enchantments"
 content = [
-	"vane-enchantments/angel.md",
-	"vane-enchantments/grappling_hook.md",
-	"vane-enchantments/hell_bent.md",
-	"vane-enchantments/leafchopper.md",
-	"vane-enchantments/lightning.md",
-	"vane-enchantments/rake.md",
-	"vane-enchantments/seeding.md",
-	"vane-enchantments/soulbound.md",
-	"vane-enchantments/takeoff.md",
-	"vane-enchantments/unbreakable.md",
-	"vane-enchantments/wings.md",
+    "vane-enchantments/angel.md",
+    "vane-enchantments/grappling_hook.md",
+    "vane-enchantments/hell_bent.md",
+    "vane-enchantments/leafchopper.md",
+    "vane-enchantments/lightning.md",
+    "vane-enchantments/rake.md",
+    "vane-enchantments/seeding.md",
+    "vane-enchantments/soulbound.md",
+    "vane-enchantments/takeoff.md",
+    "vane-enchantments/unbreakable.md",
+    "vane-enchantments/wings.md",
 ]
 
 [[categories]]
 id = "mechanics"
 title = "Mechanics"
 content = [
-	"vane-portals/portals.md",
-	"vane-portals/portal_construction.md",
-	"vane-portals/portal_settings.md",
-	"vane-regions/regions.md",
-	"vane-regions/region_creation.md",
-	"vane-regions/region_permissions.md",
+    "vane-portals/portals.md",
+    "vane-portals/portal_construction.md",
+    "vane-portals/portal_settings.md",
+    "vane-regions/regions.md",
+    "vane-regions/region_creation.md",
+    "vane-regions/region_permissions.md",
 ]
 
 [[categories]]
 id = "administrative"
 title = "Administrative Features"
 content = [
-	"vane-admin/chat_message_formatter.md",
-	"vane-core/command_hider.md",
-	"vane-core/core_commands.md",
-	"vane-admin/convenience_commands.md",
-	"vane-admin/hazard_protection.md",
-	"vane-admin/spawn_protection.md",
-	"vane-admin/graylist.md",
-	"vane-core/loot_block_protection.md",
+    "vane-admin/chat_message_formatter.md",
+    "vane-core/command_hider.md",
+    "vane-core/core_commands.md",
+    "vane-admin/convenience_commands.md",
+    "vane-admin/hazard_protection.md",
+    "vane-admin/spawn_protection.md",
+    "vane-admin/graylist.md",
+    "vane-core/loot_block_protection.md",
 ]
 
 [[categories]]
 id = "system"
 title = "System Features"
 content = [
-	"vane-core/translations.md",
-	"vane-core/configurability.md",
-	"vane-admin/autostop.md",
-	"vane-velocity/autostart.md",
-	"vane-velocity/multiplexing.md",
-	"vane-core/uninstalling.md",
+    "vane-core/translations.md",
+    "vane-core/configurability.md",
+    "vane-admin/autostop.md",
+    "vane-velocity/autostart.md",
+    "vane-velocity/multiplexing.md",
+    "vane-core/uninstalling.md",
 ]

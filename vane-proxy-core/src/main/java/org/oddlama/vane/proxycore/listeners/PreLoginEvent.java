@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.UUID;
 import java.util.logging.Level;
+
 import org.oddlama.vane.proxycore.Maintenance;
 import org.oddlama.vane.proxycore.ProxyPendingConnection;
 import org.oddlama.vane.proxycore.VaneProxyPlugin;
@@ -17,7 +18,7 @@ import org.oddlama.vane.proxycore.config.IVaneProxyServerInfo;
 public abstract class PreLoginEvent implements ProxyEvent, ProxyCancellableEvent {
 
     public static String MESSAGE_MULTIPLEX_MOJANG_AUTH_NO_PERMISSION_KICK =
-        "§cYou have no permission to use this auth multiplexer!";
+            "§cYou have no permission to use this auth multiplexer!";
 
     public VaneProxyPlugin plugin;
 
@@ -67,14 +68,14 @@ public abstract class PreLoginEvent implements ProxyEvent, ProxyCancellableEvent
         final var new_name = new_uuid_str.substring(new_uuid_str.length() - 16).replace("-", "_");
 
         plugin
-            .get_logger()
-            .log(
-                Level.INFO,
-                "auth multiplex request from player " +
-                name +
-                " connecting from " +
-                connection.get_socket_address().toString()
-            );
+                .get_logger()
+                .log(
+                        Level.INFO,
+                        "auth multiplex request from player " +
+                                name +
+                                " connecting from " +
+                                connection.get_socket_address().toString()
+                );
 
         MultiplexedPlayer multiplexed_player = new MultiplexedPlayer(multiplexer_id, name, new_name, uuid, new_uuid);
         if (!implementation_specific_auth(multiplexed_player)) {
@@ -83,8 +84,8 @@ public abstract class PreLoginEvent implements ProxyEvent, ProxyCancellableEvent
 
         switch (destination) {
             case MULTIPLEXED_UUIDS -> plugin
-                .get_multiplexed_uuids()
-                .put(multiplexed_player.new_uuid, multiplexed_player.original_uuid);
+                    .get_multiplexed_uuids()
+                    .put(multiplexed_player.new_uuid, multiplexed_player.original_uuid);
             case PENDING_MULTIPLEXED_LOGINS -> plugin.get_pending_multiplexer_logins().put(uuid, multiplexed_player);
         }
     }
@@ -92,8 +93,8 @@ public abstract class PreLoginEvent implements ProxyEvent, ProxyCancellableEvent
     public abstract boolean implementation_specific_auth(MultiplexedPlayer multiplexed_player);
 
     public static void register_auth_multiplex_player(
-        IVaneProxyServerInfo server,
-        PreLoginEvent.MultiplexedPlayer multiplexed_player
+            IVaneProxyServerInfo server,
+            PreLoginEvent.MultiplexedPlayer multiplexed_player
     ) {
         final var stream = new ByteArrayOutputStream();
         final var out = new DataOutputStream(stream);
@@ -111,7 +112,9 @@ public abstract class PreLoginEvent implements ProxyEvent, ProxyCancellableEvent
         server.sendData(stream.toByteArray());
     }
 
-    /** Where to send the details of a PreLoginEvent */
+    /**
+     * Where to send the details of a PreLoginEvent
+     */
     public enum PreLoginDestination {
         MULTIPLEXED_UUIDS,
         PENDING_MULTIPLEXED_LOGINS,
@@ -126,11 +129,11 @@ public abstract class PreLoginEvent implements ProxyEvent, ProxyCancellableEvent
         public UUID new_uuid;
 
         public MultiplexedPlayer(
-            Integer multiplexer_id,
-            String name,
-            String new_name,
-            UUID original_uuid,
-            UUID new_uuid
+                Integer multiplexer_id,
+                String name,
+                String new_name,
+                UUID original_uuid,
+                UUID new_uuid
         ) {
             this.multiplexer_id = multiplexer_id;
             this.name = name;

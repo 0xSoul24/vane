@@ -29,11 +29,11 @@ public class VaneEnchantmentProcessor extends AbstractProcessor {
     private void verify_is_class(Element element) {
         if (element.getKind() != ElementKind.CLASS) {
             processingEnv
-                .getMessager()
-                .printMessage(
-                    Diagnostic.Kind.ERROR,
-                    element.asType().toString() + ": @VaneEnchantment must be applied to a class"
-                );
+                    .getMessager()
+                    .printMessage(
+                            Diagnostic.Kind.ERROR,
+                            element.asType().toString() + ": @VaneEnchantment must be applied to a class"
+                    );
         }
     }
 
@@ -51,11 +51,11 @@ public class VaneEnchantmentProcessor extends AbstractProcessor {
         }
 
         processingEnv
-            .getMessager()
-            .printMessage(
-                Diagnostic.Kind.ERROR,
-                element.asType().toString() +
-                ": @VaneEnchantment must be applied to a class inheriting from org.oddlama.vane.core.enchantments.CustomEnchantment"
-            );
+                .getMessager()
+                .printMessage(
+                        Diagnostic.Kind.ERROR,
+                        element.asType().toString() +
+                                ": @VaneEnchantment must be applied to a class inheriting from org.oddlama.vane.core.enchantments.CustomEnchantment"
+                );
     }
 }

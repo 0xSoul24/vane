@@ -2,6 +2,7 @@ package org.oddlama.vane.core.lang;
 
 import java.lang.reflect.Field;
 import java.util.function.Function;
+
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.oddlama.vane.core.YamlLoadException;
 import org.oddlama.vane.core.module.Module;
@@ -24,7 +25,7 @@ public abstract class LangField<T> {
         this.field = field;
 
         if (!field.getName().contains(PREFIX)) throw new RuntimeException(
-            new YamlLoadException.Lang("field must start with " + PREFIX, this)
+                new YamlLoadException.Lang("field must start with " + PREFIX, this)
         );
         this.name = map_name.apply(field.getName().substring(PREFIX.length()));
         this.namespace = module.namespace();
@@ -64,9 +65,9 @@ public abstract class LangField<T> {
     public abstract void load(final String namespace, final YamlConfiguration yaml);
 
     public abstract void add_translations(
-        final ResourcePackGenerator pack,
-        final YamlConfiguration yaml,
-        String lang_code
+            final ResourcePackGenerator pack,
+            final YamlConfiguration yaml,
+            String lang_code
     ) throws YamlLoadException;
 
     @SuppressWarnings("unchecked")

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.logging.Level;
+
 import org.apache.commons.lang.WordUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -123,7 +124,7 @@ public class ConfigManager {
             }
             if (field_version != null) {
                 throw new RuntimeException(
-                    "There must be exactly one @ConfigVersion field! (found multiple). This is a bug."
+                        "There must be exactly one @ConfigVersion field! (found multiple). This is a bug."
                 );
             }
             return field_version = new ConfigVersionField(owner, field, map_name, (ConfigVersion) annotation);
@@ -140,7 +141,7 @@ public class ConfigManager {
                 module.log.severe("Something went wrong while generating or loading the configuration.");
                 module.log.severe("If you are sure your configuration is correct and this isn't a file");
                 module.log.severe(
-                    "system permission issue, please report this to https://github.com/oddlama/vane/issues"
+                        "system permission issue, please report this to https://github.com/oddlama/vane/issues"
                 );
             } else if (version < expected_version()) {
                 module.log.severe("This config is for an older version of " + module.getName() + ".");
@@ -169,11 +170,11 @@ public class ConfigManager {
     public void compile(Object owner, Function<String, String> map_name) {
         // Compile all annotated fields
         config_fields.addAll(
-            getAllFields(owner.getClass())
-                .stream()
-                .filter(this::has_config_annotation)
-                .map(f -> compile_field(owner, f, map_name))
-                .toList()
+                getAllFields(owner.getClass())
+                        .stream()
+                        .filter(this::has_config_annotation)
+                        .map(f -> compile_field(owner, f, map_name))
+                        .toList()
         );
 
         // Sort fields alphabetically, and by precedence (e.g., put a version last and lang first)
@@ -222,10 +223,10 @@ public class ConfigManager {
                     final var section_desc = section_descriptions.get(section_path);
                     if (section_desc != null) {
                         final var description_wrapped = WordUtils.wrap(
-                            section_desc,
-                            Math.max(60, 80 - indent.length()),
-                            "\n" + indent + "# ",
-                            false
+                                section_desc,
+                                Math.max(60, 80 - indent.length()),
+                                "\n" + indent + "# ",
+                                false
                         );
                         builder.append(indent);
                         builder.append("# ");
@@ -270,18 +271,18 @@ public class ConfigManager {
         // Move atomically to prevent corruption.
         try {
             Files.move(
-                tmp_file.toPath(),
-                file.toPath(),
-                StandardCopyOption.REPLACE_EXISTING,
-                StandardCopyOption.ATOMIC_MOVE
+                    tmp_file.toPath(),
+                    file.toPath(),
+                    StandardCopyOption.REPLACE_EXISTING,
+                    StandardCopyOption.ATOMIC_MOVE
             );
         } catch (IOException e) {
             module.log.log(
-                Level.SEVERE,
-                "error while atomically replacing '" +
-                file +
-                "' with temporary file (very recent changes might be lost)!",
-                e
+                    Level.SEVERE,
+                    "error while atomically replacing '" +
+                            file +
+                            "' with temporary file (very recent changes might be lost)!",
+                    e
             );
             return false;
         }
@@ -308,20 +309,20 @@ public class ConfigManager {
         // Move atomically to prevent corruption.
         try {
             Files.move(
-                tmp_file.toPath(),
-                standard_file().toPath(),
-                StandardCopyOption.REPLACE_EXISTING,
-                StandardCopyOption.ATOMIC_MOVE
+                    tmp_file.toPath(),
+                    standard_file().toPath(),
+                    StandardCopyOption.REPLACE_EXISTING,
+                    StandardCopyOption.ATOMIC_MOVE
             );
         } catch (IOException e) {
             module.log.log(
-                Level.SEVERE,
-                "error while atomically replacing '" +
-                standard_file() +
-                "' with updated version. Please manually resolve the conflict (new file is named '" +
-                tmp_file +
-                "')",
-                e
+                    Level.SEVERE,
+                    "error while atomically replacing '" +
+                            standard_file() +
+                            "' with updated version. Please manually resolve the conflict (new file is named '" +
+                            tmp_file +
+                            "')",
+                    e
             );
             return false;
         }

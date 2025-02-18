@@ -34,18 +34,18 @@ public class ChatMessageFormatter extends Listener<Admin> {
 
     public ChatMessageFormatter(Context<Admin> context) {
         super(
-            context.group(
-                "chat_message_formatter",
-                "Enables custom formatting of chat messages like player chats and join / quit messages."
-            )
+                context.group(
+                        "chat_message_formatter",
+                        "Enables custom formatting of chat messages like player chats and join / quit messages."
+                )
         );
         // Create custom chat renderer
         chat_renderer = new ChatRenderer() {
             public Component render(
-                final Player source,
-                final Component sourceDisplayName,
-                final Component message,
-                final Audience viewer
+                    final Player source,
+                    final Component sourceDisplayName,
+                    final Component message,
+                    final Audience viewer
             ) {
                 // TODO more sophisticated formatting?
                 final var who = sourceDisplayName.color(NamedTextColor.AQUA);

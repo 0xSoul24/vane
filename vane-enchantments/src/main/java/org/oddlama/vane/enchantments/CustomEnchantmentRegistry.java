@@ -7,7 +7,9 @@ import io.papermc.paper.registry.event.RegistryFreezeEvent;
 import io.papermc.paper.registry.set.RegistryKeySet;
 import io.papermc.paper.registry.set.RegistrySet;
 import io.papermc.paper.registry.tag.TagKey;
+
 import java.util.List;
+
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.enchantments.Enchantment;
@@ -60,9 +62,11 @@ public abstract class CustomEnchantmentRegistry {
         return this;
     }
 
-    /** Get exclusive enchantments */
+    /**
+     * Get exclusive enchantments
+     */
     public RegistryKeySet<Enchantment> exclusive_with(
-        RegistryFreezeEvent<Enchantment, EnchantmentRegistryEntry.Builder> freezeEvent
+            RegistryFreezeEvent<Enchantment, EnchantmentRegistryEntry.Builder> freezeEvent
     ) {
         if (this.exclusive_with_tags != null) {
             return freezeEvent.getOrCreateTag(exclusive_with_tags);
@@ -78,23 +82,23 @@ public abstract class CustomEnchantmentRegistry {
      */
     public void register(RegistryFreezeEvent<Enchantment, EnchantmentRegistryEntry.Builder> freezeEvent) {
         freezeEvent
-            .registry()
-            .register(TypedKey.create(RegistryKey.ENCHANTMENT, key), e ->
-                e
-                    .description(description)
-                    .supportedItems(
-                        supported_items.size() > 0
-                            ? RegistrySet.keySet(RegistryKey.ITEM, supported_items)
-                            : freezeEvent.getOrCreateTag(supported_item_tags)
-                    )
-                    .anvilCost(1)
-                    .maxLevel(max_level)
-                    .weight(10)
-                    .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(1, 1))
-                    .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(3, 1))
-                    .activeSlots(EquipmentSlotGroup.ANY)
-                    .exclusiveWith(this.exclusive_with(freezeEvent))
-            );
+                .registry()
+                .register(TypedKey.create(RegistryKey.ENCHANTMENT, key), e ->
+                        e
+                                .description(description)
+                                .supportedItems(
+                                        supported_items.size() > 0
+                                                ? RegistrySet.keySet(RegistryKey.ITEM, supported_items)
+                                                : freezeEvent.getOrCreateTag(supported_item_tags)
+                                )
+                                .anvilCost(1)
+                                .maxLevel(max_level)
+                                .weight(10)
+                                .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(1, 1))
+                                .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(3, 1))
+                                .activeSlots(EquipmentSlotGroup.ANY)
+                                .exclusiveWith(this.exclusive_with(freezeEvent))
+                );
     }
 
     public TypedKey<Enchantment> typedKey(String name) {

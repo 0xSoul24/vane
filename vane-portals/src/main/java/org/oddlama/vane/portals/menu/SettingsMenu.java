@@ -47,81 +47,81 @@ public class SettingsMenu extends ModuleComponent<Portals> {
         final var ctx = get_context();
         item_rename = new TranslatedItemStack<>(ctx, "rename", Material.NAME_TAG, 1, "Used to rename the portal.");
         item_select_icon = new TranslatedItemStack<>(
-            ctx,
-            "select_icon",
-            StorageUtil.namespaced_key("vane", "decoration_end_portal_orb"),
-            1,
-            "Used to select the portal's icon."
+                ctx,
+                "select_icon",
+                StorageUtil.namespaced_key("vane", "decoration_end_portal_orb"),
+                1,
+                "Used to select the portal's icon."
         );
         item_select_style = new TranslatedItemStack<>(
-            ctx,
-            "select_style",
-            Material.ITEM_FRAME,
-            1,
-            "Used to change the portal's style."
+                ctx,
+                "select_style",
+                Material.ITEM_FRAME,
+                1,
+                "Used to change the portal's style."
         );
         item_exit_orientation_lock_on = new TranslatedItemStack<>(
-            ctx,
-            "exit_orientation_lock_on",
-            Material.SOUL_TORCH,
-            1,
-            "Used to toggle and indicate enabled exit orientation lock."
+                ctx,
+                "exit_orientation_lock_on",
+                Material.SOUL_TORCH,
+                1,
+                "Used to toggle and indicate enabled exit orientation lock."
         );
         item_exit_orientation_lock_off = new TranslatedItemStack<>(
-            ctx,
-            "exit_orientation_lock_off",
-            Material.TORCH,
-            1,
-            "Used to toggle and indicate disabled exit orientation lock."
+                ctx,
+                "exit_orientation_lock_off",
+                Material.TORCH,
+                1,
+                "Used to toggle and indicate disabled exit orientation lock."
         );
         item_visibility_public = new TranslatedItemStack<>(
-            ctx,
-            "visibility_public",
-            Material.ENDER_EYE,
-            1,
-            "Used to change and indicate public visibility."
+                ctx,
+                "visibility_public",
+                Material.ENDER_EYE,
+                1,
+                "Used to change and indicate public visibility."
         );
         item_visibility_group = new TranslatedItemStack<>(
-            ctx,
-            "visibility_group",
-            Material.ENDER_PEARL,
-            1,
-            "Used to change and indicate group visibility."
+                ctx,
+                "visibility_group",
+                Material.ENDER_PEARL,
+                1,
+                "Used to change and indicate group visibility."
         );
         item_visibility_group_internal = new TranslatedItemStack<>(
-            ctx,
-            "visibility_group_internal",
-            Material.FIRE_CHARGE,
-            1,
-            "Used to change and indicate group internal visibility."
+                ctx,
+                "visibility_group_internal",
+                Material.FIRE_CHARGE,
+                1,
+                "Used to change and indicate group internal visibility."
         );
         item_visibility_private = new TranslatedItemStack<>(
-            ctx,
-            "visibility_private",
-            Material.FIREWORK_STAR,
-            1,
-            "Used to change and indicate private visibility."
+                ctx,
+                "visibility_private",
+                Material.FIREWORK_STAR,
+                1,
+                "Used to change and indicate private visibility."
         );
         item_target_lock_on = new TranslatedItemStack<>(
-            ctx,
-            "target_lock_on",
-            Material.SLIME_BALL,
-            1,
-            "Used to toggle and indicate enabled target lock."
+                ctx,
+                "target_lock_on",
+                Material.SLIME_BALL,
+                1,
+                "Used to toggle and indicate enabled target lock."
         );
         item_target_lock_off = new TranslatedItemStack<>(
-            ctx,
-            "target_lock_off",
-            Material.SNOWBALL,
-            1,
-            "Used to toggle and indicate disabled target lock."
+                ctx,
+                "target_lock_off",
+                Material.SNOWBALL,
+                1,
+                "Used to toggle and indicate disabled target lock."
         );
         item_back = new TranslatedItemStack<>(
-            ctx,
-            "back",
-            Material.PRISMARINE_SHARD,
-            1,
-            "Used to go back to the previous menu."
+                ctx,
+                "back",
+                Material.PRISMARINE_SHARD,
+                1,
+                "Used to go back to the previous menu."
         );
     }
 
@@ -142,7 +142,7 @@ public class SettingsMenu extends ModuleComponent<Portals> {
         settings_menu.add(menu_item_back(portal, console));
 
         settings_menu.on_natural_close(player2 ->
-            get_module().menus.console_menu.create(portal, player2, console).open(player2)
+                get_module().menus.console_menu.create(portal, player2, console).open(player2)
         );
 
         return settings_menu;
@@ -153,28 +153,28 @@ public class SettingsMenu extends ModuleComponent<Portals> {
             menu.close(player);
 
             get_module()
-                .menus.enter_name_menu.create(player, portal.name(), (player2, name) -> {
-                    final var settings_event = new PortalChangeSettingsEvent(player2, portal, false);
-                    get_module().getServer().getPluginManager().callEvent(settings_event);
-                    if (settings_event.isCancelled() && !player2.hasPermission(get_module().admin_permission)) {
-                        get_module().lang_settings_restricted.send(player2);
-                        return ClickResult.ERROR;
-                    }
+                    .menus.enter_name_menu.create(player, portal.name(), (player2, name) -> {
+                        final var settings_event = new PortalChangeSettingsEvent(player2, portal, false);
+                        get_module().getServer().getPluginManager().callEvent(settings_event);
+                        if (settings_event.isCancelled() && !player2.hasPermission(get_module().admin_permission)) {
+                            get_module().lang_settings_restricted.send(player2);
+                            return ClickResult.ERROR;
+                        }
 
-                    portal.name(name);
+                        portal.name(name);
 
-                    // Update portal icons to reflect new name
-                    get_module().update_portal_icon(portal);
+                        // Update portal icons to reflect new name
+                        get_module().update_portal_icon(portal);
 
-                    // Open new menu because of possibly changed title
-                    get_module().menus.settings_menu.create(portal, player2, console).open(player2);
-                    return ClickResult.SUCCESS;
-                })
-                .on_natural_close(player2 -> {
-                    // Open new menu because of possibly changed title
-                    get_module().menus.settings_menu.create(portal, player2, console).open(player2);
-                })
-                .open(player);
+                        // Open new menu because of possibly changed title
+                        get_module().menus.settings_menu.create(portal, player2, console).open(player2);
+                        return ClickResult.SUCCESS;
+                    })
+                    .on_natural_close(player2 -> {
+                        // Open new menu because of possibly changed title
+                        get_module().menus.settings_menu.create(portal, player2, console).open(player2);
+                    })
+                    .open(player);
 
             return ClickResult.SUCCESS;
         });
@@ -184,28 +184,28 @@ public class SettingsMenu extends ModuleComponent<Portals> {
         return new MenuItem(1, item_select_icon.item(), (player, menu, self) -> {
             menu.close(player);
             MenuFactory.item_selector(
-                get_context(),
-                player,
-                lang_select_icon_title.str(),
-                portal.icon(),
-                true,
-                (player2, item) -> {
-                    final var settings_event = new PortalChangeSettingsEvent(player2, portal, false);
-                    get_module().getServer().getPluginManager().callEvent(settings_event);
-                    if (settings_event.isCancelled() && !player2.hasPermission(get_module().admin_permission)) {
-                        get_module().lang_settings_restricted.send(player2);
-                        return ClickResult.ERROR;
-                    }
+                            get_context(),
+                            player,
+                            lang_select_icon_title.str(),
+                            portal.icon(),
+                            true,
+                            (player2, item) -> {
+                                final var settings_event = new PortalChangeSettingsEvent(player2, portal, false);
+                                get_module().getServer().getPluginManager().callEvent(settings_event);
+                                if (settings_event.isCancelled() && !player2.hasPermission(get_module().admin_permission)) {
+                                    get_module().lang_settings_restricted.send(player2);
+                                    return ClickResult.ERROR;
+                                }
 
-                    portal.icon(item);
-                    get_module().update_portal_icon(portal);
-                    menu.open(player2);
-                    return ClickResult.SUCCESS;
-                },
-                player2 -> menu.open(player2)
-            )
-                .tag(new PortalMenuTag(portal.id()))
-                .open(player);
+                                portal.icon(item);
+                                get_module().update_portal_icon(portal);
+                                menu.open(player2);
+                                return ClickResult.SUCCESS;
+                            },
+                            player2 -> menu.open(player2)
+                    )
+                    .tag(new PortalMenuTag(portal.id()))
+                    .open(player);
             return ClickResult.SUCCESS;
         });
     }
@@ -326,8 +326,10 @@ public class SettingsMenu extends ModuleComponent<Portals> {
     }
 
     @Override
-    public void on_enable() {}
+    public void on_enable() {
+    }
 
     @Override
-    public void on_disable() {}
+    public void on_disable() {
+    }
 }

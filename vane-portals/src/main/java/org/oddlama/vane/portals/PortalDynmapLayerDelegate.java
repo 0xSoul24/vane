@@ -3,6 +3,7 @@ package org.oddlama.vane.portals;
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.logging.Level;
+
 import org.bukkit.plugin.Plugin;
 import org.dynmap.DynmapCommonAPI;
 import org.dynmap.DynmapCommonAPIListener;
@@ -34,13 +35,13 @@ public class PortalDynmapLayerDelegate {
     public void on_enable(final Plugin plugin) {
         try {
             DynmapCommonAPIListener.register(
-                new DynmapCommonAPIListener() {
-                    @Override
-                    public void apiEnabled(DynmapCommonAPI api) {
-                        dynmap_api = api;
-                        marker_api = dynmap_api.getMarkerAPI();
+                    new DynmapCommonAPIListener() {
+                        @Override
+                        public void apiEnabled(DynmapCommonAPI api) {
+                            dynmap_api = api;
+                            marker_api = dynmap_api.getMarkerAPI();
+                        }
                     }
-                }
             );
         } catch (Exception e) {
             get_module().log.log(Level.WARNING, "Error while enabling dynmap integration!", e);
@@ -72,10 +73,10 @@ public class PortalDynmapLayerDelegate {
         marker_set = marker_api.getMarkerSet(PortalDynmapLayer.LAYER_ID);
         if (marker_set == null) {
             marker_set = marker_api.createMarkerSet(
-                PortalDynmapLayer.LAYER_ID,
-                parent.lang_layer_label.str(),
-                null,
-                false
+                    PortalDynmapLayer.LAYER_ID,
+                    parent.lang_layer_label.str(),
+                    null,
+                    false
             );
         }
 
@@ -125,14 +126,14 @@ public class PortalDynmapLayerDelegate {
         final var marker_label = parent.lang_marker_label.str(portal.name());
 
         marker_set.createMarker(
-            marker_id,
-            marker_label,
-            world_name,
-            loc.getX(),
-            loc.getY(),
-            loc.getZ(),
-            marker_icon,
-            false
+                marker_id,
+                marker_label,
+                world_name,
+                loc.getX(),
+                loc.getY(),
+                loc.getZ(),
+                marker_icon,
+                false
         );
     }
 

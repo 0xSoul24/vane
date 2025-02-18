@@ -1,7 +1,9 @@
 package org.oddlama.velocity.compat;
 
 import com.velocitypowered.api.proxy.server.RegisteredServer;
+
 import java.net.SocketAddress;
+
 import org.oddlama.vane.proxycore.config.IVaneProxyServerInfo;
 import org.oddlama.velocity.Velocity;
 

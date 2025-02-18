@@ -6,6 +6,7 @@ import static org.oddlama.vane.util.PlayerUtil.remove_one_item_from_hand;
 import static org.oddlama.vane.util.PlayerUtil.swing_arm;
 
 import java.util.EnumSet;
+
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -29,10 +30,10 @@ import org.oddlama.vane.trifles.items.XpBottles.XpBottle;
 public class EmptyXpBottle extends CustomItem<Trifles> {
 
     @ConfigDouble(
-        def = 0.3,
-        min = 0.0,
-        max = 0.999,
-        desc = "Percentage of experience lost when bottling. For 10% loss, bottling 30 levels will require 30 * (1 / (1 - 0.1)) = 33.33 levels"
+            def = 0.3,
+            min = 0.0,
+            max = 0.999,
+            desc = "Percentage of experience lost when bottling. For 10% loss, bottling 30 levels will require 30 * (1 / (1 - 0.1)) = 33.33 levels"
     )
     public double config_loss_percentage;
 
@@ -43,11 +44,11 @@ public class EmptyXpBottle extends CustomItem<Trifles> {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new ShapelessRecipeDefinition("generic")
-                .add_ingredient(Material.EXPERIENCE_BOTTLE)
-                .add_ingredient(Material.GLASS_BOTTLE)
-                .add_ingredient(Material.GOLD_NUGGET)
-                .result(key().toString())
+                new ShapelessRecipeDefinition("generic")
+                        .add_ingredient(Material.EXPERIENCE_BOTTLE)
+                        .add_ingredient(Material.GLASS_BOTTLE)
+                        .add_ingredient(Material.GOLD_NUGGET)
+                        .result(key().toString())
         );
     }
 
@@ -71,7 +72,8 @@ public class EmptyXpBottle extends CustomItem<Trifles> {
         return level * level + 6 * level;
     }
 
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false) // ignoreCancelled = false to catch right-click-air events
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
+    // ignoreCancelled = false to catch right-click-air events
     public void on_player_right_click(final PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) {
             return;
@@ -130,8 +132,8 @@ public class EmptyXpBottle extends CustomItem<Trifles> {
         remove_one_item_from_hand(player, event.getHand());
         give_item(player, xp_bottle.newStack());
         player
-            .getWorld()
-            .playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0f, 4.0f);
+                .getWorld()
+                .playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0f, 4.0f);
         swing_arm(player, event.getHand());
     }
 }

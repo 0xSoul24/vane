@@ -7,9 +7,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import io.papermc.paper.command.brigadier.argument.CustomArgumentType;
+
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -37,8 +39,8 @@ public class OfflinePlayerArgumentType implements CustomArgumentType.Converted<O
 
     @Override
     public <S> @NotNull CompletableFuture<Suggestions> listSuggestions(
-        @NotNull CommandContext<S> context,
-        @NotNull SuggestionsBuilder builder
+            @NotNull CommandContext<S> context,
+            @NotNull SuggestionsBuilder builder
     ) {
         OfflinePlayer[] players = Bukkit.getOfflinePlayers();
         Stream<String> stream = Arrays.stream(players).map(p -> p.getName()).filter(p -> p != null);

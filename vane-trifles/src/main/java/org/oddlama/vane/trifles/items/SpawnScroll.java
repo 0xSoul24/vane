@@ -14,11 +14,11 @@ import org.oddlama.vane.trifles.Trifles;
 import org.oddlama.vane.trifles.commands.Setspawn;
 
 @VaneItem(
-    name = "spawn_scroll",
-    base = Material.WARPED_FUNGUS_ON_A_STICK,
-    durability = 40,
-    model_data = 0x760010,
-    version = 1
+        name = "spawn_scroll",
+        base = Material.WARPED_FUNGUS_ON_A_STICK,
+        durability = 40,
+        model_data = 0x760010,
+        version = 1
 )
 public class SpawnScroll extends Scroll {
 
@@ -29,13 +29,13 @@ public class SpawnScroll extends Scroll {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("aba", "epe")
-                .set_ingredient('p', "vane_trifles:papyrus_scroll")
-                .set_ingredient('e', Material.ENDER_PEARL)
-                .set_ingredient('a', Material.WHEAT_SEEDS)
-                .set_ingredient('b', Tag.SAPLINGS)
-                .result(key().toString())
+                new ShapedRecipeDefinition("generic")
+                        .shape("aba", "epe")
+                        .set_ingredient('p', "vane_trifles:papyrus_scroll")
+                        .set_ingredient('e', Material.ENDER_PEARL)
+                        .set_ingredient('a', Material.WHEAT_SEEDS)
+                        .set_ingredient('b', Tag.SAPLINGS)
+                        .result(key().toString())
         );
     }
 
@@ -44,10 +44,10 @@ public class SpawnScroll extends Scroll {
         Location loc = null;
         for (final var world : get_module().getServer().getWorlds()) {
             if (
-                world
-                    .getPersistentDataContainer()
-                    .getOrDefault(Setspawn.IS_SPAWN_WORLD, PersistentDataType.INTEGER, 0) ==
-                1
+                    world
+                            .getPersistentDataContainer()
+                            .getOrDefault(Setspawn.IS_SPAWN_WORLD, PersistentDataType.INTEGER, 0) ==
+                            1
             ) {
                 loc = world.getSpawnLocation();
             }

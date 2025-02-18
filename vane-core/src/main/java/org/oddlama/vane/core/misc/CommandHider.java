@@ -12,10 +12,10 @@ public class CommandHider extends Listener<Core> {
 
     public CommandHider(Context<Core> context) {
         super(
-            context.group(
-                "hide_commands",
-                "Hide error messages for all commands for which a player has no permission, by displaying the default unknown command message instead."
-            )
+                context.group(
+                        "hide_commands",
+                        "Hide error messages for all commands for which a player has no permission, by displaying the default unknown command message instead."
+                )
         );
     }
 

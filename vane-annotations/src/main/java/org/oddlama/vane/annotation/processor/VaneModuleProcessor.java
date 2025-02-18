@@ -29,11 +29,11 @@ public class VaneModuleProcessor extends AbstractProcessor {
     private void verify_is_class(Element element) {
         if (element.getKind() != ElementKind.CLASS) {
             processingEnv
-                .getMessager()
-                .printMessage(
-                    Diagnostic.Kind.ERROR,
-                    element.asType().toString() + ": @VaneModule must be applied to a class"
-                );
+                    .getMessager()
+                    .printMessage(
+                            Diagnostic.Kind.ERROR,
+                            element.asType().toString() + ": @VaneModule must be applied to a class"
+                    );
         }
     }
 
@@ -51,11 +51,11 @@ public class VaneModuleProcessor extends AbstractProcessor {
         }
 
         processingEnv
-            .getMessager()
-            .printMessage(
-                Diagnostic.Kind.ERROR,
-                element.asType().toString() +
-                ": @VaneModule must be applied to a class inheriting from org.oddlama.vane.core.Module"
-            );
+                .getMessager()
+                .printMessage(
+                        Diagnostic.Kind.ERROR,
+                        element.asType().toString() +
+                                ": @VaneModule must be applied to a class inheriting from org.oddlama.vane.core.Module"
+                );
     }
 }

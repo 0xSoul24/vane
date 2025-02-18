@@ -36,53 +36,54 @@ public class Heads extends Command<Trifles> {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
         return super.get_command_base()
-            .requires(ctx -> ctx.getSender() instanceof Player)
-            .then(help())
-            .executes(ctx -> {
-                open_head_library((Player) ctx.getSource().getSender());
-                return SINGLE_SUCCESS;
-            });
+                .requires(ctx -> ctx.getSender() instanceof Player)
+                .then(help())
+                .executes(ctx -> {
+                    open_head_library((Player) ctx.getSource().getSender());
+                    return SINGLE_SUCCESS;
+                });
     }
 
     private void open_head_library(final Player player) {
         MenuFactory.head_selector(
-            get_context(),
-            player,
-            (player2, m, t, event) -> {
-                final int amount;
-                switch (event.getClick()) {
-                    default:
-                        return ClickResult.INVALID_CLICK;
-                    case NUMBER_KEY:
-                        amount = event.getHotbarButton() + 1;
-                        break;
-                    case LEFT:
-                        amount = 1;
-                        break;
-                    case RIGHT:
-                        amount = 32;
-                        break;
-                    case MIDDLE:
-                    case SHIFT_LEFT:
-                        amount = 64;
-                        break;
-                    case SHIFT_RIGHT:
-                        amount = 16;
-                        break;
-                }
+                get_context(),
+                player,
+                (player2, m, t, event) -> {
+                    final int amount;
+                    switch (event.getClick()) {
+                        default:
+                            return ClickResult.INVALID_CLICK;
+                        case NUMBER_KEY:
+                            amount = event.getHotbarButton() + 1;
+                            break;
+                        case LEFT:
+                            amount = 1;
+                            break;
+                        case RIGHT:
+                            amount = 32;
+                            break;
+                        case MIDDLE:
+                        case SHIFT_LEFT:
+                            amount = 64;
+                            break;
+                        case SHIFT_RIGHT:
+                            amount = 16;
+                            break;
+                    }
 
-                // Take currency items
-                if (
-                    config_price_per_head > 0 &&
-                    !take_items(player2, new ItemStack(config_currency, config_price_per_head * amount))
-                ) {
-                    return ClickResult.ERROR;
-                }
+                    // Take currency items
+                    if (
+                            config_price_per_head > 0 &&
+                                    !take_items(player2, new ItemStack(config_currency, config_price_per_head * amount))
+                    ) {
+                        return ClickResult.ERROR;
+                    }
 
-                give_items(player2, t.item(), amount);
-                return ClickResult.SUCCESS;
-            },
-            player2 -> {}
+                    give_items(player2, t.item(), amount);
+                    return ClickResult.SUCCESS;
+                },
+                player2 -> {
+                }
         ).open(player);
     }
 }

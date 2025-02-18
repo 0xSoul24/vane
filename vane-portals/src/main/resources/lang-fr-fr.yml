@@ -69,65 +69,65 @@ menus:
 
     rename:
       name: "§b§lRenommer"
-      lore: []
+      lore: [ ]
 
     select_icon:
       name: "§b§lSélectionner une icône"
-      lore: []
+      lore: [ ]
 
     select_style:
       name: "§b§lSélectionner un style de portail"
-      lore: []
+      lore: [ ]
 
     exit_orientation_lock_on:
       name: "§b§lDéverrouiller l'orientation à la sortie"
-      lore: ["", "§bÉtat: §e§lVerrouillé (toujours sortir par le devant)§r"]
+      lore: [ "", "§bÉtat: §e§lVerrouillé (toujours sortir par le devant)§r" ]
 
     exit_orientation_lock_off:
       name: "§b§lVerrouiller l'orientation à la sortie"
-      lore: ["", "§bÉtat: §a§lDéverouillé (sortir du même côté qu'à l'entrée)§r"]
+      lore: [ "", "§bÉtat: §a§lDéverouillé (sortir du même côté qu'à l'entrée)§r" ]
 
     visibility_public:
       name: "§b§lChanger la visibilité"
-      lore: ["", "§bSélection: §a§lPublic§r"]
+      lore: [ "", "§bSélection: §a§lPublic§r" ]
 
     visibility_group:
       name: "§b§lChanger la visibilité"
-      lore: ["", "§bSélection: §e§lGroupe (membres)§r"]
+      lore: [ "", "§bSélection: §e§lGroupe (membres)§r" ]
 
     visibility_group_internal:
       name: "§b§lChanger la visibilité"
-      lore: ["", "§bSélection: §e§lGroupe (visible en interne seulement)§r"]
+      lore: [ "", "§bSélection: §e§lGroupe (visible en interne seulement)§r" ]
 
     visibility_private:
       name: "§b§lChanger la visibilité"
-      lore: ["", "§bSélection: §c§lPrivé§r"]
+      lore: [ "", "§bSélection: §c§lPrivé§r" ]
 
     target_lock_on:
       name: "§b§lChanger le verrouillage de destination"
-      lore: ["", "§bSélection: §c§lVerrouillé§r"]
+      lore: [ "", "§bSélection: §c§lVerrouillé§r" ]
 
     target_lock_off:
       name: "§b§lChanger le verrouillage de destination"
-      lore: ["", "§bSélection: §a§lDéverrouillé§r"]
+      lore: [ "", "§bSélection: §a§lDéverrouillé§r" ]
 
     back:
       name: "§6↩ §lRetour"
-      lore: []
+      lore: [ ]
 
   style:
     title: "§8§lStyle pour: %1$s"
-    select_block_console_active_title:       "Sélectionner le bloc de console actif."
-    select_block_origin_active_title:        "Sélectionner le bloc d'ancrage actif."
-    select_block_portal_active_title:        "Sélectionner le bloc d'intérieur de portail actif."
-    select_block_boundary_1_active_title:   "Sélectionner le bloc de bord actif (variante 1)."
-    select_block_boundary_2_active_title:   "Sélectionner le bloc de bord actif (variante 2)."
-    select_block_boundary_3_active_title:   "Sélectionner le bloc de bord actif (variante 3)."
-    select_block_boundary_4_active_title:   "Sélectionner le bloc de bord actif (variante 4)."
-    select_block_boundary_5_active_title:   "Sélectionner le bloc de bord actif (variante 5)."
-    select_block_console_inactive_title:     "Sélectionner le bloc de console inactif."
-    select_block_origin_inactive_title:      "Sélectionner le bloc d'ancrage inactif."
-    select_block_portal_inactive_title:      "Sélectionner le bloc d'intérieur de portail inactif."
+    select_block_console_active_title: "Sélectionner le bloc de console actif."
+    select_block_origin_active_title: "Sélectionner le bloc d'ancrage actif."
+    select_block_portal_active_title: "Sélectionner le bloc d'intérieur de portail actif."
+    select_block_boundary_1_active_title: "Sélectionner le bloc de bord actif (variante 1)."
+    select_block_boundary_2_active_title: "Sélectionner le bloc de bord actif (variante 2)."
+    select_block_boundary_3_active_title: "Sélectionner le bloc de bord actif (variante 3)."
+    select_block_boundary_4_active_title: "Sélectionner le bloc de bord actif (variante 4)."
+    select_block_boundary_5_active_title: "Sélectionner le bloc de bord actif (variante 5)."
+    select_block_console_inactive_title: "Sélectionner le bloc de console inactif."
+    select_block_origin_inactive_title: "Sélectionner le bloc d'ancrage inactif."
+    select_block_portal_inactive_title: "Sélectionner le bloc d'intérieur de portail inactif."
     select_block_boundary_1_inactive_title: "Sélectionner le bloc de bord inactif (variante 1)."
     select_block_boundary_2_inactive_title: "Sélectionner le bloc de bord inactif (variante 2)."
     select_block_boundary_3_inactive_title: "Sélectionner le bloc de bord inactif (variante 3)."
@@ -136,79 +136,79 @@ menus:
 
     block_console_active:
       name: "§b§lConsole §a(active)"
-      lore: []
+      lore: [ ]
     block_origin_active:
       name: "§b§lAncrage §a(actif)"
-      lore: []
+      lore: [ ]
     block_portal_active:
       name: "§b§lIntérieur de portail §a(actif)"
-      lore: []
+      lore: [ ]
     block_boundary_1_active:
       name: "§b§lBord §a(actif)"
-      lore: ["", "§aVariante 1", "§7Matériau: %1$s"]
+      lore: [ "", "§aVariante 1", "§7Matériau: %1$s" ]
     block_boundary_2_active:
       name: "§b§lBord §a(actif)"
-      lore: ["", "§aVariante 2", "§7Matériau: %1$s"]
+      lore: [ "", "§aVariante 2", "§7Matériau: %1$s" ]
     block_boundary_3_active:
       name: "§b§lBord §a(actif)"
-      lore: ["", "§aVariante 3", "§7Matériau: %1$s"]
+      lore: [ "", "§aVariante 3", "§7Matériau: %1$s" ]
     block_boundary_4_active:
       name: "§b§lBord §a(actif)"
-      lore: ["", "§aVariante 4", "§7Matériau: %1$s"]
+      lore: [ "", "§aVariante 4", "§7Matériau: %1$s" ]
     block_boundary_5_active:
       name: "§b§lBord §a(actif)"
-      lore: ["", "§aVariante 5", "§7Matériau: %1$s"]
+      lore: [ "", "§aVariante 5", "§7Matériau: %1$s" ]
     block_console_inactive:
       name: "§b§lConsole §e(inactive)"
-      lore: []
+      lore: [ ]
     block_origin_inactive:
       name: "§b§lAncrage §e(inactif)"
-      lore: []
+      lore: [ ]
     block_portal_inactive:
       name: "§b§lIntérieur de portail §e(inactif)"
-      lore: []
+      lore: [ ]
     block_boundary_1_inactive:
       name: "§b§lBord §e(inactif)"
-      lore: ["", "§aVariante 1", "§7Matériau: %1$s"]
+      lore: [ "", "§aVariante 1", "§7Matériau: %1$s" ]
     block_boundary_2_inactive:
       name: "§b§lBord §e(inactif)"
-      lore: ["", "§aVariante 2", "§7Matériau: %1$s"]
+      lore: [ "", "§aVariante 2", "§7Matériau: %1$s" ]
     block_boundary_3_inactive:
       name: "§b§lBord §e(inactif)"
-      lore: ["", "§aVariante 3", "§7Matériau: %1$s"]
+      lore: [ "", "§aVariante 3", "§7Matériau: %1$s" ]
     block_boundary_4_inactive:
       name: "§b§lBord §e(inactif)"
-      lore: ["", "§aVariante 4", "§7Matériau: %1$s"]
+      lore: [ "", "§aVariante 4", "§7Matériau: %1$s" ]
     block_boundary_5_inactive:
       name: "§b§lBord §e(inactif)"
-      lore: ["", "§aVariante 5", "§7Matériau: %1$s"]
+      lore: [ "", "§aVariante 5", "§7Matériau: %1$s" ]
 
     accept:
       name: "§a§lAppliquer le style"
-      lore: []
+      lore: [ ]
 
     reset:
       name: "§6§lRéinitialiser"
-      lore: []
+      lore: [ ]
 
     select_style_title: "§8§lSelectionner un style prédéfini"
     filter_styles_title: "§8§lFiltrer les styles"
     select_defined:
       name: "§b§lSélectionner un style prédéfini"
-      lore: []
+      lore: [ ]
     select_style:
       name: "%1$s"
-      lore: []
+      lore: [ ]
     cancel:
       name: "§6↩ §lAnnuler les changements"
-      lore: []
+      lore: [ ]
 
   console:
     title: "§8§lPortail: %1$s"
 
     settings:
       name: "§b§lRéglages"
-      lore: []
+      lore: [ ]
 
     select_target:
       name: "§d§lSélectionner une destination"
@@ -238,22 +238,22 @@ menus:
 
     unlink_console:
       name: "§c§lDéconnecter la console"
-      lore: []
+      lore: [ ]
     unlink_console_confirm_title: "§c§lDéconnecter la console?"
     unlink_console_confirm_accept:
       name: "§c§lDÉCONNECTER"
-      lore: []
+      lore: [ ]
     unlink_console_confirm_cancel:
       name: "§a§lAnnuler"
-      lore: []
+      lore: [ ]
 
     destroy_portal:
       name: "§c§lDétruire le portail"
-      lore: []
+      lore: [ ]
     destroy_portal_confirm_title: "§c§lDétruire le portail?"
     destroy_portal_confirm_accept:
       name: "§c§lDÉTRUIRE"
-      lore: []
+      lore: [ ]
     destroy_portal_confirm_cancel:
       name: "§a§lAnnuler"
-      lore: []
+      lore: [ ]

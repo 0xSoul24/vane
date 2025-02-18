@@ -145,12 +145,12 @@ menus:
     # This item is used to cancel a pending selection.
     cancel_selection:
       name: "§c§lCancelar Selección"
-      lore: []
+      lore: [ ]
 
     # This item is used to select a region where the player is administrator.
     list_regions:
       name: "§b§lSeleccionar Región"
-      lore: []
+      lore: [ ]
 
     # The title for the region selection menu
     select_region_title: "§8§lSeleccionar Región"
@@ -160,7 +160,7 @@ menus:
     # %1$s: Region name
     select_region:
       name: "%1$s"
-      lore: []
+      lore: [ ]
 
     # This item is a shortcut to select the region the player is standing in.
     # %1$s: Region name
@@ -185,7 +185,7 @@ menus:
     # This item is used to select a region group.
     list_region_groups:
       name: "§b§lSeleccionar Grupo de Regiones"
-      lore: []
+      lore: [ ]
 
     # This item is a shortcut to select the region group of the region the player is standing in.
     # %1$s: Region group name
@@ -204,7 +204,7 @@ menus:
     # %1$s: Region group name
     select_region_group:
       name: "%1$s"
-      lore: []
+      lore: [ ]
 
   # Settings for the region menu.
   region:
@@ -215,27 +215,27 @@ menus:
     # The item used to rename a region.
     rename:
       name: "§b§lRenombrar Región"
-      lore: []
+      lore: [ ]
 
     # The item used to delete a region.
     delete:
       name: "§c§lEliminar Región"
-      lore: []
+      lore: [ ]
     # The title for the delete confirmation dialog.
     delete_confirm_title: "§c§l¿Eliminar región?"
     # The item to accept deleting.
     delete_confirm_accept:
       name: "§c§lELIMINAR REGIÓN"
-      lore: []
+      lore: [ ]
     # The item to cancel deleting.
     delete_confirm_cancel:
       name: "§a§lCancelar"
-      lore: []
+      lore: [ ]
 
       # El objeto utilizado para abrir la lista de grupos de regiones y asignar la región a uno.
     assign_region_group:
       name: "§b§lAsignar Grupo"
-      lore: []
+      lore: [ ]
 
     select_region_group_title: "§8§lSeleccionar Grupo de Regiones"
     filter_region_groups_title: "§8§lFiltrar Grupos de Regiones"
@@ -243,7 +243,7 @@ menus:
     # %1$s: Nombre del grupo de regiones
     select_region_group:
       name: "%1$s"
-      lore: []
+      lore: [ ]
 
   # Configuraciones para el menú de grupos de regiones.
   region_group:
@@ -253,10 +253,10 @@ menus:
 
     setting_toggle_on:
       name: "§a§lACTIVADO"
-      lore: []
+      lore: [ ]
     setting_toggle_off:
       name: "§c§lDESACTIVADO"
-      lore: []
+      lore: [ ]
     setting_info_animals:
       name: "§b§lAnimales"
       lore:
@@ -296,7 +296,7 @@ menus:
     # El objeto utilizado para cambiar el nombre de un grupo de regiones.
     rename:
       name: "§b§lRenombrar Grupo"
-      lore: []
+      lore: [ ]
 
     # El objeto utilizado para eliminar un grupo de regiones.
     # %1$s: Marca de verificación: Ninguna región usa este grupo
@@ -311,11 +311,11 @@ menus:
     # El objeto para aceptar la eliminación.
     delete_confirm_accept:
       name: "§c§lELIMINAR GRUPO DE REGIONES"
-      lore: []
+      lore: [ ]
     # El objeto para cancelar la eliminación.
     delete_confirm_cancel:
       name: "§a§lCancelar"
-      lore: []
+      lore: [ ]
 
     # Este objeto se utiliza para crear un nuevo rol.
     create_role:
@@ -328,7 +328,7 @@ menus:
     # Este objeto se utiliza para abrir el menú de roles para un rol.
     list_roles:
       name: "§b§lRoles"
-      lore: []
+      lore: [ ]
 
     select_role_title: "§8§lSeleccionar Rol"
     filter_roles_title: "§8§lFiltrar Roles"
@@ -336,7 +336,7 @@ menus:
     # %1$s: Nombre del rol
     select_role:
       name: "%1$s"
-      lore: []
+      lore: [ ]
 
   # Configuraciones para el menú de roles.
   role:
@@ -346,10 +346,10 @@ menus:
 
     setting_toggle_on:
       name: "§a§lACTIVADO"
-      lore: []
+      lore: [ ]
     setting_toggle_off:
       name: "§c§lDESACTIVADO"
-      lore: []
+      lore: [ ]
     setting_info_admin:
       name: "§b§lAdmin"
       lore:
@@ -384,22 +384,22 @@ menus:
     # El objeto utilizado para cambiar el nombre de un rol.
     rename:
       name: "§b§lRenombrar Rol"
-      lore: []
+      lore: [ ]
 
     # El objeto utilizado para eliminar un rol.
     delete:
       name: "§c§lEliminar Rol"
-      lore: []
+      lore: [ ]
     # El título para el diálogo de confirmación de eliminación.
     delete_confirm_title: "§c§l¿Eliminar rol?"
     # El objeto para aceptar la eliminación.
     delete_confirm_accept:
       name: "§c§lELIMINAR ROL"
-      lore: []
+      lore: [ ]
     # El objeto para cancelar la eliminación.
     delete_confirm_cancel:
       name: "§a§lCancelar"
-      lore: []
+      lore: [ ]
 
     # Este objeto se utiliza para abrir el menú de asignación de jugadores para un rol.
     assign_player:
@@ -427,4 +427,4 @@ menus:
     # %1$s: Nombre del jugador
     select_player:
       name: "%1$s"
-      lore: []
+      lore: [ ]

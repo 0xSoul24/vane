@@ -1,6 +1,7 @@
 package org.oddlama.vane.regions;
 
 import java.util.UUID;
+
 import org.oddlama.vane.annotation.config.ConfigBoolean;
 import org.oddlama.vane.annotation.config.ConfigDouble;
 import org.oddlama.vane.annotation.config.ConfigInt;
@@ -45,7 +46,7 @@ public class RegionDynmapLayer extends ModuleComponent<Regions> {
 
     public RegionDynmapLayer(final Context<Regions> context) {
         super(
-            context.group("dynmap", "Enable dynmap integration. Regions will then be shown on a separate dynmap layer.")
+                context.group("dynmap", "Enable dynmap integration. Regions will then be shown on a separate dynmap layer.")
         );
     }
 

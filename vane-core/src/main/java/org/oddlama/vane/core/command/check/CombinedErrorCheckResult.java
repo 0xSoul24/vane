@@ -1,6 +1,7 @@
 package org.oddlama.vane.core.command.check;
 
 import java.util.List;
+
 import org.bukkit.command.CommandSender;
 import org.oddlama.vane.core.command.Command;
 
@@ -12,7 +13,7 @@ public class CombinedErrorCheckResult extends ErrorCheckResult {
         super(errors.get(0).depth(), "§6could not match one of:§r");
         if (errors.size() < 2) {
             throw new RuntimeException(
-                "Tried to create CombinedErrorCheckResult with less than 2 sub-errors! This is a bug."
+                    "Tried to create CombinedErrorCheckResult with less than 2 sub-errors! This is a bug."
             );
         }
         this.errors = errors;

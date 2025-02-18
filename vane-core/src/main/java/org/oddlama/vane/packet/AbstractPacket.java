@@ -30,13 +30,13 @@ public abstract class AbstractPacket {
      * Constructs a new strongly typed wrapper for the given packet.
      *
      * @param handle - handle to the raw packet data.
-     * @param type - the packet type.
+     * @param type   - the packet type.
      */
     protected AbstractPacket(PacketContainer handle, PacketType type) {
         // Make sure we're given a valid packet
         if (handle == null) throw new IllegalArgumentException("Packet handle cannot be NULL.");
         if (!Objects.equal(handle.getType(), type)) throw new IllegalArgumentException(
-            handle.getHandle() + " is not a packet of type " + type
+                handle.getHandle() + " is not a packet of type " + type
         );
 
         this.handle = handle;
@@ -61,7 +61,9 @@ public abstract class AbstractPacket {
         ProtocolLibrary.getProtocolManager().sendServerPacket(receiver, getHandle());
     }
 
-    /** Send the current packet to all online players. */
+    /**
+     * Send the current packet to all online players.
+     */
     public void broadcastPacket() {
         ProtocolLibrary.getProtocolManager().broadcastServerPacket(getHandle());
     }

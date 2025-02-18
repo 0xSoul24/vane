@@ -3,6 +3,7 @@ title = "Spawn Protection (optional)"
 icon = "minecraft:iron_bars"
 module = "vane-admin"
 ```
+
 ---
 Vane provides slightly more sophisticated spawn protection than what is available in vanilla.
 It defines an actual radius (not a square) around some block to be protected from player modification.

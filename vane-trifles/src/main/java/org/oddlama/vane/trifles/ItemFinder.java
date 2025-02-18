@@ -27,15 +27,15 @@ import org.oddlama.vane.util.StorageUtil;
 public class ItemFinder extends Listener<Trifles> {
 
     public static final NamespacedKey LAST_FIND_TIME = StorageUtil.namespaced_key(
-        "vane_trifles",
-        "last_item_find_time"
+            "vane_trifles",
+            "last_item_find_time"
     );
 
     @ConfigInt(
-        def = 2,
-        min = 1,
-        max = 10,
-        desc = "The radius of chunks in which containers (and possibly entities) are checked for matching items."
+            def = 2,
+            min = 1,
+            max = 10,
+            desc = "The radius of chunks in which containers (and possibly entities) are checked for matching items."
     )
     public int config_radius;
 
@@ -43,8 +43,8 @@ public class ItemFinder extends Listener<Trifles> {
     public boolean config_search_entities;
 
     @ConfigBoolean(
-        def = false,
-        desc = "Only allow players to use the shift+rightclick shortcut when they have the shortcut permission `vane.trifles.use_item_find_shortcut`."
+            def = false,
+            desc = "Only allow players to use the shift+rightclick shortcut when they have the shortcut permission `vane.trifles.use_item_find_shortcut`."
     )
     public boolean config_require_permission;
 
@@ -53,16 +53,16 @@ public class ItemFinder extends Listener<Trifles> {
 
     public ItemFinder(Context<Trifles> context) {
         super(
-            context.group(
-                "item_finder",
-                "Enables players to search for items in nearby containers by either shift-right-clicking a similar item in their inventory or by using the `/finditem <item>` command."
-            )
+                context.group(
+                        "item_finder",
+                        "Enables players to search for items in nearby containers by either shift-right-clicking a similar item in their inventory or by using the `/finditem <item>` command."
+                )
         );
         // Register admin permission
         use_item_find_shortcut_permission = new Permission(
-            "vane." + get_module().get_name() + ".use_item_find_shortcut",
-            "Allows a player to use shfit+rightclick to search for items if the require_permission config is set",
-            PermissionDefault.FALSE
+                "vane." + get_module().get_name() + ".use_item_find_shortcut",
+                "Allows a player to use shfit+rightclick to search for items if the require_permission config is set",
+                PermissionDefault.FALSE
         );
         get_module().register_permission(use_item_find_shortcut_permission);
     }
@@ -84,7 +84,7 @@ public class ItemFinder extends Listener<Trifles> {
 
         // Shift-rightclick
         if (
-            !(event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY && event.getClick() == ClickType.SHIFT_RIGHT)
+                !(event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY && event.getClick() == ClickType.SHIFT_RIGHT)
         ) {
             return;
         }

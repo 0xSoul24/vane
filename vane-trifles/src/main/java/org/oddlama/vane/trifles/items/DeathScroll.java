@@ -1,6 +1,7 @@
 package org.oddlama.vane.trifles.items;
 
 import java.util.EnumSet;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -21,17 +22,17 @@ import org.oddlama.vane.trifles.Trifles;
 import org.oddlama.vane.util.StorageUtil;
 
 @VaneItem(
-    name = "death_scroll",
-    base = Material.WARPED_FUNGUS_ON_A_STICK,
-    durability = 2,
-    model_data = 0x760012,
-    version = 1
+        name = "death_scroll",
+        base = Material.WARPED_FUNGUS_ON_A_STICK,
+        durability = 2,
+        model_data = 0x760012,
+        version = 1
 )
 public class DeathScroll extends Scroll {
 
     public static final NamespacedKey RECENT_DEATH_LOCATION = StorageUtil.namespaced_key(
-        "vane",
-        "recent_death_location"
+            "vane",
+            "recent_death_location"
     );
     public static final NamespacedKey RECENT_DEATH_TIME = StorageUtil.namespaced_key("vane", "recent_death_time");
 
@@ -45,13 +46,13 @@ public class DeathScroll extends Scroll {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("aba", "epe")
-                .set_ingredient('p', "vane_trifles:papyrus_scroll")
-                .set_ingredient('e', Material.ENDER_PEARL)
-                .set_ingredient('a', Material.BONE)
-                .set_ingredient('b', Material.RECOVERY_COMPASS)
-                .result(key().toString())
+                new ShapedRecipeDefinition("generic")
+                        .shape("aba", "epe")
+                        .set_ingredient('p', "vane_trifles:papyrus_scroll")
+                        .set_ingredient('e', Material.ENDER_PEARL)
+                        .set_ingredient('a', Material.BONE)
+                        .set_ingredient('b', Material.RECOVERY_COMPASS)
+                        .result(key().toString())
         );
     }
 

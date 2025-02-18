@@ -4,13 +4,13 @@ plugins {
 }
 
 sourceSets {
-	main {
-		blossom {
-			javaSources {
-				property("\$VERSION", project.version.toString())
-			}
-		}
-	}
+    main {
+        blossom {
+            javaSources {
+                property("\$VERSION", project.version.toString())
+            }
+        }
+    }
 }
 
 dependencies {

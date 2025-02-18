@@ -39,25 +39,25 @@ public class Enchant extends Command<Core> {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
         return super.get_command_base()
-            .requires(ctx -> ctx.getSender() instanceof Player)
-            .then(help())
-            .then(
-                argument("enchantment", EnchantmentFilterArgumentType.enchantmentFilter())
-                    .executes(ctx -> {
-                        enchant_current_item_level_1((Player) ctx.getSource().getSender(), enchantment(ctx));
-                        return SINGLE_SUCCESS;
-                    })
-                    .then(
-                        argument("level", IntegerArgumentType.integer(1)).executes(ctx -> {
-                            enchant_current_item(
-                                (Player) ctx.getSource().getSender(),
-                                enchantment(ctx),
-                                ctx.getArgument("level", Integer.class)
-                            );
-                            return SINGLE_SUCCESS;
-                        })
-                    )
-            );
+                .requires(ctx -> ctx.getSender() instanceof Player)
+                .then(help())
+                .then(
+                        argument("enchantment", EnchantmentFilterArgumentType.enchantmentFilter())
+                                .executes(ctx -> {
+                                    enchant_current_item_level_1((Player) ctx.getSource().getSender(), enchantment(ctx));
+                                    return SINGLE_SUCCESS;
+                                })
+                                .then(
+                                        argument("level", IntegerArgumentType.integer(1)).executes(ctx -> {
+                                            enchant_current_item(
+                                                    (Player) ctx.getSource().getSender(),
+                                                    enchantment(ctx),
+                                                    ctx.getArgument("level", Integer.class)
+                                            );
+                                            return SINGLE_SUCCESS;
+                                        })
+                                )
+                );
     }
 
     private Enchantment enchantment(CommandContext<CommandSourceStack> ctx) {

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.oddlama.vane.annotation.lang.LangMessage;
 import org.oddlama.vane.annotation.lang.LangMessageArray;
@@ -77,7 +78,7 @@ public class LangManager {
             }
             if (field_version != null) {
                 throw new RuntimeException(
-                    "There must be exactly one @LangVersion field! (found multiple). This is a bug."
+                        "There must be exactly one @LangVersion field! (found multiple). This is a bug."
                 );
             }
             return field_version = new LangVersionField(module, owner, field, map_name, (LangVersion) annotation);
@@ -94,7 +95,7 @@ public class LangManager {
                 module.log.severe("Something went wrong while generating or loading the configuration.");
                 module.log.severe("If you are sure your configuration is correct and this isn't a file");
                 module.log.severe(
-                    "system permission issue, please report this to https://github.com/oddlama/vane/issues"
+                        "system permission issue, please report this to https://github.com/oddlama/vane/issues"
                 );
             } else if (version < expected_version()) {
                 module.log.severe("This language file is for an older version of " + module.getName() + ".");
@@ -115,11 +116,11 @@ public class LangManager {
     public void compile(Object owner, Function<String, String> map_name) {
         // Compile all annotated fields
         lang_fields.addAll(
-            getAllFields(owner.getClass())
-                .stream()
-                .filter(this::has_lang_annotation)
-                .map(f -> compile_field(owner, f, map_name))
-                .toList()
+                getAllFields(owner.getClass())
+                        .stream()
+                        .filter(this::has_lang_annotation)
+                        .map(f -> compile_field(owner, f, map_name))
+                        .toList()
         );
 
         if (owner == module && field_version == null) {
@@ -130,10 +131,10 @@ public class LangManager {
     @SuppressWarnings("unchecked")
     public <T> T get_field(String name) {
         var field = lang_fields
-            .stream()
-            .filter(f -> f.get_name().equals(name))
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException("Missing lang field lang_" + name));
+                .stream()
+                .filter(f -> f.get_name().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Missing lang field lang_" + name));
 
         try {
             return (T) field;
@@ -185,15 +186,15 @@ public class LangManager {
         }
         if (errors.size() > 0) {
             final String errored_lang_nodes = errors
-                .stream()
-                .map(Throwable::getMessage)
-                .collect(Collectors.joining("\n\t\t"));
+                    .stream()
+                    .map(Throwable::getMessage)
+                    .collect(Collectors.joining("\n\t\t"));
             module.log.log(
-                Level.SEVERE,
-                "The following errors were identified while adding translations from \n\t" +
-                lang_file.getAbsolutePath() +
-                " \n\t\t" +
-                errored_lang_nodes
+                    Level.SEVERE,
+                    "The following errors were identified while adding translations from \n\t" +
+                            lang_file.getAbsolutePath() +
+                            " \n\t\t" +
+                            errored_lang_nodes
             );
         }
     }

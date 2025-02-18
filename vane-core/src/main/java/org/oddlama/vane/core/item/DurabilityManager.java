@@ -29,12 +29,16 @@ public class DurabilityManager extends Listener<Core> {
         super(context);
     }
 
-    /** Returns true if the given component is associated to our custom durability. */
+    /**
+     * Returns true if the given component is associated to our custom durability.
+     */
     private static boolean is_durability_lore(final Component component) {
         return ItemUtil.has_sentinel(component, SENTINEL);
     }
 
-    /** Removes associated lore from an item. */
+    /**
+     * Removes associated lore from an item.
+     */
     private static void remove_lore(final ItemStack item_stack) {
         final var lore = item_stack.lore();
         if (lore != null) {
@@ -53,9 +57,9 @@ public class DurabilityManager extends Listener<Core> {
      * be taken from the item tag if it exists.
      */
     private static void set_damage_and_update_item(
-        final CustomItem custom_item,
-        final ItemStack item_stack,
-        int damage
+            final CustomItem custom_item,
+            final ItemStack item_stack,
+            int damage
     ) {
         // Honor unbreakable flag
         final var ro_meta = item_stack.getItemMeta();
@@ -72,9 +76,9 @@ public class DurabilityManager extends Listener<Core> {
     public static boolean initialize_or_update_max(final CustomItem custom_item, final ItemStack item_stack) {
         // Remember damage if set.
         var old_damage = item_stack
-            .getItemMeta()
-            .getPersistentDataContainer()
-            .getOrDefault(ITEM_DURABILITY_DAMAGE, PersistentDataType.INTEGER, -1);
+                .getItemMeta()
+                .getPersistentDataContainer()
+                .getOrDefault(ITEM_DURABILITY_DAMAGE, PersistentDataType.INTEGER, -1);
 
         // First, remove all components.
         item_stack.editMeta(meta -> {
@@ -124,7 +128,9 @@ public class DurabilityManager extends Listener<Core> {
         update_damage(custom_item, item);
     }
 
-    /** Update existing max damage to match the configuration */
+    /**
+     * Update existing max damage to match the configuration
+     */
     public static void update_damage(CustomItem custom_item, ItemStack item_stack) {
         if (!(item_stack.getItemMeta() instanceof Damageable meta)) return; // everything should be damageable now
 
@@ -132,8 +138,8 @@ public class DurabilityManager extends Listener<Core> {
         PersistentDataContainer data = meta.getPersistentDataContainer();
 
         final int new_max_damage = custom_item.durability() == 0
-            ? item_stack.getType().getMaxDurability()
-            : custom_item.durability();
+                ? item_stack.getType().getMaxDurability()
+                : custom_item.durability();
 
         int old_damage;
         int old_max_damage;
@@ -165,8 +171,8 @@ public class DurabilityManager extends Listener<Core> {
 
     public static int scale_damage(int old_damage, int old_max_damage, int new_max_damage) {
         return old_max_damage == new_max_damage
-            ? old_damage
-            : (int) (new_max_damage * ((float) old_damage / (float) old_max_damage));
+                ? old_damage
+                : (int) (new_max_damage * ((float) old_damage / (float) old_max_damage));
     }
 
     public static boolean set_damage_and_max_damage(CustomItem custom_item, ItemStack item, int damage) {

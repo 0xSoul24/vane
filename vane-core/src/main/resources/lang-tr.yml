@@ -105,12 +105,12 @@ menus:
     # The item used to accept the selection.
     accept:
       name: "§a§lKabul etmek"
-      lore: ["§7Seçili olan öğeyi §bSeçersin§7."]
+      lore: [ "§7Seçili olan öğeyi §bSeçersin§7." ]
 
     # The item used to cancel the selection.
     cancel:
       name: "§c§lİptal etmek"
-      lore: ["§7Öğe seçmeyi §6İptal edersin§7."]
+      lore: [ "§7Öğe seçmeyi §6İptal edersin§7." ]
 
     # The item used to represent the currently selected item.
     selected:
@@ -128,7 +128,7 @@ menus:
     # %1$s: Page number
     page:
       name: "§bSayfa %1$s"
-      lore: []
+      lore: [ ]
 
     # The item showing the current page
     # %1$s: Page number
@@ -153,4 +153,4 @@ menus:
     # The item used to cancel the selection.
     cancel:
       name: "§c§lİptal Etmek"
-      lore: ["§7seçimi §6İptal eder§7."]
+      lore: [ "§7seçimi §6İptal eder§7." ]

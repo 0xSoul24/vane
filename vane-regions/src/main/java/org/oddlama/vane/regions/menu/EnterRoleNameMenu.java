@@ -31,26 +31,28 @@ public class EnterRoleNameMenu extends ModuleComponent<Regions> {
     }
 
     public Menu create(
-        final Player player,
-        final String default_name,
-        final Function2<Player, String, ClickResult> on_click
+            final Player player,
+            final String default_name,
+            final Function2<Player, String, ClickResult> on_click
     ) {
         return MenuFactory.anvil_string_input(
-            get_context(),
-            player,
-            lang_title.str(),
-            new ItemStack(config_material),
-            default_name,
-            (p, menu, name) -> {
-                menu.close(p);
-                return on_click.apply(p, name);
-            }
+                get_context(),
+                player,
+                lang_title.str(),
+                new ItemStack(config_material),
+                default_name,
+                (p, menu, name) -> {
+                    menu.close(p);
+                    return on_click.apply(p, name);
+                }
         );
     }
 
     @Override
-    public void on_enable() {}
+    public void on_enable() {
+    }
 
     @Override
-    public void on_disable() {}
+    public void on_disable() {
+    }
 }

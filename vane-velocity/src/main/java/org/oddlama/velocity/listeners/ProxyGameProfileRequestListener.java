@@ -6,7 +6,9 @@ import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.GameProfileRequestEvent;
 import com.velocitypowered.api.util.GameProfile;
+
 import java.util.logging.Level;
+
 import org.oddlama.vane.proxycore.listeners.PreLoginEvent;
 import org.oddlama.velocity.Velocity;
 import org.oddlama.velocity.compat.VelocityCompatServerInfo;

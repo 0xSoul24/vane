@@ -10,8 +10,10 @@ import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.command.brigadier.argument.CustomArgumentType;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
+
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -38,15 +40,15 @@ public class EnchantmentFilterArgumentType implements CustomArgumentType.Convert
 
     @Override
     public <S> @NotNull CompletableFuture<Suggestions> listSuggestions(
-        @NotNull CommandContext<S> context,
-        @NotNull SuggestionsBuilder builder
+            @NotNull CommandContext<S> context,
+            @NotNull SuggestionsBuilder builder
     ) {
         CommandSourceStack stack = (CommandSourceStack) context.getSource();
         ItemStack item = ((Player) stack.getSender()).getInventory().getItemInMainHand();
 
         Stream<Enchantment> compatibleEnchantments = RegistryAccess.registryAccess()
-            .getRegistry(RegistryKey.ENCHANTMENT)
-            .stream();
+                .getRegistry(RegistryKey.ENCHANTMENT)
+                .stream();
         if (item.getType() != Material.BOOK && item.getType() != Material.ENCHANTED_BOOK) {
             compatibleEnchantments = compatibleEnchantments.filter(ench -> ench.canEnchantItem(item));
         }

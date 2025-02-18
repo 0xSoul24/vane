@@ -1,6 +1,7 @@
 package org.oddlama.vane.regions.menu;
 
 import java.util.stream.Collectors;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -54,81 +55,81 @@ public class MainMenu extends ModuleComponent<Regions> {
         super(context.namespace("main"));
         final var ctx = get_context();
         item_create_region_start_selection = new TranslatedItemStack<>(
-            ctx,
-            "create_region_start_selection",
-            Material.WRITABLE_BOOK,
-            1,
-            "Used to start creating a new region selection."
+                ctx,
+                "create_region_start_selection",
+                Material.WRITABLE_BOOK,
+                1,
+                "Used to start creating a new region selection."
         );
         item_create_region_invalid_selection = new TranslatedItemStack<>(
-            ctx,
-            "create_region_invalid_selection",
-            Material.BARRIER,
-            1,
-            "Used to indicate an invalid selection."
+                ctx,
+                "create_region_invalid_selection",
+                Material.BARRIER,
+                1,
+                "Used to indicate an invalid selection."
         );
         item_create_region_valid_selection = new TranslatedItemStack<>(
-            ctx,
-            "create_region_valid_selection",
-            Material.WRITABLE_BOOK,
-            1,
-            "Used to create a new region with the current selection."
+                ctx,
+                "create_region_valid_selection",
+                Material.WRITABLE_BOOK,
+                1,
+                "Used to create a new region with the current selection."
         );
         item_cancel_selection = new TranslatedItemStack<>(
-            ctx,
-            "cancel_selection",
-            Material.RED_TERRACOTTA,
-            1,
-            "Used to cancel region selection."
+                ctx,
+                "cancel_selection",
+                Material.RED_TERRACOTTA,
+                1,
+                "Used to cancel region selection."
         );
         item_list_regions = new TranslatedItemStack<>(
-            ctx,
-            "list_regions",
-            Material.COMPASS,
-            1,
-            "Used to select a region the player owns."
+                ctx,
+                "list_regions",
+                Material.COMPASS,
+                1,
+                "Used to select a region the player owns."
         );
         item_select_region = new TranslatedItemStack<>(
-            ctx,
-            "select_region",
-            Material.FILLED_MAP,
-            1,
-            "Used to represent a region in the region selection list."
+                ctx,
+                "select_region",
+                Material.FILLED_MAP,
+                1,
+                "Used to represent a region in the region selection list."
         );
         item_current_region = new TranslatedItemStack<>(
-            ctx,
-            "current_region",
-            Material.FILLED_MAP,
-            1,
-            "Used to access the region the player currently stands in."
+                ctx,
+                "current_region",
+                Material.FILLED_MAP,
+                1,
+                "Used to access the region the player currently stands in."
         );
         item_create_region_group = new TranslatedItemStack<>(
-            ctx,
-            "create_region_group",
-            Material.WRITABLE_BOOK,
-            1,
-            "Used to create a new region group."
+                ctx,
+                "create_region_group",
+                Material.WRITABLE_BOOK,
+                1,
+                "Used to create a new region group."
         );
         item_list_region_groups = new TranslatedItemStack<>(
-            ctx,
-            "list_region_groups",
-            Material.COMPASS,
-            1,
-            "Used to select a region group the player may administrate."
+                ctx,
+                "list_region_groups",
+                Material.COMPASS,
+                1,
+                "Used to select a region group the player may administrate."
         );
         item_current_region_group = new TranslatedItemStack<>(
-            ctx,
-            "current_region_group",
-            Material.GLOBE_BANNER_PATTERN,
-            1,
-            "Used to access the region group associated with the region the player currently stands in."
+                ctx,
+                "current_region_group",
+                Material.GLOBE_BANNER_PATTERN,
+                1,
+                "Used to access the region group associated with the region the player currently stands in."
         );
         item_select_region_group = new TranslatedItemStack<>(
-            ctx,
-            "select_region_group",
-            Material.GLOBE_BANNER_PATTERN,
-            1,
-            "Used to represent a region group in the region group selection list."
+                ctx,
+                "select_region_group",
+                Material.GLOBE_BANNER_PATTERN,
+                1,
+                "Used to represent a region group in the region group selection list."
         );
     }
 
@@ -190,15 +191,15 @@ public class MainMenu extends ModuleComponent<Regions> {
                 menu.close(player);
 
                 get_module()
-                    .menus.enter_region_name_menu.create(player, (player2, name) -> {
-                        if (get_module().create_region_from_selection(final_player, name)) {
-                            return ClickResult.SUCCESS;
-                        } else {
-                            return ClickResult.ERROR;
-                        }
-                    })
-                    .on_natural_close(player2 -> menu.open(player2))
-                    .open(player);
+                        .menus.enter_region_name_menu.create(player, (player2, name) -> {
+                            if (get_module().create_region_from_selection(final_player, name)) {
+                                return ClickResult.SUCCESS;
+                            } else {
+                                return ClickResult.ERROR;
+                            }
+                        })
+                        .on_natural_close(player2 -> menu.open(player2))
+                        .open(player);
 
                 return ClickResult.SUCCESS;
             } else {
@@ -212,26 +213,26 @@ public class MainMenu extends ModuleComponent<Regions> {
                     final var dy = 1 + Math.abs(selection.primary.getY() - selection.secondary.getY());
                     final var dz = 1 + Math.abs(selection.primary.getZ() - selection.secondary.getZ());
                     super.item(
-                        item_create_region_valid_selection.item(
-                            "§a" + dx,
-                            "§a" + dy,
-                            "§a" + dz,
-                            "§b" + get_module().config_min_region_extent_x,
-                            "§b" + get_module().config_min_region_extent_y,
-                            "§b" + get_module().config_min_region_extent_z,
-                            "§b" + get_module().config_max_region_extent_x,
-                            "§b" + get_module().config_max_region_extent_y,
-                            "§b" + get_module().config_max_region_extent_z,
-                            "§a" + selection.price() + " §b" + get_module().currency_string()
-                        )
+                            item_create_region_valid_selection.item(
+                                    "§a" + dx,
+                                    "§a" + dy,
+                                    "§a" + dz,
+                                    "§b" + get_module().config_min_region_extent_x,
+                                    "§b" + get_module().config_min_region_extent_y,
+                                    "§b" + get_module().config_min_region_extent_z,
+                                    "§b" + get_module().config_max_region_extent_x,
+                                    "§b" + get_module().config_max_region_extent_y,
+                                    "§b" + get_module().config_max_region_extent_z,
+                                    "§a" + selection.price() + " §b" + get_module().currency_string()
+                            )
                     );
                 } else {
                     boolean is_primary_set = selection.primary != null;
                     boolean is_secondary_set = selection.secondary != null;
                     boolean same_world =
-                        is_primary_set &&
-                        is_secondary_set &&
-                        selection.primary.getWorld().equals(selection.secondary.getWorld());
+                            is_primary_set &&
+                                    is_secondary_set &&
+                                    selection.primary.getWorld().equals(selection.secondary.getWorld());
 
                     boolean minimum_satisfied, maximum_satisfied, no_intersection, can_afford;
                     String sdx, sdy, sdz;
@@ -245,13 +246,13 @@ public class MainMenu extends ModuleComponent<Regions> {
                         sdz = Integer.toString(dz);
 
                         minimum_satisfied =
-                            dx >= get_module().config_min_region_extent_x &&
-                            dy >= get_module().config_min_region_extent_y &&
-                            dz >= get_module().config_min_region_extent_z;
+                                dx >= get_module().config_min_region_extent_x &&
+                                        dy >= get_module().config_min_region_extent_y &&
+                                        dz >= get_module().config_min_region_extent_z;
                         maximum_satisfied =
-                            dx <= get_module().config_max_region_extent_x &&
-                            dy <= get_module().config_max_region_extent_y &&
-                            dz <= get_module().config_max_region_extent_z;
+                                dx <= get_module().config_max_region_extent_x &&
+                                        dy <= get_module().config_max_region_extent_y &&
+                                        dz <= get_module().config_max_region_extent_z;
                         no_intersection = !selection.intersects_existing();
                         can_afford = selection.can_afford(final_player);
                         price = (can_afford ? "§a" : "§c") + selection.price() + " §b" + get_module().currency_string();
@@ -268,25 +269,25 @@ public class MainMenu extends ModuleComponent<Regions> {
 
                     final var extent_color = minimum_satisfied && maximum_satisfied ? "§a" : "§c";
                     super.item(
-                        item_create_region_invalid_selection.item(
-                            is_primary_set ? "§a✓" : "§c✕",
-                            is_secondary_set ? "§a✓" : "§c✕",
-                            same_world ? "§a✓" : "§c✕",
-                            no_intersection ? "§a✓" : "§c✕",
-                            minimum_satisfied ? "§a✓" : "§c✕",
-                            maximum_satisfied ? "§a✓" : "§c✕",
-                            can_afford ? "§a✓" : "§c✕",
-                            extent_color + sdx,
-                            extent_color + sdy,
-                            extent_color + sdz,
-                            "§b" + get_module().config_min_region_extent_x,
-                            "§b" + get_module().config_min_region_extent_y,
-                            "§b" + get_module().config_min_region_extent_z,
-                            "§b" + get_module().config_max_region_extent_x,
-                            "§b" + get_module().config_max_region_extent_y,
-                            "§b" + get_module().config_max_region_extent_z,
-                            price
-                        )
+                            item_create_region_invalid_selection.item(
+                                    is_primary_set ? "§a✓" : "§c✕",
+                                    is_secondary_set ? "§a✓" : "§c✕",
+                                    same_world ? "§a✓" : "§c✕",
+                                    no_intersection ? "§a✓" : "§c✕",
+                                    minimum_satisfied ? "§a✓" : "§c✕",
+                                    maximum_satisfied ? "§a✓" : "§c✕",
+                                    can_afford ? "§a✓" : "§c✕",
+                                    extent_color + sdx,
+                                    extent_color + sdy,
+                                    extent_color + sdz,
+                                    "§b" + get_module().config_min_region_extent_x,
+                                    "§b" + get_module().config_min_region_extent_y,
+                                    "§b" + get_module().config_min_region_extent_z,
+                                    "§b" + get_module().config_max_region_extent_x,
+                                    "§b" + get_module().config_max_region_extent_y,
+                                    "§b" + get_module().config_max_region_extent_z,
+                                    price
+                            )
                     );
                 }
             }
@@ -297,27 +298,27 @@ public class MainMenu extends ModuleComponent<Regions> {
         return new MenuItem(1, item_list_regions.item(), (player, menu, self) -> {
             menu.close(player);
             final var all_regions = get_module()
-                .all_regions()
-                .stream()
-                .filter(r -> get_module().may_administrate(player, r))
-                .sorted((a, b) -> a.name().compareToIgnoreCase(b.name()))
-                .collect(Collectors.toList());
+                    .all_regions()
+                    .stream()
+                    .filter(r -> get_module().may_administrate(player, r))
+                    .sorted((a, b) -> a.name().compareToIgnoreCase(b.name()))
+                    .collect(Collectors.toList());
 
             final var filter = new Filter.StringFilter<Region>((r, str) -> r.name().toLowerCase().contains(str));
             MenuFactory.generic_selector(
-                get_context(),
-                player,
-                lang_select_region_title.str(),
-                lang_filter_regions_title.str(),
-                all_regions,
-                r -> item_select_region.item("§a§l" + r.name()),
-                filter,
-                (player2, m, region) -> {
-                    m.close(player2);
-                    get_module().menus.region_menu.create(region, player2).open(player2);
-                    return ClickResult.SUCCESS;
-                },
-                player2 -> menu.open(player2)
+                    get_context(),
+                    player,
+                    lang_select_region_title.str(),
+                    lang_filter_regions_title.str(),
+                    all_regions,
+                    r -> item_select_region.item("§a§l" + r.name()),
+                    filter,
+                    (player2, m, region) -> {
+                        m.close(player2);
+                        get_module().menus.region_menu.create(region, player2).open(player2);
+                        return ClickResult.SUCCESS;
+                    },
+                    player2 -> menu.open(player2)
             ).open(player);
             return ClickResult.SUCCESS;
         });
@@ -335,14 +336,14 @@ public class MainMenu extends ModuleComponent<Regions> {
         return new MenuItem(7, item_create_region_group.item(), (player, menu, self) -> {
             menu.close(player);
             get_module()
-                .menus.enter_region_group_name_menu.create(player, (player2, name) -> {
-                    final var group = new RegionGroup(name, player2.getUniqueId());
-                    get_module().add_region_group(group);
-                    get_module().menus.region_group_menu.create(group, player).open(player);
-                    return ClickResult.SUCCESS;
-                })
-                .on_natural_close(player2 -> menu.open(player2))
-                .open(player);
+                    .menus.enter_region_group_name_menu.create(player, (player2, name) -> {
+                        final var group = new RegionGroup(name, player2.getUniqueId());
+                        get_module().add_region_group(group);
+                        get_module().menus.region_group_menu.create(group, player).open(player);
+                        return ClickResult.SUCCESS;
+                    })
+                    .on_natural_close(player2 -> menu.open(player2))
+                    .open(player);
 
             return ClickResult.SUCCESS;
         });
@@ -352,27 +353,27 @@ public class MainMenu extends ModuleComponent<Regions> {
         return new MenuItem(8, item_list_region_groups.item(), (player, menu, self) -> {
             menu.close(player);
             final var all_region_groups = get_module()
-                .all_region_groups()
-                .stream()
-                .filter(g -> get_module().may_administrate(player, g))
-                .sorted((a, b) -> a.name().compareToIgnoreCase(b.name()))
-                .collect(Collectors.toList());
+                    .all_region_groups()
+                    .stream()
+                    .filter(g -> get_module().may_administrate(player, g))
+                    .sorted((a, b) -> a.name().compareToIgnoreCase(b.name()))
+                    .collect(Collectors.toList());
 
             final var filter = new Filter.StringFilter<RegionGroup>((r, str) -> r.name().toLowerCase().contains(str));
             MenuFactory.generic_selector(
-                get_context(),
-                player,
-                lang_select_region_group_title.str(),
-                lang_filter_region_groups_title.str(),
-                all_region_groups,
-                r -> item_select_region_group.item("§a§l" + r.name()),
-                filter,
-                (player2, m, group) -> {
-                    m.close(player2);
-                    get_module().menus.region_group_menu.create(group, player).open(player);
-                    return ClickResult.SUCCESS;
-                },
-                player2 -> menu.open(player2)
+                    get_context(),
+                    player,
+                    lang_select_region_group_title.str(),
+                    lang_filter_region_groups_title.str(),
+                    all_region_groups,
+                    r -> item_select_region_group.item("§a§l" + r.name()),
+                    filter,
+                    (player2, m, group) -> {
+                        m.close(player2);
+                        get_module().menus.region_group_menu.create(group, player).open(player);
+                        return ClickResult.SUCCESS;
+                    },
+                    player2 -> menu.open(player2)
             ).open(player);
             return ClickResult.SUCCESS;
         });
@@ -387,8 +388,10 @@ public class MainMenu extends ModuleComponent<Regions> {
     }
 
     @Override
-    public void on_enable() {}
+    public void on_enable() {
+    }
 
     @Override
-    public void on_disable() {}
+    public void on_disable() {
+    }
 }

@@ -2,9 +2,11 @@ package org.oddlama.vane.portals;
 
 import com.destroystokyo.paper.event.entity.EntityTeleportEndGatewayEvent;
 import com.destroystokyo.paper.event.player.PlayerTeleportEndGatewayEvent;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -72,9 +74,9 @@ public class PortalTeleporter extends Listener<Portals> {
     }
 
     private void teleport_single_entity(
-        final Entity entity,
-        final Location target_location,
-        final Vector new_velocity
+            final Entity entity,
+            final Location target_location,
+            final Vector new_velocity
     ) {
         final var entity_location = entity.getLocation();
         final var nms_entity = Nms.entity_handle(entity);
@@ -86,20 +88,20 @@ public class PortalTeleporter extends Listener<Portals> {
                 // For players traveling in the same world, we can use the NMS player's connection's
                 // teleport method, which only modifies player position without dismounting.
                 Nms.get_player(player).connection.teleport(
-                    target_location.getX(),
-                    target_location.getY(),
-                    target_location.getZ(),
-                    target_location.getYaw(),
-                    target_location.getPitch()
+                        target_location.getX(),
+                        target_location.getY(),
+                        target_location.getZ(),
+                        target_location.getYaw(),
+                        target_location.getPitch()
                 );
             } else {
                 // Similarly, we can just move entities.
                 nms_entity.absMoveTo(
-                    target_location.getX(),
-                    target_location.getY(),
-                    target_location.getZ(),
-                    target_location.getYaw(),
-                    target_location.getPitch()
+                        target_location.getX(),
+                        target_location.getY(),
+                        target_location.getZ(),
+                        target_location.getYaw(),
+                        target_location.getPitch()
                 );
             }
 
@@ -162,14 +164,14 @@ public class PortalTeleporter extends Listener<Portals> {
         // Calculate new location (pitch, yaw) and velocity.
         final var source_orientation = source.orientation();
         target_location = source_orientation.apply(
-            target.orientation(),
-            target_location,
-            target.exit_orientation_locked()
+                target.orientation(),
+                target_location,
+                target.exit_orientation_locked()
         );
         final var new_velocity = source_orientation.apply(
-            target.orientation(),
-            entity.getVelocity(),
-            target.exit_orientation_locked()
+                target.orientation(),
+                entity.getVelocity(),
+                target.exit_orientation_locked()
         );
 
         teleport_single_entity(entity, target_location, new_velocity);

@@ -1,6 +1,7 @@
 package org.oddlama.vane.util;
 
 import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -24,9 +25,9 @@ public class StorageUtil {
     }
 
     public static Location storage_get_location(
-        @NotNull PersistentDataContainer data,
-        NamespacedKey key,
-        Location def
+            @NotNull PersistentDataContainer data,
+            NamespacedKey key,
+            Location def
     ) {
         try {
             final var world_id = data.get(subkey(key, "world"), PersistentDataType.STRING);
@@ -55,9 +56,9 @@ public class StorageUtil {
     }
 
     public static void storage_set_location(
-        @NotNull PersistentDataContainer data,
-        NamespacedKey key,
-        @NotNull Location location
+            @NotNull PersistentDataContainer data,
+            NamespacedKey key,
+            @NotNull Location location
     ) {
         data.set(subkey(key, "world"), PersistentDataType.STRING, location.getWorld().getUID().toString());
         data.set(subkey(key, "x"), PersistentDataType.DOUBLE, location.getX());

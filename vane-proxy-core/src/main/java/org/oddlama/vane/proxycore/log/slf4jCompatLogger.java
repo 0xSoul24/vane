@@ -3,6 +3,7 @@ package org.oddlama.vane.proxycore.log;
 import static java.util.logging.Level.*;
 
 import java.util.logging.Level;
+
 import org.slf4j.Logger;
 
 public class slf4jCompatLogger implements IVaneLogger {

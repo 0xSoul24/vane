@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.oddlama.vane.annotation.config.ConfigDoubleList;
@@ -15,10 +16,10 @@ public class ConfigDoubleListField extends ConfigField<List<Double>> {
     public ConfigDoubleList annotation;
 
     public ConfigDoubleListField(
-        Object owner,
-        Field field,
-        Function<String, String> map_name,
-        ConfigDoubleList annotation
+            Object owner,
+            Field field,
+            Function<String, String> map_name,
+            ConfigDoubleList annotation
     ) {
         super(owner, field, map_name, "double list", annotation.desc());
         this.annotation = annotation;
@@ -63,8 +64,8 @@ public class ConfigDoubleListField extends ConfigField<List<Double>> {
         builder.append(basename());
         builder.append(":\n");
         final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
-            : def();
+                ? load_from_yaml(existing_compatible_config)
+                : def();
         append_double_list_definition(builder, indent, "", def);
     }
 
@@ -84,12 +85,12 @@ public class ConfigDoubleListField extends ConfigField<List<Double>> {
             var val = yaml.getDouble(yaml_path());
             if (!Double.isNaN(annotation.min()) && val < annotation.min()) {
                 throw new YamlLoadException(
-                    "Configuration '" + yaml_path() + "' has an invalid value: Value must be >= " + annotation.min()
+                        "Configuration '" + yaml_path() + "' has an invalid value: Value must be >= " + annotation.min()
                 );
             }
             if (!Double.isNaN(annotation.max()) && val > annotation.max()) {
                 throw new YamlLoadException(
-                    "Configuration '" + yaml_path() + "' has an invalid value: Value must be <= " + annotation.max()
+                        "Configuration '" + yaml_path() + "' has an invalid value: Value must be <= " + annotation.max()
                 );
             }
         }

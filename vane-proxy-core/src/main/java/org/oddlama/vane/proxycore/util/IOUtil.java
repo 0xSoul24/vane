@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,9 +24,9 @@ public class IOUtil {
 
     public static JSONObject read_json_from_url(String url) throws IOException, JSONException, URISyntaxException {
         try (
-            final var rd = new BufferedReader(
-                new InputStreamReader(new URI(url).toURL().openStream(), StandardCharsets.UTF_8)
-            )
+                final var rd = new BufferedReader(
+                        new InputStreamReader(new URI(url).toURL().openStream(), StandardCharsets.UTF_8)
+                )
         ) {
             return new JSONObject(read_all(rd));
         }

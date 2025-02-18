@@ -3,6 +3,7 @@ package org.oddlama.velocity.compat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
+
 import net.kyori.adventure.text.Component;
 import org.oddlama.vane.proxycore.ProxyPlayer;
 import org.oddlama.vane.proxycore.ProxyServer;

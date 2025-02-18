@@ -5,6 +5,7 @@ import static org.oddlama.vane.util.PlayerUtil.apply_elytra_boost;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -27,7 +28,7 @@ import org.oddlama.vane.enchantments.Enchantments;
 @VaneEnchantment(name = "take_off", max_level = 3, rarity = Rarity.UNCOMMON, treasure = true, allow_custom = true)
 public class TakeOff extends CustomEnchantment<Enchantments> {
 
-    @ConfigDoubleList(def = { 0.2, 0.4, 0.6 }, min = 0.0, desc = "Boost strength for each enchantment level.")
+    @ConfigDoubleList(def = {0.2, 0.4, 0.6}, min = 0.0, desc = "Boost strength for each enchantment level.")
     private List<Double> config_boost_strengths;
 
     public TakeOff(Context<Enchantments> context) {
@@ -37,30 +38,30 @@ public class TakeOff extends CustomEnchantment<Enchantments> {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("mbm", "psp")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_the_gods")
-                .set_ingredient('m', Material.PHANTOM_MEMBRANE)
-                .set_ingredient('p', Material.PISTON)
-                .set_ingredient('s', Material.SLIME_BLOCK)
-                .result(on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
+                new ShapedRecipeDefinition("generic")
+                        .shape("mbm", "psp")
+                        .set_ingredient('b', "vane_enchantments:ancient_tome_of_the_gods")
+                        .set_ingredient('m', Material.PHANTOM_MEMBRANE)
+                        .set_ingredient('p', Material.PISTON)
+                        .set_ingredient('s', Material.SLIME_BLOCK)
+                        .result(on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
         );
     }
 
     @Override
     public LootTableList default_loot_tables() {
         return LootTableList.of(
-            new LootDefinition("generic")
-                .in(LootTables.BURIED_TREASURE)
-                .in(LootTables.PILLAGER_OUTPOST)
-                .in(LootTables.RUINED_PORTAL)
-                .in(LootTables.SHIPWRECK_TREASURE)
-                .in(LootTables.STRONGHOLD_LIBRARY)
-                .in(LootTables.UNDERWATER_RUIN_BIG)
-                .in(LootTables.UNDERWATER_RUIN_SMALL)
-                .in(LootTables.VILLAGE_TEMPLE)
-                .in(LootTables.WOODLAND_MANSION)
-                .add(1.0 / 150, 1, 1, on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
+                new LootDefinition("generic")
+                        .in(LootTables.BURIED_TREASURE)
+                        .in(LootTables.PILLAGER_OUTPOST)
+                        .in(LootTables.RUINED_PORTAL)
+                        .in(LootTables.SHIPWRECK_TREASURE)
+                        .in(LootTables.STRONGHOLD_LIBRARY)
+                        .in(LootTables.UNDERWATER_RUIN_BIG)
+                        .in(LootTables.UNDERWATER_RUIN_SMALL)
+                        .in(LootTables.VILLAGE_TEMPLE)
+                        .in(LootTables.WOODLAND_MANSION)
+                        .add(1.0 / 150, 1, 1, on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
         );
     }
 
@@ -101,16 +102,16 @@ public class TakeOff extends CustomEnchantment<Enchantments> {
             final var rnd = Vector.getRandom().subtract(new Vector(.5, .5, .5)).normalize().multiply(.25);
             final var dir = rnd.clone().multiply(.5).subtract(player.getVelocity());
             loc
-                .getWorld()
-                .spawnParticle(
-                    Particle.FIREWORK,
-                    loc.add(rnd),
-                    0,
-                    dir.getX(),
-                    dir.getY(),
-                    dir.getZ(),
-                    vel * ThreadLocalRandom.current().nextDouble(0.4, 0.6)
-                );
+                    .getWorld()
+                    .spawnParticle(
+                            Particle.FIREWORK,
+                            loc.add(rnd),
+                            0,
+                            dir.getX(),
+                            dir.getY(),
+                            dir.getZ(),
+                            vel * ThreadLocalRandom.current().nextDouble(0.4, 0.6)
+                    );
         }
     }
 }

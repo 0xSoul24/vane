@@ -34,10 +34,10 @@ public class ProxyLoginListener {
 
         var server_info = new VelocityCompatServerInfo(server);
         LoginEvent proxy_event = new VelocityCompatLoginEvent(
-            event,
-            velocity,
-            server_info,
-            new VelocityCompatPendingConnection(event.getPlayer())
+                event,
+                velocity,
+                server_info,
+                new VelocityCompatPendingConnection(event.getPlayer())
         );
         proxy_event.fire();
     }

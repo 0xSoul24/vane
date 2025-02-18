@@ -3,6 +3,7 @@ package org.oddlama.vane.core.persistent;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.function.Function;
+
 import org.json.JSONObject;
 
 public class PersistentField {

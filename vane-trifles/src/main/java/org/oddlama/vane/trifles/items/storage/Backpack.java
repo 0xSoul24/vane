@@ -3,6 +3,7 @@ package org.oddlama.vane.trifles.items.storage;
 import static org.oddlama.vane.util.PlayerUtil.swing_arm;
 
 import java.util.EnumSet;
+
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.Tag;
@@ -29,11 +30,11 @@ public class Backpack extends CustomItem<Trifles> {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new SmithingRecipeDefinition("from_shulker_box")
-                .base(Tag.SHULKER_BOXES)
-                .addition(Material.LEATHER_CHESTPLATE)
-                .copy_nbt(true)
-                .result(key().toString())
+                new SmithingRecipeDefinition("from_shulker_box")
+                        .base(Tag.SHULKER_BOXES)
+                        .addition(Material.LEATHER_CHESTPLATE)
+                        .copy_nbt(true)
+                        .result(key().toString())
         );
     }
 

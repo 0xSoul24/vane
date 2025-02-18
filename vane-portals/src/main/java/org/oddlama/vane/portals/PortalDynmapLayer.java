@@ -1,6 +1,7 @@
 package org.oddlama.vane.portals;
 
 import java.util.UUID;
+
 import org.oddlama.vane.annotation.config.ConfigBoolean;
 import org.oddlama.vane.annotation.config.ConfigInt;
 import org.oddlama.vane.annotation.config.ConfigString;
@@ -33,10 +34,10 @@ public class PortalDynmapLayer extends ModuleComponent<Portals> {
 
     public PortalDynmapLayer(final Context<Portals> context) {
         super(
-            context.group(
-                "dynmap",
-                "Enable dynmap integration. Public portals will then be shown on a separate dynmap layer."
-            )
+                context.group(
+                        "dynmap",
+                        "Enable dynmap integration. Public portals will then be shown on a separate dynmap layer."
+                )
         );
     }
 

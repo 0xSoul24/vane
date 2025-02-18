@@ -1,6 +1,7 @@
 package org.oddlama.vane.proxycore.commands;
 
 import java.util.UUID;
+
 import org.oddlama.vane.proxycore.VaneProxyPlugin;
 
 public abstract class ProxyCommand {

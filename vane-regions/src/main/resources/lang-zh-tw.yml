@@ -81,15 +81,15 @@ menus:
         - "§7- §a✓§7 能夠支付 (%10$s§7)"
     cancel_selection:
       name: "§c§l取消選擇"
-      lore: []
+      lore: [ ]
     list_regions:
       name: "§b§l選擇區域"
-      lore: []
+      lore: [ ]
     select_region_title: "§8§l選擇區域"
     filter_regions_title: "§8§l篩選區域"
     select_region:
       name: "%1$s"
-      lore: []
+      lore: [ ]
     current_region:
       name: "§b§l當前區域"
       lore:
@@ -107,7 +107,7 @@ menus:
         - "§7所有區域都將共享這些權限"
     list_region_groups:
       name: "§b§l選擇區域組"
-      lore: []
+      lore: [ ]
     current_region_group:
       name: "§b§l當前區域組"
       lore:
@@ -120,40 +120,40 @@ menus:
     filter_region_groups_title: "§8§l篩選區域組"
     select_region_group:
       name: "%1$s"
-      lore: []
+      lore: [ ]
   region:
     title: "§8§l區域: %1$s"
     rename:
       name: "§b§l重新命名區域"
-      lore: []
+      lore: [ ]
     delete:
       name: "§c§l刪除區域"
-      lore: []
+      lore: [ ]
     delete_confirm_title: "§c§l確定要刪除區域嗎？"
     delete_confirm_accept:
       name: "§c§l刪除區域"
-      lore: []
+      lore: [ ]
     delete_confirm_cancel:
       name: "§a§l取消"
-      lore: []
+      lore: [ ]
     assign_region_group:
       name: "§b§l指定群組"
-      lore: []
+      lore: [ ]
 
     select_region_group_title: "§8§l選擇區域群組"
     filter_region_groups_title: "§8§l篩選區域群組"
     select_region_group:
       name: "%1$s"
-      lore: []
+      lore: [ ]
   region_group:
     title: "§8§l群組: %1$s"
 
     setting_toggle_on:
       name: "§a§l啟用"
-      lore: []
+      lore: [ ]
     setting_toggle_off:
       name: "§c§l停用"
-      lore: []
+      lore: [ ]
     setting_info_animals:
       name: "§b§l動物"
       lore:
@@ -191,7 +191,7 @@ menus:
         - "§7控制是否允許藤蔓在區域內生長"
     rename:
       name: "§b§l重新命名群組"
-      lore: []
+      lore: [ ]
     delete:
       name: "§c§l刪除群組"
       lore:
@@ -201,10 +201,10 @@ menus:
     delete_confirm_title: "§c§l刪除區域群組？"
     delete_confirm_accept:
       name: "§c§l刪除區域群組"
-      lore: []
+      lore: [ ]
     delete_confirm_cancel:
       name: "§a§l取消"
-      lore: []
+      lore: [ ]
     create_role:
       name: "§a§l創建角色"
       lore:
@@ -213,21 +213,21 @@ menus:
         - "§7角色用於為一群玩家設置權限"
     list_roles:
       name: "§b§lRoles"
-      lore: []
+      lore: [ ]
     select_role_title: "§8§lSelect Role"
     filter_roles_title: "§8§lFilter Roles"
     select_role:
       name: "%1$s"
-      lore: []
+      lore: [ ]
   role:
     title: "§8§l群組：%1$s"
 
     setting_toggle_on:
       name: "§a§l啟用"
-      lore: []
+      lore: [ ]
     setting_toggle_off:
       name: "§c§l禁用"
-      lore: []
+      lore: [ ]
     setting_info_admin:
       name: "§b§l管理員"
       lore:
@@ -260,17 +260,17 @@ menus:
         - "§7允許與傳送門交互"
     rename:
       name: "§b§l重命名角色"
-      lore: []
+      lore: [ ]
     delete:
       name: "§c§l刪除角色"
-      lore: []
+      lore: [ ]
     delete_confirm_title: "§c§l刪除角色？"
     delete_confirm_accept:
       name: "§c§l刪除角色"
-      lore: []
+      lore: [ ]
     delete_confirm_cancel:
       name: "§a§l取消"
-      lore: []
+      lore: [ ]
     assign_player:
       name: "§b§l指定玩家"
       lore:
@@ -292,4 +292,4 @@ menus:
     filter_players_title: "§8§l過濾玩家"
     select_player:
       name: "%1$s"
-      lore: []
+      lore: [ ]

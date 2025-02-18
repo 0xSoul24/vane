@@ -43,8 +43,8 @@ public class RegionSelectionListener extends Listener<Regions> {
         }
 
         if (
-            player.getEquipment().getItemInMainHand().getType() != Material.AIR ||
-            player.getEquipment().getItemInOffHand().getType() != Material.AIR
+                player.getEquipment().getItemInMainHand().getType() != Material.AIR ||
+                        player.getEquipment().getItemInOffHand().getType() != Material.AIR
         ) {
             return;
         }

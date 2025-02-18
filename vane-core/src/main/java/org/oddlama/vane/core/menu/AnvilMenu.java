@@ -36,12 +36,12 @@ public class AnvilMenu extends Menu {
 
         if (player_handle(player) != entity) {
             manager
-                .get_module()
-                .log.warning("AnvilMenu.open() was called with a player for whom this inventory wasn't created!");
+                    .get_module()
+                    .log.warning("AnvilMenu.open() was called with a player for whom this inventory wasn't created!");
         }
 
         entity.connection.send(
-            new ClientboundOpenScreenPacket(container_id, container.getType(), Component.literal(title))
+                new ClientboundOpenScreenPacket(container_id, container.getType(), Component.literal(title))
         );
         entity.initMenu(container);
         entity.containerMenu = container;
@@ -61,9 +61,11 @@ public class AnvilMenu extends Menu {
         }
 
         @Override
-        public void removed(Player player) {}
+        public void removed(Player player) {
+        }
 
         @Override
-        protected void clearContainer(Player player, Container container) {}
+        protected void clearContainer(Player player, Container container) {
+        }
     }
 }

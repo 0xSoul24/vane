@@ -31,20 +31,20 @@ public class WorldProtection extends Listener<Admin> {
 
     private static final String PERMISSION_NAME = "vane.admin.modify_world";
     private Permission permission = new Permission(
-        PERMISSION_NAME,
-        "Allow player to modify world",
-        PermissionDefault.OP
+            PERMISSION_NAME,
+            "Allow player to modify world",
+            PermissionDefault.OP
     );
 
     public WorldProtection(Context<Admin> context) {
         super(
-            context.group(
-                "world_protection",
-                "Enable world protection. This will prevent anyone from modifying the world if they don't have the permission '" +
-                PERMISSION_NAME +
-                "'.",
-                false
-            )
+                context.group(
+                        "world_protection",
+                        "Enable world protection. This will prevent anyone from modifying the world if they don't have the permission '" +
+                                PERMISSION_NAME +
+                                "'.",
+                        false
+                )
         );
         get_module().register_permission(permission);
     }

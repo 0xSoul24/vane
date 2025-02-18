@@ -69,10 +69,10 @@ menus:
   item_selector:
     accept:
       name: "§a§l接受"
-      lore: ["§b選擇§7當前選定的物品"]
+      lore: [ "§b選擇§7當前選定的物品" ]
     cancel:
       name: "§c§l取消"
-      lore: ["§6取消§7物品選擇"]
+      lore: [ "§6取消§7物品選擇" ]
     selected:
       name: "§d§l已選物品"
       lore:
@@ -84,7 +84,7 @@ menus:
   generic_selector:
     page:
       name: "§b第%1$s頁"
-      lore: []
+      lore: [ ]
     current_page:
       name: "§a當前第%1$s頁 §7/ %2$s"
       lore:
@@ -98,4 +98,4 @@ menus:
         - "§b右鍵點擊可重置篩選器"
     cancel:
       name: "§c§l取消"
-      lore: ["§6取消選擇"]
+      lore: [ "§6取消選擇" ]

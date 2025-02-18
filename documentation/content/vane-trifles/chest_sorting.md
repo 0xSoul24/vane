@@ -3,6 +3,7 @@ title = "Chest Sorting"
 icon = "minecraft:chest"
 module = "vane-trifles"
 ```
+
 ---
 ![](assets/gifs/chest-sorting.gif)
 

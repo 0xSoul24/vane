@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.oddlama.vane.regions.Regions;
@@ -27,8 +28,8 @@ public class RegionGroup {
         }
         try {
             json.put(
-                "player_to_role",
-                to_json(RegionGroup.class.getDeclaredField("player_to_role"), region_group.player_to_role)
+                    "player_to_role",
+                    to_json(RegionGroup.class.getDeclaredField("player_to_role"), region_group.player_to_role)
             );
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Invalid field. This is a bug.", e);
@@ -52,16 +53,16 @@ public class RegionGroup {
         region_group.owner = from_json(UUID.class, json.get("owner"));
         try {
             region_group.roles = (Map<UUID, Role>) from_json(
-                RegionGroup.class.getDeclaredField("roles"),
-                json.get("roles")
+                    RegionGroup.class.getDeclaredField("roles"),
+                    json.get("roles")
             );
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Invalid field. This is a bug.", e);
         }
         try {
             region_group.player_to_role = (Map<UUID, UUID>) from_json(
-                RegionGroup.class.getDeclaredField("player_to_role"),
-                json.get("player_to_role")
+                    RegionGroup.class.getDeclaredField("player_to_role"),
+                    json.get("player_to_role")
             );
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Invalid field. This is a bug.", e);
@@ -69,8 +70,8 @@ public class RegionGroup {
         region_group.role_others = from_json(UUID.class, json.get("role_others"));
         try {
             region_group.settings = (Map<EnvironmentSetting, Boolean>) from_json(
-                RegionGroup.class.getDeclaredField("settings"),
-                json.get("settings")
+                    RegionGroup.class.getDeclaredField("settings"),
+                    json.get("settings")
             );
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Invalid field. This is a bug.", e);
@@ -88,7 +89,8 @@ public class RegionGroup {
 
     private Map<EnvironmentSetting, Boolean> settings = new HashMap<>();
 
-    private RegionGroup() {}
+    private RegionGroup() {
+    }
 
     public RegionGroup(final String name, final UUID owner) {
         this.id = UUID.randomUUID();

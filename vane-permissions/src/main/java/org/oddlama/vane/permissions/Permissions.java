@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -32,48 +33,48 @@ public class Permissions extends Module<Permissions> {
 
     // Configuration
     @ConfigBoolean(
-        def = false,
-        desc = "Remove all default permissions from ANY SOURCE (including other plugins and minecraft permissions) to start with a clean preset. This will allow you to exactly set which player have which permissions instead of having to resort to volatile stateful changes like negative permissions. This will result in OPed players to lose access to commands, if not explicitly added back via permissions. The wildcard permissions can be viewed using `perms list permissions`. The wildcard permissions `minecraft` and `craftbukkit` may be especially useful."
+            def = false,
+            desc = "Remove all default permissions from ANY SOURCE (including other plugins and minecraft permissions) to start with a clean preset. This will allow you to exactly set which player have which permissions instead of having to resort to volatile stateful changes like negative permissions. This will result in OPed players to lose access to commands, if not explicitly added back via permissions. The wildcard permissions can be viewed using `perms list permissions`. The wildcard permissions `minecraft` and `craftbukkit` may be especially useful."
     )
     public boolean config_remove_defaults;
 
     @ConfigString(
-        def = "default",
-        desc = "The permission group that will be given to players that have no other permission group."
+            def = "default",
+            desc = "The permission group that will be given to players that have no other permission group."
     )
     public String config_default_group;
 
     @ConfigStringListMap(
-        def = {
-            @ConfigStringListMapEntry(
-                key = "default",
-                list = { "bukkit.command.help", "bukkit.broadcast", "bukkit.broadcast.user" }
-            ),
-            @ConfigStringListMapEntry(
-                key = "user",
-                list = {
-                    "vane.permissions.groups.default",
-                    "vane.admin.modify_world",
-                    "vane.regions.commands.region",
-                    "vane.trifles.commands.heads",
-                }
-            ),
-            @ConfigStringListMapEntry(
-                key = "verified",
-                list = { "vane.permissions.groups.user", "vane.permissions.commands.vouch" }
-            ),
-            @ConfigStringListMapEntry(
-                key = "admin",
-                list = {
-                    "vane.permissions.groups.verified",
-                    "vane.admin.bypass_spawn_protection",
-                    "vane.portals.admin",
-                    "vane.regions.admin",
-                    "vane.*.commands.*",
-                }
-            ),
-        },
-        desc = "The permission groups. A player can have multiple permission groups assigned. Permission groups can inherit other permission groups by specifying vane.permissions.groups.<groupname> as a permission."
+            def = {
+                    @ConfigStringListMapEntry(
+                            key = "default",
+                            list = {"bukkit.command.help", "bukkit.broadcast", "bukkit.broadcast.user"}
+                    ),
+                    @ConfigStringListMapEntry(
+                            key = "user",
+                            list = {
+                                    "vane.permissions.groups.default",
+                                    "vane.admin.modify_world",
+                                    "vane.regions.commands.region",
+                                    "vane.trifles.commands.heads",
+                            }
+                    ),
+                    @ConfigStringListMapEntry(
+                            key = "verified",
+                            list = {"vane.permissions.groups.user", "vane.permissions.commands.vouch"}
+                    ),
+                    @ConfigStringListMapEntry(
+                            key = "admin",
+                            list = {
+                                    "vane.permissions.groups.verified",
+                                    "vane.admin.bypass_spawn_protection",
+                                    "vane.portals.admin",
+                                    "vane.regions.admin",
+                                    "vane.*.commands.*",
+                            }
+                    ),
+            },
+            desc = "The permission groups. A player can have multiple permission groups assigned. Permission groups can inherit other permission groups by specifying vane.permissions.groups.<groupname> as a permission."
     )
     public Map<String, List<String>> config_groups;
 
@@ -156,13 +157,16 @@ public class Permissions extends Module<Permissions> {
         }
     }
 
-    /** Resolve references to other permission groups in the hierarchy. */
+    /**
+     * Resolve references to other permission groups in the hierarchy.
+     */
     private void flatten_groups() {
         permission_groups.clear();
         config_groups.forEach((k, v) -> {
             final var set = new HashSet<String>();
             for (var perm : v) {
-                if (perm.startsWith("vane.permissions.groups.")) {} else {
+                if (perm.startsWith("vane.permissions.groups.")) {
+                } else {
                     set.add(perm);
                 }
             }
@@ -183,11 +187,11 @@ public class Permissions extends Module<Permissions> {
                         final var group_perms = permission_groups.get(group);
                         if (group_perms == null) {
                             log.severe(
-                                "Nonexistent permission group '" +
-                                group +
-                                "' referenced by group '" +
-                                k +
-                                "'; Ignoring statement!"
+                                    "Nonexistent permission group '" +
+                                            group +
+                                            "' referenced by group '" +
+                                            k +
+                                            "'; Ignoring statement!"
                             );
                             continue;
                         }
@@ -271,7 +275,7 @@ public class Permissions extends Module<Permissions> {
 
         if (removed) {
             log.info(
-                "[audit] Group " + group + " removed from " + player.getUniqueId() + " (" + player.getName() + ")"
+                    "[audit] Group " + group + " removed from " + player.getUniqueId() + " (" + player.getName() + ")"
             );
             save_and_recalculate(player);
         }

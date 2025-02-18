@@ -19,10 +19,10 @@ public class Ping implements SimpleCommand {
     public void execute(Invocation invocation) {
         final var sender = invocation.source();
         cmd.execute(
-            sender instanceof final Player player
-                ? new VelocityCompatProxyPlayer(player)
-                : new VelocityCompatProxyCommandSender(sender),
-            invocation.arguments()
+                sender instanceof final Player player
+                        ? new VelocityCompatProxyPlayer(player)
+                        : new VelocityCompatProxyCommandSender(sender),
+                invocation.arguments()
         );
     }
 }

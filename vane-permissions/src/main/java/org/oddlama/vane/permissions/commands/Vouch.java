@@ -5,11 +5,13 @@ import static io.papermc.paper.command.brigadier.Commands.argument;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.oddlama.vane.annotation.command.Name;
@@ -45,16 +47,16 @@ public class Vouch extends Command<Permissions> {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
         return super.get_command_base()
-            .then(help())
-            .then(
-                argument("offline_player", OfflinePlayerArgumentType.offlinePlayer()).executes(ctx -> {
-                    vouch_for_player(
-                        (Player) ctx.getSource().getSender(),
-                        ctx.getArgument("offline_player", OfflinePlayer.class)
-                    );
-                    return SINGLE_SUCCESS;
-                })
-            );
+                .then(help())
+                .then(
+                        argument("offline_player", OfflinePlayerArgumentType.offlinePlayer()).executes(ctx -> {
+                            vouch_for_player(
+                                    (Player) ctx.getSource().getSender(),
+                                    ctx.getArgument("offline_player", OfflinePlayer.class)
+                            );
+                            return SINGLE_SUCCESS;
+                        })
+                );
     }
 
     private void vouch_for_player(final Player sender, final OfflinePlayer vouched_player) {

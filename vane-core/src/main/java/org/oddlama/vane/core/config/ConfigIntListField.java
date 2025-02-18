@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.oddlama.vane.annotation.config.ConfigIntList;
@@ -58,8 +59,8 @@ public class ConfigIntListField extends ConfigField<List<Integer>> {
         builder.append(basename());
         builder.append(":\n");
         final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
-            : def();
+                ? load_from_yaml(existing_compatible_config)
+                : def();
         append_int_list_definition(builder, indent, "", def);
     }
 
@@ -79,12 +80,12 @@ public class ConfigIntListField extends ConfigField<List<Integer>> {
             var val = yaml.getInt(yaml_path());
             if (annotation.min() != Integer.MIN_VALUE && val < annotation.min()) {
                 throw new YamlLoadException(
-                    "Configuration '" + yaml_path() + "' has an invalid value: Value must be >= " + annotation.min()
+                        "Configuration '" + yaml_path() + "' has an invalid value: Value must be >= " + annotation.min()
                 );
             }
             if (annotation.max() != Integer.MAX_VALUE && val > annotation.max()) {
                 throw new YamlLoadException(
-                    "Configuration '" + yaml_path() + "' has an invalid value: Value must be <= " + annotation.max()
+                        "Configuration '" + yaml_path() + "' has an invalid value: Value must be <= " + annotation.max()
                 );
             }
         }

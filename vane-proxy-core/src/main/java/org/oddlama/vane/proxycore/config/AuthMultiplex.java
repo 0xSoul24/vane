@@ -15,10 +15,10 @@ public class AuthMultiplex {
             this.allowed_uuids = List.of();
         } else {
             this.allowed_uuids = allowed_uuids
-                .stream()
-                .filter(s -> !s.isEmpty())
-                .map(UUID::fromString)
-                .collect(Collectors.toList());
+                    .stream()
+                    .filter(s -> !s.isEmpty())
+                    .map(UUID::fromString)
+                    .collect(Collectors.toList());
         }
     }
 

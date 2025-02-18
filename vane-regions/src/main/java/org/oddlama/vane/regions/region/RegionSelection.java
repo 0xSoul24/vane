@@ -5,6 +5,7 @@ import static org.oddlama.vane.util.PlayerUtil.has_items;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
+
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -40,9 +41,9 @@ public class RegionSelection {
         final var dy = 1 + Math.abs(primary.getY() - secondary.getY());
         final var dz = 1 + Math.abs(primary.getZ() - secondary.getZ());
         final var cost =
-            ((Math.pow(regions.config_cost_y_multiplicator, dy / 16.0) * regions.config_cost_xz_base) / 256.0) *
-            dx *
-            dz;
+                ((Math.pow(regions.config_cost_y_multiplicator, dy / 16.0) * regions.config_cost_xz_base) / 256.0) *
+                        dx *
+                        dz;
         if (regions.config_economy_as_currency) {
             int decimal_places = regions.config_economy_decimal_places;
             if (decimal_places == -1) {
@@ -91,12 +92,12 @@ public class RegionSelection {
 
         // min <= extent <= max
         if (
-            dx < regions.config_min_region_extent_x ||
-            dy < regions.config_min_region_extent_y ||
-            dz < regions.config_min_region_extent_z ||
-            dx > regions.config_max_region_extent_x ||
-            dy > regions.config_max_region_extent_y ||
-            dz > regions.config_max_region_extent_z
+                dx < regions.config_min_region_extent_x ||
+                        dy < regions.config_min_region_extent_y ||
+                        dz < regions.config_min_region_extent_z ||
+                        dx > regions.config_max_region_extent_x ||
+                        dy > regions.config_max_region_extent_y ||
+                        dz > regions.config_max_region_extent_z
         ) {
             return false;
         }

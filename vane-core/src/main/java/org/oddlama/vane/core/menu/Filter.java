@@ -2,6 +2,7 @@ package org.oddlama.vane.core.menu;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -11,10 +12,10 @@ import org.oddlama.vane.core.module.Context;
 
 public interface Filter<T> {
     public void open_filter_settings(
-        final Context<?> context,
-        final Player player,
-        final String filter_title,
-        final Menu return_to
+            final Context<?> context,
+            final Player player,
+            final String filter_title,
+            final Menu return_to
     );
 
     public void reset();
@@ -38,23 +39,23 @@ public interface Filter<T> {
 
         @Override
         public void open_filter_settings(
-            final Context<?> context,
-            final Player player,
-            final String filter_title,
-            final Menu return_to
+                final Context<?> context,
+                final Player player,
+                final String filter_title,
+                final Menu return_to
         ) {
             MenuFactory.anvil_string_input(
-                context,
-                player,
-                filter_title,
-                new ItemStack(Material.PAPER),
-                "?",
-                (p, menu, s) -> {
-                    menu.close(p);
-                    str = s;
-                    return_to.open(p);
-                    return ClickResult.SUCCESS;
-                }
+                    context,
+                    player,
+                    filter_title,
+                    new ItemStack(Material.PAPER),
+                    "?",
+                    (p, menu, s) -> {
+                        menu.close(p);
+                        str = s;
+                        return_to.open(p);
+                        return ClickResult.SUCCESS;
+                    }
             ).open(player);
         }
 

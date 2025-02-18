@@ -145,12 +145,12 @@ menus:
     # This item is used to cancel a pending selection.
     cancel_selection:
       name: "§c§lSeçimi İptal Et"
-      lore: []
+      lore: [ ]
 
     # This item is used to select a region where the player is administrator.
     list_regions:
       name: "§b§lBölge Seç"
-      lore: []
+      lore: [ ]
 
     # The title for the region selection menu
     select_region_title: "§8§lBölge Seç"
@@ -160,7 +160,7 @@ menus:
     # %1$s: Region name
     select_region:
       name: "%1$s"
-      lore: []
+      lore: [ ]
 
     # This item is a shortcut to select the region the player is standing in.
     # %1$s: Region name
@@ -185,7 +185,7 @@ menus:
     # This item is used to select a region group.
     list_region_groups:
       name: "§b§lBölge Grubunu Seçin"
-      lore: []
+      lore: [ ]
 
     # This item is a shortcut to select the region group of the region the player is standing in.
     # %1$s: Region group name
@@ -204,7 +204,7 @@ menus:
     # %1$s: Region group name
     select_region_group:
       name: "%1$s"
-      lore: []
+      lore: [ ]
 
   # Settings for the region menu.
   region:
@@ -215,27 +215,27 @@ menus:
     # The item used to rename a region.
     rename:
       name: "§b§lBölgeyi Yeniden Adlandır"
-      lore: []
+      lore: [ ]
 
     # The item used to delete a region.
     delete:
       name: "§c§lBölgeyi Sil"
-      lore: []
+      lore: [ ]
     # The title for the delete confirmation dialog.
     delete_confirm_title: "§c§lBölgeyi silmek ister misin?"
     # The item to accept deleting.
     delete_confirm_accept:
       name: "§c§lBÖLGEYİ SİL"
-      lore: []
+      lore: [ ]
     # The item to cancel deleting.
     delete_confirm_cancel:
       name: "§a§lİptal Etmek"
-      lore: []
+      lore: [ ]
 
     # The item used to open the list of region groups to assign the region to one
     assign_region_group:
       name: "§b§lGruba Katıl"
-      lore: []
+      lore: [ ]
 
     select_region_group_title: "§8§lBölge Grubunu Seçin"
     filter_region_groups_title: "§8§lBölge Gruplarını Filtrele"
@@ -243,7 +243,7 @@ menus:
     # %1$s: Region group name
     select_region_group:
       name: "%1$s"
-      lore: []
+      lore: [ ]
 
   # Settings for the region group menu.
   region_group:
@@ -253,10 +253,10 @@ menus:
 
     setting_toggle_on:
       name: "§a§lAKTİFLEŞTİRİLDİ"
-      lore: []
+      lore: [ ]
     setting_toggle_off:
       name: "§c§lKAPATILDI"
-      lore: []
+      lore: [ ]
     setting_info_animals:
       name: "§b§lHayvanlar"
       lore:
@@ -296,7 +296,7 @@ menus:
     # The item used to rename a region group.
     rename:
       name: "§b§lGrubu Yeniden Adlandır"
-      lore: []
+      lore: [ ]
 
     # The item used to delete a region group.
     # %1$s: Checkmark: No region uses this group
@@ -311,11 +311,11 @@ menus:
     # The item to accept deleting.
     delete_confirm_accept:
       name: "§c§lBÖLGE GRUBUNU SİL"
-      lore: []
+      lore: [ ]
     # The item to cancel deleting.
     delete_confirm_cancel:
       name: "§a§lİptal Etmek"
-      lore: []
+      lore: [ ]
 
     # This item is used to create a new role.
     create_role:
@@ -328,7 +328,7 @@ menus:
     # This item is used to open the role menu for a role.
     list_roles:
       name: "§b§lRoller"
-      lore: []
+      lore: [ ]
 
     select_role_title: "§8§lRol Seç"
     filter_roles_title: "§8§lRolleri Filtrele"
@@ -336,9 +336,9 @@ menus:
     # %1$s: Role name
     select_role:
       name: "%1$s"
-      lore: []
+      lore: [ ]
 
-# Settings for the role menu.
+  # Settings for the role menu.
   role:
     # The title for the role menu.
     # %1$s: Role name
@@ -346,10 +346,10 @@ menus:
 
     setting_toggle_on:
       name: "§a§lETKİNLEŞTİRİLMİŞ"
-      lore: []
+      lore: [ ]
     setting_toggle_off:
       name: "§c§lKAPATILMIŞ"
-      lore: []
+      lore: [ ]
     setting_info_admin:
       name: "§b§lAdmin"
       lore:
@@ -384,22 +384,22 @@ menus:
     # The item used to rename a role.
     rename:
       name: "§b§lRolü Yeniden Adlandır"
-      lore: []
+      lore: [ ]
 
     # The item used to delete a role.
     delete:
       name: "§c§lRolü Sil"
-      lore: []
+      lore: [ ]
     # The title for the delete confirmation dialog.
     delete_confirm_title: "§c§lRolü silmek ister misin?"
     # The item to accept deleting.
     delete_confirm_accept:
       name: "§c§lROLÜ SİL"
-      lore: []
+      lore: [ ]
     # The item to cancel deleting.
     delete_confirm_cancel:
       name: "§a§lİptal Etmek"
-      lore: []
+      lore: [ ]
 
     # This item is used to open the player assignment menu for a role.
     assign_player:
@@ -427,4 +427,4 @@ menus:
     # %1$s: Player name
     select_player:
       name: "%1$s"
-      lore: []
+      lore: [ ]

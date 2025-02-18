@@ -26,27 +26,27 @@ public class Unbreakable extends CustomEnchantment<Enchantments> {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("waw", "nbn", "tst")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_the_gods")
-                .set_ingredient('w', Material.WITHER_ROSE)
-                .set_ingredient('a', Material.ENCHANTED_GOLDEN_APPLE)
-                .set_ingredient('n', Material.NETHERITE_INGOT)
-                .set_ingredient('t', Material.TOTEM_OF_UNDYING)
-                .set_ingredient('s', Material.NETHER_STAR)
-                .result(on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
+                new ShapedRecipeDefinition("generic")
+                        .shape("waw", "nbn", "tst")
+                        .set_ingredient('b', "vane_enchantments:ancient_tome_of_the_gods")
+                        .set_ingredient('w', Material.WITHER_ROSE)
+                        .set_ingredient('a', Material.ENCHANTED_GOLDEN_APPLE)
+                        .set_ingredient('n', Material.NETHERITE_INGOT)
+                        .set_ingredient('t', Material.TOTEM_OF_UNDYING)
+                        .set_ingredient('s', Material.NETHER_STAR)
+                        .result(on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
         );
     }
 
     @Override
     public LootTableList default_loot_tables() {
         return LootTableList.of(
-            new LootDefinition("generic")
-                .in(LootTables.ABANDONED_MINESHAFT)
-                .add(1.0 / 120, 1, 1, on("vane_enchantments:enchanted_ancient_tome_of_the_gods")),
-            new LootDefinition("bastion")
-                .in(LootTables.BASTION_TREASURE)
-                .add(1.0 / 30, 1, 1, on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
+                new LootDefinition("generic")
+                        .in(LootTables.ABANDONED_MINESHAFT)
+                        .add(1.0 / 120, 1, 1, on("vane_enchantments:enchanted_ancient_tome_of_the_gods")),
+                new LootDefinition("bastion")
+                        .in(LootTables.BASTION_TREASURE)
+                        .add(1.0 / 30, 1, 1, on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
         );
     }
 

@@ -10,18 +10,18 @@ import org.oddlama.vane.core.module.Context;
 public class RepairCostLimiter extends Listener<Trifles> {
 
     @ConfigInt(
-        def = 39,
-        min = 0,
-        desc = "Limit anvil crafting cost. Set < 40 to remove 'Too Expensive' altogether. (Costs greater than 40 will still be craftable, even if it shows 'Too Expensive')"
+            def = 39,
+            min = 0,
+            desc = "Limit anvil crafting cost. Set < 40 to remove 'Too Expensive' altogether. (Costs greater than 40 will still be craftable, even if it shows 'Too Expensive')"
     )
     public int config_max_repair_cost;
 
     public RepairCostLimiter(Context<Trifles> context) {
         super(
-            context.group(
-                "repair_cost_limiter",
-                "Removes the cost limit on the anvil for all recipes. This means even if the client shows 'Too Expensive' in the anvil, the result may still be crafted, as long as the player has the required amount of levels (which unfortunately will not be shown)."
-            )
+                context.group(
+                        "repair_cost_limiter",
+                        "Removes the cost limit on the anvil for all recipes. This means even if the client shows 'Too Expensive' in the anvil, the result may still be crafted, as long as the player has the required amount of levels (which unfortunately will not be shown)."
+                )
         );
     }
 

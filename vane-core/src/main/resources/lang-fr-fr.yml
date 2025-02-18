@@ -69,11 +69,11 @@ menus:
   item_selector:
     accept:
       name: "§a§lAccepter"
-      lore: ["§bChoisir§7 l'objet actuellement sélectionné."]
+      lore: [ "§bChoisir§7 l'objet actuellement sélectionné." ]
 
     cancel:
       name: "§c§lAnnuler"
-      lore: ["§6Annule§7 la sélection."]
+      lore: [ "§6Annule§7 la sélection." ]
 
     selected:
       name: "§d§lObjet sélectionné"
@@ -87,7 +87,7 @@ menus:
   generic_selector:
     page:
       name: "§bPage %1$s"
-      lore: []
+      lore: [ ]
 
     current_page:
       name: "Page actuelle: %1$s §7/ %2$s"
@@ -104,4 +104,4 @@ menus:
 
     cancel:
       name: "§c§lAnnuler"
-      lore: ["§6Annule§7 la sélection."]
+      lore: [ "§6Annule§7 la sélection." ]

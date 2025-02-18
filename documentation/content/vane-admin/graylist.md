@@ -3,7 +3,9 @@ title = "Graylist (optional)"
 icon = "minecraft:chain"
 module = "vane-admin"
 ```
+
 ---
+
 ## Graylist
 
 Vane provides a feature similar to a graylist.
@@ -23,7 +25,7 @@ This feature is **disabled** by default, as it often caused confusion.
 When using `vane-permissions`, you can also allow trusted members of your community to vouch for other players.
 This allows them to lift a new user into the `users` group,
 without requiring an admin.
-Beneficial to permit your friends 
+Beneficial to permit your friends
 to invite other people they know.
 Vane stores who vouched for whom.
 

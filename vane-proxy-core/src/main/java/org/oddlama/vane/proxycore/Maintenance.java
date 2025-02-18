@@ -5,56 +5,57 @@ import static org.oddlama.vane.proxycore.util.TimeUtil.format_time;
 import java.io.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
 import org.jetbrains.annotations.Nullable;
 import org.oddlama.vane.proxycore.scheduler.ProxyScheduledTask;
 
 public class Maintenance {
 
     public static final long[] NOTIFY_TIMES = {
-        240 * 60000L,
-        180 * 60000L,
-        120 * 60000L,
-        60 * 60000L,
-        30 * 60000L,
-        15 * 60000L,
-        10 * 60000L,
-        5 * 60000L,
-        4 * 60000L,
-        3 * 60000L,
-        2 * 60000L,
-        60000L,
-        30000L,
-        10000L,
-        5000L,
-        4000L,
-        3000L,
-        2000L,
-        1000L,
+            240 * 60000L,
+            180 * 60000L,
+            120 * 60000L,
+            60 * 60000L,
+            30 * 60000L,
+            15 * 60000L,
+            10 * 60000L,
+            5 * 60000L,
+            4 * 60000L,
+            3 * 60000L,
+            2 * 60000L,
+            60000L,
+            30000L,
+            10000L,
+            5000L,
+            4000L,
+            3000L,
+            2000L,
+            1000L,
     };
     public static long SHUTDOWN_THRESHOLD = 10000L; // MESSAGE_SHUTDOWN if <= 10 seconds
     public static String MESSAGE_ABORTED = "§7> §cServer maintenance §l§6CANCELLED§r§c!";
 
     public static String MESSAGE_INFO =
-        "§7>" +
-        "\n§7> §cScheduled maintenance in: §6%time%" +
-        "\n§7> §cExpected time remaining: §6%remaining%" +
-        "\n§7>";
+            "§7>" +
+                    "\n§7> §cScheduled maintenance in: §6%time%" +
+                    "\n§7> §cExpected time remaining: §6%remaining%" +
+                    "\n§7>";
 
     public static String MESSAGE_SCHEDULED =
-        "§7>" +
-        "\n§7> §e\u21af§r §6§lMaintenance active§r §e\u21af§r" +
-        "\n§7>" +
-        "\n§7> §cScheduled maintenance in: §6%time%" +
-        "\n§7> §cExpected duration: §6%duration%" +
-        "\n§7>";
+            "§7>" +
+                    "\n§7> §e\u21af§r §6§lMaintenance active§r §e\u21af§r" +
+                    "\n§7>" +
+                    "\n§7> §cScheduled maintenance in: §6%time%" +
+                    "\n§7> §cExpected duration: §6%duration%" +
+                    "\n§7>";
 
     public static String MESSAGE_SHUTDOWN = "§7> §cShutdown in §6%time%§c!";
 
     public static String MESSAGE_KICK =
-        "§e\u21af§r §6§lMaintenance active§r §e\u21af§r" + "\n§cExpected duration: §6%duration%";
+            "§e\u21af§r §6§lMaintenance active§r §e\u21af§r" + "\n§cExpected duration: §6%duration%";
 
     public static String MOTD =
-        "§e\u21af§r §6§lMaintenance active§r §e\u21af§r" + "\n§cExpected time remaining: §6%remaining%";
+            "§e\u21af§r §6§lMaintenance active§r §e\u21af§r" + "\n§cExpected time remaining: §6%remaining%";
 
     public static String MESSAGE_CONNECT = "%MOTD%" + "\n" + "\n§7Please try again later.";
 
@@ -226,10 +227,10 @@ public class Maintenance {
         }
 
         return message
-            .replace("%MOTD%", MOTD)
-            .replace("%time%", time)
-            .replace("%duration%", duration_string)
-            .replace("%remaining%", remaining_string);
+                .replace("%MOTD%", MOTD)
+                .replace("%time%", time)
+                .replace("%duration%", duration_string)
+                .replace("%remaining%", remaining_string);
     }
 
     public class TaskNotify implements Runnable {
@@ -241,8 +242,8 @@ public class Maintenance {
         public synchronized void run() {
             // Broadcast message
             plugin
-                .get_proxy()
-                .broadcast(format_message(notify_time <= SHUTDOWN_THRESHOLD ? MESSAGE_SHUTDOWN : MESSAGE_SCHEDULED));
+                    .get_proxy()
+                    .broadcast(format_message(notify_time <= SHUTDOWN_THRESHOLD ? MESSAGE_SHUTDOWN : MESSAGE_SCHEDULED));
 
             // Schedule next time
             schedule();
@@ -277,9 +278,9 @@ public class Maintenance {
 
             // Schedule for next time
             task = plugin
-                .get_proxy()
-                .get_scheduler()
-                .schedule(plugin, this, timespan - notify_time, TimeUnit.MILLISECONDS);
+                    .get_proxy()
+                    .get_scheduler()
+                    .schedule(plugin, this, timespan - notify_time, TimeUnit.MILLISECONDS);
         }
 
         public long next_notify_time() {

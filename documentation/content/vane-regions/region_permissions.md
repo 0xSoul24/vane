@@ -3,7 +3,9 @@ title = "Region Permission Management"
 icon = "minecraft:iron_bars"
 module = "vane-regions"
 ```
+
 ---
+
 ## Default Group
 
 ![](images/region_default_group.png)
@@ -20,9 +22,11 @@ Add your friends to the "friends" role to allow them to build and use chests.
 ![](images/region_create_group.png)
 
 Only create a new region-group if you require entirely different settings for one or more regions.
-This is usually the case when you share a bigger project with other people, and want everyone to be an admin in related areas.
+This is usually the case when you share a bigger project with other people, and want everyone to be an admin in related
+areas.
 
-If you require a new region-group, you can create one by clicking the respective item on the right side in the region menu `/rg`.
+If you require a new region-group, you can create one by clicking the respective item on the right side in the region
+menu `/rg`.
 
 ## Assign Group
 
@@ -30,14 +34,17 @@ If you require a new region-group, you can create one by clicking the respective
 
 Finally, you need to assign your region to the newly created group, which you can do from the region's settings menu.
 
-**Tip:** If you open the region menu `/rg` while standing in a region, you will see direct links to both the region's settings and the currently assigned region-group.
+**Tip:** If you open the region menu `/rg` while standing in a region, you will see direct links to both the region's
+settings and the currently assigned region-group.
 
 ## Environmental Settings
 
 ![](images/region_group_settings.png)
 
-Each region-group has a set of environmental settings that apply to the actual regions in this region-group themselves and not to any players.
-These are settings like: Disabling monster spawn, controlling whether PVP is allowed, whether fire spreads or similar things.
+Each region-group has a set of environmental settings that apply to the actual regions in this region-group themselves
+and not to any players.
+These are settings like: Disabling monster spawn, controlling whether PVP is allowed, whether fire spreads or similar
+things.
 You can see and change all settings in the menu related to the region-group.
 
 ## Roles
@@ -47,7 +54,8 @@ You can see and change all settings in the menu related to the region-group.
 Players are assigned to exactly one role that dictates what they are allowed to do.
 Any newly created region-group by default contains 3 roles: **\[Admins\]**, **\[Others\]** and **Friends**.
 
-**\[Others\]** is a catch-all role for all players that have no assigned role. Those players may only use things like doors and buttons, but are restricted from building or using containers.
+**\[Others\]** is a catch-all role for all players that have no assigned role. Those players may only use things like
+doors and buttons, but are restricted from building or using containers.
 
 **Friends** may build, use things and use containers, but cannot change settings.
 

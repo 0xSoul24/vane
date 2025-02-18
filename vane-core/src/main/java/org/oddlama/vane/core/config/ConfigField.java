@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
 import org.apache.commons.lang.WordUtils;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -26,11 +27,11 @@ public abstract class ConfigField<T> implements Comparable<ConfigField<?>> {
     private Supplier<String> description;
 
     public ConfigField(
-        Object owner,
-        Field field,
-        Function<String, String> map_name,
-        String type_name,
-        String description
+            Object owner,
+            Field field,
+            Function<String, String> map_name,
+            String type_name,
+            String description
     ) {
         this.owner = owner;
         this.field = field;
@@ -61,12 +62,12 @@ public abstract class ConfigField<T> implements Comparable<ConfigField<?>> {
                 return description;
             } catch (InvocationTargetException | IllegalAccessException e) {
                 throw new RuntimeException(
-                    "Could not call " +
-                    owner.getClass().getName() +
-                    "." +
-                    field.getName() +
-                    "_desc() to override description value",
-                    e
+                        "Could not call " +
+                                owner.getClass().getName() +
+                                "." +
+                                field.getName() +
+                                "_desc() to override description value",
+                        e
                 );
             }
         };
@@ -81,12 +82,12 @@ public abstract class ConfigField<T> implements Comparable<ConfigField<?>> {
             return null;
         } catch (InvocationTargetException | IllegalAccessException e) {
             throw new RuntimeException(
-                "Could not call " +
-                owner.getClass().getName() +
-                "." +
-                field.getName() +
-                "_def() to override default value",
-                e
+                    "Could not call " +
+                            owner.getClass().getName() +
+                            "." +
+                            field.getName() +
+                            "_def() to override default value",
+                    e
             );
         }
     }
@@ -99,12 +100,12 @@ public abstract class ConfigField<T> implements Comparable<ConfigField<?>> {
             return null;
         } catch (InvocationTargetException | IllegalAccessException e) {
             throw new RuntimeException(
-                "Could not call " +
-                owner.getClass().getName() +
-                "." +
-                field.getName() +
-                "_metrics() to override metrics status",
-                e
+                    "Could not call " +
+                            owner.getClass().getName() +
+                            "." +
+                            field.getName() +
+                            "_metrics() to override metrics status",
+                    e
             );
         }
     }
@@ -155,38 +156,38 @@ public abstract class ConfigField<T> implements Comparable<ConfigField<?>> {
 
     protected void append_description(StringBuilder builder, String indent) {
         final var description_wrapped =
-            indent +
-            "# " +
-            WordUtils.wrap(description.get(), Math.max(60, 80 - indent.length()), "\n" + indent + "# ", false);
+                indent +
+                        "# " +
+                        WordUtils.wrap(description.get(), Math.max(60, 80 - indent.length()), "\n" + indent + "# ", false);
         builder.append(description_wrapped);
         builder.append("\n");
     }
 
     protected <U> void append_list_definition(
-        StringBuilder builder,
-        String indent,
-        String prefix,
-        Collection<U> list,
-        Consumer2<StringBuilder, U> append
+            StringBuilder builder,
+            String indent,
+            String prefix,
+            Collection<U> list,
+            Consumer2<StringBuilder, U> append
     ) {
         list
-            .stream()
-            .forEach(i -> {
-                builder.append(indent);
-                builder.append(prefix);
-                builder.append("  - ");
-                append.apply(builder, i);
-                builder.append("\n");
-            });
+                .stream()
+                .forEach(i -> {
+                    builder.append(indent);
+                    builder.append(prefix);
+                    builder.append("  - ");
+                    append.apply(builder, i);
+                    builder.append("\n");
+                });
     }
 
     protected <U> void append_value_range(
-        StringBuilder builder,
-        String indent,
-        U min,
-        U max,
-        U invalid_min,
-        U invalid_max
+            StringBuilder builder,
+            String indent,
+            U min,
+            U max,
+            U invalid_min,
+            U invalid_max
     ) {
         builder.append(indent);
         builder.append("# Valid values: ");
@@ -243,9 +244,9 @@ public abstract class ConfigField<T> implements Comparable<ConfigField<?>> {
     }
 
     public abstract void generate_yaml(
-        StringBuilder builder,
-        String indent,
-        YamlConfiguration existing_compatible_config
+            StringBuilder builder,
+            String indent,
+            YamlConfiguration existing_compatible_config
     );
 
     public abstract void check_loadable(YamlConfiguration yaml) throws YamlLoadException;

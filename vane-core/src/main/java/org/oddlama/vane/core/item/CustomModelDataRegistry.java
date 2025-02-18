@@ -1,6 +1,7 @@
 package org.oddlama.vane.core.item;
 
 import java.util.HashMap;
+
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +60,7 @@ public class CustomModelDataRegistry implements org.oddlama.vane.core.item.api.C
         final var existing = get(data);
         if (existing != null) {
             throw new IllegalArgumentException(
-                "Cannot reserve customModelData " + data + ", already registered by " + existing
+                    "Cannot reserve customModelData " + data + ", already registered by " + existing
             );
         }
         reserved_ranges.put(resourceKey, new Range(data, data + 1));

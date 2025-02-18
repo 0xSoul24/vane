@@ -2,7 +2,9 @@ package org.oddlama.velocity.compat.scheduler;
 
 import com.velocitypowered.api.scheduler.ScheduledTask;
 import com.velocitypowered.api.scheduler.Scheduler;
+
 import java.util.concurrent.TimeUnit;
+
 import org.oddlama.vane.proxycore.VaneProxyPlugin;
 import org.oddlama.vane.proxycore.scheduler.ProxyScheduledTask;
 import org.oddlama.vane.proxycore.scheduler.ProxyTaskScheduler;
@@ -33,10 +35,10 @@ public class VelocityCompatProxyTaskScheduler implements ProxyTaskScheduler {
     @Override
     public ProxyScheduledTask schedule(VaneProxyPlugin owner, Runnable task, long delay, long period, TimeUnit unit) {
         ScheduledTask velocity_task = scheduler
-            .buildTask(owner, task)
-            .delay(delay, unit)
-            .repeat(period, unit)
-            .schedule();
+                .buildTask(owner, task)
+                .delay(delay, unit)
+                .repeat(period, unit)
+                .schedule();
         return new VelocityCompatScheduledTask(velocity_task);
     }
 }

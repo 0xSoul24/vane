@@ -27,9 +27,9 @@ public class SpawnProtection extends Listener<Admin> {
 
     private static final String PERMISSION_NAME = "vane.admin.bypass_spawn_protection";
     private Permission permission = new Permission(
-        PERMISSION_NAME,
-        "Allow player to bypass spawn protection",
-        PermissionDefault.OP
+            PERMISSION_NAME,
+            "Allow player to bypass spawn protection",
+            PermissionDefault.OP
     );
 
     @ConfigBoolean(def = true, desc = "Allow interaction events at spawn (buttons, levers, etc.).")
@@ -52,12 +52,12 @@ public class SpawnProtection extends Listener<Admin> {
 
     public SpawnProtection(Context<Admin> context) {
         super(
-            context.group_default_disabled(
-                "spawn_protection",
-                "Enable spawn protection. Slightly more sophisticated than the vanilla spawn protection, if you need even more control, use regions. This will prevent anyone from modifying the spawn of the world if they don't have the permission '" +
-                PERMISSION_NAME +
-                "'."
-            )
+                context.group_default_disabled(
+                        "spawn_protection",
+                        "Enable spawn protection. Slightly more sophisticated than the vanilla spawn protection, if you need even more control, use regions. This will prevent anyone from modifying the spawn of the world if they don't have the permission '" +
+                                PERMISSION_NAME +
+                                "'."
+                )
         );
         get_module().register_permission(permission);
     }
@@ -72,9 +72,9 @@ public class SpawnProtection extends Listener<Admin> {
             if (world == null) {
                 // todo print error and show valid worlds.
                 get_module()
-                    .log.warning(
-                        "The world \"" + config_world + "\" configured for spawn-protection could not be found."
-                    );
+                        .log.warning(
+                                "The world \"" + config_world + "\" configured for spawn-protection could not be found."
+                        );
                 get_module().log.warning("These are the names of worlds existing on this server:");
                 for (final var w : get_module().getServer().getWorlds()) {
                     get_module().log.warning("  \"" + w.getName() + "\"");
@@ -175,9 +175,9 @@ public class SpawnProtection extends Listener<Admin> {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void on_player_interact(PlayerInteractEvent event) {
         if (
-            event.getClickedBlock() != null &&
-            !config_allow_interaction &&
-            deny_modify_spawn(event.getClickedBlock(), event.getPlayer())
+                event.getClickedBlock() != null &&
+                        !config_allow_interaction &&
+                        deny_modify_spawn(event.getClickedBlock(), event.getPlayer())
         ) {
             event.setCancelled(true);
         }

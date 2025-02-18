@@ -26,8 +26,10 @@ public class RegionMenuGroup extends ModuleComponent<Regions> {
     }
 
     @Override
-    public void on_enable() {}
+    public void on_enable() {
+    }
 
     @Override
-    public void on_disable() {}
+    public void on_disable() {
+    }
 }

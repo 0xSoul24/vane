@@ -5,6 +5,7 @@ import static org.oddlama.vane.util.StorageUtil.namespaced_key;
 
 import java.lang.reflect.Field;
 import java.util.function.Function;
+
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.oddlama.vane.annotation.config.ConfigItemStack;
@@ -15,10 +16,10 @@ public class ConfigItemStackField extends ConfigField<ItemStack> {
     public ConfigItemStack annotation;
 
     public ConfigItemStackField(
-        Object owner,
-        Field field,
-        Function<String, String> map_name,
-        ConfigItemStack annotation
+            Object owner,
+            Field field,
+            Function<String, String> map_name,
+            ConfigItemStack annotation
     ) {
         super(owner, field, map_name, "item stack", annotation.desc());
         this.annotation = annotation;
@@ -30,11 +31,11 @@ public class ConfigItemStackField extends ConfigField<ItemStack> {
         builder.append(prefix);
         builder.append("  material: ");
         final var material =
-            "\"" +
-            escape_yaml(def.getType().getKey().getNamespace()) +
-            ":" +
-            escape_yaml(def.getType().getKey().getKey()) +
-            "\"";
+                "\"" +
+                        escape_yaml(def.getType().getKey().getNamespace()) +
+                        ":" +
+                        escape_yaml(def.getType().getKey().getKey()) +
+                        "\"";
         builder.append(material);
         builder.append("\n");
 
@@ -82,8 +83,8 @@ public class ConfigItemStackField extends ConfigField<ItemStack> {
         builder.append(basename());
         builder.append(":\n");
         final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
-            : def();
+                ? load_from_yaml(existing_compatible_config)
+                : def();
         append_item_stack_definition(builder, indent, "", def);
     }
 
@@ -107,11 +108,11 @@ public class ConfigItemStackField extends ConfigField<ItemStack> {
                     final var split = str.split(":");
                     if (split.length != 2) {
                         throw new YamlLoadException(
-                            "Invalid material for yaml path '" +
-                            yaml_path() +
-                            "': '" +
-                            str +
-                            "' is not a valid namespaced key"
+                                "Invalid material for yaml path '" +
+                                        yaml_path() +
+                                        "': '" +
+                                        str +
+                                        "' is not a valid namespaced key"
                         );
                     }
                     break;

@@ -5,6 +5,7 @@ import static org.oddlama.vane.util.StorageUtil.namespaced_key;
 
 import java.lang.reflect.Field;
 import java.util.function.Function;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.oddlama.vane.annotation.config.ConfigMaterial;
@@ -15,10 +16,10 @@ public class ConfigMaterialField extends ConfigField<Material> {
     public ConfigMaterial annotation;
 
     public ConfigMaterialField(
-        Object owner,
-        Field field,
-        Function<String, String> map_name,
-        ConfigMaterial annotation
+            Object owner,
+            Field field,
+            Function<String, String> map_name,
+            ConfigMaterial annotation
     ) {
         super(owner, field, map_name, "material", annotation.desc());
         this.annotation = annotation;
@@ -48,17 +49,17 @@ public class ConfigMaterialField extends ConfigField<Material> {
     public void generate_yaml(StringBuilder builder, String indent, YamlConfiguration existing_compatible_config) {
         append_description(builder, indent);
         append_default_value(
-            builder,
-            indent,
-            "\"" + escape_yaml(def().getKey().getNamespace()) + ":" + escape_yaml(def().getKey().getKey()) + "\""
+                builder,
+                indent,
+                "\"" + escape_yaml(def().getKey().getNamespace()) + ":" + escape_yaml(def().getKey().getKey()) + "\""
         );
         final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
-            : def();
+                ? load_from_yaml(existing_compatible_config)
+                : def();
         append_field_definition(
-            builder,
-            indent,
-            "\"" + escape_yaml(def.getKey().getNamespace()) + ":" + escape_yaml(def.getKey().getKey()) + "\""
+                builder,
+                indent,
+                "\"" + escape_yaml(def.getKey().getNamespace()) + ":" + escape_yaml(def.getKey().getKey()) + "\""
         );
     }
 
@@ -74,14 +75,14 @@ public class ConfigMaterialField extends ConfigField<Material> {
         final var split = str.split(":");
         if (split.length != 2) {
             throw new YamlLoadException(
-                "Invalid material entry in list '" + yaml_path() + "': '" + str + "' is not a valid namespaced key"
+                    "Invalid material entry in list '" + yaml_path() + "': '" + str + "' is not a valid namespaced key"
             );
         }
 
         final var mat = material_from(namespaced_key(split[0], split[1]));
         if (mat == null) {
             throw new YamlLoadException(
-                "Invalid material entry in list '" + yaml_path() + "': '" + str + "' does not exist"
+                    "Invalid material entry in list '" + yaml_path() + "': '" + str + "' does not exist"
             );
         }
     }

@@ -2,6 +2,7 @@ package org.oddlama.velocity;
 
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
+
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;

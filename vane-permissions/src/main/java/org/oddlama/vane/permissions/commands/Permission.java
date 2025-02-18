@@ -7,7 +7,9 @@ import static io.papermc.paper.command.brigadier.Commands.literal;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+
 import java.util.Collections;
+
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -23,7 +25,7 @@ import org.oddlama.vane.permissions.Permissions;
 import org.oddlama.vane.permissions.argumentTypes.PermissionGroupArgumentType;
 
 @Name("permission")
-@Aliases({ "perm" })
+@Aliases({"perm"})
 public class Permission extends Command<Permissions> {
 
     @LangMessage
@@ -72,81 +74,81 @@ public class Permission extends Command<Permissions> {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
         return super.get_command_base()
-            .then(help())
-            .then(
-                literal("list")
-                    .then(
-                        literal("groups")
-                            .executes(ctx -> {
-                                list_groups(ctx.getSource().getSender());
-                                return SINGLE_SUCCESS;
-                            })
-                            .then(
-                                argument("offline_player", OfflinePlayerArgumentType.offlinePlayer()).executes(ctx -> {
-                                    list_groups_for_player(sender(ctx), offline_player(ctx));
-                                    return SINGLE_SUCCESS;
-                                })
-                            )
-                    )
-                    .then(
-                        literal("permissions")
-                            // FIXME weirdly autocompletion works in the console
-                            // but not in game ??
-                            .then(
-                                argument(
-                                    "permission_group",
-                                    PermissionGroupArgumentType.permissionGroup(get_module().permission_groups)
-                                ).executes(ctx -> {
-                                    list_permissions_for_group(ctx.getSource().getSender(), permission_group(ctx));
-                                    return SINGLE_SUCCESS;
-                                })
-                            )
-                            .then(
-                                argument("offline_player", OfflinePlayerArgumentType.offlinePlayer()).executes(ctx -> {
-                                    list_permissions_for_player(ctx.getSource().getSender(), offline_player(ctx));
-                                    return SINGLE_SUCCESS;
-                                })
-                            )
-                            .executes(ctx -> {
-                                list_permissions(ctx.getSource().getSender());
-                                return SINGLE_SUCCESS;
-                            })
-                    )
-            )
-            .then(
-                literal("add").then(
-                    argument("offline_player", OfflinePlayerArgumentType.offlinePlayer()).then(
-                        argument(
-                            "permission_group",
-                            PermissionGroupArgumentType.permissionGroup(get_module().permission_groups)
-                        ).executes(ctx -> {
-                            add_player_to_group(
-                                ctx.getSource().getSender(),
-                                offline_player(ctx),
-                                permission_group(ctx)
-                            );
-                            return SINGLE_SUCCESS;
-                        })
-                    )
+                .then(help())
+                .then(
+                        literal("list")
+                                .then(
+                                        literal("groups")
+                                                .executes(ctx -> {
+                                                    list_groups(ctx.getSource().getSender());
+                                                    return SINGLE_SUCCESS;
+                                                })
+                                                .then(
+                                                        argument("offline_player", OfflinePlayerArgumentType.offlinePlayer()).executes(ctx -> {
+                                                            list_groups_for_player(sender(ctx), offline_player(ctx));
+                                                            return SINGLE_SUCCESS;
+                                                        })
+                                                )
+                                )
+                                .then(
+                                        literal("permissions")
+                                                // FIXME weirdly autocompletion works in the console
+                                                // but not in game ??
+                                                .then(
+                                                        argument(
+                                                                "permission_group",
+                                                                PermissionGroupArgumentType.permissionGroup(get_module().permission_groups)
+                                                        ).executes(ctx -> {
+                                                            list_permissions_for_group(ctx.getSource().getSender(), permission_group(ctx));
+                                                            return SINGLE_SUCCESS;
+                                                        })
+                                                )
+                                                .then(
+                                                        argument("offline_player", OfflinePlayerArgumentType.offlinePlayer()).executes(ctx -> {
+                                                            list_permissions_for_player(ctx.getSource().getSender(), offline_player(ctx));
+                                                            return SINGLE_SUCCESS;
+                                                        })
+                                                )
+                                                .executes(ctx -> {
+                                                    list_permissions(ctx.getSource().getSender());
+                                                    return SINGLE_SUCCESS;
+                                                })
+                                )
                 )
-            )
-            .then(
-                literal("remove").then(
-                    argument("offline_player", OfflinePlayerArgumentType.offlinePlayer()).then(
-                        argument(
-                            "permission_group",
-                            PermissionGroupArgumentType.permissionGroup(get_module().permission_groups)
-                        ).executes(ctx -> {
-                            remove_player_from_group(
-                                ctx.getSource().getSender(),
-                                offline_player(ctx),
-                                permission_group(ctx)
-                            );
-                            return SINGLE_SUCCESS;
-                        })
-                    )
+                .then(
+                        literal("add").then(
+                                argument("offline_player", OfflinePlayerArgumentType.offlinePlayer()).then(
+                                        argument(
+                                                "permission_group",
+                                                PermissionGroupArgumentType.permissionGroup(get_module().permission_groups)
+                                        ).executes(ctx -> {
+                                            add_player_to_group(
+                                                    ctx.getSource().getSender(),
+                                                    offline_player(ctx),
+                                                    permission_group(ctx)
+                                            );
+                                            return SINGLE_SUCCESS;
+                                        })
+                                )
+                        )
                 )
-            );
+                .then(
+                        literal("remove").then(
+                                argument("offline_player", OfflinePlayerArgumentType.offlinePlayer()).then(
+                                        argument(
+                                                "permission_group",
+                                                PermissionGroupArgumentType.permissionGroup(get_module().permission_groups)
+                                        ).executes(ctx -> {
+                                            remove_player_from_group(
+                                                    ctx.getSource().getSender(),
+                                                    offline_player(ctx),
+                                                    permission_group(ctx)
+                                            );
+                                            return SINGLE_SUCCESS;
+                                        })
+                                )
+                        )
+                );
     }
 
     private String permission_group(CommandContext<CommandSourceStack> ctx) {
@@ -183,28 +185,28 @@ public class Permission extends Command<Permissions> {
     private void list_groups(CommandSender sender) {
         lang_list_header_groups.send(sender);
         get_module()
-            .permission_groups.keySet()
-            .stream()
-            .sorted((a, b) -> a.compareTo(b))
-            .forEach(group -> lang_list_group.send(sender, "§b" + group));
+                .permission_groups.keySet()
+                .stream()
+                .sorted((a, b) -> a.compareTo(b))
+                .forEach(group -> lang_list_group.send(sender, "§b" + group));
     }
 
     private void list_permissions(CommandSender sender) {
         lang_list_header_permissions.send(sender);
         get_module()
-            .getServer()
-            .getPluginManager()
-            .getPermissions()
-            .stream()
-            .sorted((a, b) -> a.getName().compareTo(b.getName()))
-            .forEach(perm ->
-                lang_list_permission.send(
-                    sender,
-                    "§d" + perm.getName(),
-                    permission_default_value_color_code(perm.getDefault()) + perm.getDefault().toString().toLowerCase(),
-                    perm.getDescription()
-                )
-            );
+                .getServer()
+                .getPluginManager()
+                .getPermissions()
+                .stream()
+                .sorted((a, b) -> a.getName().compareTo(b.getName()))
+                .forEach(perm ->
+                        lang_list_permission.send(
+                                sender,
+                                "§d" + perm.getName(),
+                                permission_default_value_color_code(perm.getDefault()) + perm.getDefault().toString().toLowerCase(),
+                                perm.getDescription()
+                        )
+                );
     }
 
     private void list_permissions_for_player(CommandSender sender, OfflinePlayer offline_player) {
@@ -228,23 +230,23 @@ public class Permission extends Command<Permissions> {
                 lang_list_empty.send(sender);
             } else {
                 player
-                    .getEffectivePermissions()
-                    .stream()
-                    .sorted((a, b) -> a.getPermission().compareTo(b.getPermission()))
-                    .forEach(att -> {
-                        var perm = get_module().getServer().getPluginManager().getPermission(att.getPermission());
-                        if (perm == null) {
-                            get_module()
-                                .log.warning("Encountered unregistered permission '" + att.getPermission() + "'");
-                            return;
-                        }
-                        lang_list_permission.send(
-                            sender,
-                            "§d" + perm.getName(),
-                            permission_value_color_code(att.getValue()) + att.getValue(),
-                            perm.getDescription()
-                        );
-                    });
+                        .getEffectivePermissions()
+                        .stream()
+                        .sorted((a, b) -> a.getPermission().compareTo(b.getPermission()))
+                        .forEach(att -> {
+                            var perm = get_module().getServer().getPluginManager().getPermission(att.getPermission());
+                            if (perm == null) {
+                                get_module()
+                                        .log.warning("Encountered unregistered permission '" + att.getPermission() + "'");
+                                return;
+                            }
+                            lang_list_permission.send(
+                                    sender,
+                                    "§d" + perm.getName(),
+                                    permission_value_color_code(att.getValue()) + att.getValue(),
+                                    perm.getDescription()
+                            );
+                        });
             }
         }
     }
@@ -257,10 +259,10 @@ public class Permission extends Command<Permissions> {
                 lang_list_permission.send(sender, "§d" + p, permission_value_color_code(true) + true, "");
             } else {
                 lang_list_permission.send(
-                    sender,
-                    "§d" + perm.getName(),
-                    permission_value_color_code(true) + true,
-                    perm.getDescription()
+                        sender,
+                        "§d" + perm.getName(),
+                        permission_value_color_code(true) + true,
+                        perm.getDescription()
                 );
             }
         }

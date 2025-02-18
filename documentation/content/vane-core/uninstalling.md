@@ -3,6 +3,7 @@ title = "Uninstalling is Fine"
 icon = "minecraft:blaze_powder"
 module = "vane-core"
 ```
+
 ---
 Don't enjoy vane? Uninstalling it is fine and absolutely painless.
 Remove the plugin jars, and everything will be back to normal.

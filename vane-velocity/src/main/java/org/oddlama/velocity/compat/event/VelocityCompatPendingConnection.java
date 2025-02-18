@@ -2,9 +2,11 @@ package org.oddlama.velocity.compat.event;
 
 import com.velocitypowered.api.proxy.InboundConnection;
 import com.velocitypowered.api.proxy.Player;
+
 import java.net.SocketAddress;
 import java.util.Arrays;
 import java.util.UUID;
+
 import org.jetbrains.annotations.Nullable;
 import org.oddlama.vane.proxycore.ProxyPendingConnection;
 import org.oddlama.vane.proxycore.ProxyServer;

@@ -6,6 +6,7 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.Iterator;
 import java.util.function.Predicate;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -17,7 +18,7 @@ public class ResourcePackFileWatcher {
     private final File file;
 
     public ResourcePackFileWatcher(ResourcePackDistributor resource_pack_distributor, File file)
-        throws IOException, InterruptedException {
+            throws IOException, InterruptedException {
         this.resource_pack_distributor = resource_pack_distributor;
         this.file = file;
     }
@@ -28,7 +29,7 @@ public class ResourcePackFileWatcher {
         register_directories(Paths.get("plugins"), eyes, this::is_vane_module_folder);
 
         watch_async(eyes, lang_file_match, this::update_and_send_resource_pack).runTaskAsynchronously(
-            resource_pack_distributor.get_module()
+                resource_pack_distributor.get_module()
         );
     }
 
@@ -69,7 +70,7 @@ public class ResourcePackFileWatcher {
             public void run() {
                 boolean should_schedule = false;
                 TrackRunned runner = null;
-                for (;;) {
+                for (; ; ) {
                     final WatchKey key;
                     try {
                         key = eyes.take();
@@ -111,9 +112,9 @@ public class ResourcePackFileWatcher {
     private void register_directories(Path root, WatchService watcher, Predicate<Path> path_match) throws IOException {
         // register vane sub-folders.
         final Iterator<Path> interesting_paths = Files.walk(root)
-            .filter(Files::isDirectory)
-            .filter(path_match)
-            .iterator();
+                .filter(Files::isDirectory)
+                .filter(path_match)
+                .iterator();
         // quirky, but checked exceptions inside streams suck.
         while (interesting_paths.hasNext()) {
             Path p = interesting_paths.next();

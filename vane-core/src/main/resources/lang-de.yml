@@ -73,11 +73,11 @@ menus:
   item_selector:
     accept:
       name: "§a§lAkzeptieren"
-      lore: ["§bWähle§7 das aktuelle item."]
+      lore: [ "§bWähle§7 das aktuelle item." ]
 
     cancel:
       name: "§c§lAbbrechen"
-      lore: ["§7Itemauswahl §6abbrechen§7."]
+      lore: [ "§7Itemauswahl §6abbrechen§7." ]
 
     selected:
       name: "§d§lGewähltes Item"
@@ -91,7 +91,7 @@ menus:
   generic_selector:
     page:
       name: "§bSeite %1$s"
-      lore: []
+      lore: [ ]
 
     current_page:
       name: "§aAktuelle Seite %1$s §7/ %2$s"
@@ -108,4 +108,4 @@ menus:
 
     cancel:
       name: "§c§lAbbrechen"
-      lore: ["§7Auswahl §6abbrechen§7."]
+      lore: [ "§7Auswahl §6abbrechen§7." ]

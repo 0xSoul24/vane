@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -30,8 +31,8 @@ public class PlayerUtil {
         // Set velocity, play sound
         player.setVelocity(player.getVelocity().add(v));
         player
-            .getWorld()
-            .playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.4f, 2.0f);
+                .getWorld()
+                .playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.4f, 2.0f);
     }
 
     public static void remove_one_item_from_hand(final Player player, final EquipmentSlot hand) {
@@ -88,10 +89,10 @@ public class PlayerUtil {
         final var leftovers = inventory.removeItem(stacks.toArray(new ItemStack[0]));
         if (!leftovers.isEmpty()) {
             Bukkit.getLogger()
-                .warning(
-                    "[vane] Unexpected leftovers while removing the following items from a player's inventory: " +
-                    stacks
-                );
+                    .warning(
+                            "[vane] Unexpected leftovers while removing the following items from a player's inventory: " +
+                                    stacks
+                    );
             for (final var l : leftovers.entrySet()) {
                 Bukkit.getLogger().warning("[vane] Leftover: " + l.getKey() + ", amount: " + l.getValue());
             }
@@ -102,7 +103,7 @@ public class PlayerUtil {
     }
 
     public static void give_item(final Player player, final ItemStack item) {
-        give_items(player, new ItemStack[] { item });
+        give_items(player, new ItemStack[]{item});
     }
 
     // Ignores item.getAmount().
@@ -110,7 +111,7 @@ public class PlayerUtil {
         final var stacks = (item.getMaxStackSize() - 1 + amount) / item.getMaxStackSize();
         final var leftover = amount % item.getMaxStackSize();
         if (stacks < 1) {
-            return new ItemStack[] {};
+            return new ItemStack[]{};
         }
 
         final var items = new ItemStack[stacks];
@@ -153,22 +154,22 @@ public class PlayerUtil {
     }
 
     public static boolean seed_block(
-        final Player player,
-        final ItemStack used_item,
-        final Block block,
-        final Material plant_type,
-        final Material seed_type
+            final Player player,
+            final ItemStack used_item,
+            final Block block,
+            final Material plant_type,
+            final Material seed_type
     ) {
         // Create block place event for seed to place and check if it gets canceled
         final var below = block.getRelative(BlockFace.DOWN);
         final var place_event = new BlockPlaceEvent(
-            block,
-            below.getState(),
-            below,
-            used_item,
-            player,
-            true,
-            EquipmentSlot.HAND
+                block,
+                below.getState(),
+                below,
+                used_item,
+                player,
+                true,
+                EquipmentSlot.HAND
         );
         Bukkit.getPluginManager().callEvent(place_event);
         if (place_event.isCancelled()) {
@@ -193,14 +194,14 @@ public class PlayerUtil {
 
         // Play sound
         player
-            .getWorld()
-            .playSound(
-                player.getLocation(),
-                seed_type == Material.NETHER_WART ? Sound.ITEM_NETHER_WART_PLANT : Sound.ITEM_CROP_PLANT,
-                SoundCategory.BLOCKS,
-                1.0f,
-                1.0f
-            );
+                .getWorld()
+                .playSound(
+                        player.getLocation(),
+                        seed_type == Material.NETHER_WART ? Sound.ITEM_NETHER_WART_PLANT : Sound.ITEM_CROP_PLANT,
+                        SoundCategory.BLOCKS,
+                        1.0f,
+                        1.0f
+                );
         return true;
     }
 
@@ -210,19 +211,19 @@ public class PlayerUtil {
             default:
                 return false;
             case WHEAT:
-                drops = new ItemStack[] { new ItemStack(Material.WHEAT, 1 + (int) (Math.random() * 2.5)) };
+                drops = new ItemStack[]{new ItemStack(Material.WHEAT, 1 + (int) (Math.random() * 2.5))};
                 break;
             case CARROTS:
-                drops = new ItemStack[] { new ItemStack(Material.CARROT, 1 + (int) (Math.random() * 2.5)) };
+                drops = new ItemStack[]{new ItemStack(Material.CARROT, 1 + (int) (Math.random() * 2.5))};
                 break;
             case POTATOES:
-                drops = new ItemStack[] { new ItemStack(Material.POTATO, 1 + (int) (Math.random() * 2.5)) };
+                drops = new ItemStack[]{new ItemStack(Material.POTATO, 1 + (int) (Math.random() * 2.5))};
                 break;
             case BEETROOTS:
-                drops = new ItemStack[] { new ItemStack(Material.BEETROOT, 1 + (int) (Math.random() * 2.5)) };
+                drops = new ItemStack[]{new ItemStack(Material.BEETROOT, 1 + (int) (Math.random() * 2.5))};
                 break;
             case NETHER_WART:
-                drops = new ItemStack[] { new ItemStack(Material.NETHER_WART, 1 + (int) (Math.random() * 2.5)) };
+                drops = new ItemStack[]{new ItemStack(Material.NETHER_WART, 1 + (int) (Math.random() * 2.5))};
                 break;
         }
 

@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
 import net.kyori.adventure.key.Key;
 import org.bukkit.NamespacedKey;
 import org.json.JSONArray;
@@ -46,15 +47,15 @@ public class ResourcePackGenerator {
         }
     }
 
-	public void add_file(String path, InputStream stream) throws IOException {
-		files.put(path, stream.readAllBytes());
-	}
+    public void add_file(String path, InputStream stream) throws IOException {
+        files.put(path, stream.readAllBytes());
+    }
 
     public void write(File file) throws IOException {
         try (var zip = new ZipOutputStream(new FileOutputStream(file))) {
             write_translations(zip);
 
-			// Add all files
+            // Add all files
             for (var f : files.entrySet()) {
                 var path = f.getKey();
                 var content = f.getValue();

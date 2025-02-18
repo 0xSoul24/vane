@@ -29,9 +29,9 @@ public class RegionEnvironmentSettingEnforcer extends Listener<Regions> {
     }
 
     public boolean check_setting_at(
-        final Location location,
-        final EnvironmentSetting setting,
-        final boolean check_against
+            final Location location,
+            final EnvironmentSetting setting,
+            final boolean check_against
     ) {
         final var region = get_module().region_at(location);
         if (region == null) {
@@ -146,10 +146,10 @@ public class RegionEnvironmentSettingEnforcer extends Listener<Regions> {
         }
 
         if (
-            player_damager != null &&
-            player_damaged != player_damager &&
-            (check_setting_at(player_damaged.getLocation(), EnvironmentSetting.PVP, false) ||
-                check_setting_at(player_damager.getLocation(), EnvironmentSetting.PVP, false))
+                player_damager != null &&
+                        player_damaged != player_damager &&
+                        (check_setting_at(player_damaged.getLocation(), EnvironmentSetting.PVP, false) ||
+                                check_setting_at(player_damager.getLocation(), EnvironmentSetting.PVP, false))
         ) {
             event.setCancelled(true);
         }

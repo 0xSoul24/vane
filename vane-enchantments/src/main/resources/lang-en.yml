@@ -61,7 +61,7 @@ enchantment_leafchopper:
 enchantment_lightning:
   # The display name of this enchantment. Will be packed into a resource pack.
   name: "Lightning"
-  
+
 enchantment_rake:
   # The display name of this enchantment. Will be packed into a resource pack.
   name: "Rake"

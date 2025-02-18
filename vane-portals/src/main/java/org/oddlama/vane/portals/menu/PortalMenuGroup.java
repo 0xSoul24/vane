@@ -20,8 +20,10 @@ public class PortalMenuGroup extends ModuleComponent<Portals> {
     }
 
     @Override
-    public void on_enable() {}
+    public void on_enable() {
+    }
 
     @Override
-    public void on_disable() {}
+    public void on_disable() {
+    }
 }

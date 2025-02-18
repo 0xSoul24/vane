@@ -3,6 +3,7 @@ package org.oddlama.vane.core.misc;
 import static org.oddlama.vane.util.Resolve.resolve_skin;
 
 import com.destroystokyo.paper.profile.ProfileProperty;
+
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
+
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -44,18 +46,18 @@ public class AuthMultiplexer extends Listener<Core> implements PluginMessageList
     protected void on_enable() {
         super.on_enable();
         get_module()
-            .getServer()
-            .getMessenger()
-            .registerIncomingPluginChannel(get_module(), CHANNEL_AUTH_MULTIPLEX, this);
+                .getServer()
+                .getMessenger()
+                .registerIncomingPluginChannel(get_module(), CHANNEL_AUTH_MULTIPLEX, this);
     }
 
     @Override
     protected void on_disable() {
         super.on_disable();
         get_module()
-            .getServer()
-            .getMessenger()
-            .unregisterIncomingPluginChannel(get_module(), CHANNEL_AUTH_MULTIPLEX, this);
+                .getServer()
+                .getMessenger()
+                .unregisterIncomingPluginChannel(get_module(), CHANNEL_AUTH_MULTIPLEX, this);
     }
 
     public synchronized String auth_multiplex_player_name(final UUID uuid) {
@@ -77,15 +79,15 @@ public class AuthMultiplexer extends Listener<Core> implements PluginMessageList
         }
 
         get_module()
-            .log.info(
-                "[multiplex] Init player '" +
-                display_name +
-                "' for registered auth multiplexed player {" +
-                id +
-                ", " +
-                player.getName() +
-                "}"
-            );
+                .log.info(
+                        "[multiplex] Init player '" +
+                                display_name +
+                                "' for registered auth multiplexed player {" +
+                                id +
+                                ", " +
+                                player.getName() +
+                                "}"
+                );
         final var display_name_component = LegacyComponentSerializer.legacySection().deserialize(display_name);
         player.displayName(display_name_component);
         player.playerListName(display_name_component);
@@ -126,18 +128,18 @@ public class AuthMultiplexer extends Listener<Core> implements PluginMessageList
             final var new_name = in.readUTF();
 
             get_module()
-                .log.info(
-                    "[multiplex] Registered auth multiplexed player {" +
-                    new_uuid +
-                    ", " +
-                    new_name +
-                    "} from player {" +
-                    old_uuid +
-                    ", " +
-                    old_name +
-                    "} multiplexer_id " +
-                    multiplexer_id
-                );
+                    .log.info(
+                            "[multiplex] Registered auth multiplexed player {" +
+                                    new_uuid +
+                                    ", " +
+                                    new_name +
+                                    "} from player {" +
+                                    old_uuid +
+                                    ", " +
+                                    old_name +
+                                    "} multiplexer_id " +
+                                    multiplexer_id
+                    );
             storage_auth_multiplex.put(new_uuid, old_uuid);
             storage_auth_multiplexer_id.put(new_uuid, multiplexer_id);
             mark_persistent_storage_dirty();

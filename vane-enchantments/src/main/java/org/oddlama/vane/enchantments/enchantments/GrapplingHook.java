@@ -1,6 +1,7 @@
 package org.oddlama.vane.enchantments.enchantments;
 
 import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.event.EventHandler;
@@ -18,11 +19,11 @@ import org.oddlama.vane.core.module.Context;
 import org.oddlama.vane.enchantments.Enchantments;
 
 @VaneEnchantment(
-    name = "grappling_hook",
-    max_level = 3,
-    rarity = Rarity.UNCOMMON,
-    treasure = true,
-    target = EnchantmentTarget.FISHING_ROD
+        name = "grappling_hook",
+        max_level = 3,
+        rarity = Rarity.UNCOMMON,
+        treasure = true,
+        target = EnchantmentTarget.FISHING_ROD
 )
 public class GrapplingHook extends CustomEnchantment<Enchantments> {
 
@@ -30,14 +31,14 @@ public class GrapplingHook extends CustomEnchantment<Enchantments> {
     private static final Vector CONSTANT_OFFSET = new Vector(0.0, 0.2, 0.0);
 
     @ConfigDouble(
-        def = 16.0,
-        min = 2.0,
-        max = 50.0,
-        desc = "Ideal grappling distance for maximum grapple strength. Strength increases rapidly before, and falls of slowly after."
+            def = 16.0,
+            min = 2.0,
+            max = 50.0,
+            desc = "Ideal grappling distance for maximum grapple strength. Strength increases rapidly before, and falls of slowly after."
     )
     private double config_ideal_distance;
 
-    @ConfigDoubleList(def = { 1.6, 2.1, 2.7 }, min = 0.0, desc = "Grappling strength for each enchantment level.")
+    @ConfigDoubleList(def = {1.6, 2.1, 2.7}, min = 0.0, desc = "Grappling strength for each enchantment level.")
     private List<Double> config_strength;
 
     public GrapplingHook(Context<Enchantments> context) {
@@ -47,12 +48,12 @@ public class GrapplingHook extends CustomEnchantment<Enchantments> {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("h", "l", "b")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_knowledge")
-                .set_ingredient('l', Material.LEAD)
-                .set_ingredient('h', Material.TRIPWIRE_HOOK)
-                .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
+                new ShapedRecipeDefinition("generic")
+                        .shape("h", "l", "b")
+                        .set_ingredient('b', "vane_enchantments:ancient_tome_of_knowledge")
+                        .set_ingredient('l', Material.LEAD)
+                        .set_ingredient('h', Material.TRIPWIRE_HOOK)
+                        .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
         );
     }
 
@@ -105,14 +106,14 @@ public class GrapplingHook extends CustomEnchantment<Enchantments> {
 
         // Set player velocity
         player.setVelocity(
-            player
-                .getVelocity()
-                .add(
-                    direction
-                        .normalize()
-                        .multiply(get_strength(level) * Math.exp(1.0 - attenuation) * attenuation)
-                        .add(CONSTANT_OFFSET)
-                )
+                player
+                        .getVelocity()
+                        .add(
+                                direction
+                                        .normalize()
+                                        .multiply(get_strength(level) * Math.exp(1.0 - attenuation) * attenuation)
+                                        .add(CONSTANT_OFFSET)
+                        )
         );
     }
 }

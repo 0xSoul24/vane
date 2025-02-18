@@ -2,6 +2,7 @@ package org.oddlama.vane.core.config;
 
 import java.lang.reflect.Field;
 import java.util.function.Function;
+
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.oddlama.vane.annotation.config.ConfigString;
 import org.oddlama.vane.core.YamlLoadException;
@@ -40,8 +41,8 @@ public class ConfigStringField extends ConfigField<String> {
         append_description(builder, indent);
         append_default_value(builder, indent, "\"" + escape_yaml(def()) + "\"");
         final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
-            : def();
+                ? load_from_yaml(existing_compatible_config)
+                : def();
         append_field_definition(builder, indent, "\"" + escape_yaml(def) + "\"");
     }
 

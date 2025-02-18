@@ -61,40 +61,40 @@ menus:
     select_icon_title: "§8§l选择图示"
     rename:
       name: "§b§l重命名"
-      lore: []
+      lore: [ ]
     select_icon:
       name: "§b§l选择图示"
-      lore: []
+      lore: [ ]
     select_style:
       name: "§b§l选择样式"
-      lore: []
+      lore: [ ]
     exit_orientation_lock_on:
       name: "§b§l切换出口定向锁"
-      lore: ["", "§b当前: §e§l锁定（总是向前离开）§r"]
+      lore: [ "", "§b当前: §e§l锁定（总是向前离开）§r" ]
     exit_orientation_lock_off:
       name: "§b§l切换出口定向锁"
-      lore: ["", "§b当前: §a§l未锁定（离开与进入相同方向）§r"]
+      lore: [ "", "§b当前: §a§l未锁定（离开与进入相同方向）§r" ]
     visibility_public:
       name: "§b§l切换显示方式"
-      lore: ["", "§b当前: §a§l公共显示§r"]
+      lore: [ "", "§b当前: §a§l公共显示§r" ]
     visibility_group:
       name: "§b§l切换显示方式"
-      lore: ["", "§b当前: §e§l区域组（成员）显示§r"]
+      lore: [ "", "§b当前: §e§l区域组（成员）显示§r" ]
     visibility_group_internal:
       name: "§b§l切换可见度"
-      lore: ["", "§b当前状态: §e§l群组 (仅在内部可见)§r"]
+      lore: [ "", "§b当前状态: §e§l群组 (仅在内部可见)§r" ]
     visibility_private:
       name: "§b§l切换可见度"
-      lore: ["", "§b当前状态: §c§l私有§r"]
+      lore: [ "", "§b当前状态: §c§l私有§r" ]
     target_lock_on:
       name: "§b§l切换目标锁定"
-      lore: ["", "§b当前状态: §c§l已锁定§r"]
+      lore: [ "", "§b当前状态: §c§l已锁定§r" ]
     target_lock_off:
       name: "§b§l切换目标锁定"
-      lore: ["", "§b当前状态: §a§l已解锁§r"]
+      lore: [ "", "§b当前状态: §a§l已解锁§r" ]
     back:
       name: "§6↩ §l返回"
-      lore: []
+      lore: [ ]
   style:
     title: "§8§l入口样式： %1$s"
     select_block_console_active_title: "选择激活的 控制 方块。"
@@ -117,117 +117,117 @@ menus:
 
     block_console_active:
       name: "§b§l控制台 §a(启用中)"
-      lore: []
+      lore: [ ]
     block_origin_active:
       name: "§b§l原点 §a(启用中)"
-      lore: []
+      lore: [ ]
     block_portal_active:
       name: "§b§l传送门区域 §a(启用中)"
-      lore: []
+      lore: [ ]
     block_boundary_1_active:
       name: "§b§l边界 §a(启用中)"
-      lore: ["", "§a变体 1", "§7建造材料: %1$s"]
+      lore: [ "", "§a变体 1", "§7建造材料: %1$s" ]
     block_boundary_2_active:
       name: "§b§l边界 §a(启用中)"
-      lore: ["", "§a变体 2", "§7建造材料: %1$s"]
+      lore: [ "", "§a变体 2", "§7建造材料: %1$s" ]
     block_boundary_3_active:
       name: "§b§l边界 §a(启用中)"
-      lore: ["", "§a变体 3", "§7建造材料: %1$s"]
+      lore: [ "", "§a变体 3", "§7建造材料: %1$s" ]
     block_boundary_4_active:
       name: "§b§l边界 §a(启用中)"
-      lore: ["", "§a变体 4", "§7建造材料: %1$s"]
+      lore: [ "", "§a变体 4", "§7建造材料: %1$s" ]
     block_boundary_5_active:
       name: "§b§l边界 §a(启用中)"
-      lore: ["", "§a变体 5", "§7建造材料: %1$s"]
+      lore: [ "", "§a变体 5", "§7建造材料: %1$s" ]
     block_console_inactive:
       name: "§b§l控制台 §e(未启用)"
-      lore: []
+      lore: [ ]
     block_origin_inactive:
       name: "§b§l起点 §e(未启用)"
-      lore: []
+      lore: [ ]
     block_portal_inactive:
       name: "§b§l传送门区域 §e(未启用)"
-      lore: []
+      lore: [ ]
     block_boundary_1_inactive:
       name: "§b§l边界 §e(未启用)"
-      lore: ["", "§a变体 1", "§7建造材料：%1$s"]
+      lore: [ "", "§a变体 1", "§7建造材料：%1$s" ]
     block_boundary_2_inactive:
       name: "§b§l边界 §e(未启用)"
-      lore: ["", "§a变体 2", "§7建造材料：%1$s"]
+      lore: [ "", "§a变体 2", "§7建造材料：%1$s" ]
     block_boundary_3_inactive:
       name: "§b§l边界 §e(未启用)"
-      lore: ["", "§a变体 3", "§7建造材料：%1$s"]
+      lore: [ "", "§a变体 3", "§7建造材料：%1$s" ]
     block_boundary_4_inactive:
       name: "§b§l边界 §e(未启用)"
-      lore: ["", "§a变体 4", "§7建造材料：%1$s"]
+      lore: [ "", "§a变体 4", "§7建造材料：%1$s" ]
     block_boundary_5_inactive:
       name: "§b§l边界 §e(未启用)"
-      lore: ["", "§a变体 5", "§7建造材料：%1$s"]
+      lore: [ "", "§a变体 5", "§7建造材料：%1$s" ]
     accept:
       name: "§a§l套用风格"
-      lore: []
+      lore: [ ]
     reset:
       name: "§6§l重设更改"
-      lore: []
+      lore: [ ]
     select_style_title: "§8§l选择风格"
     filter_styles_title: "§8§l筛选风格"
     select_defined:
       name: "§b§l选择预设风格"
-      lore: []
+      lore: [ ]
     select_style:
       name: "%1$s"
-      lore: []
+      lore: [ ]
     cancel:
       name: "§6↩ §l舍弃更改"
-      lore: []
+      lore: [ ]
   console:
-      title: "§8§l传送门: %1$s"
-      settings:
-        name: "§b§l设定"
-        lore: []
-      select_target:
-        name: "§d§l选择目标"
-        lore:
-          - ""
-          - "§7目前: %1$s"
-      select_target_locked:
-        name: "§d§l选择目标"
-        lore:
-          - ""
-          - "§7目前: %1$s"
-          - "§8目标选择目前§6§l已锁定§r§8！"
-      select_target_title: "§8§l选择目标传送门"
-      filter_portals_title: "§8§l筛选传送门"
-      select_target_portal:
-        name: "%1$s"
-        lore:
-          - ""
-          - "§7距离: %2$s§6米"
-          - "§7世界: %3$s"
-          - "§7%4$s"
-      select_target_portal_visibility_public: "§a公共的"
-      select_target_portal_visibility_group: "§e区域组（成员）"
-      select_target_portal_visibility_group_internal: "§e区域组（仅在内部可见）"
-      select_target_portal_visibility_private: "§c私有的"
+    title: "§8§l传送门: %1$s"
+    settings:
+      name: "§b§l设定"
+      lore: [ ]
+    select_target:
+      name: "§d§l选择目标"
+      lore:
+        - ""
+        - "§7目前: %1$s"
+    select_target_locked:
+      name: "§d§l选择目标"
+      lore:
+        - ""
+        - "§7目前: %1$s"
+        - "§8目标选择目前§6§l已锁定§r§8！"
+    select_target_title: "§8§l选择目标传送门"
+    filter_portals_title: "§8§l筛选传送门"
+    select_target_portal:
+      name: "%1$s"
+      lore:
+        - ""
+        - "§7距离: %2$s§6米"
+        - "§7世界: %3$s"
+        - "§7%4$s"
+    select_target_portal_visibility_public: "§a公共的"
+    select_target_portal_visibility_group: "§e区域组（成员）"
+    select_target_portal_visibility_group_internal: "§e区域组（仅在内部可见）"
+    select_target_portal_visibility_private: "§c私有的"
 
 
-      unlink_console:
-        name: "§c§l解除连接控制台"
-        lore: []
-      unlink_console_confirm_title: "§c§l确认解除连接控制台？"
-      unlink_console_confirm_accept:
-        name: "§c§l解除连接控制台"
-        lore: []
-      unlink_console_confirm_cancel:
-        name: "§a§l取消"
-        lore: []
-      destroy_portal:
-        name: "§c§l摧毁传送门"
-        lore: []
-      destroy_portal_confirm_title: "§c§l确认摧毁传送门？"
-      destroy_portal_confirm_accept:
-        name: "§c§l摧毁传送门"
-        lore: []
-      destroy_portal_confirm_cancel:
-        name: "§a§l取消"
-        lore: []
+    unlink_console:
+      name: "§c§l解除连接控制台"
+      lore: [ ]
+    unlink_console_confirm_title: "§c§l确认解除连接控制台？"
+    unlink_console_confirm_accept:
+      name: "§c§l解除连接控制台"
+      lore: [ ]
+    unlink_console_confirm_cancel:
+      name: "§a§l取消"
+      lore: [ ]
+    destroy_portal:
+      name: "§c§l摧毁传送门"
+      lore: [ ]
+    destroy_portal_confirm_title: "§c§l确认摧毁传送门？"
+    destroy_portal_confirm_accept:
+      name: "§c§l摧毁传送门"
+      lore: [ ]
+    destroy_portal_confirm_cancel:
+      name: "§a§l取消"
+      lore: [ ]

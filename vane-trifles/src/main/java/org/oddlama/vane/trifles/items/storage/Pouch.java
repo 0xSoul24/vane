@@ -3,6 +3,7 @@ package org.oddlama.vane.trifles.items.storage;
 import static org.oddlama.vane.util.PlayerUtil.swing_arm;
 
 import java.util.EnumSet;
+
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.event.Event;
@@ -28,11 +29,11 @@ public class Pouch extends CustomItem<Trifles> {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("sls", "l l", "lll")
-                .set_ingredient('s', Material.STRING)
-                .set_ingredient('l', Material.RABBIT_HIDE)
-                .result(key().toString())
+                new ShapedRecipeDefinition("generic")
+                        .shape("sls", "l l", "lll")
+                        .set_ingredient('s', Material.STRING)
+                        .set_ingredient('l', Material.RABBIT_HIDE)
+                        .result(key().toString())
         );
     }
 

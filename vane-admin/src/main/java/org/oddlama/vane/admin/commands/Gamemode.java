@@ -23,7 +23,7 @@ import org.oddlama.vane.core.lang.TranslatedMessage;
 import org.oddlama.vane.core.module.Context;
 
 @Name("gamemode")
-@Aliases({ "gm" })
+@Aliases({"gm"})
 public class Gamemode extends Command<Admin> {
 
     @LangMessage
@@ -36,38 +36,38 @@ public class Gamemode extends Command<Admin> {
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
         return super.get_command_base()
-            .then(help())
-            .executes(ctx -> {
-                toggle_gamemode_self((Player) ctx.getSource().getSender());
-                return SINGLE_SUCCESS;
-            })
-            .then(
-                argument("game_mode", ArgumentTypes.gameMode())
-                    .executes(ctx -> {
-                        set_gamemode_self(
-                            (Player) ctx.getSource().getSender(),
-                            ctx.getArgument("game_mode", GameMode.class)
-                        );
-                        return SINGLE_SUCCESS;
-                    })
-                    .then(
-                        argument("player", ArgumentTypes.player()).executes(ctx -> {
-                            set_gamemode(
-                                ctx.getSource().getSender(),
-                                ctx.getArgument("game_mode", GameMode.class),
-                                player(ctx)
-                            );
-                            return SINGLE_SUCCESS;
-                        })
-                    )
-            )
-            .then(
-                argument("player", ArgumentTypes.player()).executes(ctx -> {
-                    toggle_gamemode_player(ctx.getSource().getSender(), player(ctx));
-
+                .then(help())
+                .executes(ctx -> {
+                    toggle_gamemode_self((Player) ctx.getSource().getSender());
                     return SINGLE_SUCCESS;
                 })
-            );
+                .then(
+                        argument("game_mode", ArgumentTypes.gameMode())
+                                .executes(ctx -> {
+                                    set_gamemode_self(
+                                            (Player) ctx.getSource().getSender(),
+                                            ctx.getArgument("game_mode", GameMode.class)
+                                    );
+                                    return SINGLE_SUCCESS;
+                                })
+                                .then(
+                                        argument("player", ArgumentTypes.player()).executes(ctx -> {
+                                            set_gamemode(
+                                                    ctx.getSource().getSender(),
+                                                    ctx.getArgument("game_mode", GameMode.class),
+                                                    player(ctx)
+                                            );
+                                            return SINGLE_SUCCESS;
+                                        })
+                                )
+                )
+                .then(
+                        argument("player", ArgumentTypes.player()).executes(ctx -> {
+                            toggle_gamemode_player(ctx.getSource().getSender(), player(ctx));
+
+                            return SINGLE_SUCCESS;
+                        })
+                );
     }
 
     private Player player(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
@@ -89,9 +89,9 @@ public class Gamemode extends Command<Admin> {
     private void set_gamemode(CommandSender sender, GameMode mode, Player player) {
         player.setGameMode(mode);
         lang_set.send(
-            sender,
-            player.displayName().color(NamedTextColor.AQUA),
-            Component.text(mode.name(), NamedTextColor.GREEN)
+                sender,
+                player.displayName().color(NamedTextColor.AQUA),
+                Component.text(mode.name(), NamedTextColor.GREEN)
         );
     }
 }

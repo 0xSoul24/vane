@@ -160,7 +160,7 @@ public class VanillaFunctionalityInhibitor extends Listener<Core> {
         final var r = event.getInventory().getResult();
         if (r != null) {
             final var custom_item_r = get_module().item_registry().get(r);
-            final boolean[] did_edit = new boolean[] { true };
+            final boolean[] did_edit = new boolean[]{true};
             r.editMeta(meta -> {
                 if (a != null && inhibit(custom_item_r, InhibitBehavior.NEW_ENCHANTS)) {
                     for (final var ench : r.getEnchantments().keySet()) {

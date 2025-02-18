@@ -7,7 +7,8 @@ to make vane compatible with a new minecraft release.
    Make sure you are on the latest `develop` branch.
 
    In `build.gradle.kts` the version of `io.papermc.paperweight.userdev` needs to be bumped
-   to the latest one available (I usually just look at [their test plugin](https://github.com/PaperMC/paperweight-test-plugin/blob/master/build.gradle.kts)
+   to the latest one available (I usually just look
+   at [their test plugin](https://github.com/PaperMC/paperweight-test-plugin/blob/master/build.gradle.kts)
    to figure out which version that is). All occurrences of e.g. `paperDevBundle("1.19.3-R0.1-SNAPSHOT")`
    are updated accordingly.
 
@@ -27,9 +28,11 @@ to make vane compatible with a new minecraft release.
    where it occurs.
 
 5. `./gradlew build` again. There may still be some errors, depending on whether the API changed or not.
-   In any case, definitely read the latest thread on [SpigotMC](https://www.spigotmc.org/) (search for developer notes) to get
+   In any case, definitely read the latest thread on [SpigotMC](https://www.spigotmc.org/) (search for developer notes)
+   to get
    an understanding of what has changed in the bukkit API. Sometimes It's nothing, sometimes it's a lot.
-   Sometimes there is no error, but things should still be adjusted (like when the now-legacy chat coloring was deprecated).
+   Sometimes there is no error, but things should still be adjusted (like when the now-legacy chat coloring was
+   deprecated).
 
 6. The real pain begins now. Since vane depends heavily on mojang's internal API, there might
    be changes that nobody could have expected and that will not be documented. Often there
@@ -57,21 +60,22 @@ to make vane compatible with a new minecraft release.
 
    **Solution:**
 
-   - View `work/decompile-latest/net/minecraft/server/SharedConstants.java`
-   - Follow definition of `getCurrentVersion()` to `WorldVersion.java`
-   - Observer that there is no more `getWorldVersion()`.
-     `getDataVersion()` and `getProtocolVersion()` look promising as they contain "version"
-   - To see what we need, look where we originally used that value.
-     Go to vane source,
-     observe that it was used in `DataFixers.getDataFixer().getSchema(HERE)`.
-   - Search for uses of `getSchema()` to see how it is used now: `rg getSchema"\(" work/decompile-latest`
-   - Observe that it is now used like `DataConverterRegistry.getDataFixer().getSchema(DataFixUtils.makeKey(SharedConstants.getCurrentVersion().getDataVersion().getVersion()))`.
-   - Conclusion: Indeed we need to use `.getDataVersion().getVersion()` instead.
+    - View `work/decompile-latest/net/minecraft/server/SharedConstants.java`
+    - Follow definition of `getCurrentVersion()` to `WorldVersion.java`
+    - Observer that there is no more `getWorldVersion()`.
+      `getDataVersion()` and `getProtocolVersion()` look promising as they contain "version"
+    - To see what we need, look where we originally used that value.
+      Go to vane source,
+      observe that it was used in `DataFixers.getDataFixer().getSchema(HERE)`.
+    - Search for uses of `getSchema()` to see how it is used now: `rg getSchema"\(" work/decompile-latest`
+    - Observe that it is now used like
+      `DataConverterRegistry.getDataFixer().getSchema(DataFixUtils.makeKey(SharedConstants.getCurrentVersion().getDataVersion().getVersion()))`.
+    - Conclusion: Indeed we need to use `.getDataVersion().getVersion()` instead.
 
    It seems tedious because it is fucking tedious.
    That was also still comparatively easy,
    sometimes things just cease to exist, and you need to understand what the code in vane
-    wants to do and figure out a new way to do it now.
+   wants to do and figure out a new way to do it now.
    That's the price to pay for doing
    things that the official API doesn't support.
 
@@ -116,26 +120,32 @@ to make vane compatible with a new minecraft release.
     Build one more time `./gradlew build`, and start a test server
     with the latest paper build and ProtocolLib.
     Disable resource pack distribution.
-	Generate the resource pack with `vane generate_resource_pack`, copy it to your client.
+    Generate the resource pack with `vane generate_resource_pack`, copy it to your client.
 
-	Enter the server. Now it is important to test those parts of vane which interface with
-	the mojang mappings, since those are the most likely to break.
+    Enter the server. Now it is important to test those parts of vane which interface with
+    the mojang mappings, since those are the most likely to break.
 
-    - `/customitem give vane_trifles:golden_sickle` should display as a sickle, should work when used on wheat. (Tests custom item registration and event dispatching)
-    - Take an elytra in your hand, run `/enchant vane_enchantments:angel`, test whether you can speed up by sneaking. (Tests custom enchantment registration)
-    - Duplicate the elytra, go into survival mode (IMPORTANT!) then combine them using an anvil. You should get Angel II.
-	- Take a smithing table, combine the elytra with a netherite ingot. (Test's complex smithing recipe integration)
-    - Put some random blocks and items in a chest, place a button next to it and press it. The chest should now be sorted.
+    - `/customitem give vane_trifles:golden_sickle` should display as a sickle, should work when used on wheat. (Tests
+      custom item registration and event dispatching)
+    - Take an elytra in your hand, run `/enchant vane_enchantments:angel`, test whether you can speed up by sneaking. (
+      Tests custom enchantment registration)
+    - Duplicate the elytra, go into survival mode (IMPORTANT!) then combine them using an anvil. You should get Angel
+      II.
+    - Take a smithing table, combine the elytra with a netherite ingot. (Test's complex smithing recipe integration)
+    - Put some random blocks and items in a chest, place a button next to it and press it. The chest should now be
+      sorted.
 
     Fix issues and make a new commit if necessary.
 
 12. Copy the generated resource pack to `docs/resourcepacks/<new_version>.zip`, and update
-	vane's version number in `build.gradle.kts` (always bump minor version for mojang version updates).
-	Commit and add signed tag: `git commit -S -m 'chore: version bump' && git tag -s -m '' v1.11.0`.
+    vane's version number in `build.gradle.kts` (always bump minor version for mojang version updates).
+    Commit and add signed tag: `git commit -S -m 'chore: version bump' && git tag -s -m '' v1.11.0`.
 
-13. Push to main: `git push && git push --tags && git switch main && git merge --ff-only develop && git push && git switch develop`.
+13. Push to main:
+    `git push && git push --tags && git switch main && git merge --ff-only develop && git push && git switch develop`.
 
-14. Generate the release artifacts, so definitely run a clean build: `rm -rf target && ./gradlew clean && ./gradlew build`.
+14. Generate the release artifacts, so definitely run a clean build:
+    `rm -rf target && ./gradlew clean && ./gradlew build`.
 
 15. `./sign_and_zip.sh` (sorry, but you need to be me to get the correct signature.)
 
@@ -143,6 +153,6 @@ to make vane compatible with a new minecraft release.
     Format can be copied from previous releases,
     see `git log` to see what changed.
     Upload final artifacts to GitHub releases first.
-	Afterwards entertain modrinth.com and hangar.papermc.io.
+    Afterwards entertain modrinth.com and hangar.papermc.io.
 
 Congratulations, you are now awake and can start implementing new features.

@@ -104,12 +104,12 @@ menus:
     # El objeto utilizado para aceptar la selección.
     accept:
       name: "§a§lAceptar"
-      lore: ["§bSelecciona§7 el objeto actualmente seleccionado."]
+      lore: [ "§bSelecciona§7 el objeto actualmente seleccionado." ]
 
     # El objeto utilizado para cancelar la selección.
     cancel:
       name: "§c§lCancelar"
-      lore: ["§6Cancelar§7 la selección."]
+      lore: [ "§6Cancelar§7 la selección." ]
 
     # El objeto que representa el objeto actualmente seleccionado.
     selected:
@@ -127,7 +127,7 @@ menus:
     # %1$s: Número de página
     page:
       name: "§bPágina %1$s"
-      lore: []
+      lore: [ ]
 
     # El objeto que muestra la página actual
     # %1$s: Número de página
@@ -152,5 +152,5 @@ menus:
     # El objeto utilizado para cancelar la selección.
     cancel:
       name: "§c§lCancelar"
-      lore: ["§6Abortar§7 la selección."]
+      lore: [ "§6Abortar§7 la selección." ]
 

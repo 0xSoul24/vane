@@ -13,10 +13,12 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import com.velocitypowered.proxy.VelocityServer;
 import com.velocitypowered.proxy.network.ConnectionManager;
+
 import java.net.InetSocketAddress;
 import java.nio.file.Path;
 import java.util.function.BiConsumer;
 import java.util.logging.Level;
+
 import org.bstats.velocity.Metrics;
 import org.oddlama.vane.proxycore.VaneProxyPlugin;
 import org.oddlama.vane.proxycore.log.slf4jCompatLogger;
@@ -28,18 +30,18 @@ import org.oddlama.velocity.listeners.*;
 import org.slf4j.Logger;
 
 @Plugin(
-    id = "vane-velocity",
-    name = "Vane Velocity",
-    version = Version.VERSION,
-    description = "TODO",
-    authors = { "oddlama", "Serial-ATA" },
-    url = "https://github.com/oddlama/vane"
+        id = "vane-velocity",
+        name = "Vane Velocity",
+        version = Version.VERSION,
+        description = "TODO",
+        authors = {"oddlama", "Serial-ATA"},
+        url = "https://github.com/oddlama/vane"
 )
 public class Velocity extends VaneProxyPlugin {
 
     public static final MinecraftChannelIdentifier CHANNEL = MinecraftChannelIdentifier.create(
-        CHANNEL_AUTH_MULTIPLEX_NAMESPACE,
-        CHANNEL_AUTH_MULTIPLEX_NAME
+            CHANNEL_AUTH_MULTIPLEX_NAMESPACE,
+            CHANNEL_AUTH_MULTIPLEX_NAME
     );
     private final ProxyServer velocity_server;
 
@@ -49,10 +51,10 @@ public class Velocity extends VaneProxyPlugin {
 
     @Inject
     public Velocity(
-        ProxyServer server,
-        Logger logger,
-        Metrics.Factory metricsFactory,
-        @DataDirectory final Path data_dir
+            ProxyServer server,
+            Logger logger,
+            Metrics.Factory metricsFactory,
+            @DataDirectory final Path data_dir
     ) {
         this.server = new VelocityCompatProxyServer(server);
         this.logger = new slf4jCompatLogger(logger);
@@ -136,8 +138,8 @@ public class Velocity extends VaneProxyPlugin {
     }
 
     private void handle_listeners(
-        String action,
-        BiConsumer<? super ConnectionManager, ? super InetSocketAddress> method
+            String action,
+            BiConsumer<? super ConnectionManager, ? super InetSocketAddress> method
     ) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
         final var server = (VelocityServer) velocity_server;
 

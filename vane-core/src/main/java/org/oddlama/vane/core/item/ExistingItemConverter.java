@@ -28,9 +28,9 @@ public class ExistingItemConverter extends Listener<Core> {
 
         // If lookups fail, we return null and nothing will be done.
         String new_item_key = null;
-		if (meta.getCustomModelDataComponent().getFloats().isEmpty()) {
-			return null;
-		}
+        if (meta.getCustomModelDataComponent().getFloats().isEmpty()) {
+            return null;
+        }
         switch (meta.getCustomModelData()) {
             case 7758190:
                 new_item_key = "vane_trifles:wooden_sickle";
@@ -144,9 +144,9 @@ public class ExistingItemConverter extends Listener<Core> {
             final var key_and_version = CustomItemHelper.customItemTagsFromItemStack(is);
             final var meta = is.getItemMeta();
             if (
-                meta.getCustomModelData() != custom_item.customModelData() ||
-                is.getType() != custom_item.baseMaterial() ||
-                key_and_version.getRight() != custom_item.version()
+                    meta.getCustomModelData() != custom_item.customModelData() ||
+                            is.getType() != custom_item.baseMaterial() ||
+                            key_and_version.getRight() != custom_item.version()
             ) {
                 // Also includes durability max update.
                 contents[i] = custom_item.convertExistingStack(is);
@@ -158,14 +158,14 @@ public class ExistingItemConverter extends Listener<Core> {
             // Update maximum durability on existing items if changed.
             Damageable damageableMeta = (Damageable) contents[i].getItemMeta();
             int max_damage = damageableMeta.hasMaxDamage()
-                ? damageableMeta.getMaxDamage()
-                : contents[i].getType().getMaxDurability();
+                    ? damageableMeta.getMaxDamage()
+                    : contents[i].getType().getMaxDurability();
             int correct_max_damage = custom_item.durability() == 0
-                ? contents[i].getType().getMaxDurability()
-                : custom_item.durability();
+                    ? contents[i].getType().getMaxDurability()
+                    : custom_item.durability();
             if (
-                max_damage != correct_max_damage ||
-                meta.getPersistentDataContainer().has(DurabilityManager.ITEM_DURABILITY_DAMAGE)
+                    max_damage != correct_max_damage ||
+                            meta.getPersistentDataContainer().has(DurabilityManager.ITEM_DURABILITY_DAMAGE)
             ) {
                 get_module().log.info("Updated item durability " + custom_item.key());
                 DurabilityManager.update_damage(custom_item, contents[i]);

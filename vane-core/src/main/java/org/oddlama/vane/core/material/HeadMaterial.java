@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.json.JSONObject;
@@ -20,11 +21,11 @@ public class HeadMaterial {
     private String base64_texture;
 
     public HeadMaterial(
-        final NamespacedKey key,
-        final String name,
-        final String category,
-        final List<String> tags,
-        final String base64_texture
+            final NamespacedKey key,
+            final String name,
+            final String category,
+            final List<String> tags,
+            final String base64_texture
     ) {
         this.key = key;
         this.name = name;

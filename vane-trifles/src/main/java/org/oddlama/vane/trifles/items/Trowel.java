@@ -6,6 +6,7 @@ import static org.oddlama.vane.util.PlayerUtil.swing_arm;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Random;
+
 import net.kyori.adventure.text.Component;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -50,11 +51,11 @@ import org.oddlama.vane.util.Nms;
 import org.oddlama.vane.util.StorageUtil;
 
 @VaneItem(
-    name = "trowel",
-    base = Material.WARPED_FUNGUS_ON_A_STICK,
-    durability = 800,
-    model_data = 0x76000e,
-    version = 1
+        name = "trowel",
+        base = Material.WARPED_FUNGUS_ON_A_STICK,
+        durability = 800,
+        model_data = 0x76000e,
+        version = 1
 )
 public class Trowel extends CustomItem<Trifles> {
 
@@ -63,10 +64,10 @@ public class Trowel extends CustomItem<Trifles> {
     private static Random random = new Random(23584982345l);
 
     public enum FeedSource {
-        HOTBAR("Hotbar", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }),
-        FIRST_ROW("First Inventory Row", new int[] { 9, 10, 11, 12, 13, 14, 15, 16, 17 }),
-        SECOND_ROW("Second Inventory Row", new int[] { 18, 19, 20, 21, 22, 23, 24, 25, 26 }),
-        THIRD_ROW("Third Inventory Row", new int[] { 27, 28, 29, 30, 31, 32, 33, 34, 35 });
+        HOTBAR("Hotbar", new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8}),
+        FIRST_ROW("First Inventory Row", new int[]{9, 10, 11, 12, 13, 14, 15, 16, 17}),
+        SECOND_ROW("Second Inventory Row", new int[]{18, 19, 20, 21, 22, 23, 24, 25, 26}),
+        THIRD_ROW("Third Inventory Row", new int[]{27, 28, 29, 30, 31, 32, 33, 34, 35});
 
         private String display_name;
         private int[] slots;
@@ -99,15 +100,17 @@ public class Trowel extends CustomItem<Trifles> {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("  s", "mm ")
-                .set_ingredient('m', Material.IRON_INGOT)
-                .set_ingredient('s', Material.STICK)
-                .result(key().toString())
+                new ShapedRecipeDefinition("generic")
+                        .shape("  s", "mm ")
+                        .set_ingredient('m', Material.IRON_INGOT)
+                        .set_ingredient('s', Material.STICK)
+                        .result(key().toString())
         );
     }
 
-    /** Returns true if the given component is associated to the trowel. */
+    /**
+     * Returns true if the given component is associated to the trowel.
+     */
     private static boolean is_trowel_lore(final Component component) {
         return ItemUtil.has_sentinel(component, SENTINEL);
     }
@@ -117,9 +120,9 @@ public class Trowel extends CustomItem<Trifles> {
             return FeedSource.HOTBAR;
         }
         final var ord = item_stack
-            .getItemMeta()
-            .getPersistentDataContainer()
-            .getOrDefault(FEED_SOURCE, PersistentDataType.INTEGER, 0);
+                .getItemMeta()
+                .getPersistentDataContainer()
+                .getOrDefault(FEED_SOURCE, PersistentDataType.INTEGER, 0);
         if (ord < 0 || ord > FeedSource.values().length) {
             return FeedSource.HOTBAR;
         }
@@ -128,7 +131,7 @@ public class Trowel extends CustomItem<Trifles> {
 
     private void feed_source(final ItemStack item_stack, final FeedSource feed_source) {
         item_stack.editMeta(meta ->
-            meta.getPersistentDataContainer().set(FEED_SOURCE, PersistentDataType.INTEGER, feed_source.ordinal())
+                meta.getPersistentDataContainer().set(FEED_SOURCE, PersistentDataType.INTEGER, feed_source.ordinal())
         );
     }
 
@@ -143,7 +146,7 @@ public class Trowel extends CustomItem<Trifles> {
 
         final var feed_source = feed_source(item_stack);
         lore.addAll(
-            lang_lore.format("§a" + feed_source).stream().map(x -> ItemUtil.add_sentinel(x, SENTINEL)).toList()
+                lang_lore.format("§a" + feed_source).stream().map(x -> ItemUtil.add_sentinel(x, SENTINEL)).toList()
         );
 
         item_stack.lore(lore);
@@ -157,8 +160,8 @@ public class Trowel extends CustomItem<Trifles> {
 
         // Only on right-click item, when nothing is on the cursor
         if (
-            event.getAction() != InventoryAction.PICKUP_HALF ||
-            (event.getCursor() != null && event.getCursor().getType() != Material.AIR)
+                event.getAction() != InventoryAction.PICKUP_HALF ||
+                        (event.getCursor() != null && event.getCursor().getType() != Material.AIR)
         ) {
             return;
         }
@@ -182,7 +185,7 @@ public class Trowel extends CustomItem<Trifles> {
     public void on_player_interact_block(final PlayerInteractEvent event) {
         // Skip if no block was right-clicked or hand isn't main hand
         if (
-            !event.hasBlock() || event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getHand() != EquipmentSlot.HAND
+                !event.hasBlock() || event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getHand() != EquipmentSlot.HAND
         ) {
             return;
         }
@@ -210,9 +213,9 @@ public class Trowel extends CustomItem<Trifles> {
             final var item_stack = inventory.getItem(possible_slots[index]);
             // Skip empty slots and items that are not placeable blocks
             if (
-                item_stack == null ||
-                !item_stack.getType().isBlock() ||
-                Tag.SHULKER_BOXES.isTagged(item_stack.getType())
+                    item_stack == null ||
+                            !item_stack.getType().isBlock() ||
+                            Tag.SHULKER_BOXES.isTagged(item_stack.getType())
             ) {
                 // Eliminate the end of list, so copy item at the end of list to the index (<
                 // count).
@@ -220,8 +223,8 @@ public class Trowel extends CustomItem<Trifles> {
                 continue;
             }
             org.oddlama.vane.core.item.api.CustomItem custom_item_slot = get_module()
-                .core.item_registry()
-                .get(item_stack);
+                    .core.item_registry()
+                    .get(item_stack);
             // if the item is a custom item, don't place it
             if (custom_item_slot != null) {
                 possible_slots[index] = possible_slots[--count];
@@ -240,19 +243,19 @@ public class Trowel extends CustomItem<Trifles> {
             final var block_hit_result = new BlockHitResult(hit_pos, direction, block_pos, false);
             final var amount_pre = nms_item.getCount();
             final var action_context = new UseOnContext(
-                nms_world,
-                nms_player,
-                InteractionHand.MAIN_HAND,
-                nms_item,
-                block_hit_result
+                    nms_world,
+                    nms_player,
+                    InteractionHand.MAIN_HAND,
+                    nms_item,
+                    block_hit_result
             );
 
             // Get sound now, otherwise the itemstack might be consumed afterwards
             SoundType sound_type = null;
             if (nms_item.getItem() instanceof BlockItem block_item) {
                 final var place_state = block_item
-                    .getBlock()
-                    .getStateForPlacement(new BlockPlaceContext(action_context));
+                        .getBlock()
+                        .getStateForPlacement(new BlockPlaceContext(action_context));
                 sound_type = place_state.getSoundType();
             }
 
@@ -269,12 +272,12 @@ public class Trowel extends CustomItem<Trifles> {
                 damage_item(player, item_in_hand, 1);
                 if (sound_type != null) {
                     nms_world.playSound(
-                        null,
-                        block_pos,
-                        sound_type.getPlaceSound(),
-                        SoundSource.BLOCKS,
-                        (sound_type.getVolume() + 1.0F) / 2.0F,
-                        sound_type.getPitch() * 0.8F
+                            null,
+                            block_pos,
+                            sound_type.getPlaceSound(),
+                            SoundSource.BLOCKS,
+                            (sound_type.getVolume() + 1.0F) / 2.0F,
+                            sound_type.getPitch() * 0.8F
                     );
                 }
                 CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(nms_player, block_pos, nms_item);

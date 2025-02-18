@@ -39,11 +39,11 @@ jobs:
           
           if (( ${#errors[@]} )); then
             printf "One or more of the commits in this PR do not follow the Conventional Commits style:\n\n"
-            
+          
             for error in "${errors[@]}"; do
               echo "$error"
             done
-            
+          
             echo "CONTAINS_ERRORS=1" >> $GITHUB_ENV
             exit 1
           else

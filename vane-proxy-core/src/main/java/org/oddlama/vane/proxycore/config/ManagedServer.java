@@ -1,6 +1,7 @@
 package org.oddlama.vane.proxycore.config;
 
 import com.electronwill.nightconfig.core.CommentedConfig;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -9,6 +10,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Random;
 import javax.imageio.ImageIO;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,11 +24,11 @@ public class ManagedServer {
     private final StatefulConfiguration offline_config;
 
     public ManagedServer(
-        String id,
-        String display_name,
-        CommentedConfig online_config_section,
-        CommentedConfig offline_config_section,
-        CommentedConfig start
+            String id,
+            String display_name,
+            CommentedConfig online_config_section,
+            CommentedConfig offline_config_section,
+            CommentedConfig start
     ) throws IOException {
         this.id = id;
         this.display_name = display_name;
@@ -127,33 +129,33 @@ public class ManagedServer {
             List<String> quotes = config.get("quotes");
 
             if (quotes != null) this.quotes = quotes
-                .stream()
-                .filter(s -> !s.isBlank())
-                .map(s -> s.replace("{SERVER}", id).replace("{SERVER_DISPLAY_NAME}", display_name))
-                .toArray(String[]::new);
+                    .stream()
+                    .filter(s -> !s.isBlank())
+                    .map(s -> s.replace("{SERVER}", id).replace("{SERVER_DISPLAY_NAME}", display_name))
+                    .toArray(String[]::new);
 
             // motd = "..."
             var motd = config.get("motd");
 
             if (!(motd == null || motd instanceof String)) throw new IllegalArgumentException(
-                "Managed server '" + id + "' has a non-string MOTD!"
+                    "Managed server '" + id + "' has a non-string MOTD!"
             );
 
             if (motd != null && !((String) motd).isEmpty()) this.motd = ((String) motd).replace(
                     "{SERVER_DISPLAY_NAME}",
                     display_name
-                );
+            );
 
             // favicon = "..."
             var favicon_path = config.get("favicon");
 
             if (!(favicon_path == null || favicon_path instanceof String)) throw new IllegalArgumentException(
-                "Managed server '" + id + "' has a non-string favicon path!"
+                    "Managed server '" + id + "' has a non-string favicon path!"
             );
 
             if (favicon_path != null && !((String) favicon_path).isEmpty()) this.encoded_favicon = encode_favicon(
-                id,
-                (String) favicon_path
+                    id,
+                    (String) favicon_path
             );
         }
 
@@ -202,13 +204,13 @@ public class ManagedServer {
             else this.cmd = null;
 
             if (!(kick_msg == null || kick_msg instanceof String)) throw new IllegalArgumentException(
-                "Managed server '" + id + "' has an invalid kick message!"
+                    "Managed server '" + id + "' has an invalid kick message!"
             );
 
             if (kick_msg != null) this.kick_msg = ((String) kick_msg).replace("{SERVER}", id).replace(
                     "{SERVER_DISPLAY_NAME}",
                     display_name
-                );
+            );
             else this.kick_msg = null;
 
             if (allow_anyone != null) this.allow_anyone = (boolean) allow_anyone;
@@ -220,7 +222,7 @@ public class ManagedServer {
             }
 
             if (!(timeout instanceof Integer)) throw new IllegalArgumentException(
-                "Managed server '" + id + "' has an invalid command timeout!"
+                    "Managed server '" + id + "' has an invalid command timeout!"
             );
 
             this.timeout = (Integer) timeout;

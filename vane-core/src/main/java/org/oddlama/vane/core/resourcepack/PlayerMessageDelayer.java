@@ -5,11 +5,13 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -32,10 +34,10 @@ public class PlayerMessageDelayer extends Listener<Core> {
 
     public PlayerMessageDelayer(Context<Core> context) {
         super(
-            context.group(
-                "message_delaying",
-                "Enable delaying messages to players until their resource pack is fully loaded. This prevents display of untranslated chat messages."
-            )
+                context.group(
+                        "message_delaying",
+                        "Enable delaying messages to players until their resource pack is fully loaded. This prevents display of untranslated chat messages."
+                )
         );
     }
 
@@ -64,17 +66,17 @@ public class PlayerMessageDelayer extends Listener<Core> {
                 final var player = offline_player.getPlayer();
                 relay_messages_and_stop_queueing(player);
                 get_module()
-                    .log.warning(
-                        "Force stopped delaying messages to player '" +
-                        player.getName() +
-                        "' after their client didn't report any status after " +
-                        message_delaying_timeout +
-                        " ms. If this message appears again after they reconnect, it might be a configuration issue."
-                    );
+                        .log.warning(
+                                "Force stopped delaying messages to player '" +
+                                        player.getName() +
+                                        "' after their client didn't report any status after " +
+                                        message_delaying_timeout +
+                                        " ms. If this message appears again after they reconnect, it might be a configuration issue."
+                        );
                 player.sendMessage(
-                    "Your client failed to report that the resource pack has been applied after " +
-                    message_delaying_timeout +
-                    " ms. If you encounter text formatting issues, please reconnect. If this message appears again, it might be a plugin configuration issue."
+                        "Your client failed to report that the resource pack has been applied after " +
+                                message_delaying_timeout +
+                                " ms. If you encounter text formatting issues, please reconnect. If this message appears again, it might be a plugin configuration issue."
                 );
             }
         }
@@ -152,24 +154,24 @@ public class PlayerMessageDelayer extends Listener<Core> {
         switch (event.getStatus()) {
             case DECLINED:
                 get_module()
-                    .log.info(
-                        "The player " +
-                        player.getName() +
-                        " rejected the resource pack. This will cause client-side issues with formatted text for them."
-                    );
+                        .log.info(
+                                "The player " +
+                                        player.getName() +
+                                        " rejected the resource pack. This will cause client-side issues with formatted text for them."
+                        );
                 player.sendMessage(
-                    "You have rejected the resource pack. This will cause major issues with formatted text and custom items."
+                        "You have rejected the resource pack. This will cause major issues with formatted text and custom items."
                 );
                 break;
             case FAILED_DOWNLOAD:
                 get_module()
-                    .log.info(
-                        "The resource pack download for player " +
-                        player.getName() +
-                        " failed. This will cause client-side issues with formatted text for them."
-                    );
+                        .log.info(
+                                "The resource pack download for player " +
+                                        player.getName() +
+                                        " failed. This will cause client-side issues with formatted text for them."
+                        );
                 player.sendMessage(
-                    "Your resource pack download failed. Please reconnect to retry, otherwise this will cause major issues with formatted text and custom items."
+                        "Your resource pack download failed. Please reconnect to retry, otherwise this will cause major issues with formatted text and custom items."
                 );
                 break;
             default:

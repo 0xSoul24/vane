@@ -3,7 +3,9 @@ title = "Regions"
 icon = "minecraft:map"
 module = "vane-regions"
 ```
+
 ---
+
 ## Overview
 
 Vane's region module allows you to purchase a piece of land.
@@ -27,14 +29,16 @@ Available permissions are intentionally kept simple to allow quick configuration
 your players need. For more sophisticated permission control, use WorldGuard or another plugin.
 
 - 3 default roles are created in each region-group for your convenience: **admin**, **friend**, **others**.
-	- **others** cannot build, can only view containers (only look, no touch!), but can use things (buttons, ...)
-	- **friends** can build, can use things, can use chests
-	- **admins** can do everything including permission management.
-- Exactly one role can be assigned to each player in that region-group. Unassigned players automatically belong to the **others'** role.
+    - **others** cannot build, can only view containers (only look, no touch!), but can use things (buttons, ...)
+    - **friends** can build, can use things, can use chests
+    - **admins** can do everything including permission management.
+- Exactly one role can be assigned to each player in that region-group. Unassigned players automatically belong to the *
+  *others'** role.
 
 ## Portals & Regions
 
 If a portal is inside a region, some additional things apply:
 
 - Admins of the region can change the portal settings
-- The visibility of the portal can be restricted to either players that have the portal permission or other portals that are in a region with the same region group.
+- The visibility of the portal can be restricted to either players that have the portal permission or other portals that
+  are in a region with the same region group.

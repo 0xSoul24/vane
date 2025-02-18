@@ -1,6 +1,7 @@
 package org.oddlama.vane.portals.event;
 
 import java.util.List;
+
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -18,11 +19,11 @@ public class PortalLinkConsoleEvent extends PortalEvent {
     private boolean cancel_if_not_owner = true;
 
     public PortalLinkConsoleEvent(
-        final Player player,
-        final Block console,
-        final List<Block> portal_blocks,
-        boolean check_only,
-        @Nullable final Portal portal
+            final Player player,
+            final Block console,
+            final List<Block> portal_blocks,
+            boolean check_only,
+            @Nullable final Portal portal
     ) {
         this.player = player;
         this.console = console;

@@ -12,10 +12,10 @@ public class VelocityCompatLoginEvent extends LoginEvent {
     final com.velocitypowered.api.event.connection.LoginEvent event;
 
     public VelocityCompatLoginEvent(
-        com.velocitypowered.api.event.connection.LoginEvent event,
-        VaneProxyPlugin plugin,
-        IVaneProxyServerInfo server_info,
-        ProxyPendingConnection connection
+            com.velocitypowered.api.event.connection.LoginEvent event,
+            VaneProxyPlugin plugin,
+            IVaneProxyServerInfo server_info,
+            ProxyPendingConnection connection
     ) {
         super(plugin, server_info, connection);
         this.event = event;

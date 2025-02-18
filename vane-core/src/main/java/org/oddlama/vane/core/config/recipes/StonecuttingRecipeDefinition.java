@@ -2,6 +2,7 @@ package org.oddlama.vane.core.config.recipes;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
@@ -49,7 +50,7 @@ public class StonecuttingRecipeDefinition extends RecipeDefinition {
     public RecipeDefinition from_dict(Object dict) {
         if (!(dict instanceof Map<?, ?>)) {
             throw new IllegalArgumentException(
-                "Invalid stonecutting recipe dictionary: Argument must be a Map<String, Object>!"
+                    "Invalid stonecutting recipe dictionary: Argument must be a Map<String, Object>!"
             );
         }
         final var dict_map = (Map<?, ?>) dict;

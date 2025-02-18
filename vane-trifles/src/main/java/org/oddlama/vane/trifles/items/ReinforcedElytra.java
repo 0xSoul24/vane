@@ -2,6 +2,7 @@ package org.oddlama.vane.trifles.items;
 
 import java.io.IOException;
 import java.util.EnumSet;
+
 import net.kyori.adventure.key.Key;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -32,11 +33,11 @@ public class ReinforcedElytra extends CustomItem<Trifles> {
     @Override
     public RecipeList default_recipes() {
         return RecipeList.of(
-            new SmithingRecipeDefinition("generic")
-                .base(Material.ELYTRA)
-                .addition(Material.NETHERITE_INGOT)
-                .copy_nbt(true)
-                .result(key().toString())
+                new SmithingRecipeDefinition("generic")
+                        .base(Material.ELYTRA)
+                        .addition(Material.NETHERITE_INGOT)
+                        .copy_nbt(true)
+                        .result(key().toString())
         );
     }
 
@@ -44,10 +45,10 @@ public class ReinforcedElytra extends CustomItem<Trifles> {
     public ItemStack updateItemStack(ItemStack item_stack) {
         item_stack.editMeta(meta -> {
             final var modifier_defense = new AttributeModifier(
-                namespaced_key("armor"),
-                config_defense_points,
-                AttributeModifier.Operation.ADD_NUMBER,
-                EquipmentSlotGroup.CHEST
+                    namespaced_key("armor"),
+                    config_defense_points,
+                    AttributeModifier.Operation.ADD_NUMBER,
+                    EquipmentSlotGroup.CHEST
             );
             meta.removeAttributeModifier(Attribute.ARMOR, modifier_defense);
             meta.addAttributeModifier(Attribute.ARMOR, modifier_defense);

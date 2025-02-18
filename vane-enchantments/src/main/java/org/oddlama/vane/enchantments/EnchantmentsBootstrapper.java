@@ -21,22 +21,22 @@ public class EnchantmentsBootstrapper implements PluginBootstrap {
     @Override
     public void bootstrap(@NotNull BootstrapContext context) {
         context
-            .getLifecycleManager()
-            .registerEventHandler(
-                RegistryEvents.ENCHANTMENT.freeze()
-                    .newHandler(event -> {
-                        new AngelRegistry(event);
-                        new GrapplingHookRegistry(event);
-                        new HellBentRegistry(event);
-                        new LeafchopperRegistry(event);
-                        new LightningRegistry(event);
-                        new RakeRegistry(event);
-                        new SeedingRegistry(event);
-                        new WingsRegistry(event);
-                        new SouldboundRegistry(event);
-                        new TakeOffRegistry(event);
-                        new UnbreakableRegistry(event);
-                    })
-            );
+                .getLifecycleManager()
+                .registerEventHandler(
+                        RegistryEvents.ENCHANTMENT.freeze()
+                                .newHandler(event -> {
+                                    new AngelRegistry(event);
+                                    new GrapplingHookRegistry(event);
+                                    new HellBentRegistry(event);
+                                    new LeafchopperRegistry(event);
+                                    new LightningRegistry(event);
+                                    new RakeRegistry(event);
+                                    new SeedingRegistry(event);
+                                    new WingsRegistry(event);
+                                    new SouldboundRegistry(event);
+                                    new TakeOffRegistry(event);
+                                    new UnbreakableRegistry(event);
+                                })
+                );
     }
 }

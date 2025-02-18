@@ -7,8 +7,10 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import io.papermc.paper.command.brigadier.argument.CustomArgumentType;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
+
 import org.jetbrains.annotations.NotNull;
 import org.oddlama.vane.core.Core;
 import org.oddlama.vane.core.module.Module;
@@ -34,17 +36,17 @@ public class ModuleArgumentType implements CustomArgumentType.Converted<Module<?
     @Override
     public @NotNull Module<?> convert(@NotNull String nativeType) throws CommandSyntaxException {
         return core
-            .get_modules()
-            .stream()
-            .filter(module -> module.get_name().equalsIgnoreCase(nativeType))
-            .findFirst()
-            .orElseThrow();
+                .get_modules()
+                .stream()
+                .filter(module -> module.get_name().equalsIgnoreCase(nativeType))
+                .findFirst()
+                .orElseThrow();
     }
 
     @Override
     public <S> @NotNull CompletableFuture<Suggestions> listSuggestions(
-        @NotNull CommandContext<S> context,
-        @NotNull SuggestionsBuilder builder
+            @NotNull CommandContext<S> context,
+            @NotNull SuggestionsBuilder builder
     ) {
         Stream<String> stream = core.get_modules().stream().map(Module::get_name);
         if (!builder.getRemaining().isBlank()) {

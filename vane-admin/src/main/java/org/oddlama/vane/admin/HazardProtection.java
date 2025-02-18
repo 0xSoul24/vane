@@ -1,6 +1,7 @@
 package org.oddlama.vane.admin;
 
 import java.util.List;
+
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,8 +26,8 @@ public class HazardProtection extends Listener<Admin> {
     private boolean config_enable_wither_world_whitelist;
 
     @ConfigStringList(
-        def = { "world_nether", "world_the_end" },
-        desc = "A list of worlds in which the wither may be spawned."
+            def = {"world_nether", "world_the_end"},
+            desc = "A list of worlds in which the wither may be spawned."
     )
     private List<String> config_wither_world_whitelist;
 
@@ -50,10 +51,10 @@ public class HazardProtection extends Listener<Admin> {
 
     public HazardProtection(Context<Admin> context) {
         super(
-            context.group(
-                "hazard_protection",
-                "Enable hazard protection. The options below allow more fine-grained control over the hazards to protect from."
-            )
+                context.group(
+                        "hazard_protection",
+                        "Enable hazard protection. The options below allow more fine-grained control over the hazards to protect from."
+                )
         );
         world_rebuild = new WorldRebuild(get_context());
     }

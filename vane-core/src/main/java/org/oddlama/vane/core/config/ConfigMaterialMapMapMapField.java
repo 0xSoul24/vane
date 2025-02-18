@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.oddlama.vane.annotation.config.ConfigMaterialMapEntry;
@@ -22,68 +23,68 @@ public class ConfigMaterialMapMapMapField extends ConfigField<Map<String, Map<St
     public ConfigMaterialMapMapMap annotation;
 
     public ConfigMaterialMapMapMapField(
-        Object owner,
-        Field field,
-        Function<String, String> map_name,
-        ConfigMaterialMapMapMap annotation
+            Object owner,
+            Field field,
+            Function<String, String> map_name,
+            ConfigMaterialMapMapMap annotation
     ) {
         super(
-            owner,
-            field,
-            map_name,
-            "map of string to (map of string to (map of string to material))",
-            annotation.desc()
+                owner,
+                field,
+                map_name,
+                "map of string to (map of string to (map of string to material))",
+                annotation.desc()
         );
         this.annotation = annotation;
     }
 
     private void append_map_definition(
-        StringBuilder builder,
-        String indent,
-        String prefix,
-        Map<String, Map<String, Map<String, Material>>> def
+            StringBuilder builder,
+            String indent,
+            String prefix,
+            Map<String, Map<String, Map<String, Material>>> def
     ) {
         def
-            .entrySet()
-            .stream()
-            .sorted(Map.Entry.comparingByKey())
-            .forEach(e1 -> {
-                builder.append(indent);
-                builder.append(prefix);
-                builder.append("  ");
-                builder.append(escape_yaml(e1.getKey()));
-                builder.append(":\n");
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEach(e1 -> {
+                    builder.append(indent);
+                    builder.append(prefix);
+                    builder.append("  ");
+                    builder.append(escape_yaml(e1.getKey()));
+                    builder.append(":\n");
 
-                e1
-                    .getValue()
-                    .entrySet()
-                    .stream()
-                    .sorted(Map.Entry.comparingByKey())
-                    .forEach(e2 -> {
-                        builder.append(indent);
-                        builder.append(prefix);
-                        builder.append("    ");
-                        builder.append(escape_yaml(e2.getKey()));
-                        builder.append(":\n");
-
-                        e2
+                    e1
                             .getValue()
                             .entrySet()
                             .stream()
                             .sorted(Map.Entry.comparingByKey())
-                            .forEach(e3 -> {
+                            .forEach(e2 -> {
                                 builder.append(indent);
                                 builder.append(prefix);
-                                builder.append("      ");
-                                builder.append(escape_yaml(e3.getKey()));
-                                builder.append(": \"");
-                                builder.append(escape_yaml(e3.getValue().getKey().getNamespace()));
-                                builder.append(":");
-                                builder.append(escape_yaml(e3.getValue().getKey().getKey()));
-                                builder.append("\"\n");
+                                builder.append("    ");
+                                builder.append(escape_yaml(e2.getKey()));
+                                builder.append(":\n");
+
+                                e2
+                                        .getValue()
+                                        .entrySet()
+                                        .stream()
+                                        .sorted(Map.Entry.comparingByKey())
+                                        .forEach(e3 -> {
+                                            builder.append(indent);
+                                            builder.append(prefix);
+                                            builder.append("      ");
+                                            builder.append(escape_yaml(e3.getKey()));
+                                            builder.append(": \"");
+                                            builder.append(escape_yaml(e3.getValue().getKey().getNamespace()));
+                                            builder.append(":");
+                                            builder.append(escape_yaml(e3.getValue().getKey().getKey()));
+                                            builder.append("\"\n");
+                                        });
                             });
-                    });
-            });
+                });
     }
 
     @Override
@@ -93,15 +94,15 @@ public class ConfigMaterialMapMapMapField extends ConfigField<Map<String, Map<St
             return override;
         } else {
             return Arrays.stream(annotation.def()).collect(
-                Collectors.toMap(ConfigMaterialMapMapMapEntry::key, e1 ->
-                    Arrays.stream(e1.value()).collect(
-                        Collectors.toMap(ConfigMaterialMapMapEntry::key, e2 ->
-                            Arrays.stream(e2.value()).collect(
-                                Collectors.toMap(ConfigMaterialMapEntry::key, e3 -> e3.value())
+                    Collectors.toMap(ConfigMaterialMapMapMapEntry::key, e1 ->
+                            Arrays.stream(e1.value()).collect(
+                                    Collectors.toMap(ConfigMaterialMapMapEntry::key, e2 ->
+                                            Arrays.stream(e2.value()).collect(
+                                                    Collectors.toMap(ConfigMaterialMapEntry::key, e3 -> e3.value())
+                                            )
+                                    )
                             )
-                        )
                     )
-                )
             );
         }
     }
@@ -130,8 +131,8 @@ public class ConfigMaterialMapMapMapField extends ConfigField<Map<String, Map<St
         builder.append(basename());
         builder.append(":\n");
         final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
-            : def();
+                ? load_from_yaml(existing_compatible_config)
+                : def();
         append_map_definition(builder, indent, "", def);
     }
 
@@ -165,18 +166,18 @@ public class ConfigMaterialMapMapMapField extends ConfigField<Map<String, Map<St
                     final var split = str.split(":");
                     if (split.length != 2) {
                         throw new YamlLoadException(
-                            "Invalid material entry in list '" +
-                            key3_path +
-                            "': '" +
-                            str +
-                            "' is not a valid namespaced key"
+                                "Invalid material entry in list '" +
+                                        key3_path +
+                                        "': '" +
+                                        str +
+                                        "' is not a valid namespaced key"
                         );
                     }
 
                     final var mat = material_from(namespaced_key(split[0], split[1]));
                     if (mat == null) {
                         throw new YamlLoadException(
-                            "Invalid material entry in list '" + key3_path + "': '" + str + "' does not exist"
+                                "Invalid material entry in list '" + key3_path + "': '" + str + "' does not exist"
                         );
                     }
                 }

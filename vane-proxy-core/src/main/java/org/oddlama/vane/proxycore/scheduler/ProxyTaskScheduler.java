@@ -1,6 +1,7 @@
 package org.oddlama.vane.proxycore.scheduler;
 
 import java.util.concurrent.TimeUnit;
+
 import org.oddlama.vane.proxycore.VaneProxyPlugin;
 
 public interface ProxyTaskScheduler {

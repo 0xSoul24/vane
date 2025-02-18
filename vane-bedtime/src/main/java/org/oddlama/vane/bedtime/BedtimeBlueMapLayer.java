@@ -1,6 +1,7 @@
 package org.oddlama.vane.bedtime;
 
 import java.util.UUID;
+
 import org.bukkit.OfflinePlayer;
 import org.oddlama.vane.annotation.config.ConfigBoolean;
 import org.oddlama.vane.annotation.lang.LangMessage;

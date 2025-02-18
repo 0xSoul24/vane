@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
@@ -51,7 +52,7 @@ public class ShapelessRecipeDefinition extends RecipeDefinition {
     public RecipeDefinition from_dict(Object dict) {
         if (!(dict instanceof Map<?, ?>)) {
             throw new IllegalArgumentException(
-                "Invalid shapeless recipe dictionary: Argument must be a Map<String, Object>!"
+                    "Invalid shapeless recipe dictionary: Argument must be a Map<String, Object>!"
             );
         }
         final var dict_map = (Map<?, ?>) dict;
@@ -59,7 +60,7 @@ public class ShapelessRecipeDefinition extends RecipeDefinition {
             this.ingredients = ingredients.stream().map(i -> (String) i).toList();
         } else {
             throw new IllegalArgumentException(
-                "Invalid shapeless recipe dictionary: ingredients must be a list of strings"
+                    "Invalid shapeless recipe dictionary: ingredients must be a list of strings"
             );
         }
 

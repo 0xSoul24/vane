@@ -20,6 +20,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.EnumWrappers.ChatType;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+
 import java.util.Arrays;
 
 public class WrapperPlayServerChat extends AbstractPacket {
@@ -93,9 +94,9 @@ public class WrapperPlayServerChat extends AbstractPacket {
 
         if (EnumWrappers.getChatTypeClass() != null) {
             Arrays.stream(ChatType.values())
-                .filter(t -> t.getId() == value)
-                .findAny()
-                .ifPresent(t -> handle.getChatTypes().writeSafely(0, t));
+                    .filter(t -> t.getId() == value)
+                    .findAny()
+                    .ifPresent(t -> handle.getChatTypes().writeSafely(0, t));
         }
     }
 }
