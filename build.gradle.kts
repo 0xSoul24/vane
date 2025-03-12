@@ -35,6 +35,7 @@ subprojects {
 		maven("https://jitpack.io")
 		maven("https://api.modrinth.com/maven")
 		maven("https://repo.bluecolored.de/releases")
+        maven("https://oss.sonatype.org/content/groups/public/")
 	}
 
 	tasks.withType<JavaCompile> {
@@ -43,8 +44,8 @@ subprojects {
 	}
 
 	dependencies {
-		compileOnly(group = "org.jetbrains", name = "annotations", version = "26.0.1")
-		annotationProcessor("org.jetbrains:annotations:26.0.1")
+		compileOnly(group = "org.jetbrains", name = "annotations", version = "26.0.2")
+		annotationProcessor("org.jetbrains:annotations:26.0.2")
 	}
 }
 
@@ -141,7 +142,7 @@ configure(subprojects.filter {
 }) {
 	dependencies {
 		implementation(group = "us.dynmap", name = "DynmapCoreAPI", version = "3.7-beta-6")
-		implementation(group = "de.bluecolored", name = "bluemap-api", version = "2.7.3")
+		implementation(group = "de.bluecolored", name = "bluemap-api", version = "2.7.4")
 	}
 }
 
