@@ -95,8 +95,9 @@ configure(subprojects.filter {
 		}
 
 		processResources {
+			val projectProperties = project.properties
 			filesMatching("**/*plugin.yml") {
-				expand(project.properties)
+				expand(projectProperties)
 			}
 		}
 	}

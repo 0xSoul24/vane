@@ -57,8 +57,9 @@ tasks {
 	}
 
 	processResources {
+		val projectProperties = project.properties
 		filesMatching("vane-core.properties") {
-			expand(project.properties + mapOf("resource_pack_sha1" to resource_pack_sha1))
+			expand(projectProperties + mapOf("resource_pack_sha1" to resource_pack_sha1))
 		}
 	}
 }
