@@ -17,7 +17,7 @@ dependencies {
     implementation(group = "com.electronwill.night-config", name = "toml", version = "3.8.1")
     implementation(group = "org.slf4j", name = "slf4j-api", version = "2.0.16")
     implementation(rootProject.project(":vane-core"))
-    compileOnly(group = "org.json", name = "json", version = "20250107")
+    compileOnly(group = "org.json", name = "json", version = "20250517")
 }
 
 java {

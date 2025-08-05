@@ -21,7 +21,7 @@ dependencies {
 	implementation(group = "org.reflections", name = "reflections", version = "0.10.2")
     implementation(group = "org.apache.commons", name = "commons-lang3", version = "3.17.0")
     implementation(group = "org.apache.commons", name = "commons-text", version = "1.13.1")
-	api(group = "org.json", name = "json", version = "20250107")
+	api(group = "org.json", name = "json", version = "20250517")
 	implementation(project(":vane-annotations"))
 }
 
