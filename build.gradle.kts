@@ -104,8 +104,8 @@ configure(subprojects.filter {
     }
 
 	dependencies {
-		//implementation(group = "com.comphenix.protocol", name = "ProtocolLib", version = "5.4.0")
-        implementation("com.comphenix.protocol:ProtocolLib:5.4.0-20250730.145634-1")
+	    implementation(group = "com.comphenix.protocol", name = "ProtocolLib", version = "5.4.0-SNAPSHOT")
+        //implementation("com.comphenix.protocol:ProtocolLib:5.4.0-20250730.145634-1")
 
 		compileOnly(project(":vane-annotations"))
 		annotationProcessor(project(path = ":vane-annotations", configuration = "reobf"))
