@@ -29,7 +29,6 @@ subprojects {
 		mavenLocal()
 		mavenCentral()
 		maven("https://repo.papermc.io/repository/maven-public/")
-		maven("https://repo.dmulloy2.net/repository/public/")
 		maven("https://repo.mikeprimm.com/")
 		maven("https://repo.codemc.org/repository/maven-public/")
 		maven("https://jitpack.io")
@@ -105,7 +104,7 @@ configure(subprojects.filter {
 
 	dependencies {
 		//implementation(group = "com.comphenix.protocol", name = "ProtocolLib", version = "5.4.0")
-        implementation("com.comphenix.protocol:ProtocolLib:5.4.0-20250730.145634-1")
+        implementation("net.dmulloy2:ProtocolLib:5.4.0")
 
 		compileOnly(project(":vane-annotations"))
 		annotationProcessor(project(path = ":vane-annotations", configuration = "reobf"))
