@@ -1,7 +1,7 @@
 import java.security.MessageDigest
 
 plugins {
-	id("com.gradleup.shadow") version "9.0.0-rc3"
+	id("com.gradleup.shadow") version "9.1.0"
 	id("net.kyori.blossom") version "2.1.0" // Text replacement for version numbers
 }
 
