@@ -110,7 +110,7 @@ configure(subprojects.filter {
 		annotationProcessor(project(path = ":vane-annotations", configuration = "reobf"))
 	}
 
-	rootProject.tasks.runMojangMappedServer {
+	rootProject.tasks.runDevBundleServer {
 		// the input to reobf, is the mojmapped jars.
 		pluginJars(tasks.named<io.papermc.paperweight.tasks.RemapJar>("reobfJar").flatMap { it.inputJar })
 	}
