@@ -42,8 +42,8 @@ subprojects {
 	}
 
 	dependencies {
-		compileOnly(group = "org.jetbrains", name = "annotations", version = "26.0.2")
-		annotationProcessor("org.jetbrains:annotations:26.0.2")
+		compileOnly(group = "org.jetbrains", name = "annotations", version = "26.0.2-1")
+		annotationProcessor("org.jetbrains:annotations:26.0.2-1")
 	}
 }
 
