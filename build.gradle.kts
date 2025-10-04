@@ -1,7 +1,7 @@
 plugins {
 	`java-library`
-	id("io.papermc.paperweight.userdev") version "2.0.0-beta.18"
-	id("xyz.jpenilla.run-paper") version "3.0.0" // Adds runServer and runMojangMappedServer tasks for testing
+	id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
+	id("xyz.jpenilla.run-paper") version "3.0.1" // Adds runServer and runMojangMappedServer tasks for testing
 }
 
 dependencies {
@@ -142,7 +142,7 @@ configure(subprojects.filter {
 }) {
 	dependencies {
 		implementation("us.dynmap:DynmapCoreAPI:3.7-beta-6")
-		implementation("de.bluecolored:bluemap-api:2.7.5")
+		implementation("de.bluecolored:bluemap-api:2.7.6")
 	}
 }
 
