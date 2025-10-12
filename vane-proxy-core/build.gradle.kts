@@ -1,6 +1,6 @@
 plugins {
     id("com.gradleup.shadow") version "9.2.2"
-    id("net.kyori.blossom") version "2.1.0"
+    id("net.kyori.blossom") version "2.2.0"
 }
 
 sourceSets {
