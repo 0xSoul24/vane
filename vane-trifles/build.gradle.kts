@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-	compileOnly("com.github.retrooper:packetevents-spigot:2.9.5")
+	compileOnly("com.github.retrooper:packetevents-spigot:2.10.0")
 	compileOnly(group = "org.json", name = "json", version = "20250517")
 }
 
