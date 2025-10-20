@@ -28,4 +28,4 @@ bluemap = {group = "de.bluecolored", name = "bluemap-api", version = "2.7.6"}
 paperweightUserdev = {id = "io.papermc.paperweight.userdev", version = "2.0.0-beta.19"}
 runPaper = {id = "xyz.jpenilla.run-paper", version = "3.0.2"}
 shadow = {id = "com.gradleup.shadow", version = "9.2.2"}
-blossom = {id = "net.kyori.blossom", version = "2.1.0"}
+blossom = {id = "net.kyori.blossom", version = "2.2.0"}
