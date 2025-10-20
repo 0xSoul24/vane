@@ -3,7 +3,7 @@ paper = "1.21.10-R0.1-SNAPSHOT"
 bstats = "3.1.0"
 
 [libraries]
-annotations = {group = "org.jetbrains", name = "annotations", version = "26.0.2"}
+annotations = {group = "org.jetbrains", name = "annotations", version = "26.0.2-1"}
 reflections = {group = "org.reflections", name = "reflections", version = "0.10.2"}
 commonsLang = {group = "org.apache.commons", name = "commons-lang3", version = "3.19.0"}
 commonsText = {group = "org.apache.commons", name = "commons-text", version = "1.14.0"}
