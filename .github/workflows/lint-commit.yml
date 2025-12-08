@@ -16,7 +16,7 @@ jobs:
 
       - uses: actions/setup-node@v6.0.0
         with:
-          node-version: 22
+          node-version: 24
       - run: |
           # Setup commitlint
           if ! yarn add {ts-node, @commitlint/{config-conventional,cli}} >> /dev/null 2>&1; then
