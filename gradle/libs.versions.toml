@@ -5,7 +5,7 @@ bstats = "3.1.0"
 [libraries]
 annotations = {group = "org.jetbrains", name = "annotations", version = "26.0.2-1"}
 reflections = {group = "org.reflections", name = "reflections", version = "0.10.2"}
-commonsLang = {group = "org.apache.commons", name = "commons-lang3", version = "3.19.0"}
+commonsLang = {group = "org.apache.commons", name = "commons-lang3", version = "3.20.0"}
 commonsText = {group = "org.apache.commons", name = "commons-text", version = "1.14.0"}
 json = {group = "org.json", name = "json", version = "20250517"}
 slf4j = {group = "org.slf4j", name = "slf4j-api", version = "2.0.17"}
