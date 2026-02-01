@@ -7,6 +7,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.registry.RegistryKey;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.permissions.PermissionDefault;
@@ -28,11 +29,16 @@ public class Finditem extends Command<Trifles> {
             .then(help())
             .then(
                 argument("material", ArgumentTypes.resource(RegistryKey.ITEM)).executes(ctx -> {
-                    get_module()
-                        .item_finder.find_item(
-                            (Player) ctx.getSource().getSender(),
-                            ctx.getArgument("material", ItemType.class).asMaterial()
-                        );
+                    final ItemType itemType = ctx.getArgument("material", ItemType.class);
+                    final Material material = Material.matchMaterial(itemType.getKey().getKey());
+
+                    if (material != null) {
+                        get_module()
+                            .item_finder.find_item(
+                                (Player) ctx.getSource().getSender(),
+                                material
+                            );
+                    }
                     return SINGLE_SUCCESS;
                 })
             );
