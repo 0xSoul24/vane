@@ -19,6 +19,9 @@ vault = {group = "com.github.MilkBowl", name = "VaultAPI", version = "1.7.1"}
 velocity = {group = "com.velocitypowered", name = "velocity-api", version = "3.5.0-SNAPSHOT"}
 packetEvents = {group = "com.github.retrooper", name = "packetevents-spigot", version = "2.11.2"}
 
+# spotbugs / findbugs annotations (avoids missing annotation warnings)
+spotbugsAnnotations = {group = "com.github.spotbugs", name = "spotbugs-annotations", version = "4.8.0"}
+
 # maps
 dynmap = {group = "us.dynmap", name = "DynmapCoreAPI", version = "3.7-beta-6"}
 bluemap = {group = "de.bluecolored", name = "bluemap-api", version = "2.7.7"}

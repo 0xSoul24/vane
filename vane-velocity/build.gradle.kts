@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     compileOnly(fileTree(mapOf("dir" to "external", "include" to listOf("*.jar"))))
+    compileOnly(libs.spotbugsAnnotations)
     implementation(libs.velocity)
     annotationProcessor(libs.velocity)
     implementation(libs.bstatsVelocity)
