@@ -81,8 +81,12 @@ public class ResourcePackDistributor extends Listener<Core> {
                 dev_server = new ResourcePackDevServer(this, pack_output);
                 dev_server.serve();
                 file_watcher.watch_for_changes();
-            } catch (IOException | InterruptedException ignored) {
-                ignored.printStackTrace();
+            } catch (IOException | InterruptedException e) {
+                get_module().log.log(
+                    java.util.logging.Level.SEVERE,
+                    "Failed to initialize resource pack dev server or file watcher",
+                    e
+                );
             }
 
             get_module().log.info("Setting up dev lazy server");

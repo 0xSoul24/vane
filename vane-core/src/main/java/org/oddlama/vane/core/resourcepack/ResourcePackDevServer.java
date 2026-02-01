@@ -33,7 +33,11 @@ public class ResourcePackDevServer implements HttpHandler {
             httpServer.setExecutor(null);
             httpServer.start();
         } catch (IOException e) {
-            e.printStackTrace();
+            resource_pack_distributor.get_module().log.log(
+                java.util.logging.Level.SEVERE,
+                "Failed to start resource pack dev server",
+                e
+            );
         }
     }
 
