@@ -16,7 +16,6 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import net.minecraft.core.BlockPos;
-import org.oddlama.vane.external.apache.commons.lang3.StringUtils;
 import org.bukkit.Chunk;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -706,7 +705,7 @@ public class Regions extends Module<Regions> {
             .getKeys()
             .stream()
             .filter(key -> key.toString().startsWith(storage_region_prefix))
-            .map(key -> StringUtils.removeStart(key.toString(), storage_region_prefix))
+            .map(key -> key.toString().substring(storage_region_prefix.length()))
             .map(uuid -> UUID.fromString(uuid))
             .collect(Collectors.toSet());
 
@@ -793,7 +792,7 @@ public class Regions extends Module<Regions> {
             .getKeys()
             .stream()
             .filter(key -> key.toString().startsWith(storage_region_prefix))
-            .map(key -> StringUtils.removeStart(key.toString(), storage_region_prefix))
+            .map(key -> key.toString().substring(storage_region_prefix.length()))
             .map(uuid -> UUID.fromString(uuid))
             .collect(Collectors.toSet());
 
