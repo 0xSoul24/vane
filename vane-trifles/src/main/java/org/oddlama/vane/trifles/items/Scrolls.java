@@ -79,14 +79,10 @@ public class Scrolls extends Listener<Trifles> {
             case RIGHT_CLICK_AIR:
                 break;
             case RIGHT_CLICK_BLOCK:
-                // Require non-canceled state (so it won't trigger for block-actions like chests)
-                // But allow if the clicked block can't be interacted with in the first place
+                // Require non-canceled state (so it won't trigger for block-actions like chests, doors, etc.)
+                // The event system properly handles block interactions and sets useInteractedBlock accordingly
                 if (event.useInteractedBlock() != Event.Result.DENY) {
-                    final var block = event.getClickedBlock();
-                    if (block.getType().isInteractable()) {
-                        return;
-                    }
-                    event.setUseInteractedBlock(Event.Result.DENY);
+                    return;
                 }
                 break;
         }
