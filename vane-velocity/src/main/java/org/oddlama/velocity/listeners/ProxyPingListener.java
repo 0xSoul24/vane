@@ -1,6 +1,6 @@
 package org.oddlama.velocity.listeners;
 
-import static org.oddlama.velocity.Util.get_server_for_host;
+import static org.oddlama.velocity.Util.getServerForHost;
 
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyPingEvent;
@@ -19,16 +19,16 @@ public class ProxyPingListener {
     }
 
     @Subscribe
-    public void on_proxy_ping(ProxyPingEvent event) {
-        ProxyServer proxy = velocity.get_raw_proxy();
+    public void onProxyPing(ProxyPingEvent event) {
+        ProxyServer proxy = velocity.getRawProxy();
 
-        final var virtual_host = event.getConnection().getVirtualHost();
-        if (virtual_host.isEmpty()) return;
+        final var virtualHost = event.getConnection().getVirtualHost();
+        if (virtualHost.isEmpty()) return;
 
-        final var server = get_server_for_host(proxy, virtual_host.get());
+        final var server = getServerForHost(proxy, virtualHost.get());
 
-        var server_info = new VelocityCompatServerInfo(server);
-        PingEvent proxy_event = new VelocityCompatPingEvent(velocity, event, server_info);
-        proxy_event.fire();
+        var serverInfo = new VelocityCompatServerInfo(server);
+        PingEvent proxyEvent = new VelocityCompatPingEvent(velocity, event, serverInfo);
+        proxyEvent.fire();
     }
 }

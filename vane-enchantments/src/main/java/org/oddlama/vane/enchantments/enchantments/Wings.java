@@ -1,8 +1,8 @@
 package org.oddlama.vane.enchantments.enchantments;
 
-import static org.oddlama.vane.util.Conversions.ms_to_ticks;
-import static org.oddlama.vane.util.ItemUtil.damage_item;
-import static org.oddlama.vane.util.PlayerUtil.apply_elytra_boost;
+import static org.oddlama.vane.util.Conversions.msToTicks;
+import static org.oddlama.vane.util.ItemUtil.damageItem;
+import static org.oddlama.vane.util.PlayerUtil.applyElytraBoost;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -25,7 +25,7 @@ import org.oddlama.vane.core.enchantments.CustomEnchantment;
 import org.oddlama.vane.core.module.Context;
 import org.oddlama.vane.enchantments.Enchantments;
 
-@VaneEnchantment(name = "wings", max_level = 4, rarity = Rarity.RARE, treasure = true, allow_custom = true)
+@VaneEnchantment(name = "wings", maxLevel = 4, rarity = Rarity.RARE, treasure = true, allowCustom = true)
 public class Wings extends CustomEnchantment<Enchantments> {
 
     @ConfigIntList(
@@ -33,30 +33,30 @@ public class Wings extends CustomEnchantment<Enchantments> {
         min = 0,
         desc = "Boost cooldown in milliseconds for each enchantment level."
     )
-    private List<Integer> config_boost_cooldowns;
+    private List<Integer> configBoostCooldowns;
 
     @ConfigDoubleList(def = { 0.4, 0.47, 0.54, 0.6 }, min = 0.0, desc = "Boost strength for each enchantment level.")
-    private List<Double> config_boost_strengths;
+    private List<Double> configBoostStrengths;
 
     public Wings(Context<Enchantments> context) {
         super(context);
     }
 
     @Override
-    public RecipeList default_recipes() {
+    public RecipeList defaultRecipes() {
         return RecipeList.of(
             new ShapedRecipeDefinition("generic")
-                .shape("m m", "dbd", "r r")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_knowledge")
-                .set_ingredient('m', Material.PHANTOM_MEMBRANE)
-                .set_ingredient('d', Material.DISPENSER)
-                .set_ingredient('r', Material.FIREWORK_ROCKET)
+                .shape("M M", "DBD", "R R")
+                .setIngredient('B', "vane_enchantments:ancient_tome_of_knowledge")
+                .setIngredient('M', Material.PHANTOM_MEMBRANE)
+                .setIngredient('D', Material.DISPENSER)
+                .setIngredient('R', Material.FIREWORK_ROCKET)
                 .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
         );
     }
 
     @Override
-    public LootTableList default_loot_tables() {
+    public LootTableList defaultLootTables() {
         return LootTableList.of(
             new LootDefinition("generic")
                 .in(LootTables.BURIED_TREASURE)
@@ -75,22 +75,22 @@ public class Wings extends CustomEnchantment<Enchantments> {
         );
     }
 
-    private int get_boost_cooldown(int level) {
-        if (level > 0 && level <= config_boost_cooldowns.size()) {
-            return config_boost_cooldowns.get(level - 1);
+    private int getBoostCooldown(int level) {
+        if (level > 0 && level <= configBoostCooldowns.size()) {
+            return configBoostCooldowns.get(level - 1);
         }
-        return config_boost_cooldowns.get(0);
+        return configBoostCooldowns.get(0);
     }
 
-    private double get_boost_strength(int level) {
-        if (level > 0 && level <= config_boost_strengths.size()) {
-            return config_boost_strengths.get(level - 1);
+    private double getBoostStrength(int level) {
+        if (level > 0 && level <= configBoostStrengths.size()) {
+            return configBoostStrengths.get(level - 1);
         }
-        return config_boost_strengths.get(0);
+        return configBoostStrengths.get(0);
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void on_player_toggle_sneak(PlayerToggleSneakEvent event) {
+    public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
         // Check sneaking and flying
         final var player = event.getPlayer();
         if (!event.isSneaking() || !player.isGliding()) {
@@ -110,10 +110,10 @@ public class Wings extends CustomEnchantment<Enchantments> {
         }
 
         // Apply boost
-        final var cooldown = ms_to_ticks(get_boost_cooldown(level));
+        final var cooldown = msToTicks(getBoostCooldown(level));
         player.setCooldown(Material.ELYTRA, (int) cooldown);
-        apply_elytra_boost(player, get_boost_strength(level));
-        damage_item(player, chest, (int) (1.0 + 2.0 * Math.random()));
+        applyElytraBoost(player, getBoostStrength(level));
+        damageItem(player, chest, (int) (1.0 + 2.0 * Math.random()));
 
         // Spawn particles
         final var loc = player.getLocation();

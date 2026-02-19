@@ -1,7 +1,7 @@
 package org.oddlama.vane.regions.region;
 
-import static org.oddlama.vane.core.persistent.PersistentSerializer.from_json;
-import static org.oddlama.vane.core.persistent.PersistentSerializer.to_json;
+import static org.oddlama.vane.core.persistent.PersistentSerializer.fromJson;
+import static org.oddlama.vane.core.persistent.PersistentSerializer.toJson;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -10,22 +10,23 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
+import org.oddlama.vane.core.persistent.PersistentSerializer;
 import org.oddlama.vane.util.LazyBlock;
 
 public class RegionExtent {
 
     public static Object serialize(@NotNull final Object o) throws IOException {
-        final var region_extent = (RegionExtent) o;
+        final var regionExtent = (RegionExtent) o;
         final var json = new JSONObject();
-        json.put("min", to_json(LazyBlock.class, region_extent.min));
-        json.put("max", to_json(LazyBlock.class, region_extent.max));
+        json.put("min", PersistentSerializer.toJson(LazyBlock.class, regionExtent.min));
+        json.put("max", PersistentSerializer.toJson(LazyBlock.class, regionExtent.max));
         return json;
     }
 
     public static RegionExtent deserialize(@NotNull final Object o) throws IOException {
         final var json = (JSONObject) o;
-        final var min = from_json(LazyBlock.class, json.get("min"));
-        final var max = from_json(LazyBlock.class, json.get("max"));
+        final var min = PersistentSerializer.fromJson(LazyBlock.class, json.get("min"));
+        final var max = PersistentSerializer.fromJson(LazyBlock.class, json.get("max"));
         return new RegionExtent(min, max);
     }
 
@@ -68,7 +69,7 @@ public class RegionExtent {
     }
 
     public UUID world() {
-        return min.world_id();
+        return min.worldId();
     }
 
     public Block min() {
@@ -79,7 +80,7 @@ public class RegionExtent {
         return max.block();
     }
 
-    public boolean is_inside(final Location loc) {
+    public boolean isInside(final Location loc) {
         if (!loc.getWorld().equals(min().getWorld())) {
             return false;
         }
@@ -96,7 +97,7 @@ public class RegionExtent {
         );
     }
 
-    public boolean is_inside(final Block block) {
+    public boolean isInside(final Block block) {
         if (!block.getWorld().equals(min().getWorld())) {
             return false;
         }
@@ -113,7 +114,7 @@ public class RegionExtent {
         );
     }
 
-    public boolean intersects_extent(final RegionExtent other) {
+    public boolean intersectsExtent(final RegionExtent other) {
         if (!min().getWorld().equals(other.min().getWorld())) {
             return false;
         }
@@ -132,21 +133,21 @@ public class RegionExtent {
         final var hhz = Math.max(h1.getZ(), h2.getZ());
 
         // Compute global extent length
-        final var extent_global_x = (hhx - llx) + 1;
-        final var extent_global_y = (hhy - lly) + 1;
-        final var extent_global_z = (hhz - llz) + 1;
+        final var extentGlobalX = (hhx - llx) + 1;
+        final var extentGlobalY = (hhy - lly) + 1;
+        final var extentGlobalZ = (hhz - llz) + 1;
 
         // Compute a sum of local extent lengths
-        final var extent_sum_x = (h2.getX() - l2.getX()) + (h1.getX() - l1.getX()) + 2;
-        final var extent_sum_y = (h2.getY() - l2.getY()) + (h1.getY() - l1.getY()) + 2;
-        final var extent_sum_z = (h2.getZ() - l2.getZ()) + (h1.getZ() - l1.getZ()) + 2;
+        final var extentSumX = (h2.getX() - l2.getX()) + (h1.getX() - l1.getX()) + 2;
+        final var extentSumY = (h2.getY() - l2.getY()) + (h1.getY() - l1.getY()) + 2;
+        final var extentSumZ = (h2.getZ() - l2.getZ()) + (h1.getZ() - l1.getZ()) + 2;
 
         // It intersects exactly when:
         //   for all and in axis: global_extent(a) < individual_extent_sum(a)
-        return extent_global_x < extent_sum_x && extent_global_y < extent_sum_y && extent_global_z < extent_sum_z;
+        return extentGlobalX < extentSumX && extentGlobalY < extentSumY && extentGlobalZ < extentSumZ;
     }
 
-    public boolean intersects_chunk(final Chunk chunk) {
+    public boolean intersectsChunk(final Chunk chunk) {
         if (!chunk.getWorld().equals(min().getWorld())) {
             return false;
         }
@@ -165,15 +166,15 @@ public class RegionExtent {
         final var hhz = Math.max(h1.getZ(), h2z);
 
         // Compute global extent length
-        final var extent_global_x = (hhx - llx) + 1;
-        final var extent_global_z = (hhz - llz) + 1;
+        final var extentGlobalX = (hhx - llx) + 1;
+        final var extentGlobalZ = (hhz - llz) + 1;
 
         // Compute a sum of local extent lengths
-        final var extent_sum_x = (h2x - l2x) + (h1.getX() - l1.getX()) + 2;
-        final var extent_sum_z = (h2z - l2z) + (h1.getZ() - l1.getZ()) + 2;
+        final var extentSumX = (h2x - l2x) + (h1.getX() - l1.getX()) + 2;
+        final var extentSumZ = (h2z - l2z) + (h1.getZ() - l1.getZ()) + 2;
 
         // It intersects exactly when:
         //   for all and in axis: global_extent(a) < individual_extent_sum(a)
-        return extent_global_x < extent_sum_x && extent_global_z < extent_sum_z;
+        return extentGlobalX < extentSumX && extentGlobalZ < extentSumZ;
     }
 }

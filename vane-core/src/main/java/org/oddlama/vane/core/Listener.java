@@ -11,12 +11,12 @@ public class Listener<T extends Module<T>> extends ModuleComponent<T> implements
     }
 
     @Override
-    protected void on_enable() {
-        get_module().register_listener(this);
+    protected void onEnable() {
+        getModule().registerListener(this);
     }
 
     @Override
-    protected void on_disable() {
-        get_module().unregister_listener(this);
+    protected void onDisable() {
+        getModule().unregisterListener(this);
     }
 }

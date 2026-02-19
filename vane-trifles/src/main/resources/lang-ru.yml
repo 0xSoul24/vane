@@ -12,93 +12,93 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 4
+Version: 4
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'ru_ru'
+ResourcePackLangCode: 'ru_ru'
 
-command_heads:
-  usage: "%1$s"
-  description: "Получить голову из библиотеки голов."
-  help: "Активируйте чтобы открыть библиотеку голов."
+CommandHeads:
+  Usage: "%1$s"
+  Description: "Получить голову из библиотеки голов."
+  Help: "Активируйте чтобы открыть библиотеку голов."
 
-command_finditem:
-  usage: "%1$s"
-  description: "Поиск указанного материала в ближайших контейнерах и у существ."
-  help: "Поиск указанного материала в ближайших контейнерах и у существ."
+CommandFinditem:
+  Usage: "%1$s"
+  Description: "Поиск указанного материала в ближайших контейнерах и у существ."
+  Help: "Поиск указанного материала в ближайших контейнерах и у существ."
 
-command_setspawn:
-  usage: "%1$s"
-  description: "Устанавливает глобальный спавнпоинт на текущую позицию."
-  help: "Устанавливает глобальный спавнпоинт на текущую позицию."
+CommandSetspawn:
+  Usage: "%1$s"
+  Description: "Устанавливает глобальный спавнпоинт на текущую позицию."
+  Help: "Устанавливает глобальный спавнпоинт на текущую позицию."
 
-storage:
-  open_stacked_item: "Вам нужно разделить эти предметы чтобы открыть их."
-  item_pouch:
-    name: "Сумка"
-  item_backpack:
-    name: "Рюкзак"
+Storage:
+  OpenStackedItem: "Вам нужно разделить эти предметы чтобы открыть их."
+  ItemPouch:
+    Name: "Сумка"
+  ItemBackpack:
+    Name: "Рюкзак"
 
-xp_bottles:
-  item_small_xp_bottle:
-    name: "Маленькая бутылка опыта"
-  item_medium_xp_bottle:
-    name: "Средняя бутылка опыта"
-  item_large_xp_bottle:
-    name: "Большая бутылка опыта"
+XpBottles:
+  ItemSmallXpBottle:
+    Name: "Маленькая бутылка опыта"
+  ItemMediumXpBottle:
+    Name: "Средняя бутылка опыта"
+  ItemLargeXpBottle:
+    Name: "Большая бутылка опыта"
 
-item_empty_xp_bottle:
-  name: "Пустая бутылка опыта"
+ItemEmptyXpBottle:
+  Name: "Пустая бутылка опыта"
 
-item_north_compass:
-  name: "Северный Компас"
+ItemNorthCompass:
+  Name: "Северный Компас"
 
-item_reinforced_elytra:
-  name: "Незеритовые элитры"
+ItemReinforcedElytra:
+  Name: "Незеритовые элитры"
 
-item_file:
-  name: "Напильник"
+ItemFile:
+  Name: "Напильник"
 
-item_slime_bucket:
-  name: "Слизень в ведре"
+ItemSlimeBucket:
+  Name: "Слизень в ведре"
 
-item_papyrus_scroll:
-  name: "Пустой свиток"
+ItemPapyrusScroll:
+  Name: "Пустой свиток"
 
-item_trowel:
-  name: "Шпатель"
-  lore:
+ItemTrowel:
+  Name: "Шпатель"
+  Lore:
     - "§7ПКМ по этому предмету в инвентаре чтобы изменить источник сырья."
     - "§7Текущий источник сырья: %1$s"
 
-sickles:
-  item_wooden_sickle:
-    name: "Деревянный Серп"
-  item_stone_sickle:
-    name: "Каменный Серп"
-  item_iron_sickle:
-    name: "Железный Серп"
-  item_golden_sickle:
-    name: "Золотой Серп"
-  item_diamond_sickle:
-    name: "Алмазный Серп"
-  item_netherite_sickle:
-    name: "Незеритовый Серп"
+Sickles:
+  ItemWoodenSickle:
+    Name: "Деревянный Серп"
+  ItemStoneSickle:
+    Name: "Каменный Серп"
+  ItemIronSickle:
+    Name: "Железный Серп"
+  ItemGoldenSickle:
+    Name: "Золотой Серп"
+  ItemDiamondSickle:
+    Name: "Алмазный Серп"
+  ItemNetheriteSickle:
+    Name: "Незеритовый Серп"
 
-scrolls:
-  item_home_scroll:
-    name: "Свиток телепортации (Домой)"
-  item_unstable_scroll:
-    name: "Свиток телепортации (Нестабильный)"
-    teleport_no_previous_teleport: "§cВы ещё ни разу не пользовались свитками."
-  item_spawn_scroll:
-    name: "Свиток телепортации (Спавн)"
-  item_lodestone_scroll:
-    name: "Свиток телепортации (Магнетит)"
-    teleport_no_bound_lodestone: "§bПКМ в присяди по магнетиту чтобы (пере)привязать этот свиток."
-    teleport_missing_lodestone: "§cНе похоже чтобы свиток что-то делал.. &6Вы боитесь что привязанный магнетит мог пропасть."
-    bound_lore: "§7Bound to (%2$s§7, %3$s§7, %4$s§7) in %1$s"
-  item_death_scroll:
-    name: "Свиток телепортации (К месту смерти)"
-    teleport_no_recent_death: "§cВы ещё не умирали, или уже использовали этот свиток!"
+Scrolls:
+  ItemHomeScroll:
+    Name: "Свиток телепортации (Домой)"
+  ItemUnstableScroll:
+    Name: "Свиток телепортации (Нестабильный)"
+    TeleportNoPreviousTeleport: "§cВы ещё ни разу не пользовались свитками."
+  ItemSpawnScroll:
+    Name: "Свиток телепортации (Спавн)"
+  ItemLodestoneScroll:
+    Name: "Свиток телепортации (Магнетит)"
+    TeleportNoBoundLodestone: "§bПКМ в присяди по магнетиту чтобы (пере)привязать этот свиток."
+    TeleportMissingLodestone: "§cНе похоже чтобы свиток что-то делал.. &6Вы боитесь что привязанный магнетит мог пропасть."
+    BoundLore: "§7Bound to (%2$s§7, %3$s§7, %4$s§7) in %1$s"
+  ItemDeathScroll:
+    Name: "Свиток телепортации (К месту смерти)"
+    TeleportNoRecentDeath: "§cВы ещё не умирали, или уже использовали этот свиток!"

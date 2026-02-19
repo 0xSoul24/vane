@@ -1,12 +1,13 @@
 package org.oddlama.vane.regions.region;
 
-import static org.oddlama.vane.core.persistent.PersistentSerializer.from_json;
-import static org.oddlama.vane.core.persistent.PersistentSerializer.to_json;
+import static org.oddlama.vane.core.persistent.PersistentSerializer.fromJson;
+import static org.oddlama.vane.core.persistent.PersistentSerializer.toJson;
 
 import java.io.IOException;
 import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
+import org.oddlama.vane.core.persistent.PersistentSerializer;
 import org.oddlama.vane.regions.Regions;
 
 public class Region {
@@ -14,11 +15,11 @@ public class Region {
     public static Object serialize(@NotNull final Object o) throws IOException {
         final var region = (Region) o;
         final var json = new JSONObject();
-        json.put("id", to_json(UUID.class, region.id));
-        json.put("name", to_json(String.class, region.name));
-        json.put("owner", to_json(UUID.class, region.owner));
-        json.put("region_group", to_json(UUID.class, region.region_group));
-        json.put("extent", to_json(RegionExtent.class, region.extent));
+        json.put("id", PersistentSerializer.toJson(UUID.class, region.id));
+        json.put("name", PersistentSerializer.toJson(String.class, region.name));
+        json.put("owner", PersistentSerializer.toJson(UUID.class, region.owner));
+        json.put("regionGroup", PersistentSerializer.toJson(UUID.class, region.regionGroup));
+        json.put("extent", PersistentSerializer.toJson(RegionExtent.class, region.extent));
         return json;
     }
 
@@ -26,29 +27,29 @@ public class Region {
     public static Region deserialize(@NotNull final Object o) throws IOException {
         final var json = (JSONObject) o;
         final var region = new Region();
-        region.id = from_json(UUID.class, json.get("id"));
-        region.name = from_json(String.class, json.get("name"));
-        region.owner = from_json(UUID.class, json.get("owner"));
-        region.region_group = from_json(UUID.class, json.get("region_group"));
-        region.extent = from_json(RegionExtent.class, json.get("extent"));
+        region.id = PersistentSerializer.fromJson(UUID.class, json.get("id"));
+        region.name = PersistentSerializer.fromJson(String.class, json.get("name"));
+        region.owner = PersistentSerializer.fromJson(UUID.class, json.get("owner"));
+        region.regionGroup = PersistentSerializer.fromJson(UUID.class, json.get("regionGroup"));
+        region.extent = PersistentSerializer.fromJson(RegionExtent.class, json.get("extent"));
         return region;
     }
 
     private Region() {}
 
-    public Region(final String name, final UUID owner, final RegionExtent extent, final UUID region_group) {
+    public Region(final String name, final UUID owner, final RegionExtent extent, final UUID regionGroup) {
         this.id = UUID.randomUUID();
         this.name = name;
         this.owner = owner;
         this.extent = extent;
-        this.region_group = region_group;
+        this.regionGroup = regionGroup;
     }
 
     private UUID id;
     private String name;
     private UUID owner;
     private RegionExtent extent;
-    private UUID region_group;
+    private UUID regionGroup;
 
     public boolean invalidated = true;
 
@@ -73,22 +74,22 @@ public class Region {
         return extent;
     }
 
-    private RegionGroup cached_region_group = null;
+    private RegionGroup cachedRegionGroup = null;
 
-    public UUID region_group_id() {
-        return region_group;
+    public UUID regionGroupId() {
+        return regionGroup;
     }
 
-    public void region_group_id(final UUID region_group) {
-        this.region_group = region_group;
-        this.cached_region_group = null;
+    public void regionGroupId(final UUID regionGroup) {
+        this.regionGroup = regionGroup;
+        this.cachedRegionGroup = null;
         this.invalidated = true;
     }
 
-    public RegionGroup region_group(final Regions regions) {
-        if (cached_region_group == null) {
-            cached_region_group = regions.get_region_group(region_group);
+    public RegionGroup regionGroup(final Regions regions) {
+        if (cachedRegionGroup == null) {
+            cachedRegionGroup = regions.getRegionGroup(regionGroup);
         }
-        return cached_region_group;
+        return cachedRegionGroup;
     }
 }

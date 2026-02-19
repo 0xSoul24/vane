@@ -6,26 +6,26 @@ import org.jetbrains.annotations.Nullable;
 
 public class CustomModelDataRegistry implements org.oddlama.vane.core.item.api.CustomModelDataRegistry {
 
-    private final HashMap<NamespacedKey, Range> reserved_ranges = new HashMap<>();
+    private final HashMap<NamespacedKey, Range> reservedRanges = new HashMap<>();
 
     @Override
     public boolean has(int data) {
-        return reserved_ranges.values().stream().anyMatch(r -> r.contains(data));
+        return reservedRanges.values().stream().anyMatch(r -> r.contains(data));
     }
 
     @Override
     public boolean hasAny(Range range) {
-        return reserved_ranges.values().stream().anyMatch(r -> r.overlaps(range));
+        return reservedRanges.values().stream().anyMatch(r -> r.overlaps(range));
     }
 
     @Override
     public @Nullable Range get(NamespacedKey resourceKey) {
-        return reserved_ranges.get(resourceKey);
+        return reservedRanges.get(resourceKey);
     }
 
     @Override
     public @Nullable NamespacedKey get(int data) {
-        for (final var kv : reserved_ranges.entrySet()) {
+        for (final var kv : reservedRanges.entrySet()) {
             if (kv.getValue().contains(data)) {
                 return kv.getKey();
             }
@@ -36,7 +36,7 @@ public class CustomModelDataRegistry implements org.oddlama.vane.core.item.api.C
 
     @Override
     public @Nullable NamespacedKey get(Range range) {
-        for (final var kv : reserved_ranges.entrySet()) {
+        for (final var kv : reservedRanges.entrySet()) {
             if (kv.getValue().overlaps(range)) {
                 return kv.getKey();
             }
@@ -51,7 +51,7 @@ public class CustomModelDataRegistry implements org.oddlama.vane.core.item.api.C
         if (existing != null) {
             throw new IllegalArgumentException("Cannot reserve range " + range + ", already registered by " + existing);
         }
-        reserved_ranges.put(resourceKey, range);
+        reservedRanges.put(resourceKey, range);
     }
 
     @Override
@@ -62,6 +62,6 @@ public class CustomModelDataRegistry implements org.oddlama.vane.core.item.api.C
                 "Cannot reserve customModelData " + data + ", already registered by " + existing
             );
         }
-        reserved_ranges.put(resourceKey, new Range(data, data + 1));
+        reservedRanges.put(resourceKey, new Range(data, data + 1));
     }
 }

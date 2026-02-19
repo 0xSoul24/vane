@@ -14,7 +14,7 @@ public class SmithingRecipeDefinition extends RecipeDefinition {
 
     private String base = null;
     private String addition = null;
-    private boolean copy_nbt = false;
+    private boolean copyNbt = false;
     private String result = null;
 
     public SmithingRecipeDefinition(String name) {
@@ -39,8 +39,8 @@ public class SmithingRecipeDefinition extends RecipeDefinition {
         return this;
     }
 
-    public SmithingRecipeDefinition copy_nbt(boolean copy_nbt) {
-        this.copy_nbt = copy_nbt;
+    public SmithingRecipeDefinition copyNbt(boolean copyNbt) {
+        this.copyNbt = copyNbt;
         return this;
     }
 
@@ -58,43 +58,47 @@ public class SmithingRecipeDefinition extends RecipeDefinition {
     }
 
     @Override
-    public Object to_dict() {
+    public Object toDict() {
         final HashMap<String, Object> dict = new HashMap<>();
-        dict.put("base", this.base);
-        dict.put("addition", this.addition);
-        dict.put("copy_nbt", this.copy_nbt);
-        dict.put("result", this.result);
-        dict.put("type", "smithing");
+        dict.put("Base", this.base);
+        dict.put("Addition", this.addition);
+        dict.put("CopyNbt", this.copyNbt);
+        dict.put("Result", this.result);
+        dict.put("Type", "smithing");
         return dict;
     }
 
     @Override
-    public RecipeDefinition from_dict(Object dict) {
+    public RecipeDefinition fromDict(Object dict) {
         if (!(dict instanceof Map<?, ?>)) {
             throw new IllegalArgumentException(
                 "Invalid smithing recipe dictionary: Argument must be a Map<String, Object>!"
             );
         }
-        final var dict_map = (Map<?, ?>) dict;
-        if (dict_map.get("base") instanceof String base) {
+        final var dictMap = (Map<?, ?>) dict;
+        final Object baseObj = dictMap.containsKey("Base") ? dictMap.get("Base") : dictMap.get("base");
+        if (baseObj instanceof String base) {
             this.base = base;
         } else {
             throw new IllegalArgumentException("Invalid smithing recipe dictionary: base must be a string");
         }
 
-        if (dict_map.get("addition") instanceof String addition) {
+        final Object additionObj = dictMap.containsKey("Addition") ? dictMap.get("Addition") : dictMap.get("addition");
+        if (additionObj instanceof String addition) {
             this.addition = addition;
         } else {
             throw new IllegalArgumentException("Invalid smithing recipe dictionary: addition must be a string");
         }
 
-        if (dict_map.get("copy_nbt") instanceof Boolean copy_nbt) {
-            this.copy_nbt = copy_nbt;
+        final Object copyNbtObj = dictMap.containsKey("CopyNbt") ? dictMap.get("CopyNbt") : dictMap.get("copyNbt");
+        if (copyNbtObj instanceof Boolean copyNbt) {
+            this.copyNbt = copyNbt;
         } else {
-            throw new IllegalArgumentException("Invalid smithing recipe dictionary: copy_nbt must be a bool");
+            throw new IllegalArgumentException("Invalid smithing recipe dictionary: copyNbt must be a bool");
         }
 
-        if (dict_map.get("result") instanceof String result) {
+        final Object resultObj = dictMap.containsKey("Result") ? dictMap.get("Result") : dictMap.get("result");
+        if (resultObj instanceof String result) {
             this.result = result;
         } else {
             throw new IllegalArgumentException("Invalid smithing recipe dictionary: result must be a string");
@@ -104,14 +108,14 @@ public class SmithingRecipeDefinition extends RecipeDefinition {
     }
 
     @Override
-    public Recipe to_recipe(NamespacedKey base_key) {
+    public Recipe toRecipe(NamespacedKey baseKey) {
         return new SmithingTransformRecipe(
-            key(base_key),
-            ItemUtil.itemstack_from_string(this.result).getLeft(),
+            key(baseKey),
+            ItemUtil.itemstackFromString(this.result).getLeft(),
             new RecipeChoice.MaterialChoice(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE),
-            RecipeDefinition.recipe_choice(base),
-            RecipeDefinition.recipe_choice(addition),
-            copy_nbt
+            RecipeDefinition.recipeChoice(base),
+            RecipeDefinition.recipeChoice(addition),
+                copyNbt
         );
     }
 }

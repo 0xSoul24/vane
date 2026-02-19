@@ -1,6 +1,6 @@
 package org.oddlama.vane.core.config;
 
-import static org.oddlama.vane.util.ItemUtil.name_item;
+import static org.oddlama.vane.util.ItemUtil.nameItem;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -22,84 +22,84 @@ import org.oddlama.vane.core.module.ModuleComponent;
 public class TranslatedItemStack<T extends Module<T>> extends ModuleComponent<T> {
 
     @ConfigInt(def = 1, min = 0, desc = "The item stack amount.")
-    public int config_amount;
+    public int configAmount;
 
     @ConfigExtendedMaterial(
         def = "minecraft:barrier",
         desc = "The item stack material. Also accepts heads from the head library or from defined custom items."
     )
-    public ExtendedMaterial config_material;
+    public ExtendedMaterial configMaterial;
 
     @LangMessage
-    public TranslatedMessage lang_name;
+    public TranslatedMessage langName;
 
     @LangMessageArray
-    public TranslatedMessageArray lang_lore;
+    public TranslatedMessageArray langLore;
 
-    private ExtendedMaterial def_material;
-    private int def_amount;
+    private ExtendedMaterial defMaterial;
+    private int defAmount;
 
     public TranslatedItemStack(
         final Context<T> context,
-        final String config_namespace,
-        final NamespacedKey def_material,
-        int def_amount,
+        final String configNamespace,
+        final NamespacedKey defMaterial,
+        int defAmount,
         final String desc
     ) {
-        this(context, config_namespace, ExtendedMaterial.from(def_material), def_amount, desc);
+        this(context, configNamespace, ExtendedMaterial.from(defMaterial), defAmount, desc);
     }
 
     public TranslatedItemStack(
         final Context<T> context,
-        final String config_namespace,
-        final Material def_material,
-        int def_amount,
+        final String configNamespace,
+        final Material defMaterial,
+        int defAmount,
         final String desc
     ) {
-        this(context, config_namespace, ExtendedMaterial.from(def_material), def_amount, desc);
+        this(context, configNamespace, ExtendedMaterial.from(defMaterial), defAmount, desc);
     }
 
     public TranslatedItemStack(
         final Context<T> context,
-        final String config_namespace,
-        final ExtendedMaterial def_material,
-        int def_amount,
+        final String configNamespace,
+        final ExtendedMaterial defMaterial,
+        int defAmount,
         final String desc
     ) {
-        super(context.namespace(config_namespace, desc));
-        this.def_material = def_material;
-        this.def_amount = def_amount;
+        super(context.namespace(configNamespace, desc));
+        this.defMaterial = defMaterial;
+        this.defAmount = defAmount;
     }
 
     public ItemStack item(Object... args) {
-        return name_item(config_material.item(config_amount), lang_name.format(args), lang_lore.format(args));
+        return nameItem(configMaterial.item(configAmount), langName.format(args), langLore.format(args));
     }
 
-    public ItemStack item_transform_lore(Consumer<List<Component>> f_lore, Object... args) {
-        final var lore = lang_lore.format(args);
-        f_lore.accept(lore);
-        return name_item(config_material.item(config_amount), lang_name.format(args), lore);
+    public ItemStack itemTransformLore(Consumer<List<Component>> fLore, Object... args) {
+        final var lore = langLore.format(args);
+        fLore.accept(lore);
+        return nameItem(configMaterial.item(configAmount), langName.format(args), lore);
     }
 
-    public ItemStack item_amount(int amount, Object... args) {
-        return name_item(config_material.item(amount), lang_name.format(args), lang_lore.format(args));
+    public ItemStack itemAmount(int amount, Object... args) {
+        return nameItem(configMaterial.item(amount), langName.format(args), langLore.format(args));
     }
 
     public ItemStack alternative(final ItemStack alternative, Object... args) {
-        return name_item(alternative, lang_name.format(args), lang_lore.format(args));
+        return nameItem(alternative, langName.format(args), langLore.format(args));
     }
 
-    public ExtendedMaterial config_material_def() {
-        return def_material;
+    public ExtendedMaterial configMaterialDef() {
+        return defMaterial;
     }
 
-    public int config_amount_def() {
-        return def_amount;
+    public int configAmountDef() {
+        return defAmount;
     }
 
     @Override
-    public void on_enable() {}
+    public void onEnable() {}
 
     @Override
-    public void on_disable() {}
+    public void onDisable() {}
 }

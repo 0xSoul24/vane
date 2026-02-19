@@ -14,10 +14,10 @@ public class VelocityCompatLoginEvent extends LoginEvent {
     public VelocityCompatLoginEvent(
         com.velocitypowered.api.event.connection.LoginEvent event,
         VaneProxyPlugin plugin,
-        IVaneProxyServerInfo server_info,
+        IVaneProxyServerInfo serverInfo,
         ProxyPendingConnection connection
     ) {
-        super(plugin, server_info, connection);
+        super(plugin, serverInfo, connection);
         this.event = event;
     }
 
@@ -32,7 +32,7 @@ public class VelocityCompatLoginEvent extends LoginEvent {
     }
 
     @Override
-    public ProxyPendingConnection get_connection() {
+    public ProxyPendingConnection getConnection() {
         return null;
     }
 }

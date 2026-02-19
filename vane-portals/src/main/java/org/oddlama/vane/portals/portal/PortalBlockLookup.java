@@ -1,40 +1,41 @@
 package org.oddlama.vane.portals.portal;
 
-import static org.oddlama.vane.core.persistent.PersistentSerializer.from_json;
-import static org.oddlama.vane.core.persistent.PersistentSerializer.to_json;
+import static org.oddlama.vane.core.persistent.PersistentSerializer.fromJson;
+import static org.oddlama.vane.core.persistent.PersistentSerializer.toJson;
 
 import java.io.IOException;
 import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
+import org.oddlama.vane.core.persistent.PersistentSerializer;
 
 public class PortalBlockLookup {
 
     public static Object serialize(@NotNull final Object o) throws IOException {
         final var lookup = (PortalBlockLookup) o;
         final var json = new JSONObject();
-        json.put("portal_id", to_json(UUID.class, lookup.portal_id));
-        json.put("type", to_json(PortalBlock.Type.class, lookup.type));
+        json.put("portalId", PersistentSerializer.toJson(UUID.class, lookup.portalId));
+        json.put("type", PersistentSerializer.toJson(PortalBlock.Type.class, lookup.type));
         return json;
     }
 
     public static PortalBlockLookup deserialize(@NotNull final Object o) throws IOException {
         final var json = (JSONObject) o;
-        final var portal_id = from_json(UUID.class, json.get("portal_id"));
-        final var type = from_json(PortalBlock.Type.class, json.get("type"));
-        return new PortalBlockLookup(portal_id, type);
+        final var portalId = PersistentSerializer.fromJson(UUID.class, json.get("portalId"));
+        final var type = PersistentSerializer.fromJson(PortalBlock.Type.class, json.get("type"));
+        return new PortalBlockLookup(portalId, type);
     }
 
-    private UUID portal_id;
+    private UUID portalId;
     private PortalBlock.Type type;
 
-    public PortalBlockLookup(final UUID portal_id, final PortalBlock.Type type) {
-        this.portal_id = portal_id;
+    public PortalBlockLookup(final UUID portalId, final PortalBlock.Type type) {
+        this.portalId = portalId;
         this.type = type;
     }
 
-    public UUID portal_id() {
-        return portal_id;
+    public UUID portalId() {
+        return portalId;
     }
 
     public PortalBlock.Type type() {

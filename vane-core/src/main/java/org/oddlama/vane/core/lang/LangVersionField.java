@@ -16,25 +16,25 @@ public class LangVersionField extends LangField<Long> {
         Module<?> module,
         Object owner,
         Field field,
-        Function<String, String> map_name,
+        Function<String, String> mapName,
         LangVersion annotation
     ) {
-        super(module, owner, field, map_name);
+        super(module, owner, field, mapName);
         this.annotation = annotation;
     }
 
     @Override
-    public void check_loadable(YamlConfiguration yaml) throws YamlLoadException {
-        check_yaml_path(yaml);
+    public void checkLoadable(YamlConfiguration yaml) throws YamlLoadException {
+        checkYamlPath(yaml);
 
-        if (!(yaml.get(yaml_path()) instanceof Number)) {
-            throw new YamlLoadException.Lang("Invalid type for yaml path '" + yaml_path() + "', expected long", this);
+        if (!(yaml.get(yamlPath()) instanceof Number)) {
+            throw new YamlLoadException.Lang("Invalid type for yaml path '" + yamlPath() + "', expected long", this);
         }
 
-        var val = yaml.getLong(yaml_path());
+        var val = yaml.getLong(yamlPath());
         if (val < 1) {
             throw new YamlLoadException.Lang(
-                "Entry '" + yaml_path() + "' has an invalid value: Value must be >= 1",
+                "Entry '" + yamlPath() + "' has an invalid value: Value must be >= 1",
                 this
             );
         }
@@ -43,13 +43,13 @@ public class LangVersionField extends LangField<Long> {
     @Override
     public void load(final String namespace, final YamlConfiguration yaml) {
         try {
-            field.setLong(owner, yaml.getLong(yaml_path()));
+            field.setLong(owner, yaml.getLong(yamlPath()));
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Invalid field access on '" + field.getName() + "'. This is a bug.");
         }
     }
 
     @Override
-    public void add_translations(final ResourcePackGenerator pack, final YamlConfiguration yaml, String lang_code)
+    public void addTranslations(final ResourcePackGenerator pack, final YamlConfiguration yaml, String langCode)
         throws YamlLoadException {}
 }

@@ -17,20 +17,20 @@ public class ConfigDoubleListField extends ConfigField<List<Double>> {
     public ConfigDoubleListField(
         Object owner,
         Field field,
-        Function<String, String> map_name,
+        Function<String, String> mapName,
         ConfigDoubleList annotation
     ) {
-        super(owner, field, map_name, "double list", annotation.desc());
+        super(owner, field, mapName, "double list", annotation.desc());
         this.annotation = annotation;
     }
 
-    private void append_double_list_definition(StringBuilder builder, String indent, String prefix, List<Double> def) {
-        append_list_definition(builder, indent, prefix, def, (b, d) -> b.append(d));
+    private void appendDoubleListDefinition(StringBuilder builder, String indent, String prefix, List<Double> def) {
+        appendListDefinition(builder, indent, prefix, def, (b, d) -> b.append(d));
     }
 
     @Override
     public List<Double> def() {
-        final var override = overridden_def();
+        final var override = overriddenDef();
         if (override != null) {
             return override;
         } else {
@@ -40,7 +40,7 @@ public class ConfigDoubleListField extends ConfigField<List<Double>> {
 
     @Override
     public boolean metrics() {
-        final var override = overridden_metrics();
+        final var override = overriddenMetrics();
         if (override != null) {
             return override;
         } else {
@@ -49,55 +49,55 @@ public class ConfigDoubleListField extends ConfigField<List<Double>> {
     }
 
     @Override
-    public void generate_yaml(StringBuilder builder, String indent, YamlConfiguration existing_compatible_config) {
-        append_description(builder, indent);
-        append_value_range(builder, indent, annotation.min(), annotation.max(), Double.NaN, Double.NaN);
+    public void generateYaml(StringBuilder builder, String indent, YamlConfiguration existingCompatibleConfig) {
+        appendDescription(builder, indent);
+        appendValueRange(builder, indent, annotation.min(), annotation.max(), Double.NaN, Double.NaN);
 
         // Default
         builder.append(indent);
         builder.append("# Default:\n");
-        append_double_list_definition(builder, indent, "# ", def());
+        appendDoubleListDefinition(builder, indent, "# ", def());
 
         // Definition
         builder.append(indent);
         builder.append(basename());
         builder.append(":\n");
-        final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
+        final var def = existingCompatibleConfig != null && existingCompatibleConfig.contains(yamlPath())
+            ? loadFromYaml(existingCompatibleConfig)
             : def();
-        append_double_list_definition(builder, indent, "", def);
+        appendDoubleListDefinition(builder, indent, "", def);
     }
 
     @Override
-    public void check_loadable(YamlConfiguration yaml) throws YamlLoadException {
-        check_yaml_path(yaml);
+    public void checkLoadable(YamlConfiguration yaml) throws YamlLoadException {
+        checkYamlPath(yaml);
 
-        if (!yaml.isList(yaml_path())) {
-            throw new YamlLoadException("Invalid type for yaml path '" + yaml_path() + "', expected list");
+        if (!yaml.isList(yamlPath())) {
+            throw new YamlLoadException("Invalid type for yaml path '" + yamlPath() + "', expected list");
         }
 
-        for (var obj : yaml.getList(yaml_path())) {
+        for (var obj : yaml.getList(yamlPath())) {
             if (!(obj instanceof Number)) {
-                throw new YamlLoadException("Invalid type for yaml path '" + yaml_path() + "', expected double");
+                throw new YamlLoadException("Invalid type for yaml path '" + yamlPath() + "', expected double");
             }
 
-            var val = yaml.getDouble(yaml_path());
+            var val = yaml.getDouble(yamlPath());
             if (!Double.isNaN(annotation.min()) && val < annotation.min()) {
                 throw new YamlLoadException(
-                    "Configuration '" + yaml_path() + "' has an invalid value: Value must be >= " + annotation.min()
+                    "Configuration '" + yamlPath() + "' has an invalid value: Value must be >= " + annotation.min()
                 );
             }
             if (!Double.isNaN(annotation.max()) && val > annotation.max()) {
                 throw new YamlLoadException(
-                    "Configuration '" + yaml_path() + "' has an invalid value: Value must be <= " + annotation.max()
+                    "Configuration '" + yamlPath() + "' has an invalid value: Value must be <= " + annotation.max()
                 );
             }
         }
     }
 
-    public List<Double> load_from_yaml(YamlConfiguration yaml) {
+    public List<Double> loadFromYaml(YamlConfiguration yaml) {
         final var list = new ArrayList<Double>();
-        for (var obj : yaml.getList(yaml_path())) {
+        for (var obj : yaml.getList(yamlPath())) {
             list.add(((Number) obj).doubleValue());
         }
         return list;
@@ -105,7 +105,7 @@ public class ConfigDoubleListField extends ConfigField<List<Double>> {
 
     public void load(YamlConfiguration yaml) {
         try {
-            field.set(owner, load_from_yaml(yaml));
+            field.set(owner, loadFromYaml(yaml));
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Invalid field access on '" + field.getName() + "'. This is a bug.");
         }

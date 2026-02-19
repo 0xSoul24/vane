@@ -1,6 +1,6 @@
 package org.oddlama.vane.core.config.recipes;
 
-import static org.oddlama.vane.util.MaterialUtil.material_from;
+import static org.oddlama.vane.util.MaterialUtil.materialFrom;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -27,51 +27,51 @@ public abstract class RecipeDefinition {
         return name;
     }
 
-    public NamespacedKey key(final NamespacedKey base_key) {
-        return StorageUtil.namespaced_key(base_key.namespace(), base_key.value() + "." + name);
+    public NamespacedKey key(final NamespacedKey baseKey) {
+        return StorageUtil.namespacedKey(baseKey.namespace(), baseKey.value() + "." + name);
     }
 
-    public abstract Recipe to_recipe(final NamespacedKey base_key);
+    public abstract Recipe toRecipe(final NamespacedKey baseKey);
 
-    public abstract Object to_dict();
+    public abstract Object toDict();
 
-    public abstract RecipeDefinition from_dict(Object dict);
+    public abstract RecipeDefinition fromDict(Object dict);
 
-    public static RecipeDefinition from_dict(final String name, final Object dict) {
+    public static RecipeDefinition fromDict(final String name, final Object dict) {
         if (!(dict instanceof Map<?, ?>)) {
             throw new IllegalArgumentException(
                 "Invalid recipe dictionary: Argument must be a Map<String, Object>, but is " + dict.getClass() + "!"
             );
         }
-        final var type = ((Map<?, ?>) dict).get("type");
-        if (!(type instanceof String)) {
+        final var typeObj = ((Map<?, ?>) dict).containsKey("Type") ? ((Map<?, ?>) dict).get("Type") : ((Map<?, ?>) dict).get("type");
+        if (!(typeObj instanceof String)) {
             throw new IllegalArgumentException("Invalid recipe dictionary: recipe type must exist and be a string!");
         }
 
-        final var str_type = (String) type;
-        switch (str_type) {
+        final var strType = (String) typeObj;
+        switch (strType) {
             case "shaped":
-                return new ShapedRecipeDefinition(name).from_dict(dict);
+                return new ShapedRecipeDefinition(name).fromDict(dict);
             case "shapeless":
-                return new ShapelessRecipeDefinition(name).from_dict(dict);
+                return new ShapelessRecipeDefinition(name).fromDict(dict);
             case "blasting": // fallthrough
             case "furnace": // fallthrough
             case "campfire": // fallthrough
             case "smoking":
-                return new CookingRecipeDefinition(name, str_type).from_dict(dict);
+                return new CookingRecipeDefinition(name, strType).fromDict(dict);
             case "smithing":
-                return new SmithingRecipeDefinition(name).from_dict(dict);
+                return new SmithingRecipeDefinition(name).fromDict(dict);
             case "stonecutting":
-                return new StonecuttingRecipeDefinition(name).from_dict(dict);
+                return new StonecuttingRecipeDefinition(name).fromDict(dict);
             default:
                 break;
         }
 
-        throw new IllegalArgumentException("Unknown recipe type '" + str_type + "'");
+        throw new IllegalArgumentException("Unknown recipe type '" + strType + "'");
     }
 
     @SuppressWarnings("unchecked")
-    public static @NotNull RecipeChoice recipe_choice(String definition) {
+    public static @NotNull RecipeChoice recipeChoice(String definition) {
         definition = definition.strip();
 
         // Try a material #tag
@@ -100,7 +100,7 @@ public abstract class RecipeDefinition {
         if (definition.startsWith("(") && definition.endsWith(")")) {
             final var parts = Arrays.stream(definition.substring(1, definition.length() - 1).split(","))
                 .map(key -> {
-                    final var mat = material_from(NamespacedKey.fromString(key.strip()));
+                    final var mat = materialFrom(NamespacedKey.fromString(key.strip()));
                     if (mat == null) {
                         throw new IllegalArgumentException(
                             "Unknown material (only normal materials are allowed in tags): " + key
@@ -116,9 +116,9 @@ public abstract class RecipeDefinition {
         final var mult = definition.indexOf('*');
         int amount = 1;
         if (mult != -1) {
-            final var amount_str = definition.substring(0, mult).strip();
+            final var amountStr = definition.substring(0, mult).strip();
             try {
-                amount = Integer.parseInt(amount_str);
+                amount = Integer.parseInt(amountStr);
                 if (amount <= 0) {
                     amount = 1;
                 }
@@ -129,14 +129,14 @@ public abstract class RecipeDefinition {
         }
 
         // Exact choice of itemstack including NBT
-        final var item_stack_and_is_simple_mat = ItemUtil.itemstack_from_string(definition);
-        final var item_stack = item_stack_and_is_simple_mat.getLeft();
-        final var is_simple_mat = item_stack_and_is_simple_mat.getRight();
-        if (is_simple_mat && amount == 1) {
-            return new RecipeChoice.MaterialChoice(item_stack.getType());
+        final var itemStackAndIsSimpleMat = ItemUtil.itemstackFromString(definition);
+        final var itemStack = itemStackAndIsSimpleMat.getLeft();
+        final var isSimpleMat = itemStackAndIsSimpleMat.getRight();
+        if (isSimpleMat && amount == 1) {
+            return new RecipeChoice.MaterialChoice(itemStack.getType());
         }
 
-        item_stack.setAmount(amount);
-        return new RecipeChoice.ExactChoice(item_stack);
+        itemStack.setAmount(amount);
+        return new RecipeChoice.ExactChoice(itemStack);
     }
 }

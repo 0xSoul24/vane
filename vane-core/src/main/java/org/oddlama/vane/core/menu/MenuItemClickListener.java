@@ -10,23 +10,23 @@ import org.oddlama.vane.core.menu.Menu.ClickResult;
 public class MenuItemClickListener implements MenuWidget {
 
     private int slot;
-    private Function4<Player, Menu, ItemStack, InventoryClickEvent, ClickResult> on_click;
+    private Function4<Player, Menu, ItemStack, InventoryClickEvent, ClickResult> onClick;
 
-    public MenuItemClickListener(int slot, final Function3<Player, Menu, ItemStack, ClickResult> on_click) {
+    public MenuItemClickListener(int slot, final Function3<Player, Menu, ItemStack, ClickResult> onClick) {
         this(slot, (player, menu, item, event) -> {
-            if (!Menu.is_left_click(event)) {
+            if (!Menu.isLeftClick(event)) {
                 return ClickResult.INVALID_CLICK;
             }
-            return on_click.apply(player, menu, item);
+            return onClick.apply(player, menu, item);
         });
     }
 
     public MenuItemClickListener(
         int slot,
-        final Function4<Player, Menu, ItemStack, InventoryClickEvent, ClickResult> on_click
+        final Function4<Player, Menu, ItemStack, InventoryClickEvent, ClickResult> onClick
     ) {
         this.slot = slot;
-        this.on_click = on_click;
+        this.onClick = onClick;
     }
 
     public int slot() {
@@ -48,8 +48,8 @@ public class MenuItemClickListener implements MenuWidget {
             return ClickResult.IGNORE;
         }
 
-        if (on_click != null) {
-            return on_click.apply(player, menu, item, event);
+        if (onClick != null) {
+            return onClick.apply(player, menu, item, event);
         } else {
             return ClickResult.IGNORE;
         }

@@ -10,11 +10,11 @@ import org.oddlama.vane.core.menu.Menu.ClickResult;
 import org.oddlama.vane.core.module.Context;
 
 public interface Filter<T> {
-    public void open_filter_settings(
+    public void openFilterSettings(
         final Context<?> context,
         final Player player,
-        final String filter_title,
-        final Menu return_to
+        final String filterTitle,
+        final Menu returnTo
     );
 
     public void reset();
@@ -24,35 +24,35 @@ public interface Filter<T> {
     public static class StringFilter<T> implements Filter<T> {
 
         private String str = null;
-        private Function2<T, String, Boolean> do_filter;
-        private boolean ignore_case;
+        private Function2<T, String, Boolean> doFilter;
+        private boolean ignoreCase;
 
-        public StringFilter(final Function2<T, String, Boolean> do_filter) {
-            this(do_filter, true);
+        public StringFilter(final Function2<T, String, Boolean> doFilter) {
+            this(doFilter, true);
         }
 
-        public StringFilter(final Function2<T, String, Boolean> do_filter, boolean ignore_case) {
-            this.do_filter = do_filter;
-            this.ignore_case = ignore_case;
+        public StringFilter(final Function2<T, String, Boolean> doFilter, boolean ignoreCase) {
+            this.doFilter = doFilter;
+            this.ignoreCase = ignoreCase;
         }
 
         @Override
-        public void open_filter_settings(
+        public void openFilterSettings(
             final Context<?> context,
             final Player player,
-            final String filter_title,
-            final Menu return_to
+            final String filterTitle,
+            final Menu returnTo
         ) {
-            MenuFactory.anvil_string_input(
+            MenuFactory.anvilStringInput(
                 context,
                 player,
-                filter_title,
+                    filterTitle,
                 new ItemStack(Material.PAPER),
                 "?",
                 (p, menu, s) -> {
                     menu.close(p);
                     str = s;
-                    return_to.open(p);
+                    returnTo.open(p);
                     return ClickResult.SUCCESS;
                 }
             ).open(player);
@@ -68,14 +68,14 @@ public interface Filter<T> {
             if (str == null) {
                 return things;
             } else {
-                final String f_str;
-                if (ignore_case) {
-                    f_str = str.toLowerCase();
+                final String fStr;
+                if (ignoreCase) {
+                    fStr = str.toLowerCase();
                 } else {
-                    f_str = str;
+                    fStr = str;
                 }
 
-                return things.stream().filter(t -> do_filter.apply(t, f_str)).collect(Collectors.toList());
+                return things.stream().filter(t -> doFilter.apply(t, fStr)).collect(Collectors.toList());
             }
         }
     }

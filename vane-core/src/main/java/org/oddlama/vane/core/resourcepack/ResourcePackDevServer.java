@@ -13,11 +13,11 @@ import java.net.InetSocketAddress;
 
 public class ResourcePackDevServer implements HttpHandler {
 
-    private final ResourcePackDistributor resource_pack_distributor;
+    private final ResourcePackDistributor resourcePackDistributor;
     private final File file;
 
-    public ResourcePackDevServer(ResourcePackDistributor resource_pack_distributor, File file) {
-        this.resource_pack_distributor = resource_pack_distributor;
+    public ResourcePackDevServer(ResourcePackDistributor resourcePackDistributor, File file) {
+        this.resourcePackDistributor = resourcePackDistributor;
         this.file = file;
     }
 
@@ -26,14 +26,14 @@ public class ResourcePackDevServer implements HttpHandler {
         try {
             final HttpServer httpServer = HttpServer.create(new InetSocketAddress(9000), 0);
             var hash = com.google.common.io.Files.asByteSource(this.file).hash(Hashing.sha1());
-            resource_pack_distributor.pack_sha1 = hash.toString();
-            resource_pack_distributor.pack_url = "http://localhost:9000/vane-resource-pack.zip";
+            resourcePackDistributor.packSha1 = hash.toString();
+            resourcePackDistributor.packUrl = "http://localhost:9000/vane-resource-pack.zip";
 
             httpServer.createContext("/", this);
             httpServer.setExecutor(null);
             httpServer.start();
         } catch (IOException e) {
-            resource_pack_distributor.get_module().log.log(
+            resourcePackDistributor.getModule().log.log(
                 java.util.logging.Level.SEVERE,
                 "Failed to start resource pack dev server",
                 e

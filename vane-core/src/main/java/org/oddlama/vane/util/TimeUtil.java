@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class TimeUtil {
 
-    private static Map<Character, Long> time_multiplier;
+    private static Map<Character, Long> timeMultiplier;
 
     static {
         Map<Character, Long> mult = new HashMap<>();
@@ -15,10 +15,10 @@ public class TimeUtil {
         mult.put('d', 86400000L); // days
         mult.put('w', 604800000L); // weeks
         mult.put('y', 31536000000L); // years
-        time_multiplier = mult;
+        timeMultiplier = mult;
     }
 
-    public static long parse_time(String input) throws NumberFormatException {
+    public static long parseTime(String input) throws NumberFormatException {
         long ret = 0;
 
         for (String time : input.split("(?<=[^0-9])(?=[0-9])")) {
@@ -28,7 +28,7 @@ public class TimeUtil {
                 throw new NumberFormatException("missing multiplier");
             }
 
-            Long mult = time_multiplier.get(content[1].replace("and", "").replaceAll("[,+\\.\\s]+", "").charAt(0));
+            Long mult = timeMultiplier.get(content[1].replace("and", "").replaceAll("[,+\\.\\s]+", "").charAt(0));
             if (mult == null) {
                 throw new NumberFormatException("\"" + content[1] + "\" is not a valid multiplier");
             }
@@ -39,7 +39,7 @@ public class TimeUtil {
         return ret;
     }
 
-    public static String format_time(long millis) {
+    public static String formatTime(long millis) {
         String ret = "";
 
         long days = millis / 86400000L;

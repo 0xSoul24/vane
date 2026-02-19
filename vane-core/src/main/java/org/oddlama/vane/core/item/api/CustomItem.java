@@ -144,7 +144,7 @@ public interface CustomItem {
         return CustomItemHelper.newStack(this, amount);
     }
 
-    public default ItemStack convertExistingStack(final ItemStack item_stack) {
-        return CustomItemHelper.convertExistingStack(this, item_stack);
+    public default ItemStack convertExistingStack(final ItemStack itemStack) {
+        return CustomItemHelper.convertExistingStack(this, itemStack);
     }
 }

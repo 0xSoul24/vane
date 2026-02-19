@@ -15,17 +15,17 @@ import org.oddlama.vane.regions.Regions;
 public class RegionSelectionListener extends Listener<Regions> {
 
     @LangMessage
-    public TranslatedMessage lang_select_primary_block;
+    public TranslatedMessage langSelectPrimaryBlock;
 
     @LangMessage
-    public TranslatedMessage lang_select_secondary_block;
+    public TranslatedMessage langSelectSecondaryBlock;
 
     public RegionSelectionListener(Context<Regions> context) {
         super(context);
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = false)
-    public void on_player_interact(final PlayerInteractEvent event) {
+    public void onPlayerInteract(final PlayerInteractEvent event) {
         // Require the main hand event
         if (event.getHand() != EquipmentSlot.HAND) {
             return;
@@ -37,7 +37,7 @@ public class RegionSelectionListener extends Listener<Regions> {
         }
 
         final var player = event.getPlayer();
-        final var selection = get_module().get_region_selection(player);
+        final var selection = getModule().getRegionSelection(player);
         if (selection == null) {
             return;
         }
@@ -55,11 +55,11 @@ public class RegionSelectionListener extends Listener<Regions> {
                 return;
             case LEFT_CLICK_BLOCK:
                 selection.primary = block;
-                lang_select_primary_block.send(player, "§b" + block.getX(), "§b" + block.getY(), "§b" + block.getZ());
+                langSelectPrimaryBlock.send(player, "§b" + block.getX(), "§b" + block.getY(), "§b" + block.getZ());
                 break;
             case RIGHT_CLICK_BLOCK:
                 selection.secondary = block;
-                lang_select_secondary_block.send(player, "§b" + block.getX(), "§b" + block.getY(), "§b" + block.getZ());
+                langSelectSecondaryBlock.send(player, "§b" + block.getX(), "§b" + block.getY(), "§b" + block.getZ());
                 break;
         }
 

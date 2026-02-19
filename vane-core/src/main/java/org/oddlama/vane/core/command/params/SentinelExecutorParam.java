@@ -19,30 +19,30 @@ import org.oddlama.vane.core.functional.GenericsFinder;
 public class SentinelExecutorParam<T> extends BaseParam implements Executor {
 
     private T function;
-    private Function1<CommandSender, Boolean> check_requirements;
-    private Function1<Integer, Boolean> skip_argument_check;
+    private Function1<CommandSender, Boolean> checkRequirements;
+    private Function1<Integer, Boolean> skipArgumentCheck;
 
     public SentinelExecutorParam(Command<?> command, T function) {
         this(command, function, x -> true);
     }
 
-    public SentinelExecutorParam(Command<?> command, T function, Function1<CommandSender, Boolean> check_requirements) {
-        this(command, function, check_requirements, i -> false);
+    public SentinelExecutorParam(Command<?> command, T function, Function1<CommandSender, Boolean> checkRequirements) {
+        this(command, function, checkRequirements, i -> false);
     }
 
     public SentinelExecutorParam(
         Command<?> command,
         T function,
-        Function1<CommandSender, Boolean> check_requirements,
-        Function1<Integer, Boolean> skip_argument_check
+        Function1<CommandSender, Boolean> checkRequirements,
+        Function1<Integer, Boolean> skipArgumentCheck
     ) {
         super(command);
         this.function = function;
-        this.check_requirements = check_requirements;
-        this.skip_argument_check = skip_argument_check;
+        this.checkRequirements = checkRequirements;
+        this.skipArgumentCheck = skipArgumentCheck;
     }
 
-    private boolean check_signature(final Method method, final List<Object> args) {
+    private boolean checkSignature(final Method method, final List<Object> args) {
         // Assert the same number of given and expected parameters
         if (args.size() != method.getParameters().length) {
             throw new RuntimeException(
@@ -65,7 +65,7 @@ public class SentinelExecutorParam<T> extends BaseParam implements Executor {
 
         // Assert assignable types
         for (int i = 0; i < args.size(); ++i) {
-            if (skip_argument_check.apply(i)) {
+            if (skipArgumentCheck.apply(i)) {
                 continue;
             }
             var needs = method.getParameters()[i].getType();
@@ -90,38 +90,38 @@ public class SentinelExecutorParam<T> extends BaseParam implements Executor {
     }
 
     @Override
-    public boolean is_executor() {
+    public boolean isExecutor() {
         return true;
     }
 
     @Override
-    public boolean execute(Command<?> command, CommandSender sender, List<Object> parsed_args) {
+    public boolean execute(Command<?> command, CommandSender sender, List<Object> parsedArgs) {
         // Replace command name argument (unused) with sender
-        parsed_args.set(0, sender);
+        parsedArgs.set(0, sender);
 
         // Disable logger while reflecting on the lambda.
         // FIXME? This is an ugly workaround to prevent Spigot from displaying
         // a warning, that we load a class from a plugin we do not depend on,
         // but this is absolutely intended, and erroneous behavior in any way.
-        var log = command.get_module().core.log;
-        var saved_filter = log.getFilter();
+        var log = command.getModule().core.log;
+        var savedFilter = log.getFilter();
         log.setFilter(record -> false);
         // Get method reflection
         var gf = (GenericsFinder) function;
         var method = gf.method();
-        log.setFilter(saved_filter);
+        log.setFilter(savedFilter);
 
         // Check method signature against given argument types
-        check_signature(method, parsed_args);
+        checkSignature(method, parsedArgs);
 
         // Check external requirements on the sender
-        if (!check_requirements.apply(sender)) {
+        if (!checkRequirements.apply(sender)) {
             return false;
         }
 
         // Execute functor
         try {
-            var result = ((ErasedFunctor) function).invoke(parsed_args);
+            var result = ((ErasedFunctor) function).invoke(parsedArgs);
             // Map null to "true" for consuming functions
             return result == null || (boolean) result;
         } catch (Exception e) {
@@ -133,22 +133,22 @@ public class SentinelExecutorParam<T> extends BaseParam implements Executor {
     }
 
     @Override
-    public void add_param(Param param) {
+    public void addParam(Param param) {
         throw new RuntimeException("Cannot add element to sentinel executor! This is a bug.");
     }
 
     @Override
-    public CheckResult check_parse(CommandSender sender, String[] args, int offset) {
+    public CheckResult checkParse(CommandSender sender, String[] args, int offset) {
         return null;
     }
 
     @Override
-    public List<String> completions_for(CommandSender sender, String[] args, int offset) {
+    public List<String> completionsFor(CommandSender sender, String[] args, int offset) {
         return Collections.emptyList();
     }
 
     @Override
-    public CheckResult check_accept(CommandSender sender, String[] args, int offset) {
+    public CheckResult checkAccept(CommandSender sender, String[] args, int offset) {
         if (args.length > offset) {
             // Excess arguments are an error of the previous level, so we subtract one from the
             // offset (depth)

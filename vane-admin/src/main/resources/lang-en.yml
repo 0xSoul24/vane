@@ -12,82 +12,82 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 2
+Version: 2
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'en_us'
+ResourcePackLangCode: 'en_us'
 
-chat_message_formatter:
+ChatMessageFormatter:
   # This is the format for player chat messages
   # %1$s: player name
   # %2$s: message
-  player_chat_format: "%1$s§7: %2$s"
+  PlayerChatFormat: "%1$s§7: %2$s"
 
   # This message is sent when a player joins the server
   # %1$s: player name
-  player_join: "%1$s§e has joined the server"
+  PlayerJoin: "%1$s§e has joined the server"
 
   # This message is sent when a player is kicked from the server
   # %1$s: player name
-  player_kick: "%1$s§e was kicked from the server"
+  PlayerKick: "%1$s§e was kicked from the server"
 
   # This message is sent when a player leaves the server
   # %1$s: player name
-  player_quit: "%1$s§e has left the server"
+  PlayerQuit: "%1$s§e has left the server"
 
-autostop:
+Autostop:
   # This message is sent when autostop is aborted, due to an administrative command
   # or a player joining the server.
-  aborted: "§dAutostop aborted"
+  Aborted: "§dAutostop aborted"
   # This message is sent when autostop is scheduled, due to an administrative command
   # or the last player leaving the server.
   # %1$s: Time until stop
-  scheduled: "§dAutostop scheduled in %1$s"
+  Scheduled: "§dAutostop scheduled in %1$s"
   # This message is sent when autostop status is requested and autostop is already scheduled.
   # %1$s: Time until stop
-  status: "§7Autostop in %1$s"
+  Status: "§7Autostop in %1$s"
   # This message is sent when autostop status is requested, but autostop is not scheduled.
-  status_not_scheduled: "§dAutostop not scheduled"
+  StatusNotScheduled: "§dAutostop not scheduled"
   # This message is sent when the actual autostop is performed.
-  shutdown: "§dAutostop initiated!"
+  Shutdown: "§dAutostop initiated!"
 
-  command_autostop:
-    usage: "%1$s §7<§aabort§7|§aschedule§7|§astatus§7>"
-    description: "Manages autostop."
-    help: "§aabort§7:§r Aborts the scheduled autostop task.\n\
+  CommandAutostop:
+    Usage: "%1$s §7<§aabort§7|§aschedule§7|§astatus§7>"
+    Description: "Manages autostop."
+    Help: "§aabort§7:§r Aborts the scheduled autostop task.\n\
       §aschedule §7[§bdelay§7]:§r Schedules the autostop task immediately regardless of player count. Accepts a delay to override the configured value.\n\
       §astatus§7:§r Shows the current autostop status."
 
-hazard_protection:
+HazardProtection:
   # This message is sent when the wither has been prevented from spawning in a non-whitelisted world
   # %1$s: world name
-  wither_spawn_prohibited: "§7The wither may not spawn in this world!"
+  WitherSpawnProhibited: "§7The wither may not spawn in this world!"
 
-command_gamemode:
+CommandGamemode:
   # This message is sent when the gamemode of a player is changed by the gamemode command.
   # %1$s: Player name
   # %2$s: Gamemode name
-  set: "§7Gamemode of %1$s§7 was set to %2$s"
-  usage: "%1$s §bgamemode §7[§bplayer§7]"
-  description: "§bgamemode §7[§bplayer§7]"
-  help: "Sets the gamemode of a player."
+  Set: "§7Gamemode of %1$s§7 was set to %2$s"
+  Usage: "%1$s §bgamemode §7[§bplayer§7]"
+  Description: "§bgamemode §7[§bplayer§7]"
+  Help: "Sets the gamemode of a player."
 
-command_slimechunk:
+CommandSlimechunk:
   # This message is sent when the player is standing in a slimechunk
-  slime_chunk_yes: "§aThis is a slimechunk."
+  SlimeChunkYes: "§aThis is a slimechunk."
   # This message is sent when the player is not standing in a slimechunk
-  slime_chunk_no: "§cThis is not a slimechunk."
-  usage: "%1$s"
-  description: "Checks if the current chunk is a slimechunk."
-  help: "Checks if the current chunk is a slimechunk."
+  SlimeChunkNo: "§cThis is not a slimechunk."
+  Usage: "%1$s"
+  Description: "Checks if the current chunk is a slimechunk."
+  Help: "Checks if the current chunk is a slimechunk."
 
-command_time:
-  usage: "%1$s §btime §7[§bworld§7]"
-  description: "Sets the time of the current or given world."
-  help: "Sets the time of the current or given world."
+CommandTime:
+  Usage: "%1$s §btime §7[§bworld§7]"
+  Description: "Sets the time of the current or given world."
+  Help: "Sets the time of the current or given world."
 
-command_weather:
-  usage: "%1$s §bweather §7[§bworld§7]"
-  description: "Sets the weather of the current or given world."
-  help: "Sets the weather of the current or given world."
+CommandWeather:
+  Usage: "%1$s §bweather §7[§bworld§7]"
+  Description: "Sets the weather of the current or given world."
+  Help: "Sets the weather of the current or given world."

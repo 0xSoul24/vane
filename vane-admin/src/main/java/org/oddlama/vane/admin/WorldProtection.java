@@ -39,17 +39,17 @@ public class WorldProtection extends Listener<Admin> {
     public WorldProtection(Context<Admin> context) {
         super(
             context.group(
-                "world_protection",
+                "WorldProtection",
                 "Enable world protection. This will prevent anyone from modifying the world if they don't have the permission '" +
                 PERMISSION_NAME +
                 "'.",
                 false
             )
         );
-        get_module().register_permission(permission);
+        getModule().registerPermission(permission);
     }
 
-    public boolean deny_modify_world(final Entity entity) {
+    public boolean denyModifyWorld(final Entity entity) {
         if (!(entity instanceof Player)) {
             return false;
         }
@@ -60,15 +60,15 @@ public class WorldProtection extends Listener<Admin> {
     /* ************************ blocks ************************ */
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_block_break(BlockBreakEvent event) {
-        if (deny_modify_world(event.getPlayer())) {
+    public void onBlockBreak(BlockBreakEvent event) {
+        if (denyModifyWorld(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_block_place(BlockPlaceEvent event) {
-        if (deny_modify_world(event.getPlayer())) {
+    public void onBlockPlace(BlockPlaceEvent event) {
+        if (denyModifyWorld(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
@@ -76,15 +76,15 @@ public class WorldProtection extends Listener<Admin> {
     /* ************************ enchantment ************************ */
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_prepare_item_enchant(PrepareItemEnchantEvent event) {
-        if (deny_modify_world(event.getEnchanter())) {
+    public void onPrepareItemEnchant(PrepareItemEnchantEvent event) {
+        if (denyModifyWorld(event.getEnchanter())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_item_enchant(EnchantItemEvent event) {
-        if (deny_modify_world(event.getEnchanter())) {
+    public void onItemEnchant(EnchantItemEvent event) {
+        if (denyModifyWorld(event.getEnchanter())) {
             event.setCancelled(true);
         }
     }
@@ -92,29 +92,29 @@ public class WorldProtection extends Listener<Admin> {
     /* ************************ entity ************************ */
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_entity_combust_by_entity(EntityCombustByEntityEvent event) {
-        if (deny_modify_world(event.getCombuster())) {
+    public void onEntityCombustByEntity(EntityCombustByEntityEvent event) {
+        if (denyModifyWorld(event.getCombuster())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_entity_damage(EntityDamageEvent event) {
+    public void onEntityDamage(EntityDamageEvent event) {
         if (event instanceof EntityDamageByEntityEvent) {
-            final var damage_event = (EntityDamageByEntityEvent) event;
-            if (deny_modify_world(damage_event.getDamager())) {
+            final var damageEvent = (EntityDamageByEntityEvent) event;
+            if (denyModifyWorld(damageEvent.getDamager())) {
                 event.setCancelled(true);
-            } else if (deny_modify_world(damage_event.getEntity())) {
+            } else if (denyModifyWorld(damageEvent.getEntity())) {
                 event.setCancelled(true);
             }
-        } else if (deny_modify_world(event.getEntity())) {
+        } else if (denyModifyWorld(event.getEntity())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_entity_food_level_change(FoodLevelChangeEvent event) {
-        if (deny_modify_world(event.getEntity())) {
+    public void onEntityFoodLevelChange(FoodLevelChangeEvent event) {
+        if (denyModifyWorld(event.getEntity())) {
             event.setCancelled(true);
         }
     }
@@ -122,15 +122,15 @@ public class WorldProtection extends Listener<Admin> {
     /* ************************ hanging ************************ */
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_hanging_break_by_entity(HangingBreakByEntityEvent event) {
-        if (deny_modify_world(event.getRemover())) {
+    public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
+        if (denyModifyWorld(event.getRemover())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_hanging_place(HangingPlaceEvent event) {
-        if (deny_modify_world(event.getPlayer())) {
+    public void onHangingPlace(HangingPlaceEvent event) {
+        if (denyModifyWorld(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
@@ -138,8 +138,8 @@ public class WorldProtection extends Listener<Admin> {
     /* ************************ inventory ************************ */
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_item_craft(CraftItemEvent event) {
-        if (deny_modify_world(event.getWhoClicked())) {
+    public void onItemCraft(CraftItemEvent event) {
+        if (denyModifyWorld(event.getWhoClicked())) {
             event.setCancelled(true);
         }
     }
@@ -147,50 +147,50 @@ public class WorldProtection extends Listener<Admin> {
     /* ************************ player ************************ */
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_player_armor_stand_manipulate(PlayerArmorStandManipulateEvent event) {
-        if (deny_modify_world(event.getPlayer())) {
+    public void onPlayerArmorStandManipulate(PlayerArmorStandManipulateEvent event) {
+        if (denyModifyWorld(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_player_bucket_empty(PlayerBucketEmptyEvent event) {
-        if (deny_modify_world(event.getPlayer())) {
+    public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
+        if (denyModifyWorld(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_player_bucket_fill(PlayerBucketFillEvent event) {
-        if (deny_modify_world(event.getPlayer())) {
+    public void onPlayerBucketFill(PlayerBucketFillEvent event) {
+        if (denyModifyWorld(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_player_edit_book(PlayerEditBookEvent event) {
-        if (deny_modify_world(event.getPlayer())) {
+    public void onPlayerEditBook(PlayerEditBookEvent event) {
+        if (denyModifyWorld(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_player_interact_entity(PlayerInteractEntityEvent event) {
-        if (deny_modify_world(event.getPlayer())) {
+    public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+        if (denyModifyWorld(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_player_interact(PlayerInteractEvent event) {
-        if (deny_modify_world(event.getPlayer())) {
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (denyModifyWorld(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_player_shear_entity(PlayerShearEntityEvent event) {
-        if (deny_modify_world(event.getPlayer())) {
+    public void onPlayerShearEntity(PlayerShearEntityEvent event) {
+        if (denyModifyWorld(event.getPlayer())) {
             event.setCancelled(true);
         }
     }

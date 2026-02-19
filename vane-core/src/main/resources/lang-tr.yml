@@ -12,103 +12,103 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 5
+Version: 5
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'tr_tr'
+ResourcePackLangCode: 'tr_tr'
 
 # This message is sent when a command requires a player but is executed
 # by a non-player.
-command_not_a_player: "§chata:§6 komut bir oyuncu tarafından yürütülmelidir!"
+CommandNotAPlayer: "§chata:§6 komut bir oyuncu tarafından yürütülmelidir!"
 # This message is sent when the command sender is missing the required
 # permission.
-command_permission_denied: "§chata:§6 izin reddedildi!"
+CommandPermissionDenied: "§chata:§6 izin reddedildi!"
 
 # This message is sent when an invalid time format is encountered.
 # %1$s: format error message
-invalid_time_format: "§chata:§6 geçersiz zaman: %1$s"
+InvalidTimeFormat: "§chata:§6 geçersiz zaman: %1$s"
 
 # This message is sent when a block with a lootable is first attempted to be broken.
-break_loot_block_prevented: "§6Bu bloğun bir ganimet tablosu vardır ve bir süre sonra otomatik olarak yeniden doldurulacaktır. Bu bloğu gerçekten yok etmek istiyorsanız, 5 saniye bekleyin ve tekrar kırın."
+BreakLootBlockPrevented: "§6Bu bloğun bir ganimet tablosu vardır ve bir süre sonra otomatik olarak yeniden doldurulacaktır. Bu bloğu gerçekten yok etmek istiyorsanız, 5 saniye bekleyin ve tekrar kırın."
 
-command_customitem:
-  usage: "%1$s §agive §7<§beşya§7>"
-  description: "Oyuncuya belirli bir özel öğe verir."
-  help: "§agive §7<§beşya§7>:§r Oyuncuya belirli bir özel öğe verir."
+CommandCustomitem:
+  Usage: "%1$s §agive §7<§beşya§7>"
+  Description: "Oyuncuya belirli bir özel öğe verir."
+  Help: "§agive §7<§beşya§7>:§r Oyuncuya belirli bir özel öğe verir."
 
-command_enchant:
+CommandEnchant:
   # This message is sent when an enchantment level is given that is too low for the chosen enchantment.
   # %1$s: Given level
   # %2$s: Minimum level
-  level_too_low: "§chata:§6 %1$s§6 seviyesi çok düşük, en az %2$s§6 olmalıdır"
+  LevelTooLow: "§chata:§6 %1$s§6 seviyesi çok düşük, en az %2$s§6 olmalıdır"
   # This message is sent when an enchantment level is given that is too high for the chosen enchantment.
   # %1$s: Given level
   # %2$s: Maximum level
-  level_too_high: "§chata:§6 %1$s§6 seviyesi çok yüksek, en fazla %2$s§6 olmalıdır"
+  LevelTooHigh: "§chata:§6 %1$s§6 seviyesi çok yüksek, en fazla %2$s§6 olmalıdır"
   # This message is sent when the selected enchantment cannot be applied to the item in hand.
   # %1$s: Enchantment
   # %2$s: Item in hand
-  invalid_enchantment: "§chata: %1$s§6, %2$s§6 öğesine uygulanamaz"
-  usage: "%1$s §bbüyü §7[§bseviye§7]"
-  description: "Elinizdeki eşyayı büyüler."
-  help: "Elinizdeki eşyayı büyüler."
+  InvalidEnchantment: "§chata: %1$s§6, %2$s§6 öğesine uygulanamaz"
+  Usage: "%1$s §bbüyü §7[§bseviye§7]"
+  Description: "Elinizdeki eşyayı büyüler."
+  Help: "Elinizdeki eşyayı büyüler."
 
-command_vane:
+CommandVane:
   # This message is sent when a module has been successfully reloaded.
   # %1$s: module
-  reload_success: "%1$s§7: §ayeniden yükleme başarılı"
+  ReloadSuccess: "%1$s§7: §ayeniden yükleme başarılı"
   # This message is sent when a module failed to reload.
   # %1$s: module
-  reload_fail: "%1$s§7: §cyeniden yükleme başarısız oldu"
+  ReloadFail: "%1$s§7: §cyeniden yükleme başarısız oldu"
   # This message is sent when the resource_pack has been successfully generated.
   # %1$s: path to the resource pack file
-  resource_pack_generate_success: "§aKaynak paketi başarıyla oluşturuldu: %1$s"
+  ResourcePackGenerateSuccess: "§aKaynak paketi başarıyla oluşturuldu: %1$s"
   # This message is sent when the resource_pack could not be generated.
-  resource_pack_generate_fail: "§cKaynak paketi oluşturulurken bir hata oluştu"
-  usage: "%1$s §7<§areload§7|§agenerate_resource_pack§7>"
-  description: "Vane eklentilerini yönetir."
-  help: "§areload §7[§bmodül§7]:§r Tümünü veya verilen Vane modülünü yeniden yükler.\n\
+  ResourcePackGenerateFail: "§cKaynak paketi oluşturulurken bir hata oluştu"
+  Usage: "%1$s §7<§areload§7|§agenerate_resource_pack§7>"
+  Description: "Vane eklentilerini yönetir."
+  Help: "§areload §7[§bmodül§7]:§r Tümünü veya verilen Vane modülünü yeniden yükler.\n\
     §agenerate_resource_pack§7:§r vane kaynak paketini oluşturur."
 
-resource_pack:
-  pack_required: "§eBu gerekli özel kaynak paketi yerelleştirme ve özel öğe dokuları için kullanılır."
-  pack_suggested: "§eBu isteğe bağlı özel kaynak paketi yerelleştirme ve özel öğe dokuları için kullanılır."
+ResourcePack:
+  PackRequired: "§eBu gerekli özel kaynak paketi yerelleştirme ve özel öğe dokuları için kullanılır."
+  PackSuggested: "§eBu isteğe bağlı özel kaynak paketi yerelleştirme ve özel öğe dokuları için kullanılır."
 
-menus:
-  head_selector:
+Menus:
+  HeadSelector:
     # The title for the head selection menu.
     # %1$s: Total heads in a library
-    title: "%1$s §8§lKafalar"
+    Title: "%1$s §8§lKafalar"
     # The title for the filter menu.
-    filter_title: "§8§lKafa kütüphanesini filtrele"
+    FilterTitle: "§8§lKafa kütüphanesini filtrele"
     # Represents a head in the library.
     # %1$s: Head name
     # %2$s: Head category
     # %3$s: Head tags
-    select_head:
-      name: "%1$s"
-      lore:
+    SelectHead:
+      Name: "%1$s"
+      Lore:
         - ""
         - "§7Kategori: %2$s"
         - "§7Etiketler: %3$s"
 
   # Item selection menu.
-  item_selector:
+  ItemSelector:
     # The item used to accept the selection.
-    accept:
-      name: "§a§lKabul etmek"
-      lore: ["§7Seçili olan öğeyi §bSeçersin§7."]
+    Accept:
+      Name: "§a§lKabul etmek"
+      Lore: ["§7Seçili olan öğeyi §bSeçersin§7."]
 
     # The item used to cancel the selection.
-    cancel:
-      name: "§c§lİptal etmek"
-      lore: ["§7Öğe seçmeyi §6İptal edersin§7."]
+    Cancel:
+      Name: "§c§lİptal etmek"
+      Lore: ["§7Öğe seçmeyi §6İptal edersin§7."]
 
     # The item used to represent the currently selected item.
-    selected:
-      name: "§d§lSeçilen öğe"
-      lore:
+    Selected:
+      Name: "§d§lSeçilen öğe"
+      Lore:
         - ""
         - "Seçmek için envanterinizdeki herhangi bir öğeye tıklayın."
         - ""
@@ -116,34 +116,34 @@ menus:
         - "§7Temizlemek için §bSağ tıklayın§7 (izin veriliyorsa)."
 
   # Generic thing selection menu.
-  generic_selector:
+  GenericSelector:
     # The item selecting the n'th page
     # %1$s: Page number
-    page:
-      name: "§bSayfa %1$s"
-      lore: []
+    Page:
+      Name: "§bSayfa %1$s"
+      Lore: []
 
     # The item showing the current page
     # %1$s: Page number
     # %2$s: Total amount of pages
     # %3$s: Total number of items (filtered)
     # %4$s: Total number of items (unfiltered)
-    current_page:
-      name: "§aMevcut sayfa %1$s §7/ %2$s"
-      lore:
+    CurrentPage:
+      Name: "§aMevcut sayfa %1$s §7/ %2$s"
+      Lore:
         - ""
         - "§b#Filtrelenmiş eşyalar: %3$s"
 
     # The item used to open the filter menu.
     # Right-clicking resets the filter.
-    filter:
-      name: "§d§lFiltre"
-      lore:
+    Filter:
+      Name: "§d§lFiltre"
+      Lore:
         - ""
         - "§7Filtre menüsünü açmak için §bSol tıklayın§7."
         - "§7Filtreyi sıfırlamak için §bSağ tıklayın§7."
 
     # The item used to cancel the selection.
-    cancel:
-      name: "§c§lİptal Etmek"
-      lore: ["§7seçimi §6İptal eder§7."]
+    Cancel:
+      Name: "§c§lİptal Etmek"
+      Lore: ["§7seçimi §6İptal eder§7."]

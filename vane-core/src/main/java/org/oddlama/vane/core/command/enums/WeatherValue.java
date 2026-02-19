@@ -6,19 +6,19 @@ public enum WeatherValue {
     rain(true, false),
     thunder(true, true);
 
-    private boolean is_storm;
-    private boolean is_thunder;
+    private boolean isStorm;
+    private boolean isThunder;
 
-    private WeatherValue(boolean is_storm, boolean is_thunder) {
-        this.is_storm = is_storm;
-        this.is_thunder = is_thunder;
+    private WeatherValue(boolean isStorm, boolean isThunder) {
+        this.isStorm = isStorm;
+        this.isThunder = isThunder;
     }
 
     public boolean storm() {
-        return is_storm;
+        return isStorm;
     }
 
     public boolean thunder() {
-        return is_thunder;
+        return isThunder;
     }
 }

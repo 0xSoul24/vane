@@ -35,7 +35,7 @@ public class CustomItemArgumentType implements CustomArgumentType.Converted<Cust
 
     @Override
     public @NotNull CustomItem convert(@NotNull NamespacedKey nativeType) throws CommandSyntaxException {
-        return this.module.item_registry()
+        return this.module.itemRegistry()
             .all()
             .stream()
             .filter(item -> item.key().equals(nativeType))
@@ -48,7 +48,7 @@ public class CustomItemArgumentType implements CustomArgumentType.Converted<Cust
         @NotNull CommandContext<S> context,
         @NotNull SuggestionsBuilder builder
     ) {
-        Stream<CustomItem> stream = this.module.item_registry().all().stream();
+        Stream<CustomItem> stream = this.module.itemRegistry().all().stream();
         if (!builder.getRemaining().isBlank()) {
             stream = stream.filter(item -> item.key().toString().contains(builder.getRemainingLowerCase()));
         }

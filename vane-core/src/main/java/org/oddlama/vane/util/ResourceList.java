@@ -23,27 +23,27 @@ public class ResourceList {
      * @param pattern the pattern to match
      * @return the resources in the order they are found
      */
-    public static Collection<String> get_resources(final Class<?> clazz, final Pattern pattern) {
-        final var jar_url = clazz.getProtectionDomain().getCodeSource().getLocation();
+    public static Collection<String> getResources(final Class<?> clazz, final Pattern pattern) {
+        final var jarUrl = clazz.getProtectionDomain().getCodeSource().getLocation();
         try {
-            return get_resources(new URI(jar_url.toString()).getPath(), pattern);
+            return getResources(new URI(jarUrl.toString()).getPath(), pattern);
         } catch (URISyntaxException e) {
             return new ArrayList<String>();
         }
     }
 
-    private static Collection<String> get_resources(final String path, final Pattern pattern) {
+    private static Collection<String> getResources(final String path, final Pattern pattern) {
         final var retval = new ArrayList<String>();
         final var file = new File(path);
         if (file.isDirectory()) {
-            retval.addAll(get_resources_from_directory(file, pattern));
+            retval.addAll(getResourcesFromDirectory(file, pattern));
         } else {
-            retval.addAll(get_resources_from_jar_file(file, pattern));
+            retval.addAll(getResourcesFromJarFile(file, pattern));
         }
         return retval;
     }
 
-    private static Collection<String> get_resources_from_jar_file(final File file, final Pattern pattern) {
+    private static Collection<String> getResourcesFromJarFile(final File file, final Pattern pattern) {
         final var retval = new ArrayList<String>();
         ZipFile zf;
         try {
@@ -68,12 +68,12 @@ public class ResourceList {
         return retval;
     }
 
-    private static Collection<String> get_resources_from_directory(final File directory, final Pattern pattern) {
+    private static Collection<String> getResourcesFromDirectory(final File directory, final Pattern pattern) {
         final var retval = new ArrayList<String>();
         final var fileList = directory.listFiles();
         for (final File file : fileList) {
             if (file.isDirectory()) {
-                retval.addAll(get_resources_from_directory(file, pattern));
+                retval.addAll(getResourcesFromDirectory(file, pattern));
             } else {
                 try {
                     final String fileName = file.getCanonicalPath();

@@ -17,7 +17,7 @@ import org.oddlama.vane.trifles.commands.Setspawn;
     name = "spawn_scroll",
     base = Material.WARPED_FUNGUS_ON_A_STICK,
     durability = 40,
-    model_data = 0x760010,
+    modelData = 0x760010,
     version = 1
 )
 public class SpawnScroll extends Scroll {
@@ -27,22 +27,22 @@ public class SpawnScroll extends Scroll {
     }
 
     @Override
-    public RecipeList default_recipes() {
+    public RecipeList defaultRecipes() {
         return RecipeList.of(
             new ShapedRecipeDefinition("generic")
-                .shape("aba", "epe")
-                .set_ingredient('p', "vane_trifles:papyrus_scroll")
-                .set_ingredient('e', Material.ENDER_PEARL)
-                .set_ingredient('a', Material.WHEAT_SEEDS)
-                .set_ingredient('b', Tag.SAPLINGS)
+                .shape("ABA", "EPE")
+                .setIngredient('P', "vane_trifles:papyrus_scroll")
+                .setIngredient('E', Material.ENDER_PEARL)
+                .setIngredient('A', Material.WHEAT_SEEDS)
+                .setIngredient('B', Tag.SAPLINGS)
                 .result(key().toString())
         );
     }
 
     @Override
-    public Location teleport_location(final ItemStack scroll, Player player, boolean imminent_teleport) {
+    public Location teleportLocation(final ItemStack scroll, Player player, boolean imminentTeleport) {
         Location loc = null;
-        for (final var world : get_module().getServer().getWorlds()) {
+        for (final var world : getModule().getServer().getWorlds()) {
             if (
                 world
                     .getPersistentDataContainer()
@@ -54,7 +54,7 @@ public class SpawnScroll extends Scroll {
         }
         // Fallback to spawn location of the first world
         if (loc == null) {
-            loc = get_module().getServer().getWorlds().get(0).getSpawnLocation();
+            loc = getModule().getServer().getWorlds().get(0).getSpawnLocation();
         }
         return loc;
     }

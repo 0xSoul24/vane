@@ -13,79 +13,79 @@ import org.oddlama.vane.regions.region.Region;
 public class RegionBlueMapLayer extends ModuleComponent<Regions> {
 
     @ConfigBoolean(def = false, desc = "If the marker set should be hidden by default.")
-    public boolean config_hide_by_default;
+    public boolean configHideByDefault;
 
     @ConfigBoolean(
         def = true,
         desc = "Set to false to make the area markers visible through terrain and other objects."
     )
-    public boolean config_depth_test;
+    public boolean configDepthTest;
 
     @ConfigInt(def = 2, min = 1, desc = "Area marker line width.")
-    public int config_line_width;
+    public int configLineWidth;
 
     @ConfigInt(def = 0xffb422, min = 0, max = 0xffffff, desc = "Area marker fill color (0xRRGGBB).")
-    public int config_fill_color;
+    public int configFillColor;
 
     @ConfigDouble(def = 0.1, min = 0.0, max = 1.0, desc = "Area marker fill opacity.")
-    public double config_fill_opacity;
+    public double configFillOpacity;
 
     @ConfigInt(def = 0xffb422, min = 0, max = 0xffffff, desc = "Area marker line color (0xRRGGBB).")
-    public int config_line_color;
+    public int configLineColor;
 
     @ConfigDouble(def = 1.0, min = 0.0, max = 1.0, desc = "Area marker line opacity.")
-    public double config_line_opacity;
+    public double configLineOpacity;
 
     @LangMessage
-    public TranslatedMessage lang_layer_label;
+    public TranslatedMessage langLayerLabel;
 
     @LangMessage
-    public TranslatedMessage lang_marker_label;
+    public TranslatedMessage langMarkerLabel;
 
     private RegionBlueMapLayerDelegate delegate = null;
 
     public RegionBlueMapLayer(final Context<Regions> context) {
-        super(context.group("blue_map", "Enable BlueMap integration."));
+        super(context.group("BlueMap", "Enable BlueMap integration."));
     }
 
-    public void delayed_on_enable() {
-        final var plugin = get_module().getServer().getPluginManager().getPlugin("BlueMap");
+    public void delayedOnEnable() {
+        final var plugin = getModule().getServer().getPluginManager().getPlugin("BlueMap");
         if (plugin == null) {
             return;
         }
 
         delegate = new RegionBlueMapLayerDelegate(this);
-        delegate.on_enable(plugin);
+        delegate.onEnable(plugin);
     }
 
     @Override
-    public void on_enable() {
-        schedule_next_tick(this::delayed_on_enable);
+    public void onEnable() {
+        scheduleNextTick(this::delayedOnEnable);
     }
 
     @Override
-    public void on_disable() {
+    public void onDisable() {
         if (delegate != null) {
-            delegate.on_disable();
+            delegate.onDisable();
             delegate = null;
         }
     }
 
-    public void update_marker(final Region region) {
+    public void updateMarker(final Region region) {
         if (delegate != null) {
-            delegate.update_marker(region);
+            delegate.updateMarker(region);
         }
     }
 
-    public void remove_marker(final UUID region_id) {
+    public void removeMarker(final UUID regionId) {
         if (delegate != null) {
-            delegate.remove_marker(region_id);
+            delegate.removeMarker(regionId);
         }
     }
 
-    public void update_all_markers() {
+    public void updateAllMarkers() {
         if (delegate != null) {
-            delegate.update_all_markers();
+            delegate.updateAllMarkers();
         }
     }
 }

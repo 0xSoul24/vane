@@ -37,29 +37,31 @@ public class StonecuttingRecipeDefinition extends RecipeDefinition {
     }
 
     @Override
-    public Object to_dict() {
+    public Object toDict() {
         final HashMap<String, Object> dict = new HashMap<>();
-        dict.put("input", this.input);
-        dict.put("result", this.result);
-        dict.put("type", "stonecutting");
+        dict.put("Input", this.input);
+        dict.put("Result", this.result);
+        dict.put("Type", "stonecutting");
         return dict;
     }
 
     @Override
-    public RecipeDefinition from_dict(Object dict) {
+    public RecipeDefinition fromDict(Object dict) {
         if (!(dict instanceof Map<?, ?>)) {
             throw new IllegalArgumentException(
                 "Invalid stonecutting recipe dictionary: Argument must be a Map<String, Object>!"
             );
         }
-        final var dict_map = (Map<?, ?>) dict;
-        if (dict_map.get("input") instanceof String input) {
+        final var dictMap = (Map<?, ?>) dict;
+        final Object inputObj = dictMap.containsKey("Input") ? dictMap.get("Input") : dictMap.get("input");
+        if (inputObj instanceof String input) {
             this.input = input;
         } else {
             throw new IllegalArgumentException("Invalid stonecutting recipe dictionary: input must be a string");
         }
 
-        if (dict_map.get("result") instanceof String result) {
+        final Object resultObj = dictMap.containsKey("Result") ? dictMap.get("Result") : dictMap.get("result");
+        if (resultObj instanceof String result) {
             this.result = result;
         } else {
             throw new IllegalArgumentException("Invalid stonecutting recipe dictionary: result must be a string");
@@ -69,9 +71,9 @@ public class StonecuttingRecipeDefinition extends RecipeDefinition {
     }
 
     @Override
-    public Recipe to_recipe(NamespacedKey base_key) {
-        final var out = ItemUtil.itemstack_from_string(this.result).getLeft();
-        final var in = RecipeDefinition.recipe_choice(input);
-        return new StonecuttingRecipe(key(base_key), out, in);
+    public Recipe toRecipe(NamespacedKey baseKey) {
+        final var out = ItemUtil.itemstackFromString(this.result).getLeft();
+        final var in = RecipeDefinition.recipeChoice(input);
+        return new StonecuttingRecipe(key(baseKey), out, in);
     }
 }

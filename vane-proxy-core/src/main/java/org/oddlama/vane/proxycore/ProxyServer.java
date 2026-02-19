@@ -5,11 +5,11 @@ import java.util.UUID;
 import org.oddlama.vane.proxycore.scheduler.ProxyTaskScheduler;
 
 public interface ProxyServer {
-    ProxyTaskScheduler get_scheduler();
+    ProxyTaskScheduler getScheduler();
 
     void broadcast(String message);
 
     Collection<ProxyPlayer> getPlayers();
 
-    boolean has_permission(UUID uuid, String... permission);
+    boolean hasPermission(UUID uuid, String... permission);
 }

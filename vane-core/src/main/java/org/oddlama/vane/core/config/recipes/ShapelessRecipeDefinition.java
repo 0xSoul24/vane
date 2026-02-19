@@ -20,17 +20,17 @@ public class ShapelessRecipeDefinition extends RecipeDefinition {
         super(name);
     }
 
-    public ShapelessRecipeDefinition add_ingredient(String ingredient) {
+    public ShapelessRecipeDefinition addIngredient(String ingredient) {
         this.ingredients.add(ingredient);
         return this;
     }
 
-    public ShapelessRecipeDefinition add_ingredient(final Tag<?> tag) {
-        return add_ingredient("#" + tag.key());
+    public ShapelessRecipeDefinition addIngredient(final Tag<?> tag) {
+        return addIngredient("#" + tag.key());
     }
 
-    public ShapelessRecipeDefinition add_ingredient(Material material) {
-        return add_ingredient(material.key().toString());
+    public ShapelessRecipeDefinition addIngredient(Material material) {
+        return addIngredient(material.key().toString());
     }
 
     public ShapelessRecipeDefinition result(String result) {
@@ -39,23 +39,24 @@ public class ShapelessRecipeDefinition extends RecipeDefinition {
     }
 
     @Override
-    public Object to_dict() {
+    public Object toDict() {
         final HashMap<String, Object> dict = new HashMap<>();
-        dict.put("type", "shapeless");
-        dict.put("ingredients", this.ingredients);
-        dict.put("result", this.result);
+        dict.put("Type", "shapeless");
+        dict.put("Ingredients", this.ingredients);
+        dict.put("Result", this.result);
         return dict;
     }
 
     @Override
-    public RecipeDefinition from_dict(Object dict) {
+    public RecipeDefinition fromDict(Object dict) {
         if (!(dict instanceof Map<?, ?>)) {
             throw new IllegalArgumentException(
                 "Invalid shapeless recipe dictionary: Argument must be a Map<String, Object>!"
             );
         }
-        final var dict_map = (Map<?, ?>) dict;
-        if (dict_map.get("ingredients") instanceof List<?> ingredients) {
+        final var dictMap = (Map<?, ?>) dict;
+        final Object ingredientsObj = dictMap.containsKey("Ingredients") ? dictMap.get("Ingredients") : dictMap.get("ingredients");
+        if (ingredientsObj instanceof List<?> ingredients) {
             this.ingredients = ingredients.stream().map(i -> (String) i).toList();
         } else {
             throw new IllegalArgumentException(
@@ -63,7 +64,8 @@ public class ShapelessRecipeDefinition extends RecipeDefinition {
             );
         }
 
-        if (dict_map.get("result") instanceof String result) {
+        final Object resultObj = dictMap.containsKey("Result") ? dictMap.get("Result") : dictMap.get("result");
+        if (resultObj instanceof String result) {
             this.result = result;
         } else {
             throw new IllegalArgumentException("Invalid shapeless recipe dictionary: result must be a string");
@@ -73,9 +75,9 @@ public class ShapelessRecipeDefinition extends RecipeDefinition {
     }
 
     @Override
-    public Recipe to_recipe(NamespacedKey base_key) {
-        final var recipe = new ShapelessRecipe(key(base_key), ItemUtil.itemstack_from_string(this.result).getLeft());
-        this.ingredients.forEach(i -> recipe.addIngredient(RecipeDefinition.recipe_choice(i)));
+    public Recipe toRecipe(NamespacedKey baseKey) {
+        final var recipe = new ShapelessRecipe(key(baseKey), ItemUtil.itemstackFromString(this.result).getLeft());
+        this.ingredients.forEach(i -> recipe.addIngredient(RecipeDefinition.recipeChoice(i)));
         return recipe;
     }
 }

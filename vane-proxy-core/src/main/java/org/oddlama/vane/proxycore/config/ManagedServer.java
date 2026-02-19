@@ -14,26 +14,26 @@ import org.jetbrains.annotations.Nullable;
 
 public class ManagedServer {
 
-    public String display_name;
+    public String displayName;
     public ServerStart start;
 
     private final String id;
-    private final StatefulConfiguration online_config;
-    private final StatefulConfiguration offline_config;
+    private final StatefulConfiguration onlineConfig;
+    private final StatefulConfiguration offlineConfig;
 
     public ManagedServer(
         String id,
-        String display_name,
-        CommentedConfig online_config_section,
-        CommentedConfig offline_config_section,
+        String displayName,
+        CommentedConfig onlineConfigSection,
+        CommentedConfig offlineConfigSection,
         CommentedConfig start
     ) throws IOException {
         this.id = id;
-        this.display_name = display_name;
+        this.displayName = displayName;
 
-        this.online_config = new StatefulConfiguration(id, display_name, online_config_section);
-        this.offline_config = new StatefulConfiguration(id, display_name, offline_config_section);
-        this.start = new ServerStart(id, display_name, start);
+        this.onlineConfig = new StatefulConfiguration(id, displayName, onlineConfigSection);
+        this.offlineConfig = new StatefulConfiguration(id, displayName, offlineConfigSection);
+        this.start = new ServerStart(id, displayName, start);
     }
 
     public @NotNull String id() {
@@ -43,10 +43,10 @@ public class ManagedServer {
     public @Nullable String favicon(ConfigItemSource source) {
         switch (source) {
             case ONLINE -> {
-                return online_config.encoded_favicon;
+                return onlineConfig.encodedFavicon;
             }
             case OFFLINE -> {
-                return offline_config.encoded_favicon;
+                return offlineConfig.encodedFavicon;
             }
             default -> {
                 return null;
@@ -54,54 +54,54 @@ public class ManagedServer {
         }
     }
 
-    public String[] start_cmd() {
+    public String[] startCmd() {
         return start.cmd;
     }
 
-    public String start_kick_msg() {
-        return start.kick_msg;
+    public String startKickMsg() {
+        return start.kickMsg;
     }
 
-    private String random_quote(ConfigItemSource source) {
-        final String[] quote_set;
+    private String randomQuote(ConfigItemSource source) {
+        final String[] quoteSet;
         switch (source) {
-            case ONLINE -> quote_set = online_config.quotes;
-            case OFFLINE -> quote_set = offline_config.quotes;
+            case ONLINE -> quoteSet = onlineConfig.quotes;
+            case OFFLINE -> quoteSet = offlineConfig.quotes;
             default -> {
                 return "";
             }
         }
 
-        if (quote_set == null || quote_set.length == 0) {
+        if (quoteSet == null || quoteSet.length == 0) {
             return "";
         }
-        return quote_set[new Random().nextInt(quote_set.length)];
+        return quoteSet[new Random().nextInt(quoteSet.length)];
     }
 
     public String motd(ConfigItemSource source) {
-        final String sourced_motd;
-        final ConfigItemSource quote_source;
+        final String sourcedMotd;
+        final ConfigItemSource quoteSource;
         switch (source) {
             case ONLINE -> {
-                sourced_motd = online_config.motd;
-                quote_source = ConfigItemSource.ONLINE;
+                sourcedMotd = onlineConfig.motd;
+                quoteSource = ConfigItemSource.ONLINE;
             }
             case OFFLINE -> {
-                sourced_motd = offline_config.motd;
-                quote_source = ConfigItemSource.OFFLINE;
+                sourcedMotd = offlineConfig.motd;
+                quoteSource = ConfigItemSource.OFFLINE;
             }
             default -> {
                 return "";
             }
         }
 
-        if (sourced_motd == null) {
+        if (sourcedMotd == null) {
             return "";
         }
-        return sourced_motd.replace("{QUOTE}", random_quote(quote_source));
+        return sourcedMotd.replace("{QUOTE}", randomQuote(quoteSource));
     }
 
-    public Integer command_timeout() {
+    public Integer commandTimeout() {
         return start.timeout;
     }
 
@@ -114,10 +114,10 @@ public class ManagedServer {
 
         public String[] quotes = null;
         public String motd = null;
-        private @Nullable String encoded_favicon;
+        private @Nullable String encodedFavicon;
 
-        public StatefulConfiguration(String id, String display_name, CommentedConfig config) throws IOException {
-            // [managed_servers.my_server.state]
+        public StatefulConfiguration(String id, String displayName, CommentedConfig config) throws IOException {
+            // [managedServers.my_server.state]
             if (config == null) {
                 // The whole section is missing
                 return;
@@ -129,7 +129,7 @@ public class ManagedServer {
             if (quotes != null) this.quotes = quotes
                 .stream()
                 .filter(s -> !s.isBlank())
-                .map(s -> s.replace("{SERVER}", id).replace("{SERVER_DISPLAY_NAME}", display_name))
+                .map(s -> s.replace("{SERVER}", id).replace("{SERVER_DISPLAY_NAME}", displayName))
                 .toArray(String[]::new);
 
             // motd = "..."
@@ -141,27 +141,27 @@ public class ManagedServer {
 
             if (motd != null && !((String) motd).isEmpty()) this.motd = ((String) motd).replace(
                     "{SERVER_DISPLAY_NAME}",
-                    display_name
+                    displayName
                 );
 
             // favicon = "..."
-            var favicon_path = config.get("favicon");
+            var faviconPath = config.get("favicon");
 
-            if (!(favicon_path == null || favicon_path instanceof String)) throw new IllegalArgumentException(
+            if (!(faviconPath == null || faviconPath instanceof String)) throw new IllegalArgumentException(
                 "Managed server '" + id + "' has a non-string favicon path!"
             );
 
-            if (favicon_path != null && !((String) favicon_path).isEmpty()) this.encoded_favicon = encode_favicon(
+            if (faviconPath != null && !((String) faviconPath).isEmpty()) this.encodedFavicon = encodeFavicon(
                 id,
-                (String) favicon_path
+                (String) faviconPath
             );
         }
 
-        private static String encode_favicon(String id, String favicon_path) throws IOException {
-            File favicon_file = new File(favicon_path.replace("{SERVER}", id));
+        private static String encodeFavicon(String id, String faviconPath) throws IOException {
+            File faviconFile = new File(faviconPath.replace("{SERVER}", id));
             BufferedImage image;
             try {
-                image = ImageIO.read(favicon_file);
+                image = ImageIO.read(faviconFile);
             } catch (IOException e) {
                 throw new IOException("Failed to read favicon file: " + e.getMessage());
             }
@@ -172,15 +172,15 @@ public class ManagedServer {
 
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             ImageIO.write(image, "PNG", stream);
-            byte[] favicon_bytes = stream.toByteArray();
+            byte[] faviconBytes = stream.toByteArray();
 
-            String encoded_favicon = "data:image/png;base64," + Base64.getEncoder().encodeToString(favicon_bytes);
+            String encodedFavicon = "data:image/png;base64," + Base64.getEncoder().encodeToString(faviconBytes);
 
-            if (encoded_favicon.length() > Short.MAX_VALUE) {
+            if (encodedFavicon.length() > Short.MAX_VALUE) {
                 throw new IllegalArgumentException("Favicon file too large for server to process");
             }
 
-            return encoded_favicon;
+            return encodedFavicon;
         }
     }
 
@@ -189,30 +189,30 @@ public class ManagedServer {
         private static final int DEFAULT_TIMEOUT_SECONDS = 10;
         public String[] cmd;
         public Integer timeout;
-        public String kick_msg;
-        public boolean allow_anyone;
+        public String kickMsg;
+        public boolean allowAnyone;
 
-        public ServerStart(String id, String display_name, CommentedConfig config) {
+        public ServerStart(String id, String displayName, CommentedConfig config) {
             List<String> cmd = config.get("cmd");
             var timeout = config.get("timeout");
-            var kick_msg = config.get("kick_msg");
-            var allow_anyone = config.get("allow_anyone");
+            var kickMsg = config.get("kickMsg");
+            var allowAnyone = config.get("allowAnyone");
 
             if (cmd != null) this.cmd = cmd.stream().map(s -> s.replace("{SERVER}", id)).toArray(String[]::new);
             else this.cmd = null;
 
-            if (!(kick_msg == null || kick_msg instanceof String)) throw new IllegalArgumentException(
+            if (!(kickMsg == null || kickMsg instanceof String)) throw new IllegalArgumentException(
                 "Managed server '" + id + "' has an invalid kick message!"
             );
 
-            if (kick_msg != null) this.kick_msg = ((String) kick_msg).replace("{SERVER}", id).replace(
+            if (kickMsg != null) this.kickMsg = ((String) kickMsg).replace("{SERVER}", id).replace(
                     "{SERVER_DISPLAY_NAME}",
-                    display_name
+                    displayName
                 );
-            else this.kick_msg = null;
+            else this.kickMsg = null;
 
-            if (allow_anyone != null) this.allow_anyone = (boolean) allow_anyone;
-            else this.allow_anyone = false;
+            if (allowAnyone != null) this.allowAnyone = (boolean) allowAnyone;
+            else this.allowAnyone = false;
 
             if (timeout == null) {
                 this.timeout = DEFAULT_TIMEOUT_SECONDS;

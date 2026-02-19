@@ -16,7 +16,7 @@ import org.oddlama.vane.core.enchantments.CustomEnchantment;
 import org.oddlama.vane.core.module.Context;
 import org.oddlama.vane.enchantments.Enchantments;
 
-@VaneEnchantment(name = "unbreakable", rarity = Rarity.RARE, treasure = true, allow_custom = true)
+@VaneEnchantment(name = "unbreakable", rarity = Rarity.RARE, treasure = true, allowCustom = true)
 public class Unbreakable extends CustomEnchantment<Enchantments> {
 
     public Unbreakable(Context<Enchantments> context) {
@@ -24,22 +24,22 @@ public class Unbreakable extends CustomEnchantment<Enchantments> {
     }
 
     @Override
-    public RecipeList default_recipes() {
+    public RecipeList defaultRecipes() {
         return RecipeList.of(
             new ShapedRecipeDefinition("generic")
-                .shape("waw", "nbn", "tst")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_the_gods")
-                .set_ingredient('w', Material.WITHER_ROSE)
-                .set_ingredient('a', Material.ENCHANTED_GOLDEN_APPLE)
-                .set_ingredient('n', Material.NETHERITE_INGOT)
-                .set_ingredient('t', Material.TOTEM_OF_UNDYING)
-                .set_ingredient('s', Material.NETHER_STAR)
+                .shape("WAW", "NBN", "TST")
+                .setIngredient('B', "vane_enchantments:ancient_tome_of_the_gods")
+                .setIngredient('W', Material.WITHER_ROSE)
+                .setIngredient('A', Material.ENCHANTED_GOLDEN_APPLE)
+                .setIngredient('N', Material.NETHERITE_INGOT)
+                .setIngredient('T', Material.TOTEM_OF_UNDYING)
+                .setIngredient('S', Material.NETHER_STAR)
                 .result(on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
         );
     }
 
     @Override
-    public LootTableList default_loot_tables() {
+    public LootTableList defaultLootTables() {
         return LootTableList.of(
             new LootDefinition("generic")
                 .in(LootTables.ABANDONED_MINESHAFT)
@@ -51,7 +51,7 @@ public class Unbreakable extends CustomEnchantment<Enchantments> {
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-    public void on_player_item_damage(final PlayerItemDamageEvent event) {
+    public void onPlayerItemDamage(final PlayerItemDamageEvent event) {
         // Check enchantment
         final var item = event.getItem();
         if (item.getEnchantmentLevel(this.bukkit()) == 0) {

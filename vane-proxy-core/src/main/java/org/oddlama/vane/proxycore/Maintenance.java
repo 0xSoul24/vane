@@ -1,6 +1,6 @@
 package org.oddlama.vane.proxycore;
 
-import static org.oddlama.vane.proxycore.util.TimeUtil.format_time;
+import static org.oddlama.vane.proxycore.util.TimeUtil.formatTime;
 
 import java.io.*;
 import java.util.concurrent.TimeUnit;
@@ -60,8 +60,8 @@ public class Maintenance {
 
     private final VaneProxyPlugin plugin;
     private final File file = new File("./.maintenance");
-    private final TaskEnable task_enable = new TaskEnable();
-    private final TaskNotify task_notify = new TaskNotify();
+    private final TaskEnable taskEnable = new TaskEnable();
+    private final TaskNotify taskNotify = new TaskNotify();
     private boolean enabled = false;
     private long start = 0;
 
@@ -88,12 +88,12 @@ public class Maintenance {
         enabled = true;
 
         // Kick all players
-        final var kick_message = format_message(MESSAGE_KICK);
-        for (final var player : plugin.get_proxy().getPlayers()) {
-            player.disconnect(kick_message);
+        final var kickMessage = formatMessage(MESSAGE_KICK);
+        for (final var player : plugin.getProxy().getPlayers()) {
+            player.disconnect(kickMessage);
         }
 
-        plugin.get_logger().log(Level.INFO, "Maintenance enabled!");
+        plugin.getLogger().log(Level.INFO, "Maintenance enabled!");
     }
 
     public void disable() {
@@ -101,8 +101,8 @@ public class Maintenance {
         duration = 0L;
         enabled = false;
 
-        task_enable.cancel();
-        task_notify.cancel();
+        taskEnable.cancel();
+        taskNotify.cancel();
 
         // Delete file
         file.delete();
@@ -115,34 +115,34 @@ public class Maintenance {
 
         if (start - System.currentTimeMillis() > 0) {
             // Broadcast message (only if not started yet)
-            plugin.get_proxy().broadcast(MESSAGE_ABORTED);
+            plugin.getProxy().broadcast(MESSAGE_ABORTED);
         }
 
         // Disable maintenance (just to be on the safe side)
         disable();
 
-        plugin.get_logger().log(Level.INFO, "Maintenance disabled!");
+        plugin.getLogger().log(Level.INFO, "Maintenance disabled!");
     }
 
-    public void schedule(long start_millis, @Nullable Long duration_millis) {
-        if (duration_millis == null && enabled) {
-            plugin.get_logger().log(Level.WARNING, "Maintenance already enabled!");
+    public void schedule(long startMillis, @Nullable Long durationMillis) {
+        if (durationMillis == null && enabled) {
+            plugin.getLogger().log(Level.WARNING, "Maintenance already enabled!");
             return;
         }
 
         // Schedule maintenance
         enabled = false;
-        start = start_millis;
-        duration = duration_millis;
+        start = startMillis;
+        duration = durationMillis;
 
         // Save to file
         save();
 
         // Start tasks
-        task_enable.schedule();
+        taskEnable.schedule();
 
-        if (duration_millis != null) {
-            task_notify.schedule();
+        if (durationMillis != null) {
+            taskNotify.schedule();
         }
     }
 
@@ -150,11 +150,11 @@ public class Maintenance {
         if (file.exists()) {
             // Recover maintenance times
 
-            try (final var file_reader = new FileReader(file); final var reader = new BufferedReader(file_reader)) {
+            try (final var fileReader = new FileReader(file); final var reader = new BufferedReader(fileReader)) {
                 start = Long.parseLong(reader.readLine());
-                String duration_line = reader.readLine();
-                if (duration_line != null) {
-                    duration = Long.parseLong(duration_line);
+                String durationLine = reader.readLine();
+                if (durationLine != null) {
+                    duration = Long.parseLong(durationLine);
                 } else {
                     // We have no duration, run until stopped
                     duration = null;
@@ -191,11 +191,11 @@ public class Maintenance {
                 writer.write(Long.toString(start));
             }
         } catch (IOException e) {
-            plugin.get_logger().log(Level.SEVERE, "Failed to save maintenance state to file", e);
+            plugin.getLogger().log(Level.SEVERE, "Failed to save maintenance state to file", e);
         }
     }
 
-    public String format_message(final String message) {
+    public String formatMessage(final String message) {
         var timespan = start - System.currentTimeMillis();
         final String time;
 
@@ -205,11 +205,11 @@ public class Maintenance {
             if (timespan % 1000 >= 500) {
                 timespan += 1000;
             }
-            time = format_time(timespan);
+            time = formatTime(timespan);
         }
 
-        String duration_string;
-        String remaining_string;
+        String durationString;
+        String remainingString;
         if (duration != null) {
             var remaining = duration + (start - System.currentTimeMillis());
             if (remaining > duration) {
@@ -218,31 +218,31 @@ public class Maintenance {
                 remaining = 0;
             }
 
-            duration_string = format_time(duration);
-            remaining_string = format_time(remaining);
+            durationString = formatTime(duration);
+            remainingString = formatTime(remaining);
         } else {
-            duration_string = "Indefinite";
-            remaining_string = "Indefinite";
+            durationString = "Indefinite";
+            remainingString = "Indefinite";
         }
 
         return message
             .replace("%MOTD%", MOTD)
             .replace("%time%", time)
-            .replace("%duration%", duration_string)
-            .replace("%remaining%", remaining_string);
+            .replace("%duration%", durationString)
+            .replace("%remaining%", remainingString);
     }
 
     public class TaskNotify implements Runnable {
 
         private ProxyScheduledTask task = null;
-        private long notify_time = -1;
+        private long notifyTime = -1;
 
         @Override
         public synchronized void run() {
             // Broadcast message
             plugin
-                .get_proxy()
-                .broadcast(format_message(notify_time <= SHUTDOWN_THRESHOLD ? MESSAGE_SHUTDOWN : MESSAGE_SCHEDULED));
+                .getProxy()
+                .broadcast(formatMessage(notifyTime <= SHUTDOWN_THRESHOLD ? MESSAGE_SHUTDOWN : MESSAGE_SCHEDULED));
 
             // Schedule next time
             schedule();
@@ -253,7 +253,7 @@ public class Maintenance {
                 task.cancel();
                 task = null;
 
-                notify_time = -1;
+                notifyTime = -1;
             }
         }
 
@@ -264,31 +264,31 @@ public class Maintenance {
             // subtract 500 millis, so we will never "forget" one step
             final var timespan = start - System.currentTimeMillis() - 500;
 
-            if (notify_time < 0) {
+            if (notifyTime < 0) {
                 // First schedule
-                plugin.get_proxy().broadcast(format_message(MESSAGE_SCHEDULED));
-                notify_time = timespan;
+                plugin.getProxy().broadcast(formatMessage(MESSAGE_SCHEDULED));
+                notifyTime = timespan;
             }
 
-            if ((notify_time = next_notify_time()) < 0) {
+            if ((notifyTime = nextNotifyTime()) < 0) {
                 // No next time
                 return;
             }
 
             // Schedule for next time
             task = plugin
-                .get_proxy()
-                .get_scheduler()
-                .schedule(plugin, this, timespan - notify_time, TimeUnit.MILLISECONDS);
+                .getProxy()
+                .getScheduler()
+                .schedule(plugin, this, timespan - notifyTime, TimeUnit.MILLISECONDS);
         }
 
-        public long next_notify_time() {
-            if (notify_time < 0) {
+        public long nextNotifyTime() {
+            if (notifyTime < 0) {
                 return -1;
             }
 
             for (final var t : NOTIFY_TIMES) {
-                if (notify_time - t > 0) {
+                if (notifyTime - t > 0) {
                     return t;
                 }
             }
@@ -324,7 +324,7 @@ public class Maintenance {
                 timespan = 0;
             }
 
-            task = plugin.get_proxy().get_scheduler().schedule(plugin, this, timespan, TimeUnit.MILLISECONDS);
+            task = plugin.getProxy().getScheduler().schedule(plugin, this, timespan, TimeUnit.MILLISECONDS);
         }
     }
 }

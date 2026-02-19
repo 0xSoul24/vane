@@ -1,7 +1,7 @@
 package org.oddlama.vane.admin;
 
-import static org.oddlama.vane.util.Conversions.ms_to_ticks;
-import static org.oddlama.vane.util.Nms.set_air_no_drops;
+import static org.oddlama.vane.util.Conversions.msToTicks;
+import static org.oddlama.vane.util.Nms.setAirNoDrops;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -20,26 +20,26 @@ import org.oddlama.vane.core.module.Context;
 public class WorldRebuild extends Listener<Admin> {
 
     @ConfigLong(def = 2000, min = 0, desc = "Delay in milliseconds until the world will be rebuilt.")
-    private long config_delay;
+    private long configDelay;
 
     @ConfigDouble(
         def = 0.175,
         min = 0.0,
         desc = "Determines rebuild speed. Higher falloff means faster transition to quicker rebuild. After n blocks, the delay until the next block will be d_n = delay * exp(-x * delay_falloff). For example 0.0 will result in same delay for every block."
     )
-    private double config_delay_falloff;
+    private double configDelayFalloff;
 
     @ConfigLong(
         def = 50,
         min = 50,
         desc = "Minimum delay in milliseconds between rebuilding two blocks. Anything <= 50 milliseconds will be one tick."
     )
-    private long config_min_delay;
+    private long configMinDelay;
 
     public WorldRebuild(Context<Admin> context) {
         super(
             context.group(
-                "world_rebuild",
+                "WorldRebuild",
                 "Instead of cancelling explosions, the world will regenerate after a short amount of time."
             )
         );
@@ -56,7 +56,7 @@ public class WorldRebuild extends Listener<Admin> {
 
         // Set everything to air without triggering physics
         for (final var block : blocks) {
-            set_air_no_drops(block);
+            setAirNoDrops(block);
         }
 
         // Schedule rebuild
@@ -64,10 +64,10 @@ public class WorldRebuild extends Listener<Admin> {
     }
 
     @Override
-    public void on_disable() {
+    public void onDisable() {
         // Finish all pending rebuilds now!
         for (final var r : new ArrayList<>(rebuilders)) {
-            r.finish_now();
+            r.finishNow();
         }
         rebuilders.clear();
     }
@@ -76,29 +76,29 @@ public class WorldRebuild extends Listener<Admin> {
 
         private List<BlockState> states;
         private BukkitTask task = null;
-        private long amount_rebuild = 0;
+        private long amountRebuild = 0;
 
-        public Rebuilder(final List<BlockState> _states) {
-            this.states = _states;
+        public Rebuilder(final List<BlockState> blockStates) {
+            this.states = blockStates;
             if (this.states.isEmpty()) {
                 return;
             }
 
             // Find top center point for rebuild order reference
             Vector center = new Vector(0, 0, 0);
-            int max_y = 0;
+            int maxY = 0;
             for (final var state : this.states) {
-                max_y = Math.max(max_y, state.getY());
+                maxY = Math.max(maxY, state.getY());
                 center.add(state.getLocation().toVector());
             }
             center.multiply(1.0 / this.states.size());
-            center.setY(max_y + 1);
+            center.setY(maxY + 1);
 
             // Sort blocks to rebuild them in an ordered fashion
             this.states.sort(new RebuildComparator(center));
 
             // Initialize delay
-            task = get_module().schedule_task(this, ms_to_ticks(config_delay));
+            task = getModule().scheduleTask(this, msToTicks(configDelay));
         }
 
         private void finish() {
@@ -106,13 +106,13 @@ public class WorldRebuild extends Listener<Admin> {
             WorldRebuild.this.rebuilders.remove(this);
         }
 
-        private void rebuild_next_block() {
-            rebuild_block(states.remove(states.size() - 1));
+        private void rebuildNextBlock() {
+            rebuildBlock(states.remove(states.size() - 1));
         }
 
-        private void rebuild_block(final BlockState state) {
+        private void rebuildBlock(final BlockState state) {
             final var block = state.getBlock();
-            ++amount_rebuild;
+            ++amountRebuild;
 
             // Break any block that isn't air first
             if (block.getType() != Material.AIR) {
@@ -136,13 +136,13 @@ public class WorldRebuild extends Listener<Admin> {
                 );
         }
 
-        public void finish_now() {
+        public void finishNow() {
             if (task != null) {
                 task.cancel();
             }
 
             for (final var state : states) {
-                rebuild_block(state);
+                rebuildBlock(state);
             }
 
             finish();
@@ -154,30 +154,30 @@ public class WorldRebuild extends Listener<Admin> {
                 finish();
             } else {
                 // Rebuild next block
-                rebuild_next_block();
+                rebuildNextBlock();
 
                 // Adjust delay
-                final var delay = ms_to_ticks(
-                    Math.max(config_min_delay, (int) (config_delay * Math.exp(-amount_rebuild * config_delay_falloff)))
+                final var delay = msToTicks(
+                    Math.max(configMinDelay, (int) (configDelay * Math.exp(-amountRebuild * configDelayFalloff)))
                 );
-                WorldRebuild.this.get_module().schedule_task(this, delay);
+                WorldRebuild.this.getModule().scheduleTask(this, delay);
             }
         }
     }
 
     public static class RebuildComparator implements Comparator<BlockState> {
 
-        private Vector reference_point;
+        private Vector referencePoint;
 
-        public RebuildComparator(final Vector reference_point) {
-            this.reference_point = reference_point;
+        public RebuildComparator(final Vector referencePoint) {
+            this.referencePoint = referencePoint;
         }
 
         @Override
         public int compare(final BlockState a, final BlockState b) {
             // Sort by distance to top-most center. The Last block will be rebuilt first.
-            final var da = a.getLocation().toVector().subtract(reference_point).lengthSquared();
-            final var db = b.getLocation().toVector().subtract(reference_point).lengthSquared();
+            final var da = a.getLocation().toVector().subtract(referencePoint).lengthSquared();
+            final var db = b.getLocation().toVector().subtract(referencePoint).lengthSquared();
             return Double.compare(da, db);
         }
     }

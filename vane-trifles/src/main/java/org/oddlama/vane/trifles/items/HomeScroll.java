@@ -16,7 +16,7 @@ import org.oddlama.vane.trifles.Trifles;
     name = "home_scroll",
     base = Material.WARPED_FUNGUS_ON_A_STICK,
     durability = 25,
-    model_data = 0x760000,
+    modelData = 0x760000,
     version = 1
 )
 public class HomeScroll extends Scroll {
@@ -26,31 +26,31 @@ public class HomeScroll extends Scroll {
     }
 
     @Override
-    public RecipeList default_recipes() {
+    public RecipeList defaultRecipes() {
         return RecipeList.of(
             new ShapedRecipeDefinition("generic")
-                .shape("abc", "epe")
-                .set_ingredient('p', "vane_trifles:papyrus_scroll")
-                .set_ingredient('e', Material.ENDER_PEARL)
-                .set_ingredient('a', Material.CAMPFIRE)
-                .set_ingredient('b', Material.GOAT_HORN)
-                .set_ingredient('c', Tag.BEDS)
+                .shape("ABC", "EPE")
+                .setIngredient('P', "vane_trifles:papyrus_scroll")
+                .setIngredient('E', Material.ENDER_PEARL)
+                .setIngredient('A', Material.CAMPFIRE)
+                .setIngredient('B', Material.GOAT_HORN)
+                .setIngredient('C', Tag.BEDS)
                 .result(key().toString())
         );
     }
 
     // @Override
-    // public LootTableList default_loot_tables() {
+    // public LootTableList defaultLootTables() {
     //	// TODO spawn scroll with 1 usage! possible with nbt nice.
     // }
 
     @Override
-    public Location teleport_location(final ItemStack scroll, Player player, boolean imminent_teleport) {
-        final var to_location = player.getRespawnLocation();
-        if (imminent_teleport && to_location == null) {
+    public Location teleportLocation(final ItemStack scroll, Player player, boolean imminentTeleport) {
+        final var toLocation = player.getRespawnLocation();
+        if (imminentTeleport && toLocation == null) {
             // replaced deprecated call with getRespawnLocation()
-            final var to_potential_location = player.getRespawnLocation();
-            if (to_potential_location != null) {
+            final var toPotentialLocation = player.getRespawnLocation();
+            if (toPotentialLocation != null) {
                 // "You have no home bed or charge respawn anchor, or it was obstructed"
                 // The most cursed sentence in minecraft.
                 player.sendActionBar(Component.translatable("block.minecraft.spawn.not_valid"));
@@ -59,6 +59,6 @@ public class HomeScroll extends Scroll {
                 player.sendActionBar(Component.translatable("advancements.adventure.sleep_in_bed.description"));
             }
         }
-        return to_location;
+        return toLocation;
     }
 }

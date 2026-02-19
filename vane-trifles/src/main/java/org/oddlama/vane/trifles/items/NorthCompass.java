@@ -1,10 +1,7 @@
 package org.oddlama.vane.trifles.items;
 
-import java.io.IOException;
 import java.util.EnumSet;
-import java.util.List;
-import net.kyori.adventure.key.Key;
-import org.oddlama.vane.external.apache.commons.lang3.tuple.Pair;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -18,11 +15,9 @@ import org.oddlama.vane.core.config.recipes.ShapedRecipeDefinition;
 import org.oddlama.vane.core.item.CustomItem;
 import org.oddlama.vane.core.item.api.InhibitBehavior;
 import org.oddlama.vane.core.module.Context;
-import org.oddlama.vane.core.resourcepack.ResourcePackGenerator;
 import org.oddlama.vane.trifles.Trifles;
-import org.oddlama.vane.util.StorageUtil;
 
-@VaneItem(name = "north_compass", base = Material.COMPASS, model_data = 0x760013, version = 1)
+@VaneItem(name = "north_compass", base = Material.COMPASS, modelData = 0x760013, version = 1)
 public class NorthCompass extends CustomItem<Trifles> {
 
     public NorthCompass(final Context<Trifles> context) {
@@ -30,40 +25,40 @@ public class NorthCompass extends CustomItem<Trifles> {
     }
 
     @Override
-    public RecipeList default_recipes() {
+    public RecipeList defaultRecipes() {
         return RecipeList.of(
             new ShapedRecipeDefinition("generic")
-                .shape(" m ", "mrm", " m ")
-                .set_ingredient('m', Material.COPPER_INGOT)
-                .set_ingredient('r', Material.REDSTONE)
+                .shape(" M ", "MRM", " M ")
+                .setIngredient('M', Material.COPPER_INGOT)
+                .setIngredient('R', Material.REDSTONE)
                 .result(key().toString())
         );
     }
 
     @Override
-    public ItemStack updateItemStack(final ItemStack item_stack) {
-        final var worlds = get_module().getServer().getWorlds();
+    public ItemStack updateItemStack(final ItemStack itemStack) {
+        final var worlds = getModule().getServer().getWorlds();
         if (worlds.size() > 0) {
             final var world = worlds.get(0);
             if (world != null) {
-                item_stack.editMeta(CompassMeta.class, meta -> {
+                itemStack.editMeta(CompassMeta.class, meta -> {
                     meta.setLodestone(new Location(world, 0.0, 0.0, -300000000.0));
                     meta.setLodestoneTracked(false);
                 });
             }
         }
-        return item_stack;
+        return itemStack;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void on_player_click_inventory(final InventoryClickEvent event) {
+    public void onPlayerClickInventory(final InventoryClickEvent event) {
         final var item = event.getCurrentItem();
         if (item == null || item.getType() != Material.COMPASS) {
             return;
         }
 
-        final var custom_item = get_module().core.item_registry().get(item);
-        if (!(custom_item instanceof NorthCompass north_compass) || !north_compass.enabled()) {
+        final var customItem = getModule().core.itemRegistry().get(item);
+        if (!(customItem instanceof NorthCompass northCompass) || !northCompass.enabled()) {
             return;
         }
 

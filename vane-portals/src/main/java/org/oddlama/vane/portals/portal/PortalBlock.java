@@ -1,29 +1,30 @@
 package org.oddlama.vane.portals.portal;
 
-import static org.oddlama.vane.core.persistent.PersistentSerializer.from_json;
-import static org.oddlama.vane.core.persistent.PersistentSerializer.to_json;
+import static org.oddlama.vane.core.persistent.PersistentSerializer.fromJson;
+import static org.oddlama.vane.core.persistent.PersistentSerializer.toJson;
 
 import java.io.IOException;
 import java.util.UUID;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
+import org.oddlama.vane.core.persistent.PersistentSerializer;
 import org.oddlama.vane.util.LazyBlock;
 
 public class PortalBlock {
 
     public static Object serialize(@NotNull final Object o) throws IOException {
-        final var portal_block = (PortalBlock) o;
+        final var portalBlock = (PortalBlock) o;
         final var json = new JSONObject();
-        json.put("block", to_json(LazyBlock.class, portal_block.block));
-        json.put("type", to_json(PortalBlock.Type.class, portal_block.type));
+        json.put("block", PersistentSerializer.toJson(LazyBlock.class, portalBlock.block));
+        json.put("type", PersistentSerializer.toJson(PortalBlock.Type.class, portalBlock.type));
         return json;
     }
 
     public static PortalBlock deserialize(@NotNull final Object o) throws IOException {
         final var json = (JSONObject) o;
-        final var block = from_json(LazyBlock.class, json.get("block"));
-        final var type = from_json(PortalBlock.Type.class, json.get("type"));
+        final var block = PersistentSerializer.fromJson(LazyBlock.class, json.get("block"));
+        final var type = PersistentSerializer.fromJson(PortalBlock.Type.class, json.get("type"));
         return new PortalBlock(block, type);
     }
 
@@ -47,8 +48,8 @@ public class PortalBlock {
         return type;
     }
 
-    public PortalBlockLookup lookup(final UUID portal_id) {
-        return new PortalBlockLookup(portal_id, type);
+    public PortalBlockLookup lookup(final UUID portalId) {
+        return new PortalBlockLookup(portalId, type);
     }
 
     @Override
@@ -70,11 +71,11 @@ public class PortalBlock {
     public static enum Type {
         ORIGIN,
         CONSOLE,
-        BOUNDARY_1,
-        BOUNDARY_2,
-        BOUNDARY_3,
-        BOUNDARY_4,
-        BOUNDARY_5,
+        BOUNDARY1,
+        BOUNDARY2,
+        BOUNDARY3,
+        BOUNDARY4,
+        BOUNDARY5,
         PORTAL,
     }
 }

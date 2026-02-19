@@ -12,85 +12,85 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 5
+Version: 5
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'zh_tw'
+ResourcePackLangCode: 'zh_tw'
 
 
-command_not_a_player: "§c錯誤:§6 該指令只能由玩家執行！"
-command_permission_denied: "§c錯誤:§6 沒有權限！"
-invalid_time_format: "§c錯誤:§6 時間格式無效：%1$s"
-break_loot_block_prevented: "§6此方塊具有戰利品表，並會在一段時間後自動補充如果確定要摧毀此方塊，請等待5秒後再次破壞"
+CommandNotAPlayer: "§c錯誤:§6 該指令只能由玩家執行！"
+CommandPermissionDenied: "§c錯誤:§6 沒有權限！"
+InvalidTimeFormat: "§c錯誤:§6 時間格式無效：%1$s"
+BreakLootBlockPrevented: "§6此方塊具有戰利品表，並會在一段時間後自動補充如果確定要摧毀此方塊，請等待5秒後再次破壞"
 
-command_customitem:
-  usage: "%1$s §a給予 §7<§b物品§7>"
-  description: "給予玩家特定的自定義物品"
-  help: "§a給予 §7<§b物品§7>:§r 給予玩家特定的自定義物品"
+CommandCustomitem:
+  Usage: "%1$s §a給予 §7<§b物品§7>"
+  Description: "給予玩家特定的自定義物品"
+  Help: "§a給予 §7<§b物品§7>:§r 給予玩家特定的自定義物品"
 
-command_enchant:
-  level_too_low: "§c錯誤:§6 等級 %1$s§6 過低，必須至少為 %2$s"
-  level_too_high: "§c錯誤:§6 等級 %1$s§6 過高，必須最多為 %2$s"
-  invalid_enchantment: "§c錯誤: %1$s§6 不能應用於 %2$s"
-  usage: "%1$s §b附魔 §7[§b等級§7]"
-  description: "將手中物品附魔"
-  help: "將手中物品附魔"
+CommandEnchant:
+  LevelTooLow: "§c錯誤:§6 等級 %1$s§6 過低，必須至少為 %2$s"
+  LevelTooHigh: "§c錯誤:§6 等級 %1$s§6 過高，必須最多為 %2$s"
+  InvalidEnchantment: "§c錯誤: %1$s§6 不能應用於 %2$s"
+  Usage: "%1$s §b附魔 §7[§b等級§7]"
+  Description: "將手中物品附魔"
+  Help: "將手中物品附魔"
 
-command_vane:
-  reload_success: "%1$s§7: §a重新載入成功"
-  reload_fail: "%1$s§7: §c重新載入失敗"
-  resource_pack_generate_success: "§a資源包產生成功：%1$s"
-  resource_pack_generate_fail: "§c產生資源包時發生錯誤"
-  usage: "%1$s §7<§areload§7|§agenerate_resource_pack§7>"
-  description: "管理vane插件"
-  help: "§areload §7[§b模組§7]:§r 重新載入所有或給定的vane模組\n\
+CommandVane:
+  ReloadSuccess: "%1$s§7: §a重新載入成功"
+  ReloadFail: "%1$s§7: §c重新載入失敗"
+  ResourcePackGenerateSuccess: "§a資源包產生成功：%1$s"
+  ResourcePackGenerateFail: "§c產生資源包時發生錯誤"
+  Usage: "%1$s §7<§areload§7|§agenerate_resource_pack§7>"
+  Description: "管理vane插件"
+  Help: "§areload §7[§b模組§7]:§r 重新載入所有或給定的vane模組\n\
     §agenerate_resource_pack§7:§r 產生vane資源包"
 
-resource_pack:
-  pack_required: "§e此必要的自訂資源包用於本地化和自訂專案紋理。"
-  pack_suggested: "§e此可選自訂資源包用於本地化和自訂項目紋理。"
+ResourcePack:
+  PackRequired: "§e此必要的自訂資源包用於本地化和自訂專案紋理。"
+  PackSuggested: "§e此可選自訂資源包用於本地化和自訂項目紋理。"
 
-menus:
-  head_selector:
-    title: "%1$s §8§l頭顱"
-    filter_title: "§8§l頭顱倉庫篩選器"
-    select_head:
-      name: "%1$s"
-      lore:
+Menus:
+  HeadSelector:
+    Title: "%1$s §8§l頭顱"
+    FilterTitle: "§8§l頭顱倉庫篩選器"
+    SelectHead:
+      Name: "%1$s"
+      Lore:
         - ""
         - "§7類別: %2$s"
         - "§7標籤: %3$s"
-  item_selector:
-    accept:
-      name: "§a§l接受"
-      lore: ["§b選擇§7當前選定的物品"]
-    cancel:
-      name: "§c§l取消"
-      lore: ["§6取消§7物品選擇"]
-    selected:
-      name: "§d§l已選物品"
-      lore:
+  ItemSelector:
+    Accept:
+      Name: "§a§l接受"
+      Lore: ["§b選擇§7當前選定的物品"]
+    Cancel:
+      Name: "§c§l取消"
+      Lore: ["§6取消§7物品選擇"]
+    Selected:
+      Name: "§d§l已選物品"
+      Lore:
         - ""
         - "點擊任何物品來選擇它"
         - ""
         - "§b左鍵點擊§7重置更改"
         - "§b右鍵點擊§7清除（如果允許）"
-  generic_selector:
-    page:
-      name: "§b第%1$s頁"
-      lore: []
-    current_page:
-      name: "§a當前第%1$s頁 §7/ %2$s"
-      lore:
+  GenericSelector:
+    Page:
+      Name: "§b第%1$s頁"
+      Lore: []
+    CurrentPage:
+      Name: "§a當前第%1$s頁 §7/ %2$s"
+      Lore:
         - ""
         - "§b#已篩選項目: %3$s"
-    filter:
-      name: "§d§l篩選"
-      lore:
+    Filter:
+      Name: "§d§l篩選"
+      Lore:
         - ""
         - "§b左鍵點擊可打開篩選菜單"
         - "§b右鍵點擊可重置篩選器"
-    cancel:
-      name: "§c§l取消"
-      lore: ["§6取消選擇"]
+    Cancel:
+      Name: "§c§l取消"
+      Lore: ["§6取消選擇"]

@@ -1,8 +1,7 @@
 package org.oddlama.vane.portals.entity;
 
-import static org.oddlama.vane.util.Nms.world_handle;
+import static org.oddlama.vane.util.Nms.worldHandle;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +19,7 @@ public class FloatingItem extends ItemEntity {
     }
 
     public FloatingItem(final World world, double x, double y, double z) {
-        this(EntityType.ITEM, world_handle(world));
+        this(EntityType.ITEM, worldHandle(world));
         setPos(x, y, z);
     }
 

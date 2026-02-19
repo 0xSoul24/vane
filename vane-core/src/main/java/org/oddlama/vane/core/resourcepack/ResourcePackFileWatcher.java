@@ -13,43 +13,43 @@ import org.jetbrains.annotations.NotNull;
 
 public class ResourcePackFileWatcher {
 
-    private final ResourcePackDistributor resource_pack_distributor;
+    private final ResourcePackDistributor resourcePackDistributor;
     private final File file;
 
-    public ResourcePackFileWatcher(ResourcePackDistributor resource_pack_distributor, File file)
+    public ResourcePackFileWatcher(ResourcePackDistributor resourcePackDistributor, File file)
         throws IOException, InterruptedException {
-        this.resource_pack_distributor = resource_pack_distributor;
+        this.resourcePackDistributor = resourcePackDistributor;
         this.file = file;
     }
 
-    public void watch_for_changes() throws IOException {
+    public void watchForChanges() throws IOException {
         var eyes = FileSystems.getDefault().newWatchService();
-        var lang_file_match = FileSystems.getDefault().getPathMatcher("glob:**/lang-*.yml");
-        register_directories(Paths.get("plugins"), eyes, this::is_vane_module_folder);
+        var langFileMatch = FileSystems.getDefault().getPathMatcher("glob:**/lang-*.yml");
+        registerDirectories(Paths.get("plugins"), eyes, this::isVaneModuleFolder);
 
-        watch_async(eyes, lang_file_match, this::update_and_send_resource_pack).runTaskAsynchronously(
-            resource_pack_distributor.get_module()
+        watchAsync(eyes, langFileMatch, this::updateAndSendResourcePack).runTaskAsynchronously(
+            resourcePackDistributor.getModule()
         );
     }
 
-    private void update_and_send_resource_pack() {
-        resource_pack_distributor.counter++;
-        resource_pack_distributor.get_module().generate_resource_pack();
-        resource_pack_distributor.update_sha1(file);
+    private void updateAndSendResourcePack() {
+        resourcePackDistributor.counter++;
+        resourcePackDistributor.getModule().generateResourcePack();
+        resourcePackDistributor.updateSha1(file);
         for (Player player : Bukkit.getOnlinePlayers()) {
-            resource_pack_distributor.send_resource_pack(player);
+            resourcePackDistributor.sendResourcePack(player);
         }
     }
 
-    private boolean is_vane_module_folder(Path p) {
+    private boolean isVaneModuleFolder(Path p) {
         return p.getFileName().toString().startsWith("vane-");
     }
 
     private static class TrackRunned extends BukkitRunnable {
 
         final Runnable r;
-        boolean has_run = false;
-        boolean has_started = false;
+        boolean hasRun = false;
+        boolean hasStarted = false;
 
         public TrackRunned(Runnable r) {
             this.r = r;
@@ -57,17 +57,17 @@ public class ResourcePackFileWatcher {
 
         @Override
         public void run() {
-            has_started = true;
+            hasStarted = true;
             r.run();
-            has_run = true;
+            hasRun = true;
         }
     }
 
-    private @NotNull BukkitRunnable watch_async(WatchService eyes, PathMatcher match_lang, Runnable on_hit) {
+    private @NotNull BukkitRunnable watchAsync(WatchService eyes, PathMatcher matchLang, Runnable onHit) {
         return new BukkitRunnable() {
             @Override
             public void run() {
-                boolean should_schedule = false;
+                boolean shouldSchedule = false;
                 TrackRunned runner = null;
                 for (;;) {
                     final WatchKey key;
@@ -85,17 +85,17 @@ public class ResourcePackFileWatcher {
                         WatchEvent<Path> ev = (WatchEvent<Path>) event;
                         Path dir = (Path) key.watchable();
                         Path filename = ev.context();
-                        if (!match_lang.matches(dir.resolve(filename))) continue;
-                        should_schedule = true;
+                        if (!matchLang.matches(dir.resolve(filename))) continue;
+                        shouldSchedule = true;
                     }
 
-                    if (should_schedule) {
+                    if (shouldSchedule) {
                         if (runner != null) {
-                            if (!runner.has_started) runner.cancel();
+                            if (!runner.hasStarted) runner.cancel();
                         }
-                        runner = new TrackRunned(on_hit);
-                        runner.runTaskLater(resource_pack_distributor.get_module().core, 20L);
-                        should_schedule = false;
+                        runner = new TrackRunned(onHit);
+                        runner.runTaskLater(resourcePackDistributor.getModule().core, 20L);
+                        shouldSchedule = false;
                     }
 
                     // reset the key
@@ -108,15 +108,15 @@ public class ResourcePackFileWatcher {
         };
     }
 
-    private void register_directories(Path root, WatchService watcher, Predicate<Path> path_match) throws IOException {
+    private void registerDirectories(Path root, WatchService watcher, Predicate<Path> pathMatch) throws IOException {
         // register vane sub-folders.
-        final Iterator<Path> interesting_paths = Files.walk(root)
+        final Iterator<Path> interestingPaths = Files.walk(root)
             .filter(Files::isDirectory)
-            .filter(path_match)
+            .filter(pathMatch)
             .iterator();
         // quirky, but checked exceptions inside streams suck.
-        while (interesting_paths.hasNext()) {
-            Path p = interesting_paths.next();
+        while (interestingPaths.hasNext()) {
+            Path p = interestingPaths.next();
             p.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
         }
     }

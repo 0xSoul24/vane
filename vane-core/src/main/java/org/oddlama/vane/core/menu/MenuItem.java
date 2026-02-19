@@ -10,31 +10,31 @@ import org.oddlama.vane.core.menu.Menu.ClickResult;
 public class MenuItem implements MenuWidget {
 
     private int slot;
-    private Function4<Player, Menu, MenuItem, InventoryClickEvent, ClickResult> on_click;
+    private Function4<Player, Menu, MenuItem, InventoryClickEvent, ClickResult> onClick;
     private ItemStack item;
-    private boolean auto_update;
+    private boolean autoUpdate;
 
     public MenuItem(int slot, final ItemStack item) {
         this(slot, item, (Function4<Player, Menu, MenuItem, InventoryClickEvent, ClickResult>) null);
     }
 
-    public MenuItem(int slot, final ItemStack item, final Function3<Player, Menu, MenuItem, ClickResult> on_click) {
+    public MenuItem(int slot, final ItemStack item, final Function3<Player, Menu, MenuItem, ClickResult> onClick) {
         this(slot, item, (player, menu, self, event) -> {
-            if (!Menu.is_left_click(event)) {
+            if (!Menu.isLeftClick(event)) {
                 return ClickResult.INVALID_CLICK;
             }
-            return on_click.apply(player, menu, self);
+            return onClick.apply(player, menu, self);
         });
     }
 
     public MenuItem(
         int slot,
         final ItemStack item,
-        final Function4<Player, Menu, MenuItem, InventoryClickEvent, ClickResult> on_click
+        final Function4<Player, Menu, MenuItem, InventoryClickEvent, ClickResult> onClick
     ) {
         this.slot = slot;
-        this.on_click = on_click;
-        auto_update = item == null;
+        this.onClick = onClick;
+        autoUpdate = item == null;
         item(item);
     }
 
@@ -50,14 +50,14 @@ public class MenuItem implements MenuWidget {
         this.item = item;
     }
 
-    public void update_item(final Menu menu, final ItemStack item) {
+    public void updateItem(final Menu menu, final ItemStack item) {
         this.item(item);
         menu.update();
     }
 
     @Override
     public boolean update(final Menu menu) {
-        if (auto_update) {
+        if (autoUpdate) {
             this.item((ItemStack) null);
         }
 
@@ -82,8 +82,8 @@ public class MenuItem implements MenuWidget {
             return ClickResult.IGNORE;
         }
 
-        if (on_click != null) {
-            return on_click.apply(player, menu, this, event);
+        if (onClick != null) {
+            return onClick.apply(player, menu, this, event);
         } else {
             return ClickResult.IGNORE;
         }

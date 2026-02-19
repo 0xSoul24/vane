@@ -39,54 +39,54 @@ public class RegionRoleSettingEnforcer extends Listener<Regions> {
         super(context);
     }
 
-    public boolean check_setting_at(
+    public boolean checkSettingAt(
         final Location location,
         final Player player,
         final RoleSetting setting,
-        final boolean check_against
+        final boolean checkAgainst
     ) {
-        final var region = get_module().region_at(location);
+        final var region = getModule().regionAt(location);
         if (region == null) {
             return false;
         }
 
-        final var group = region.region_group(get_module());
-        return group.get_role(player.getUniqueId()).get_setting(setting) == check_against;
+        final var group = region.regionGroup(getModule());
+        return group.getRole(player.getUniqueId()).getSetting(setting) == checkAgainst;
     }
 
-    public boolean check_setting_at(
+    public boolean checkSettingAt(
         final Block block,
         final Player player,
         final RoleSetting setting,
-        final boolean check_against
+        final boolean checkAgainst
     ) {
-        final var region = get_module().region_at(block);
+        final var region = getModule().regionAt(block);
         if (region == null) {
             return false;
         }
 
-        final var group = region.region_group(get_module());
-        return group.get_role(player.getUniqueId()).get_setting(setting) == check_against;
+        final var group = region.regionGroup(getModule());
+        return group.getRole(player.getUniqueId()).getSetting(setting) == checkAgainst;
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void on_block_break(final BlockBreakEvent event) {
+    public void onBlockBreak(final BlockBreakEvent event) {
         // Prevent breaking of region blocks
-        if (check_setting_at(event.getBlock(), event.getPlayer(), RoleSetting.BUILD, false)) {
+        if (checkSettingAt(event.getBlock(), event.getPlayer(), RoleSetting.BUILD, false)) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void on_block_place(final BlockPlaceEvent event) {
+    public void onBlockPlace(final BlockPlaceEvent event) {
         // Prevent (re-)placing of region blocks
-        if (check_setting_at(event.getBlock(), event.getPlayer(), RoleSetting.BUILD, false)) {
+        if (checkSettingAt(event.getBlock(), event.getPlayer(), RoleSetting.BUILD, false)) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void on_entity_damage_by_entity(final EntityDamageByEntityEvent event) {
+    public void onEntityDamageByEntity(final EntityDamageByEntityEvent event) {
         final var damaged = event.getEntity();
         final var damager = event.getDamager();
 
@@ -98,8 +98,8 @@ public class RegionRoleSettingEnforcer extends Listener<Regions> {
                     break;
                 }
 
-                final var player_damager = (Player) damager;
-                if (check_setting_at(damaged.getLocation().getBlock(), player_damager, RoleSetting.BUILD, false)) {
+                final var playerDamager = (Player) damager;
+                if (checkSettingAt(damaged.getLocation().getBlock(), playerDamager, RoleSetting.BUILD, false)) {
                     event.setCancelled(true);
                 }
                 return;
@@ -109,13 +109,13 @@ public class RegionRoleSettingEnforcer extends Listener<Regions> {
                     break;
                 }
 
-                final var player_damager = (Player) damager;
-                final var item_frame = (ItemFrame) damaged;
-                final var item = item_frame.getItem();
+                final var playerDamager = (Player) damager;
+                final var itemFrame = (ItemFrame) damaged;
+                final var item = itemFrame.getItem();
                 if (item.getType() != Material.AIR) {
                     // This is a player taking the item out of an item-frame
                     if (
-                        check_setting_at(damaged.getLocation().getBlock(), player_damager, RoleSetting.CONTAINER, false)
+                        checkSettingAt(damaged.getLocation().getBlock(), playerDamager, RoleSetting.CONTAINER, false)
                     ) {
                         event.setCancelled(true);
                     }
@@ -125,7 +125,7 @@ public class RegionRoleSettingEnforcer extends Listener<Regions> {
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void on_hanging_break_by_entity(final HangingBreakByEntityEvent event) {
+    public void onHangingBreakByEntity(final HangingBreakByEntityEvent event) {
         final Entity remover = event.getRemover();
         Player player = null;
 
@@ -139,48 +139,48 @@ public class RegionRoleSettingEnforcer extends Listener<Regions> {
             }
         }
 
-        if (player != null && check_setting_at(event.getEntity().getLocation(), player, RoleSetting.BUILD, false)) {
+        if (player != null && checkSettingAt(event.getEntity().getLocation(), player, RoleSetting.BUILD, false)) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void on_hanging_place(final HangingPlaceEvent event) {
-        if (check_setting_at(event.getEntity().getLocation(), event.getPlayer(), RoleSetting.BUILD, false)) {
+    public void onHangingPlace(final HangingPlaceEvent event) {
+        if (checkSettingAt(event.getEntity().getLocation(), event.getPlayer(), RoleSetting.BUILD, false)) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void on_player_armor_stand_manipulate(final PlayerArmorStandManipulateEvent event) {
-        if (check_setting_at(event.getRightClicked().getLocation(), event.getPlayer(), RoleSetting.BUILD, false)) {
+    public void onPlayerArmorStandManipulate(final PlayerArmorStandManipulateEvent event) {
+        if (checkSettingAt(event.getRightClicked().getLocation(), event.getPlayer(), RoleSetting.BUILD, false)) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void on_player_bucket_empty(final PlayerBucketEmptyEvent event) {
-        if (check_setting_at(event.getBlockClicked(), event.getPlayer(), RoleSetting.BUILD, false)) {
+    public void onPlayerBucketEmpty(final PlayerBucketEmptyEvent event) {
+        if (checkSettingAt(event.getBlockClicked(), event.getPlayer(), RoleSetting.BUILD, false)) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void on_player_bucket_fill(final PlayerBucketFillEvent event) {
-        if (check_setting_at(event.getBlockClicked(), event.getPlayer(), RoleSetting.BUILD, false)) {
+    public void onPlayerBucketFill(final PlayerBucketFillEvent event) {
+        if (checkSettingAt(event.getBlockClicked(), event.getPlayer(), RoleSetting.BUILD, false)) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void on_player_interact_entity(final PlayerInteractEntityEvent event) {
+    public void onPlayerInteractEntity(final PlayerInteractEntityEvent event) {
         final var entity = event.getRightClicked();
         if (entity.getType() != EntityType.ITEM_FRAME) {
             return;
         }
 
         // Place or rotate item
-        if (check_setting_at(entity.getLocation(), event.getPlayer(), RoleSetting.CONTAINER, false)) {
+        if (checkSettingAt(entity.getLocation(), event.getPlayer(), RoleSetting.CONTAINER, false)) {
             event.setCancelled(true);
         }
     }
@@ -188,7 +188,7 @@ public class RegionRoleSettingEnforcer extends Listener<Regions> {
     // The EventPriority is HIGH, so this is executed AFTER the portals try
     // to activate, which is a seperate permission.
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void on_player_interact(final PlayerInteractEvent event) {
+    public void onPlayerInteract(final PlayerInteractEvent event) {
         final var player = event.getPlayer();
         final var block = event.getClickedBlock();
         if (block == null) {
@@ -200,18 +200,18 @@ public class RegionRoleSettingEnforcer extends Listener<Regions> {
                 return;
             case PHYSICAL: {
                 if (Tag.PRESSURE_PLATES.isTagged(block.getType())) {
-                    if (check_setting_at(block, player, RoleSetting.USE, false)) {
+                    if (checkSettingAt(block, player, RoleSetting.USE, false)) {
                         event.setCancelled(true);
                     }
                 } else if (block.getType() == Material.TRIPWIRE) {
-                    if (check_setting_at(block, player, RoleSetting.USE, false)) {
+                    if (checkSettingAt(block, player, RoleSetting.USE, false)) {
                         event.setCancelled(true);
                     }
                 }
                 return;
             }
             case RIGHT_CLICK_BLOCK: {
-                if (check_setting_at(block, player, RoleSetting.USE, false)) {
+                if (checkSettingAt(block, player, RoleSetting.USE, false)) {
                     event.setCancelled(true);
                 }
             }
@@ -219,9 +219,9 @@ public class RegionRoleSettingEnforcer extends Listener<Regions> {
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void on_player_inventory_open(final InventoryOpenEvent event) {
+    public void onPlayerInventoryOpen(final InventoryOpenEvent event) {
         // Only relevant if viewing should be prohibited, too.
-        if (!get_module().config_prohibit_viewing_containers) {
+        if (!getModule().configProhibitViewingContainers) {
             return;
         }
 
@@ -237,13 +237,13 @@ public class RegionRoleSettingEnforcer extends Listener<Regions> {
 
         final var holder = inventory.getHolder();
         if (holder instanceof DoubleChest || holder instanceof Container || holder instanceof Minecart) {
-            if (check_setting_at(inventory.getLocation(), player, RoleSetting.CONTAINER, false)) {
+            if (checkSettingAt(inventory.getLocation(), player, RoleSetting.CONTAINER, false)) {
                 event.setCancelled(true);
             }
         }
     }
 
-    public void on_player_inventory_interact(final InventoryInteractEvent event) {
+    public void onPlayerInventoryInteract(final InventoryInteractEvent event) {
         final var clicker = event.getWhoClicked();
         if (!(clicker instanceof Player)) {
             return;
@@ -257,19 +257,19 @@ public class RegionRoleSettingEnforcer extends Listener<Regions> {
 
         final var holder = inventory.getHolder();
         if (holder instanceof DoubleChest || holder instanceof Container || holder instanceof Minecart) {
-            if (check_setting_at(inventory.getLocation(), (Player) clicker, RoleSetting.CONTAINER, false)) {
+            if (checkSettingAt(inventory.getLocation(), (Player) clicker, RoleSetting.CONTAINER, false)) {
                 event.setCancelled(true);
             }
         }
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void on_player_inventory_click(final InventoryClickEvent event) {
-        on_player_inventory_interact(event);
+    public void onPlayerInventoryClick(final InventoryClickEvent event) {
+        onPlayerInventoryInteract(event);
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void on_player_inventory_drag(final InventoryDragEvent event) {
-        on_player_inventory_interact(event);
+    public void onPlayerInventoryDrag(final InventoryDragEvent event) {
+        onPlayerInventoryInteract(event);
     }
 }

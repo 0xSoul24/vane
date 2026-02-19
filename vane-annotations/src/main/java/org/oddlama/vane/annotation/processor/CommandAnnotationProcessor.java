@@ -24,42 +24,42 @@ import org.oddlama.vane.annotation.command.Name;
 public class CommandAnnotationProcessor extends AbstractProcessor {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static final Class<? extends Annotation>[] mandatory_annotations = new Class[] { Name.class };
+    private static final Class<? extends Annotation>[] mandatoryAnnotations = new Class[] { Name.class };
 
     @Override
-    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment round_env) {
+    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         for (var annotation : annotations) {
-            round_env.getElementsAnnotatedWith(annotation).forEach(e -> verify_is_class(annotation, e));
-            round_env.getElementsAnnotatedWith(annotation).forEach(e -> verify_extends_command(annotation, e));
+            roundEnv.getElementsAnnotatedWith(annotation).forEach(e -> verifyIsClass(annotation, e));
+            roundEnv.getElementsAnnotatedWith(annotation).forEach(e -> verifyExtendsCommand(annotation, e));
 
             // Verify that all mandatory annotations are present
             if (annotation.asType().toString().equals("org.oddlama.vane.annotation.command.VaneCommand")) {
-                round_env.getElementsAnnotatedWith(annotation).forEach(this::verify_has_annotations);
+                roundEnv.getElementsAnnotatedWith(annotation).forEach(this::verifyHasAnnotations);
             }
         }
 
         return true;
     }
 
-    private void verify_has_annotations(Element element) {
+    private void verifyHasAnnotations(Element element) {
         // Only check subclasses
         if (element.asType().toString().startsWith("org.oddlama.vane.core.command.Command<")) {
             return;
         }
 
-        for (var a_cls : mandatory_annotations) {
-            if (element.getAnnotation(a_cls) == null) {
+        for (var aCls : mandatoryAnnotations) {
+            if (element.getAnnotation(aCls) == null) {
                 processingEnv
                     .getMessager()
                     .printMessage(
                         Diagnostic.Kind.ERROR,
-                        element.asType().toString() + ": missing @" + a_cls.getSimpleName() + " annotation"
+                        element.asType().toString() + ": missing @" + aCls.getSimpleName() + " annotation"
                     );
             }
         }
     }
 
-    private void verify_is_class(TypeElement annotation, Element element) {
+    private void verifyIsClass(TypeElement annotation, Element element) {
         if (element.getKind() != ElementKind.CLASS) {
             processingEnv
                 .getMessager()
@@ -70,7 +70,7 @@ public class CommandAnnotationProcessor extends AbstractProcessor {
         }
     }
 
-    private void verify_extends_command(TypeElement annotation, Element element) {
+    private void verifyExtendsCommand(TypeElement annotation, Element element) {
         var t = (TypeElement) element;
         if (
             !t.toString().equals("org.oddlama.vane.core.command.Command") &&

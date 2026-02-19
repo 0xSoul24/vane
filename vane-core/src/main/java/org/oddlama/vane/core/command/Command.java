@@ -38,17 +38,17 @@ public abstract class Command<T extends Module<T>> extends ModuleComponent<T> {
 
         @Override
         public String getUsage() {
-            return Command.this.lang_usage.str("§7/§3" + name);
+            return Command.this.langUsage.str("§7/§3" + name);
         }
 
         @Override
         public String getDescription() {
-            return Command.this.lang_description.str();
+            return Command.this.langDescription.str();
         }
 
         @Override
         public Plugin getPlugin() {
-            return Command.this.get_module();
+            return Command.this.getModule();
         }
 
         @Override
@@ -56,7 +56,7 @@ public abstract class Command<T extends Module<T>> extends ModuleComponent<T> {
             System.out.println("exec " + alias + " from " + sender);
             // Pre-check permission
             if (!sender.hasPermission(Command.this.permission)) {
-                get_module().core.lang_command_permission_denied.send(sender);
+                getModule().core.langCommandPermissionDenied.send(sender);
                 System.out.println("no perms!");
                 return true;
             }
@@ -64,7 +64,7 @@ public abstract class Command<T extends Module<T>> extends ModuleComponent<T> {
             // Ambiguous matches will always execute the
             // first chain based on definition order.
             try {
-                return root_param.check_accept(sender, prepend(args, alias), 0).apply(Command.this, sender);
+                return rootParam.checkAccept(sender, prepend(args, alias), 0).apply(Command.this, sender);
             } catch (Exception e) {
                 sender.sendMessage(
                     "§cAn unexpected error occurred. Please examine the console log and/or notify a server administrator."
@@ -82,7 +82,7 @@ public abstract class Command<T extends Module<T>> extends ModuleComponent<T> {
             }
 
             try {
-                return root_param.build_completions(sender, prepend(args, alias), 0);
+                return rootParam.buildCompletions(sender, prepend(args, alias), 0);
             } catch (Exception e) {
                 sender.sendMessage(
                     "§cAn unexpected error occurred. Please examine the console log and/or notify a server administrator."
@@ -94,97 +94,99 @@ public abstract class Command<T extends Module<T>> extends ModuleComponent<T> {
 
     // Language
     @LangMessage
-    public TranslatedMessage lang_usage;
+    public TranslatedMessage langUsage;
 
     @LangMessage
-    public TranslatedMessage lang_description;
+    public TranslatedMessage langDescription;
 
     @LangMessage
-    public TranslatedMessage lang_help;
+    public TranslatedMessage langHelp;
 
     // Variables
     private String name;
     private Permission permission;
-    private BukkitCommand bukkit_command;
+    private BukkitCommand bukkitCommand;
 
     // Root parameter
-    private AnyParam<String> root_param;
+    private AnyParam<String> rootParam;
 
-    private LiteralArgumentBuilder<CommandSourceStack> brigadier_command;
+    private LiteralArgumentBuilder<CommandSourceStack> brigadierCommand;
     private Aliases aliases;
 
     public Command(Context<T> context) {
         this(context, PermissionDefault.OP);
     }
 
-    public Command(Context<T> context, PermissionDefault permission_default) {
+    public Command(Context<T> context, PermissionDefault permissionDefault) {
         super(null);
         // Make namespace
         name = getClass().getAnnotation(Name.class).value();
-        context = context.group("command_" + name, "Enable command " + name);
-        set_context(context);
+        // Convert name to PascalCase for the group name
+        String groupName = "Command" + name.substring(0, 1).toUpperCase() + name.substring(1);
+        context = context.group(groupName, "Enable command " + name);
+        setContext(context);
 
         // Register permission
         permission = new Permission(
-            "vane." + get_module().get_name() + ".commands." + name,
+            "vane." + getModule().getAnnotationName() + ".commands." + name,
             "Allow access to /" + name,
-            permission_default
+            permissionDefault
         );
-        get_module().register_permission(permission);
-        permission.addParent(get_module().permission_command_catchall_module, true);
-        permission.addParent(get_module().core.permission_command_catchall, true);
+        getModule().registerPermission(permission);
+        permission.addParent(getModule().permissionCommandCatchallModule, true);
+        permission.addParent(getModule().core.permissionCommandCatchall, true);
 
         // Always allow the console to execute commands
-        get_module().add_console_permission(permission);
+        getModule().addConsolePermission(permission);
 
         // Initialize root parameter
-        root_param = new AnyParam<String>(this, "/" + get_name(), str -> str);
+        rootParam = new AnyParam<String>(this, "/" + getName(), str -> str);
 
         // Create bukkit command
-        bukkit_command = new BukkitCommand(name);
-        bukkit_command.setLabel(name);
-        bukkit_command.setName(name);
+        bukkitCommand = new BukkitCommand(name);
+        bukkitCommand.setLabel(name);
+        bukkitCommand.setName(name);
 
         aliases = getClass().getAnnotation(Aliases.class);
-        brigadier_command = Commands.literal(name);
+        brigadierCommand = Commands.literal(name);
         if (aliases != null) {
-            bukkit_command.setAliases(List.of(aliases.value()));
+            bukkitCommand.setAliases(List.of(aliases.value()));
         }
     }
 
-    public BukkitCommand get_bukkit_command() {
-        return bukkit_command;
+    public BukkitCommand getBukkitCommand() {
+        return bukkitCommand;
     }
 
-    public String get_name() {
+    public String getName() {
         return name;
     }
 
-    public String get_permission() {
+    public String getPermission() {
         return permission.getName();
     }
 
-    public String get_prefix() {
-        return "vane:" + get_module().get_name();
+    public String getPrefix() {
+        return "vane:" + getModule().getAnnotationName();
     }
 
     public Param params() {
-        return root_param;
+        return rootParam;
     }
 
-    public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
-        return brigadier_command;
+    public LiteralArgumentBuilder<CommandSourceStack> getCommandBase() {
+        return brigadierCommand;
     }
 
-    public LiteralCommandNode<CommandSourceStack> get_command() {
-        var cmd = get_command_base();
-        var old_requirement = cmd.getRequirement();
+    public LiteralCommandNode<CommandSourceStack> getCommand() {
+        var cmd = getCommandBase();
+        var oldRequirement = cmd.getRequirement();
         return cmd
-            .requires(stack -> stack.getSender().hasPermission(permission) && old_requirement.test(stack))
+            .requires(stack -> stack.getSender().hasPermission(permission) && oldRequirement.test(stack))
             .build();
     }
 
-    public List<String> get_aliases() {
+    public List<String> getAliases() {
         if (aliases != null && aliases.value().length > 0) {
             return List.of(aliases.value());
         } else {
@@ -193,29 +195,29 @@ public abstract class Command<T extends Module<T>> extends ModuleComponent<T> {
     }
 
     @Override
-    protected void on_enable() {
-        get_module().register_command(this);
+    protected void onEnable() {
+        getModule().registerCommand(this);
     }
 
     @Override
-    protected void on_disable() {
-        get_module().unregister_command(this);
+    protected void onDisable() {
+        getModule().unregisterCommand(this);
     }
 
-    public void print_help(CommandSender sender) {
-        lang_usage.send(sender, "§7/§3" + name);
-        lang_help.send(sender);
+    public void printHelp(CommandSender sender) {
+        langUsage.send(sender, "§7/§3" + name);
+        langHelp.send(sender);
     }
 
-    public int print_help2(CommandContext<CommandSourceStack> ctx) {
-        lang_usage.send(ctx.getSource().getSender(), "§7/§3" + name);
-        lang_help.send(ctx.getSource().getSender());
+    public int printHelp2(CommandContext<CommandSourceStack> ctx) {
+        langUsage.send(ctx.getSource().getSender(), "§7/§3" + name);
+        langHelp.send(ctx.getSource().getSender());
         return com.mojang.brigadier.Command.SINGLE_SUCCESS;
     }
 
     public LiteralArgumentBuilder<CommandSourceStack> help() {
         return literal("help").executes(ctx -> {
-            print_help2(ctx);
+            printHelp2(ctx);
             return SINGLE_SUCCESS;
         });
     }

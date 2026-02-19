@@ -57,7 +57,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static org.oddlama.vane.util.ResourceList.get_resources;
+import static org.oddlama.vane.util.ResourceList.getResources;
 
 public abstract class Module<T extends Module<T>> extends JavaPlugin implements Context<T>, org.bukkit.event.Listener {
 
@@ -68,107 +68,107 @@ public abstract class Module<T extends Module<T>> extends JavaPlugin implements 
 	private final String namespace = "vane_" + annotation.name().replaceAll("[^a-zA-Z0-9_]", "_");
 
 	// Managers
-	public ConfigManager config_manager = new ConfigManager(this);
-	public LangManager lang_manager = new LangManager(this);
-	public PersistentStorageManager persistent_storage_manager = new PersistentStorageManager(this);
-	private boolean persistent_storage_dirty = false;
+	public ConfigManager configManager = new ConfigManager(this);
+	public LangManager langManager = new LangManager(this);
+	public PersistentStorageManager persistentStorageManager = new PersistentStorageManager(this);
+	private boolean persistentStorageDirty = false;
 
 	// Per module catch-all permissions
-	public Permission permission_command_catchall_module;
+	public Permission permissionCommandCatchallModule;
 	public Random random = new Random();
 
 	// Permission attachment for console
-	private List<String> pending_console_permissions = new ArrayList<>();
-	public PermissionAttachment console_attachment;
+	private List<String> pendingConsolePermissions = new ArrayList<>();
+	public PermissionAttachment consoleAttachment;
 
 	// Version fields for config, lang, storage
 	@ConfigVersion
-	public long config_version;
+	public long configVersion;
 
 	@LangVersion
-	public long lang_version;
+	public long langVersion;
 
 	@Persistent
-	public long storage_version;
+	public long storageVersion;
 
 	// Base configuration
 	@ConfigString(def = "inherit", desc = "The language for this module. The corresponding language file must be named lang-{lang}.yml. Specifying 'inherit' will load the value set for vane-core.", metrics = true)
-	public String config_lang;
+	public String configLang;
 
 	@ConfigBoolean(def = true, desc = "Enable plugin metrics via bStats. You can opt-out here or via the global bStats configuration. All collected information is completely anonymous and publicly available.")
-	public boolean config_metrics_enabled;
+	public boolean configMetricsEnabled;
 
 	// Context<T> interface proxy
-	private ModuleGroup<T> context_group = new ModuleGroup<>(
+	private ModuleGroup<T> contextGroup = new ModuleGroup<>(
 			this,
 			"",
 			"The module will only add functionality if this is set to true.");
 
 	@Override
 	public void compile(ModuleComponent<T> component) {
-		context_group.compile(component);
+		contextGroup.compile(component);
 	}
 
 	@Override
-	public void add_child(Context<T> subcontext) {
-		if (context_group == null) {
-			// This happens, when context_group (above) is initialized and calls
-			// compile_self(),
+	public void addChild(Context<T> subcontext) {
+		if (contextGroup == null) {
+			// This happens, when contextGroup (above) is initialized and calls
+			// compileSelf(),
 			// while will try to register it to the parent context (us), but we fake that
 			// anyway.
 			return;
 		}
-		context_group.add_child(subcontext);
+		contextGroup.addChild(subcontext);
 	}
 
 	@Override
-	public Context<T> get_context() {
+	public Context<T> getContext() {
 		return this;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public T get_module() {
+	public T getModule() {
 		return (T) this;
 	}
 
 	@Override
-	public String yaml_path() {
+	public String yamlPath() {
 		return "";
 	}
 
 	@Override
-	public String variable_yaml_path(String variable) {
+	public String variableYamlPath(String variable) {
 		return variable;
 	}
 
 	@Override
 	public boolean enabled() {
-		return context_group.enabled();
+		return contextGroup.enabled();
 	}
 
 	// Callbacks for derived classes
-	protected void on_load() {
+	protected void onModuleLoad() {
 	}
 
-	public void on_enable() {
+	public void onModuleEnable() {
 	}
 
-	public void on_disable() {
+	public void onModuleDisable() {
 	}
 
-	public void on_config_change() {
+	public void onConfigChange() {
 	}
 
-	public void on_generate_resource_pack() throws IOException {
+	public void onGenerateResourcePack() throws IOException {
 	}
 
-	public final void for_each_module_component(final Consumer1<ModuleComponent<?>> f) {
-		context_group.for_each_module_component(f);
+	public final void forEachModuleComponent(final Consumer1<ModuleComponent<?>> f) {
+		contextGroup.forEachModuleComponent(f);
 	}
 
 	// Loot modification
-	private final Map<NamespacedKey, LootTable> additional_loot_tables = new HashMap<>();
+	private final Map<NamespacedKey, LootTable> additionalLootTables = new HashMap<>();
 
 	// bStats
 	public Metrics metrics;
@@ -183,11 +183,11 @@ public abstract class Module<T extends Module<T>> extends JavaPlugin implements 
 		}
 
 		// Create per module command catch-all permission
-		permission_command_catchall_module = new Permission(
-				"vane." + get_name() + ".commands.*",
-				"Allow access to all vane-" + get_name() + " commands",
+		permissionCommandCatchallModule = new Permission(
+				"vane." + getAnnotationName() + ".commands.*",
+				"Allow access to all vane-" + getAnnotationName() + " commands",
 				PermissionDefault.FALSE);
-		register_permission(permission_command_catchall_module);
+		registerPermission(permissionCommandCatchallModule);
 	}
 
 	/** The namespace used in resource packs */
@@ -202,30 +202,30 @@ public abstract class Module<T extends Module<T>> extends JavaPlugin implements 
 			getDataFolder().mkdirs();
 		}
 
-		on_load();
+		onModuleLoad();
 	}
 
 	@Override
 	public final void onEnable() {
 		// Create console permission attachment
-		console_attachment = getServer().getConsoleSender().addAttachment(this);
-		for (var perm : pending_console_permissions) {
-			console_attachment.setPermission(perm, true);
+		consoleAttachment = getServer().getConsoleSender().addAttachment(this);
+		for (var perm : pendingConsolePermissions) {
+			consoleAttachment.setPermission(perm, true);
 		}
-		pending_console_permissions.clear();
+		pendingConsolePermissions.clear();
 
 		// Register in core
-		core.register_module(this);
+		core.registerModule(this);
 
-		load_persistent_storage();
-		reload_configuration();
+		loadPersistentStorage();
+		reloadConfiguration();
 
 		// Schedule persistent storage saving every minute
-		schedule_task_timer(
+		scheduleTaskTimer(
 				() -> {
-					if (persistent_storage_dirty) {
-						save_persistent_storage();
-						persistent_storage_dirty = false;
+					if (persistentStorageDirty) {
+						savePersistentStorage();
+						persistentStorageDirty = false;
 					}
 				},
 				60 * 20,
@@ -237,53 +237,53 @@ public abstract class Module<T extends Module<T>> extends JavaPlugin implements 
 		disable();
 
 		// Save persistent storage
-		save_persistent_storage();
+		savePersistentStorage();
 
 		// Unregister in core
-		core.unregister_module(this);
+		core.unregisterModule(this);
 	}
 
 	@Override
 	public void enable() {
-		if (config_metrics_enabled) {
+		if (configMetricsEnabled) {
 			var id = annotation.bstats();
 			if (id != -1) {
 				metrics = new Metrics(this, id);
-				config_manager.register_metrics(metrics);
+				configManager.registerMetrics(metrics);
 			}
 		}
-		on_enable();
-		context_group.enable();
-		register_listener(this);
+		onModuleEnable();
+		contextGroup.enable();
+		registerListener(this);
 	}
 
 	@Override
 	public void disable() {
-		unregister_listener(this);
-		context_group.disable();
-		on_disable();
+		unregisterListener(this);
+		contextGroup.disable();
+		onModuleDisable();
 		metrics = null;
 	}
 
 	@Override
-	public void config_change() {
-		on_config_change();
-		context_group.config_change();
+	public void configChange() {
+		onConfigChange();
+		contextGroup.configChange();
 	}
 
 	@Override
-	public void generate_resource_pack(final ResourcePackGenerator pack) throws IOException {
+	public void generateResourcePack(final ResourcePackGenerator pack) throws IOException {
 		// Generate language
 		final var pattern = Pattern.compile("lang-.*\\.yml");
 		Arrays.stream(getDataFolder().listFiles((d, name) -> pattern.matcher(name).matches()))
 				.sorted()
-				.forEach(lang_file -> {
-					final var yaml = YamlConfiguration.loadConfiguration(lang_file);
+				.forEach(langFile -> {
+					final var yaml = YamlConfiguration.loadConfiguration(langFile);
 					try {
-						lang_manager.generate_resource_pack(pack, yaml, lang_file);
+						langManager.generateResourcePack(pack, yaml, langFile);
 					} catch (Exception e) {
 						throw new RuntimeException(
-								"Error while generating language for '" + lang_file + "' of module " + get_name(),
+								"Error while generating language for '" + langFile + "' of module " + getAnnotationName(),
 								e);
 					}
 				});
@@ -295,83 +295,83 @@ public abstract class Module<T extends Module<T>> extends JavaPlugin implements 
 				String filePath;
 				while ((filePath = reader.readLine()) != null) {
 					final var content = getResource("resource_pack/" + filePath);
-					pack.add_file(filePath, content);
+					pack.addFile(filePath, content);
 				}
 			} catch (IOException e) {
-				log.log(Level.SEVERE, "Could not load resource pack index file of module " + get_name(), e);
+				log.log(Level.SEVERE, "Could not load resource pack index file of module " + getAnnotationName(), e);
 			}
 		}
 
-		on_generate_resource_pack(pack);
-		context_group.generate_resource_pack(pack);
+		onGenerateResourcePack(pack);
+		contextGroup.generateResourcePack(pack);
 	}
 
-	private boolean try_reload_configuration() {
+	private boolean tryReloadConfiguration() {
 		// Generate new file if not existing
-		final var file = config_manager.standard_file();
-		if (!file.exists() && !config_manager.generate_file(file, null)) {
+		final var file = configManager.standardFile();
+		if (!file.exists() && !configManager.generateFile(file, null)) {
 			return false;
 		}
 
 		// Reload automatic variables
-		return config_manager.reload(file);
+		return configManager.reload(file);
 	}
 
-	private void update_lang_file(String lang_file) {
-		final var file = new File(getDataFolder(), lang_file);
-		final var file_version = YamlConfiguration.loadConfiguration(file).getLong("version", -1);
-		long resource_version = -1;
+	private void updateLangFile(String langFile) {
+		final var file = new File(getDataFolder(), langFile);
+		final var fileVersion = YamlConfiguration.loadConfiguration(file).getLong("Version", -1);
+		long resourceVersion = -1;
 
-		final var res = getResource(lang_file);
+		final var res = getResource(langFile);
 		try (final var reader = new InputStreamReader(res)) {
-			resource_version = YamlConfiguration.loadConfiguration(reader).getLong("version", -1);
+			resourceVersion = YamlConfiguration.loadConfiguration(reader).getLong("Version", -1);
 		} catch (IOException e) {
-			log.log(Level.SEVERE, "Error while updating lang file '" + file + "' of module " + get_name(), e);
+			log.log(Level.SEVERE, "Error while updating lang file '" + file + "' of module " + getAnnotationName(), e);
 		}
 
-		if (resource_version > file_version) {
+		if (resourceVersion > fileVersion) {
 			try {
-				Files.copy(getResource(lang_file), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+				Files.copy(getResource(langFile), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			} catch (IOException e) {
-				log.log(Level.SEVERE, "Error while copying lang file '" + file + "' of module " + get_name(), e);
+				log.log(Level.SEVERE, "Error while copying lang file '" + file + "' of module " + getAnnotationName(), e);
 			}
 		}
 	}
 
-	private boolean try_reload_localization() {
+	private boolean tryReloadLocalization() {
 		// Copy all embedded lang files if their version is newer.
-		get_resources(getClass(), Pattern.compile("lang-.*\\.yml")).stream().forEach(this::update_lang_file);
+		getResources(getClass(), Pattern.compile("lang-.*\\.yml")).stream().forEach(this::updateLangFile);
 
 		// Get configured language code
-		var lang_code = config_lang;
-		if ("inherit".equals(lang_code)) {
-			lang_code = core.config_lang;
+		var langCode = configLang;
+		if ("inherit".equals(langCode)) {
+			langCode = core.configLang;
 
-			if (lang_code == null) {
+			if (langCode == null) {
 				// Core failed to load, so the server will be shutdown anyway.
 				// Prevent an additional warning by falling back to en.
-				lang_code = "en";
-			} else if ("inherit".equals(lang_code)) {
+				langCode = "en";
+			} else if ("inherit".equals(langCode)) {
 				// Fallback to en in case 'inherit' is used in vane-core.
-				lang_code = "en";
+				langCode = "en";
 			}
 		}
 
 		// Generate new file if not existing
-		final var file = new File(getDataFolder(), "lang-" + lang_code + ".yml");
+		final var file = new File(getDataFolder(), "lang-" + langCode + ".yml");
 		if (!file.exists()) {
-			log.severe("Missing language file '" + file.getName() + "' for module " + get_name());
+			log.severe("Missing language file '" + file.getName() + "' for module " + getAnnotationName());
 			return false;
 		}
 
 		// Reload automatic variables
-		return lang_manager.reload(file);
+		return langManager.reload(file);
 	}
 
-	public boolean reload_configuration() {
-		boolean was_enabled = enabled();
+	public boolean reloadConfiguration() {
+		boolean wasEnabled = enabled();
 
-		if (!try_reload_configuration()) {
+		if (!tryReloadConfiguration()) {
 			// Force stop server, we encountered an invalid config file
 			log.severe("Invalid plugin configuration. Shutting down.");
 			getServer().shutdown();
@@ -379,34 +379,34 @@ public abstract class Module<T extends Module<T>> extends JavaPlugin implements 
 		}
 
 		// Reload localization
-		if (!try_reload_localization()) {
+		if (!tryReloadLocalization()) {
 			// Force stop server, we encountered an invalid lang file
 			log.severe("Invalid localization file. Shutting down.");
 			getServer().shutdown();
 			return false;
 		}
 
-		if (was_enabled && !enabled()) {
+		if (wasEnabled && !enabled()) {
 			// Disable plugin if needed
 			disable();
-		} else if (!was_enabled && enabled()) {
+		} else if (!wasEnabled && enabled()) {
 			// Enable plugin if needed
 			enable();
 		}
 
-		config_change();
+		configChange();
 		return true;
 	}
 
-	public File get_persistent_storage_file() {
+	public File getPersistentStorageFile() {
 		// Generate new file if not existing
 		return new File(getDataFolder(), "storage.json");
 	}
 
-	public void load_persistent_storage() {
+	public void loadPersistentStorage() {
 		// Load automatic persistent variables
-		final var file = get_persistent_storage_file();
-		if (!persistent_storage_manager.load(file)) {
+		final var file = getPersistentStorageFile();
+		if (!persistentStorageManager.load(file)) {
 			// Force stop server, we encountered an invalid persistent storage file.
 			// This prevents further corruption.
 			log.severe("Invalid persistent storage. Shutting down to prevent further corruption.");
@@ -414,54 +414,54 @@ public abstract class Module<T extends Module<T>> extends JavaPlugin implements 
 		}
 	}
 
-	public void mark_persistent_storage_dirty() {
-		persistent_storage_dirty = true;
+	public void markPersistentStorageDirty() {
+		persistentStorageDirty = true;
 	}
 
-	public void save_persistent_storage() {
+	public void savePersistentStorage() {
 		// Save automatic persistent variables
-		final var file = get_persistent_storage_file();
-		persistent_storage_manager.save(file);
+		final var file = getPersistentStorageFile();
+		persistentStorageManager.save(file);
 	}
 
-	public void register_listener(Listener listener) {
+	public void registerListener(Listener listener) {
 		getServer().getPluginManager().registerEvents(listener, this);
 	}
 
-	public void unregister_listener(Listener listener) {
+	public void unregisterListener(Listener listener) {
 		HandlerList.unregisterAll(listener);
 	}
 
-	public String get_name() {
+	public String getAnnotationName() {
 		return annotation.name();
 	}
 
-	public void register_command(Command<?> command) {
+	public void registerCommand(Command<?> command) {
 		LifecycleEventManager<Plugin> manager = this.getLifecycleManager();
 		manager.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
-			event.registrar().register(command.get_command(), command.lang_description.str(), command.get_aliases());
+			event.registrar().register(command.getCommand(), command.langDescription.str(), command.getAliases());
 		});
 	}
 
-	public void unregister_command(Command<?> command) {
-		var bukkit_command = command.get_bukkit_command();
-		getServer().getCommandMap().getKnownCommands().values().remove(bukkit_command);
-		bukkit_command.unregister(getServer().getCommandMap());
+	public void unregisterCommand(Command<?> command) {
+		var bukkitCommand = command.getBukkitCommand();
+		getServer().getCommandMap().getKnownCommands().values().remove(bukkitCommand);
+		bukkitCommand.unregister(getServer().getCommandMap());
 	}
 
-	public void add_console_permission(Permission permission) {
-		add_console_permission(permission.getName());
+	public void addConsolePermission(Permission permission) {
+		addConsolePermission(permission.getName());
 	}
 
-	public void add_console_permission(String permission) {
-		if (console_attachment == null) {
-			pending_console_permissions.add(permission);
+	public void addConsolePermission(String permission) {
+		if (consoleAttachment == null) {
+			pendingConsolePermissions.add(permission);
 		} else {
-			console_attachment.setPermission(permission, true);
+			consoleAttachment.setPermission(permission, true);
 		}
 	}
 
-	public void register_permission(Permission permission) {
+	public void registerPermission(Permission permission) {
 		try {
 			getServer().getPluginManager().addPermission(permission);
 		} catch (IllegalArgumentException e) {
@@ -469,54 +469,54 @@ public abstract class Module<T extends Module<T>> extends JavaPlugin implements 
 		}
 	}
 
-	public void unregister_permission(Permission permission) {
+	public void unregisterPermission(Permission permission) {
 		getServer().getPluginManager().removePermission(permission);
 	}
 
-	public LootTable loot_table(final LootTables table) {
-		return loot_table(table.getKey());
+	public LootTable lootTable(final LootTables table) {
+		return lootTable(table.getKey());
 	}
 
-	public List<OfflinePlayer> get_offline_players_with_valid_name() {
+	public List<OfflinePlayer> getOfflinePlayersWithValidName() {
 		return Arrays.stream(getServer().getOfflinePlayers())
 				.filter(k -> k.getName() != null)
 				.collect(Collectors.toList());
 	}
 
-	public LootTable loot_table(final NamespacedKey key) {
-		var additional_loot_table = additional_loot_tables.get(key);
-		if (additional_loot_table == null) {
-			additional_loot_table = new LootTable();
-			additional_loot_tables.put(key, additional_loot_table);
+	public LootTable lootTable(final NamespacedKey key) {
+		var additionalLootTable = additionalLootTables.get(key);
+		if (additionalLootTable == null) {
+			additionalLootTable = new LootTable();
+			additionalLootTables.put(key, additionalLootTable);
 		}
-		return additional_loot_table;
+		return additionalLootTable;
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void on_module_loot_generate(final LootGenerateEvent event) {
-		final var loot_table = event.getLootTable();
+	public void onModuleLootGenerate(final LootGenerateEvent event) {
+		final var lootTable = event.getLootTable();
 		// Should never happen because according to the api this is @NotNull,
 		// yet it happens for some people that copied their world from singleplayer to
 		// the server.
-		if (loot_table == null) {
+		if (lootTable == null) {
 			return;
 		}
-		final var additional_loot_table = additional_loot_tables.get(loot_table.getKey());
-		if (additional_loot_table == null) {
+		final var additionalLootTable = additionalLootTables.get(lootTable.getKey());
+		if (additionalLootTable == null) {
 			return;
 		}
 
 		final var loc = event.getLootContext().getLocation();
-		final var local_random = new Random(
+		final var localRandom = new Random(
 				random.nextInt() +
 						(loc.getBlockX() & (0xffff << 16)) +
 						(loc.getBlockY() & (0xffff << 32)) +
 						(loc.getBlockZ() & (0xffff << 48)));
-		additional_loot_table.generate_loot(event.getLoot(), local_random);
+		additionalLootTable.generateLoot(event.getLoot(), localRandom);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void on_module_player_caught_fish(final PlayerFishEvent event) {
+	public void onModulePlayerCaughtFish(final PlayerFishEvent event) {
 		// This is a dirty non-commutative way to apply fishing loot tables
 		// that skews subtable probabilities,
 		// consider somehow programmatically generating datapacks or
@@ -524,35 +524,35 @@ public abstract class Module<T extends Module<T>> extends JavaPlugin implements 
 		if (event.getState() != PlayerFishEvent.State.CAUGHT_FISH) {
 			return;
 		}
-		if (event.getCaught() instanceof Item item_entity) {
+		if (event.getCaught() instanceof Item itemEntity) {
 			final Player player = event.getPlayer();
-			final FishHook hook_entity = event.getHook();
-			final double player_luck = player.getAttribute(Attribute.LUCK).getValue();
-			final ItemStack rod_stack = player.getInventory().getItem(event.getHand());
-			final double rod_luck = rod_stack.getEnchantmentLevel(Enchantment.LUCK_OF_THE_SEA);  // Can bukkit provide access to fishing_luck_bonus of 1.24 item component system?
-			final double total_luck = player_luck + rod_luck;
-			final double weight_fish     =                               Math.max(0, 85 + total_luck * -1);
-			final double weight_junk     =                               Math.max(0, 10 + total_luck * -2);
-			final double weight_treasure = hook_entity.isInOpenWater() ? Math.max(0, 5 + total_luck * 2) : 0;
-			final double roll = random.nextDouble() * (weight_fish + weight_junk + weight_treasure);
+			final FishHook hookEntity = event.getHook();
+			final double playerLuck = player.getAttribute(Attribute.LUCK).getValue();
+			final ItemStack rodStack = player.getInventory().getItem(event.getHand());
+			final double rodLuck = rodStack.getEnchantmentLevel(Enchantment.LUCK_OF_THE_SEA);  // Can bukkit provide access to fishing_luck_bonus of 1.24 item component system?
+			final double totalLuck = playerLuck + rodLuck;
+			final double weightFish     =                               Math.max(0, 85 + totalLuck * -1);
+			final double weightJunk     =                               Math.max(0, 10 + totalLuck * -2);
+			final double weightTreasure = hookEntity.isInOpenWater() ? Math.max(0, 5 + totalLuck * 2) : 0;
+			final double roll = random.nextDouble() * (weightFish + weightJunk + weightTreasure);
 			NamespacedKey key;
-			if (roll < weight_fish) {
+			if (roll < weightFish) {
 				key = LootTables.FISHING_FISH.getKey();
-			} else if (roll < weight_fish + weight_junk) {
+			} else if (roll < weightFish + weightJunk) {
 				key = LootTables.FISHING_JUNK.getKey();
 			} else {
 				key = LootTables.FISHING_TREASURE.getKey();
 			}
-			final var additional_loot_table = additional_loot_tables.get(key);
-			if (additional_loot_table == null) {
+			final var additionalLootTable = additionalLootTables.get(key);
+			if (additionalLootTable == null) {
 				// Do not modify the caught item
 				return;
 			}
-			final var new_item = additional_loot_table.generate_override(new Random(random.nextInt()));
-			if (new_item == null) {
+			final var newItem = additionalLootTable.generateOverride(new Random(random.nextInt()));
+			if (newItem == null) {
 				return;
 			}
-			item_entity.setItemStack(new_item);
+			itemEntity.setItemStack(newItem);
 		}
 	}
 }

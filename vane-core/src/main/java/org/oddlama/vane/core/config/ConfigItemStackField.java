@@ -1,7 +1,7 @@
 package org.oddlama.vane.core.config;
 
-import static org.oddlama.vane.util.MaterialUtil.material_from;
-import static org.oddlama.vane.util.StorageUtil.namespaced_key;
+import static org.oddlama.vane.util.MaterialUtil.materialFrom;
+import static org.oddlama.vane.util.StorageUtil.namespacedKey;
 
 import java.lang.reflect.Field;
 import java.util.function.Function;
@@ -17,23 +17,23 @@ public class ConfigItemStackField extends ConfigField<ItemStack> {
     public ConfigItemStackField(
         Object owner,
         Field field,
-        Function<String, String> map_name,
+        Function<String, String> mapName,
         ConfigItemStack annotation
     ) {
-        super(owner, field, map_name, "item stack", annotation.desc());
+        super(owner, field, mapName, "item stack", annotation.desc());
         this.annotation = annotation;
     }
 
-    private void append_item_stack_definition(StringBuilder builder, String indent, String prefix, ItemStack def) {
+    private void appendItemStackDefinition(StringBuilder builder, String indent, String prefix, ItemStack def) {
         // Material
         builder.append(indent);
         builder.append(prefix);
         builder.append("  material: ");
         final var material =
             "\"" +
-            escape_yaml(def.getType().getKey().getNamespace()) +
+            escapeYaml(def.getType().getKey().getNamespace()) +
             ":" +
-            escape_yaml(def.getType().getKey().getKey()) +
+            escapeYaml(def.getType().getKey().getKey()) +
             "\"";
         builder.append(material);
         builder.append("\n");
@@ -50,7 +50,7 @@ public class ConfigItemStackField extends ConfigField<ItemStack> {
 
     @Override
     public ItemStack def() {
-        final var override = overridden_def();
+        final var override = overriddenDef();
         if (override != null) {
             return override;
         } else {
@@ -60,7 +60,7 @@ public class ConfigItemStackField extends ConfigField<ItemStack> {
 
     @Override
     public boolean metrics() {
-        final var override = overridden_metrics();
+        final var override = overriddenMetrics();
         if (override != null) {
             return override;
         } else {
@@ -69,46 +69,46 @@ public class ConfigItemStackField extends ConfigField<ItemStack> {
     }
 
     @Override
-    public void generate_yaml(StringBuilder builder, String indent, YamlConfiguration existing_compatible_config) {
-        append_description(builder, indent);
+    public void generateYaml(StringBuilder builder, String indent, YamlConfiguration existingCompatibleConfig) {
+        appendDescription(builder, indent);
 
         // Default
         builder.append(indent);
         builder.append("# Default:\n");
-        append_item_stack_definition(builder, indent, "# ", def());
+        appendItemStackDefinition(builder, indent, "# ", def());
 
         // Definition
         builder.append(indent);
         builder.append(basename());
         builder.append(":\n");
-        final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
+        final var def = existingCompatibleConfig != null && existingCompatibleConfig.contains(yamlPath())
+            ? loadFromYaml(existingCompatibleConfig)
             : def();
-        append_item_stack_definition(builder, indent, "", def);
+        appendItemStackDefinition(builder, indent, "", def);
     }
 
     @Override
-    public void check_loadable(YamlConfiguration yaml) throws YamlLoadException {
-        check_yaml_path(yaml);
+    public void checkLoadable(YamlConfiguration yaml) throws YamlLoadException {
+        checkYamlPath(yaml);
 
-        if (!yaml.isConfigurationSection(yaml_path())) {
-            throw new YamlLoadException("Invalid type for yaml path '" + yaml_path() + "', expected group");
+        if (!yaml.isConfigurationSection(yamlPath())) {
+            throw new YamlLoadException("Invalid type for yaml path '" + yamlPath() + "', expected group");
         }
 
-        for (var var_key : yaml.getConfigurationSection(yaml_path()).getKeys(false)) {
-            final var var_path = yaml_path() + "." + var_key;
-            switch (var_key) {
+        for (var varKey : yaml.getConfigurationSection(yamlPath()).getKeys(false)) {
+            final var varPath = yamlPath() + "." + varKey;
+            switch (varKey) {
                 case "material": {
-                    if (!yaml.isString(var_path)) {
-                        throw new YamlLoadException("Invalid type for yaml path '" + var_path + "', expected list");
+                    if (!yaml.isString(varPath)) {
+                        throw new YamlLoadException("Invalid type for yaml path '" + varPath + "', expected list");
                     }
 
-                    final var str = yaml.getString(var_path);
+                    final var str = yaml.getString(varPath);
                     final var split = str.split(":");
                     if (split.length != 2) {
                         throw new YamlLoadException(
                             "Invalid material for yaml path '" +
-                            yaml_path() +
+                            yamlPath() +
                             "': '" +
                             str +
                             "' is not a valid namespaced key"
@@ -117,12 +117,12 @@ public class ConfigItemStackField extends ConfigField<ItemStack> {
                     break;
                 }
                 case "amount": {
-                    if (!(yaml.get(var_path) instanceof Number)) {
-                        throw new YamlLoadException("Invalid type for yaml path '" + yaml_path() + "', expected int");
+                    if (!(yaml.get(varPath) instanceof Number)) {
+                        throw new YamlLoadException("Invalid type for yaml path '" + yamlPath() + "', expected int");
                     }
-                    final var val = yaml.getInt(yaml_path());
+                    final var val = yaml.getInt(yamlPath());
                     if (val < 0) {
-                        throw new YamlLoadException("Invalid value for yaml path '" + yaml_path() + "' Must be >= 0");
+                        throw new YamlLoadException("Invalid value for yaml path '" + yamlPath() + "' Must be >= 0");
                     }
                     break;
                 }
@@ -130,32 +130,32 @@ public class ConfigItemStackField extends ConfigField<ItemStack> {
         }
     }
 
-    public ItemStack load_from_yaml(YamlConfiguration yaml) {
-        var material_str = "";
+    public ItemStack loadFromYaml(YamlConfiguration yaml) {
+        var materialStr = "";
         var amount = 1;
-        for (var var_key : yaml.getConfigurationSection(yaml_path()).getKeys(false)) {
-            final var var_path = yaml_path() + "." + var_key;
-            switch (var_key) {
+        for (var varKey : yaml.getConfigurationSection(yamlPath()).getKeys(false)) {
+            final var varPath = yamlPath() + "." + varKey;
+            switch (varKey) {
                 case "material": {
                     amount = 0;
-                    material_str = yaml.getString(var_path);
+                    materialStr = yaml.getString(varPath);
                     break;
                 }
                 case "amount": {
-                    amount = yaml.getInt(var_path);
+                    amount = yaml.getInt(varPath);
                     break;
                 }
             }
         }
 
-        final var split = material_str.split(":");
-        final var material = material_from(namespaced_key(split[0], split[1]));
+        final var split = materialStr.split(":");
+        final var material = materialFrom(namespacedKey(split[0], split[1]));
         return new ItemStack(material, amount);
     }
 
     public void load(YamlConfiguration yaml) {
         try {
-            field.set(owner, load_from_yaml(yaml));
+            field.set(owner, loadFromYaml(yaml));
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Invalid field access on '" + field.getName() + "'. This is a bug.");
         }

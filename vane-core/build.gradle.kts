@@ -9,7 +9,7 @@ sourceSets {
     main {
         blossom {
             javaSources {
-                property("\$VERSION", project.version.toString())
+                property($$"$VERSION", project.version.toString())
             }
         }
     }
@@ -25,20 +25,20 @@ dependencies {
     implementation(project(":vane-annotations"))
 }
 
-val resource_pack_sha1 by lazy {
-    val resource_pack = File("${projectDir}/../docs/resourcepacks/v" + project.version + ".zip")
-    if (!resource_pack.exists()) {
-        throw GradleException("The resource pack file $resource_pack is missing.")
+val resourcePackSha1: String by lazy {
+    val resourcePack = File("${projectDir}/../docs/resourcepacks/v" + project.version + ".zip")
+    if (!resourcePack.exists()) {
+        throw GradleException("The resource pack file $resourcePack is missing.")
     }
-    val md = MessageDigest.getInstance("SHA-1")
-    val resource_pack_bytes = resource_pack.readBytes()
-    md.update(resource_pack_bytes, 0, resource_pack_bytes.size)
-    val sha1_bytes = md.digest()
-    val sha1_hash_string = String.format("%040x", BigInteger(1, sha1_bytes))
-    sha1_hash_string
+    val md: MessageDigest = MessageDigest.getInstance("SHA-1")
+    val resourcePackBytes: ByteArray = resourcePack.readBytes()
+    md.update(resourcePackBytes, 0, resourcePackBytes.size)
+    val sha1Bytes: ByteArray = md.digest()
+    val sha1HashString: String = String.format("%040x", BigInteger(1, sha1Bytes))
+    sha1HashString
 }
 
-val projectProperties = project.properties
+val projectProperties: MutableMap<String, *> = project.properties
 
 tasks {
     shadowJar {
@@ -60,7 +60,7 @@ tasks {
 
     processResources {
         filesMatching("vane-core.properties") {
-            expand(projectProperties + mapOf("resource_pack_sha1" to resource_pack_sha1))
+            expand(projectProperties + mapOf("resourcePackSha1" to resourcePackSha1))
         }
     }
 }

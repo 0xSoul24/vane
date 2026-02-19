@@ -6,11 +6,11 @@ import org.bukkit.Registry;
 
 public class MaterialUtil {
 
-    public static Material material_from(NamespacedKey key) {
+    public static Material materialFrom(NamespacedKey key) {
         return Registry.MATERIAL.get(key);
     }
 
-    public static boolean is_seeded_plant(Material type) {
+    public static boolean isSeededPlant(Material type) {
         switch (type) {
             default:
                 return false;
@@ -23,8 +23,8 @@ public class MaterialUtil {
         }
     }
 
-    public static Material seed_for(Material plant_type) {
-        switch (plant_type) {
+    public static Material seedFor(Material plantType) {
+        switch (plantType) {
             default:
                 return null;
             case WHEAT:
@@ -40,8 +40,8 @@ public class MaterialUtil {
         }
     }
 
-    public static Material farmland_for(Material seed_type) {
-        switch (seed_type) {
+    public static Material farmlandFor(Material seedType) {
+        switch (seedType) {
             default:
                 return null;
             case WHEAT_SEEDS:
@@ -54,7 +54,7 @@ public class MaterialUtil {
         }
     }
 
-    public static boolean is_replaceable_grass(Material type) {
+    public static boolean isReplaceableGrass(Material type) {
         switch (type) {
             default:
                 return false;
@@ -64,7 +64,7 @@ public class MaterialUtil {
         }
     }
 
-    public static boolean is_tillable(Material type) {
+    public static boolean isTillable(Material type) {
         switch (type) {
             default:
                 return false;

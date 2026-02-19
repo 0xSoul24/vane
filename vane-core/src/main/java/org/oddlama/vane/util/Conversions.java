@@ -2,15 +2,15 @@ package org.oddlama.vane.util;
 
 public class Conversions {
 
-    public static long ms_to_ticks(long ms) {
+    public static long msToTicks(long ms) {
         return ms / 50;
     }
 
-    public static long ticks_to_ms(long ticks) {
+    public static long ticksToMs(long ticks) {
         return ticks * 50;
     }
 
-    public static int exp_for_level(int level) {
+    public static int expForLevel(int level) {
         if (level < 17) {
             return level * level + 6 * level;
         } else if (level < 32) {

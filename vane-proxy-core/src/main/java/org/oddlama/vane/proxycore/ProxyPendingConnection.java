@@ -4,19 +4,19 @@ import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
 
 public interface ProxyPendingConnection {
-    String get_name();
+    String getName();
 
     @Nullable
-    UUID get_unique_id();
+    UUID getUniqueId();
 
-    int get_port();
+    int getPort();
 
-    java.net.SocketAddress get_socket_address();
+    java.net.SocketAddress getSocketAddress();
 
-    boolean has_permission(ProxyServer server, final String... permission);
+    boolean hasPermission(ProxyServer server, final String... permission);
 
-    default boolean can_start_server(ProxyServer server, String serverName) {
-        return has_permission(
+    default boolean canStartServer(ProxyServer server, String serverName) {
+        return hasPermission(
             server,
             "vane_proxy.start_server",
             "vane_proxy.start_server.*",

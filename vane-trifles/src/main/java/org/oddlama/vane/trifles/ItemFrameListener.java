@@ -13,14 +13,14 @@ public class ItemFrameListener extends Listener<Trifles> {
 	public ItemFrameListener(Context<Trifles> context) {
 		super(
 			context.group(
-				"invisible_item_frame",
+				"InvisibleItemFrame",
 				"Right clicking on an item frame with shears equipped will make it disappear."
 			)
 		);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void on_event(PlayerInteractEntityEvent event) {
+	public void onEvent(PlayerInteractEntityEvent event) {
 		final var player = event.getPlayer();
 		var entity = event.getRightClicked();
 		boolean isHoldingShears = player.getInventory().getItemInMainHand().getType() == Material.SHEARS;

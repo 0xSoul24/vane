@@ -11,18 +11,18 @@ public class ConfigVersionField extends ConfigField<Long> {
 
     public ConfigVersion annotation;
 
-    public ConfigVersionField(Object owner, Field field, Function<String, String> map_name, ConfigVersion annotation) {
+    public ConfigVersionField(Object owner, Field field, Function<String, String> mapName, ConfigVersion annotation) {
         super(
             owner,
             field,
-            map_name,
+            mapName,
             "version id",
             "DO NOT CHANGE! The version of this config file. Used to determine if the config needs to be updated."
         );
         this.annotation = annotation;
 
         // Version field should be at the bottom
-        this.sort_priority = 100;
+        this.sortPriority = 100;
     }
 
     @Override
@@ -36,32 +36,32 @@ public class ConfigVersionField extends ConfigField<Long> {
     }
 
     @Override
-    public void generate_yaml(StringBuilder builder, String indent, YamlConfiguration existing_compatible_config) {
-        append_description(builder, indent);
-        append_field_definition(builder, indent, ((Module<?>) owner).annotation.config_version());
+    public void generateYaml(StringBuilder builder, String indent, YamlConfiguration existingCompatibleConfig) {
+        appendDescription(builder, indent);
+        appendFieldDefinition(builder, indent, ((Module<?>) owner).annotation.configVersion());
     }
 
     @Override
-    public void check_loadable(YamlConfiguration yaml) throws YamlLoadException {
-        check_yaml_path(yaml);
+    public void checkLoadable(YamlConfiguration yaml) throws YamlLoadException {
+        checkYamlPath(yaml);
 
-        if (!(yaml.get(yaml_path()) instanceof Number)) {
-            throw new YamlLoadException("Invalid type for yaml path '" + yaml_path() + "', expected long");
+        if (!(yaml.get(yamlPath()) instanceof Number)) {
+            throw new YamlLoadException("Invalid type for yaml path '" + yamlPath() + "', expected long");
         }
 
-        var val = yaml.getLong(yaml_path());
+        var val = yaml.getLong(yamlPath());
         if (val < 1) {
-            throw new YamlLoadException("Configuration '" + yaml_path() + "' has an invalid value: Value must be >= 1");
+            throw new YamlLoadException("Configuration '" + yamlPath() + "' has an invalid value: Value must be >= 1");
         }
     }
 
-    public long load_from_yaml(YamlConfiguration yaml) {
-        return yaml.getLong(yaml_path());
+    public long loadFromYaml(YamlConfiguration yaml) {
+        return yaml.getLong(yamlPath());
     }
 
     public void load(YamlConfiguration yaml) {
         try {
-            field.setLong(owner, load_from_yaml(yaml));
+            field.setLong(owner, loadFromYaml(yaml));
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Invalid field access on '" + field.getName() + "'. This is a bug.");
         }

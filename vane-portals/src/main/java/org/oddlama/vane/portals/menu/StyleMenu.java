@@ -29,220 +29,220 @@ public class StyleMenu extends ModuleComponent<Portals> {
     private static final int columns = 9;
 
     @LangMessage
-    public TranslatedMessage lang_title;
+    public TranslatedMessage langTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_block_console_active_title;
+    public TranslatedMessage langSelectBlockConsoleActiveTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_block_origin_active_title;
+    public TranslatedMessage langSelectBlockOriginActiveTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_block_portal_active_title;
+    public TranslatedMessage langSelectBlockPortalActiveTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_block_boundary_1_active_title;
+    public TranslatedMessage langSelectBlockBoundary1ActiveTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_block_boundary_2_active_title;
+    public TranslatedMessage langSelectBlockBoundary2ActiveTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_block_boundary_3_active_title;
+    public TranslatedMessage langSelectBlockBoundary3ActiveTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_block_boundary_4_active_title;
+    public TranslatedMessage langSelectBlockBoundary4ActiveTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_block_boundary_5_active_title;
+    public TranslatedMessage langSelectBlockBoundary5ActiveTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_block_console_inactive_title;
+    public TranslatedMessage langSelectBlockConsoleInactiveTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_block_origin_inactive_title;
+    public TranslatedMessage langSelectBlockOriginInactiveTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_block_portal_inactive_title;
+    public TranslatedMessage langSelectBlockPortalInactiveTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_block_boundary_1_inactive_title;
+    public TranslatedMessage langSelectBlockBoundary1InactiveTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_block_boundary_2_inactive_title;
+    public TranslatedMessage langSelectBlockBoundary2InactiveTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_block_boundary_3_inactive_title;
+    public TranslatedMessage langSelectBlockBoundary3InactiveTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_block_boundary_4_inactive_title;
+    public TranslatedMessage langSelectBlockBoundary4InactiveTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_block_boundary_5_inactive_title;
+    public TranslatedMessage langSelectBlockBoundary5InactiveTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_style_title;
+    public TranslatedMessage langSelectStyleTitle;
 
     @LangMessage
-    public TranslatedMessage lang_filter_styles_title;
+    public TranslatedMessage langFilterStylesTitle;
 
-    private TranslatedItemStack<?> item_block_console_active;
-    private TranslatedItemStack<?> item_block_origin_active;
-    private TranslatedItemStack<?> item_block_portal_active;
-    private TranslatedItemStack<?> item_block_boundary_1_active;
-    private TranslatedItemStack<?> item_block_boundary_2_active;
-    private TranslatedItemStack<?> item_block_boundary_3_active;
-    private TranslatedItemStack<?> item_block_boundary_4_active;
-    private TranslatedItemStack<?> item_block_boundary_5_active;
-    private TranslatedItemStack<?> item_block_console_inactive;
-    private TranslatedItemStack<?> item_block_origin_inactive;
-    private TranslatedItemStack<?> item_block_portal_inactive;
-    private TranslatedItemStack<?> item_block_boundary_1_inactive;
-    private TranslatedItemStack<?> item_block_boundary_2_inactive;
-    private TranslatedItemStack<?> item_block_boundary_3_inactive;
-    private TranslatedItemStack<?> item_block_boundary_4_inactive;
-    private TranslatedItemStack<?> item_block_boundary_5_inactive;
+    private TranslatedItemStack<?> itemBlockConsoleActive;
+    private TranslatedItemStack<?> itemBlockOriginActive;
+    private TranslatedItemStack<?> itemBlockPortalActive;
+    private TranslatedItemStack<?> itemBlockBoundary1Active;
+    private TranslatedItemStack<?> itemBlockBoundary2Active;
+    private TranslatedItemStack<?> itemBlockBoundary3Active;
+    private TranslatedItemStack<?> itemBlockBoundary4Active;
+    private TranslatedItemStack<?> itemBlockBoundary5Active;
+    private TranslatedItemStack<?> itemBlockConsoleInactive;
+    private TranslatedItemStack<?> itemBlockOriginInactive;
+    private TranslatedItemStack<?> itemBlockPortalInactive;
+    private TranslatedItemStack<?> itemBlockBoundary1Inactive;
+    private TranslatedItemStack<?> itemBlockBoundary2Inactive;
+    private TranslatedItemStack<?> itemBlockBoundary3Inactive;
+    private TranslatedItemStack<?> itemBlockBoundary4Inactive;
+    private TranslatedItemStack<?> itemBlockBoundary5Inactive;
 
-    private TranslatedItemStack<?> item_accept;
-    private TranslatedItemStack<?> item_reset;
-    private TranslatedItemStack<?> item_select_defined;
-    private TranslatedItemStack<?> item_select_style;
-    private TranslatedItemStack<?> item_cancel;
+    private TranslatedItemStack<?> itemAccept;
+    private TranslatedItemStack<?> itemReset;
+    private TranslatedItemStack<?> itemSelectDefined;
+    private TranslatedItemStack<?> itemSelectStyle;
+    private TranslatedItemStack<?> itemCancel;
 
     public StyleMenu(Context<Portals> context) {
-        super(context.namespace("style"));
-        final var ctx = get_context();
-        item_block_console_active = new TranslatedItemStack<>(
+        super(context.namespace("Style"));
+        final var ctx = getContext();
+        itemBlockConsoleActive = new TranslatedItemStack<>(
             ctx,
-            "block_console_active",
+            "BlockConsoleActive",
             Material.BARRIER,
             1,
             "Used to select active console block."
         );
-        item_block_origin_active = new TranslatedItemStack<>(
+        itemBlockOriginActive = new TranslatedItemStack<>(
             ctx,
-            "block_origin_active",
+            "BlockOriginActive",
             Material.BARRIER,
             1,
             "Used to select active origin block."
         );
-        item_block_portal_active = new TranslatedItemStack<>(
+        itemBlockPortalActive = new TranslatedItemStack<>(
             ctx,
-            "block_portal_active",
+            "BlockPortalActive",
             Material.BARRIER,
             1,
             "Used to select active portal area block. Defaults to end gateway if unset."
         );
-        item_block_boundary_1_active = new TranslatedItemStack<>(
+        itemBlockBoundary1Active = new TranslatedItemStack<>(
             ctx,
-            "block_boundary_1_active",
+            "BlockBoundary1Active",
             Material.BARRIER,
             1,
             "Used to select active boundary variant 1 block."
         );
-        item_block_boundary_2_active = new TranslatedItemStack<>(
+        itemBlockBoundary2Active = new TranslatedItemStack<>(
             ctx,
-            "block_boundary_2_active",
+            "BlockBoundary2Active",
             Material.BARRIER,
             1,
             "Used to select active boundary variant 2 block."
         );
-        item_block_boundary_3_active = new TranslatedItemStack<>(
+        itemBlockBoundary3Active = new TranslatedItemStack<>(
             ctx,
-            "block_boundary_3_active",
+            "BlockBoundary3Active",
             Material.BARRIER,
             1,
             "Used to select active boundary variant 3 block."
         );
-        item_block_boundary_4_active = new TranslatedItemStack<>(
+        itemBlockBoundary4Active = new TranslatedItemStack<>(
             ctx,
-            "block_boundary_4_active",
+            "BlockBoundary4Active",
             Material.BARRIER,
             1,
             "Used to select active boundary variant 4 block."
         );
-        item_block_boundary_5_active = new TranslatedItemStack<>(
+        itemBlockBoundary5Active = new TranslatedItemStack<>(
             ctx,
-            "block_boundary_5_active",
+            "BlockBoundary5Active",
             Material.BARRIER,
             1,
             "Used to select active boundary variant 5 block."
         );
-        item_block_console_inactive = new TranslatedItemStack<>(
+        itemBlockConsoleInactive = new TranslatedItemStack<>(
             ctx,
-            "block_console_inactive",
+            "BlockConsoleInactive",
             Material.BARRIER,
             1,
             "Used to select inactive console block."
         );
-        item_block_origin_inactive = new TranslatedItemStack<>(
+        itemBlockOriginInactive = new TranslatedItemStack<>(
             ctx,
-            "block_origin_inactive",
+            "BlockOriginInactive",
             Material.BARRIER,
             1,
             "Used to select inactive origin block."
         );
-        item_block_portal_inactive = new TranslatedItemStack<>(
+        itemBlockPortalInactive = new TranslatedItemStack<>(
             ctx,
-            "block_portal_inactive",
+            "BlockPortalInactive",
             Material.BARRIER,
             1,
             "Used to select inactive portal area block."
         );
-        item_block_boundary_1_inactive = new TranslatedItemStack<>(
+        itemBlockBoundary1Inactive = new TranslatedItemStack<>(
             ctx,
-            "block_boundary_1_inactive",
+            "BlockBoundary1Inactive",
             Material.BARRIER,
             1,
             "Used to select inactive boundary variant 1 block."
         );
-        item_block_boundary_2_inactive = new TranslatedItemStack<>(
+        itemBlockBoundary2Inactive = new TranslatedItemStack<>(
             ctx,
-            "block_boundary_2_inactive",
+            "BlockBoundary2Inactive",
             Material.BARRIER,
             1,
             "Used to select inactive boundary variant 2 block."
         );
-        item_block_boundary_3_inactive = new TranslatedItemStack<>(
+        itemBlockBoundary3Inactive = new TranslatedItemStack<>(
             ctx,
-            "block_boundary_3_inactive",
+            "BlockBoundary3Inactive",
             Material.BARRIER,
             1,
             "Used to select inactive boundary variant 3 block."
         );
-        item_block_boundary_4_inactive = new TranslatedItemStack<>(
+        itemBlockBoundary4Inactive = new TranslatedItemStack<>(
             ctx,
-            "block_boundary_4_inactive",
+            "BlockBoundary4Inactive",
             Material.BARRIER,
             1,
             "Used to select inactive boundary variant 4 block."
         );
-        item_block_boundary_5_inactive = new TranslatedItemStack<>(
+        itemBlockBoundary5Inactive = new TranslatedItemStack<>(
             ctx,
-            "block_boundary_5_inactive",
+            "BlockBoundary5Inactive",
             Material.BARRIER,
             1,
             "Used to select inactive boundary variant 5 block."
         );
 
-        item_accept = new TranslatedItemStack<>(ctx, "accept", Material.LIME_TERRACOTTA, 1, "Used to apply the style.");
-        item_reset = new TranslatedItemStack<>(ctx, "reset", Material.MILK_BUCKET, 1, "Used to reset any changes.");
-        item_select_defined = new TranslatedItemStack<>(
+        itemAccept = new TranslatedItemStack<>(ctx, "Accept", Material.LIME_TERRACOTTA, 1, "Used to apply the style.");
+        itemReset = new TranslatedItemStack<>(ctx, "Reset", Material.MILK_BUCKET, 1, "Used to reset any changes.");
+        itemSelectDefined = new TranslatedItemStack<>(
             ctx,
-            "select_defined",
+            "SelectDefined",
             Material.ITEM_FRAME,
             1,
             "Used to select a defined style from the configuration."
         );
-        item_select_style = new TranslatedItemStack<>(
+        itemSelectStyle = new TranslatedItemStack<>(
             ctx,
-            "select_style",
+            "SelectStyle",
             Material.ITEM_FRAME,
             1,
             "Used to represent a defined style in the selector menu."
         );
-        item_cancel = new TranslatedItemStack<>(
+        itemCancel = new TranslatedItemStack<>(
             ctx,
-            "cancel",
+            "Cancel",
             Material.RED_TERRACOTTA,
             1,
             "Used to abort style selection."
@@ -250,246 +250,246 @@ public class StyleMenu extends ModuleComponent<Portals> {
     }
 
     public Menu create(final Portal portal, final Player player, final Menu previous) {
-        final var title = lang_title.str_component("§5§l" + portal.name());
-        final var style_menu = new Menu(get_context(), Bukkit.createInventory(null, 4 * columns, title));
-        style_menu.tag(new PortalMenuTag(portal.id()));
+        final var title = langTitle.strComponent("§5§l" + portal.name());
+        final var styleMenu = new Menu(getContext(), Bukkit.createInventory(null, 4 * columns, title));
+        styleMenu.tag(new PortalMenuTag(portal.id()));
 
-        final var style_container = new StyleContainer();
-        style_container.defined_style = portal.style();
-        style_container.style = portal.copy_style(get_module(), null);
+        final var styleContainer = new StyleContainer();
+        styleContainer.definedStyle = portal.style();
+        styleContainer.style = portal.copyStyle(getModule(), null);
 
-        style_menu.add(
-            menu_item_block_selector(
+        styleMenu.add(
+            menuItemBlockSelector(
                 portal,
-                style_container,
+                styleContainer,
                 0,
-                item_block_console_inactive,
-                get_module().constructor.config_material_console,
-                lang_select_block_console_inactive_title.str(),
+                    itemBlockConsoleInactive,
+                getModule().constructor.configMaterialConsole,
+                langSelectBlockConsoleInactiveTitle.str(),
                 PortalBlock.Type.CONSOLE,
                 false
             )
         );
-        style_menu.add(
-            menu_item_block_selector(
+        styleMenu.add(
+            menuItemBlockSelector(
                 portal,
-                style_container,
+                styleContainer,
                 1,
-                item_block_origin_inactive,
-                get_module().constructor.config_material_origin,
-                lang_select_block_origin_inactive_title.str(),
+                    itemBlockOriginInactive,
+                getModule().constructor.configMaterialOrigin,
+                langSelectBlockOriginInactiveTitle.str(),
                 PortalBlock.Type.ORIGIN,
                 false
             )
         );
-        style_menu.add(
-            menu_item_block_selector(
+        styleMenu.add(
+            menuItemBlockSelector(
                 portal,
-                style_container,
+                styleContainer,
                 2,
-                item_block_portal_inactive,
-                get_module().constructor.config_material_portal_area,
-                lang_select_block_portal_inactive_title.str(),
+                    itemBlockPortalInactive,
+                getModule().constructor.configMaterialPortalArea,
+                langSelectBlockPortalInactiveTitle.str(),
                 PortalBlock.Type.PORTAL,
                 false
             )
         );
-        style_menu.add(
-            menu_item_block_selector(
+        styleMenu.add(
+            menuItemBlockSelector(
                 portal,
-                style_container,
+                styleContainer,
                 4,
-                item_block_boundary_1_inactive,
-                get_module().constructor.config_material_boundary_1,
-                lang_select_block_boundary_1_inactive_title.str(),
-                PortalBlock.Type.BOUNDARY_1,
+                    itemBlockBoundary1Inactive,
+                getModule().constructor.configMaterialBoundary1,
+                langSelectBlockBoundary1InactiveTitle.str(),
+                PortalBlock.Type.BOUNDARY1,
                 false
             )
         );
-        style_menu.add(
-            menu_item_block_selector(
+        styleMenu.add(
+            menuItemBlockSelector(
                 portal,
-                style_container,
+                styleContainer,
                 5,
-                item_block_boundary_2_inactive,
-                get_module().constructor.config_material_boundary_2,
-                lang_select_block_boundary_2_inactive_title.str(),
-                PortalBlock.Type.BOUNDARY_2,
+                    itemBlockBoundary2Inactive,
+                getModule().constructor.configMaterialBoundary2,
+                langSelectBlockBoundary2InactiveTitle.str(),
+                PortalBlock.Type.BOUNDARY2,
                 false
             )
         );
-        style_menu.add(
-            menu_item_block_selector(
+        styleMenu.add(
+            menuItemBlockSelector(
                 portal,
-                style_container,
+                styleContainer,
                 6,
-                item_block_boundary_3_inactive,
-                get_module().constructor.config_material_boundary_3,
-                lang_select_block_boundary_3_inactive_title.str(),
-                PortalBlock.Type.BOUNDARY_3,
+                    itemBlockBoundary3Inactive,
+                getModule().constructor.configMaterialBoundary3,
+                langSelectBlockBoundary3InactiveTitle.str(),
+                PortalBlock.Type.BOUNDARY3,
                 false
             )
         );
-        style_menu.add(
-            menu_item_block_selector(
+        styleMenu.add(
+            menuItemBlockSelector(
                 portal,
-                style_container,
+                styleContainer,
                 7,
-                item_block_boundary_4_inactive,
-                get_module().constructor.config_material_boundary_4,
-                lang_select_block_boundary_4_inactive_title.str(),
-                PortalBlock.Type.BOUNDARY_4,
+                    itemBlockBoundary4Inactive,
+                getModule().constructor.configMaterialBoundary4,
+                langSelectBlockBoundary4InactiveTitle.str(),
+                PortalBlock.Type.BOUNDARY4,
                 false
             )
         );
-        style_menu.add(
-            menu_item_block_selector(
+        styleMenu.add(
+            menuItemBlockSelector(
                 portal,
-                style_container,
+                styleContainer,
                 8,
-                item_block_boundary_5_inactive,
-                get_module().constructor.config_material_boundary_5,
-                lang_select_block_boundary_5_inactive_title.str(),
-                PortalBlock.Type.BOUNDARY_5,
+                    itemBlockBoundary5Inactive,
+                getModule().constructor.configMaterialBoundary5,
+                langSelectBlockBoundary5InactiveTitle.str(),
+                PortalBlock.Type.BOUNDARY5,
                 false
             )
         );
-        style_menu.add(
-            menu_item_block_selector(
+        styleMenu.add(
+            menuItemBlockSelector(
                 portal,
-                style_container,
+                styleContainer,
                 columns,
-                item_block_console_active,
-                get_module().constructor.config_material_console,
-                lang_select_block_console_active_title.str(),
+                    itemBlockConsoleActive,
+                getModule().constructor.configMaterialConsole,
+                langSelectBlockConsoleActiveTitle.str(),
                 PortalBlock.Type.CONSOLE,
                 true
             )
         );
-        style_menu.add(
-            menu_item_block_selector(
+        styleMenu.add(
+            menuItemBlockSelector(
                 portal,
-                style_container,
+                styleContainer,
                 columns + 1,
-                item_block_origin_active,
-                get_module().constructor.config_material_origin,
-                lang_select_block_origin_active_title.str(),
+                    itemBlockOriginActive,
+                getModule().constructor.configMaterialOrigin,
+                langSelectBlockOriginActiveTitle.str(),
                 PortalBlock.Type.ORIGIN,
                 true
             )
         );
-        // style_menu.add(menu_item_block_selector(portal, style_container, 1 * columns
-        // + 2, item_block_portal_active,
-        // get_module().constructor.config_material_portal_area,
-        // lang_select_block_portal_active_title.str(), PortalBlock.Type.PORTAL, true));
-        style_menu.add(
-            menu_item_block_selector(
+        // styleMenu.add(menuItemBlockSelector(portal, styleContainer, 1 * columns
+        // + 2, itemBlockPortalActive,
+        // getModule().constructor.configMaterialPortalArea,
+        // langSelectBlockPortalActiveTitle.str(), PortalBlock.Type.PORTAL, true));
+        styleMenu.add(
+            menuItemBlockSelector(
                 portal,
-                style_container,
+                styleContainer,
                 columns + 4,
-                item_block_boundary_1_active,
-                get_module().constructor.config_material_boundary_1,
-                lang_select_block_boundary_1_active_title.str(),
-                PortalBlock.Type.BOUNDARY_1,
+                    itemBlockBoundary1Active,
+                getModule().constructor.configMaterialBoundary1,
+                langSelectBlockBoundary1ActiveTitle.str(),
+                PortalBlock.Type.BOUNDARY1,
                 true
             )
         );
-        style_menu.add(
-            menu_item_block_selector(
+        styleMenu.add(
+            menuItemBlockSelector(
                 portal,
-                style_container,
+                styleContainer,
                 columns + 5,
-                item_block_boundary_2_active,
-                get_module().constructor.config_material_boundary_2,
-                lang_select_block_boundary_2_active_title.str(),
-                PortalBlock.Type.BOUNDARY_2,
+                    itemBlockBoundary2Active,
+                getModule().constructor.configMaterialBoundary2,
+                langSelectBlockBoundary2ActiveTitle.str(),
+                PortalBlock.Type.BOUNDARY2,
                 true
             )
         );
-        style_menu.add(
-            menu_item_block_selector(
+        styleMenu.add(
+            menuItemBlockSelector(
                 portal,
-                style_container,
+                styleContainer,
                 columns + 6,
-                item_block_boundary_3_active,
-                get_module().constructor.config_material_boundary_3,
-                lang_select_block_boundary_3_active_title.str(),
-                PortalBlock.Type.BOUNDARY_3,
+                    itemBlockBoundary3Active,
+                getModule().constructor.configMaterialBoundary3,
+                langSelectBlockBoundary3ActiveTitle.str(),
+                PortalBlock.Type.BOUNDARY3,
                 true
             )
         );
-        style_menu.add(
-            menu_item_block_selector(
+        styleMenu.add(
+            menuItemBlockSelector(
                 portal,
-                style_container,
+                styleContainer,
                 columns + 7,
-                item_block_boundary_4_active,
-                get_module().constructor.config_material_boundary_4,
-                lang_select_block_boundary_4_active_title.str(),
-                PortalBlock.Type.BOUNDARY_4,
+                    itemBlockBoundary4Active,
+                getModule().constructor.configMaterialBoundary4,
+                langSelectBlockBoundary4ActiveTitle.str(),
+                PortalBlock.Type.BOUNDARY4,
                 true
             )
         );
-        style_menu.add(
-            menu_item_block_selector(
+        styleMenu.add(
+            menuItemBlockSelector(
                 portal,
-                style_container,
+                styleContainer,
                 columns + 8,
-                item_block_boundary_5_active,
-                get_module().constructor.config_material_boundary_5,
-                lang_select_block_boundary_5_active_title.str(),
-                PortalBlock.Type.BOUNDARY_5,
+                    itemBlockBoundary5Active,
+                getModule().constructor.configMaterialBoundary5,
+                langSelectBlockBoundary5ActiveTitle.str(),
+                PortalBlock.Type.BOUNDARY5,
                 true
             )
         );
 
-        style_menu.add(menu_item_accept(portal, style_container, previous));
-        style_menu.add(menu_item_reset(portal, style_container));
-        style_menu.add(menu_item_select_defined(portal, style_container));
-        style_menu.add(menu_item_cancel(previous));
+        styleMenu.add(menuItemAccept(portal, styleContainer, previous));
+        styleMenu.add(menuItemReset(portal, styleContainer));
+        styleMenu.add(menuItemSelectDefined(portal, styleContainer));
+        styleMenu.add(menuItemCancel(previous));
 
-        style_menu.on_natural_close(player2 -> previous.open(player2));
-        return style_menu;
+        styleMenu.onNaturalClose(player2 -> previous.open(player2));
+        return styleMenu;
     }
 
-    private static ItemStack item_for_type(
-        final StyleContainer style_container,
+    private static ItemStack itemForType(
+        final StyleContainer styleContainer,
         final boolean active,
         final PortalBlock.Type type
     ) {
         if (active && type == PortalBlock.Type.PORTAL) {
             return new ItemStack(Material.AIR);
         }
-        return new ItemStack(style_container.style.material(active, type));
+        return new ItemStack(styleContainer.style.material(active, type));
     }
 
-    private MenuWidget menu_item_block_selector(
+    private MenuWidget menuItemBlockSelector(
         final Portal portal,
-        final StyleContainer style_container,
+        final StyleContainer styleContainer,
         int slot,
-        final TranslatedItemStack<?> t_item,
-        final Material building_material,
+        final TranslatedItemStack<?> tItem,
+        final Material buildingMaterial,
         final String title,
         final PortalBlock.Type type,
         final boolean active
     ) {
         return new MenuItem(slot, null, (player, menu, self) -> {
             menu.close(player);
-            MenuFactory.item_selector(
-                get_context(),
+            MenuFactory.itemSelector(
+                getContext(),
                 player,
                 title,
-                item_for_type(style_container, active, type),
+                itemForType(styleContainer, active, type),
                 true,
                 (player2, item) -> {
-                    style_container.defined_style = null;
+                    styleContainer.definedStyle = null;
                     if (item == null) {
                         if (active && type == PortalBlock.Type.PORTAL) {
-                            style_container.style.set_material(active, type, Material.END_GATEWAY, true);
+                            styleContainer.style.setMaterial(active, type, Material.END_GATEWAY, true);
                         }
-                        style_container.style.set_material(active, type, Material.AIR, true);
+                        styleContainer.style.setMaterial(active, type, Material.AIR, true);
                     } else {
-                        style_container.style.set_material(active, type, item.getType(), true);
+                        styleContainer.style.setMaterial(active, type, item.getType(), true);
                     }
                     menu.open(player2);
                     return ClickResult.SUCCESS;
@@ -502,7 +502,7 @@ public class StyleMenu extends ModuleComponent<Portals> {
                     }
 
                     // Nothing from the blacklist
-                    if (get_module().config_blacklisted_materials.contains(item.getType())) {
+                    if (getModule().configBlacklistedMaterials.contains(item.getType())) {
                         return null;
                     }
 
@@ -537,47 +537,47 @@ public class StyleMenu extends ModuleComponent<Portals> {
         }) {
             @Override
             public void item(final ItemStack item) {
-                var stack = item_for_type(style_container, active, type);
+                var stack = itemForType(styleContainer, active, type);
                 if (stack.getType() == Material.AIR) {
                     stack = new ItemStack(Material.BARRIER);
                 }
-                super.item(t_item.alternative(stack, "§6" + building_material.getKey()));
+                super.item(tItem.alternative(stack, "§6" + buildingMaterial.getKey()));
             }
         };
     }
 
-    private MenuWidget menu_item_accept(
+    private MenuWidget menuItemAccept(
         final Portal portal,
-        final StyleContainer style_container,
+        final StyleContainer styleContainer,
         final Menu previous
     ) {
-        return new MenuItem(3 * columns, item_accept.item(), (player, menu, self) -> {
+        return new MenuItem(3 * columns, itemAccept.item(), (player, menu, self) -> {
             menu.close(player);
 
-            final var settings_event = new PortalChangeSettingsEvent(player, portal, false);
-            get_module().getServer().getPluginManager().callEvent(settings_event);
-            if (settings_event.isCancelled() && !player.hasPermission(get_module().admin_permission)) {
+            final var settingsEvent = new PortalChangeSettingsEvent(player, portal, false);
+            getModule().getServer().getPluginManager().callEvent(settingsEvent);
+            if (settingsEvent.isCancelled() && !player.hasPermission(getModule().adminPermission)) {
                 return ClickResult.ERROR;
             }
 
-            portal.style(style_container.style);
-            portal.update_blocks(get_module());
+            portal.style(styleContainer.style);
+            portal.updateBlocks(getModule());
             previous.open(player);
             return ClickResult.SUCCESS;
         });
     }
 
-    private MenuWidget menu_item_reset(final Portal portal, final StyleContainer style_container) {
-        return new MenuItem(3 * columns + 3, item_reset.item(), (player, menu, self) -> {
-            style_container.style = portal.copy_style(get_module(), null);
+    private MenuWidget menuItemReset(final Portal portal, final StyleContainer styleContainer) {
+        return new MenuItem(3 * columns + 3, itemReset.item(), (player, menu, self) -> {
+            styleContainer.style = portal.copyStyle(getModule(), null);
             menu.update();
             return ClickResult.SUCCESS;
         });
     }
 
-    private MenuWidget menu_item_select_defined(final Portal portal, final StyleContainer style_container) {
-        final Function1<Style, ItemStack> item_for = style -> {
-            final var mat = style.material(false, PortalBlock.Type.BOUNDARY_1);
+    private MenuWidget menuItemSelectDefined(final Portal portal, final StyleContainer styleContainer) {
+        final Function1<Style, ItemStack> itemFor = style -> {
+            final var mat = style.material(false, PortalBlock.Type.BOUNDARY1);
             if (mat == null) {
                 return new ItemStack(Material.BARRIER);
             } else {
@@ -585,23 +585,23 @@ public class StyleMenu extends ModuleComponent<Portals> {
             }
         };
 
-        return new MenuItem(3 * columns + 4, item_select_defined.item(), (player, menu, self) -> {
+        return new MenuItem(3 * columns + 4, itemSelectDefined.item(), (player, menu, self) -> {
             menu.close(player);
-            final var all_styles = new ArrayList<>(get_module().styles.values());
+            final var allStyles = new ArrayList<>(getModule().styles.values());
             final var filter = new Filter.StringFilter<Style>((s, str) -> s.key().toString().toLowerCase().contains(str)
             );
-            MenuFactory.generic_selector(
-                get_context(),
+            MenuFactory.genericSelector(
+                getContext(),
                 player,
-                lang_select_style_title.str(),
-                lang_filter_styles_title.str(),
-                all_styles,
-                s -> item_select_style.alternative(item_for.apply(s), s.key().getKey()),
+                langSelectStyleTitle.str(),
+                langFilterStylesTitle.str(),
+                allStyles,
+                s -> itemSelectStyle.alternative(itemFor.apply(s), s.key().getKey()),
                 filter,
                 (player2, m, t) -> {
                     m.close(player2);
-                    style_container.defined_style = t.key();
-                    style_container.style = t.copy(null);
+                    styleContainer.definedStyle = t.key();
+                    styleContainer.style = t.copy(null);
                     menu.open(player2);
                     return ClickResult.SUCCESS;
                 },
@@ -613,8 +613,8 @@ public class StyleMenu extends ModuleComponent<Portals> {
         });
     }
 
-    private MenuWidget menu_item_cancel(final Menu previous) {
-        return new MenuItem(3 * columns + 8, item_cancel.item(), (player, menu, self) -> {
+    private MenuWidget menuItemCancel(final Menu previous) {
+        return new MenuItem(3 * columns + 8, itemCancel.item(), (player, menu, self) -> {
             menu.close(player);
             previous.open(player);
             return ClickResult.SUCCESS;
@@ -622,14 +622,14 @@ public class StyleMenu extends ModuleComponent<Portals> {
     }
 
     @Override
-    public void on_enable() {}
+    public void onEnable() {}
 
     @Override
-    public void on_disable() {}
+    public void onDisable() {}
 
     private static class StyleContainer {
 
-        public NamespacedKey defined_style = null;
+        public NamespacedKey definedStyle = null;
         public Style style = null;
     }
 }

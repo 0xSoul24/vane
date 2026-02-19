@@ -1,7 +1,7 @@
 package org.oddlama.vane.trifles.items;
 
 import java.util.EnumSet;
-import net.kyori.adventure.key.Key;
+
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlotGroup;
@@ -17,39 +17,39 @@ import org.oddlama.vane.util.BlockUtil;
 public abstract class Sickle extends CustomItem<Trifles> {
 
     @ConfigDouble(def = Double.NaN, desc = "Attack damage modifier.")
-    public double config_attack_damage;
+    public double configAttackDamage;
 
     @ConfigDouble(def = Double.NaN, desc = "Attack speed modifier.")
-    public double config_attack_speed;
+    public double configAttackSpeed;
 
     @ConfigInt(def = -1, min = 0, max = BlockUtil.NEAREST_RELATIVE_BLOCKS_FOR_RADIUS_MAX, desc = "Harvest radius.")
-    public int config_harvest_radius;
+    public int configHarvestRadius;
 
     public Sickle(Context<Trifles> context) {
         super(context);
     }
 
     @Override
-    public ItemStack updateItemStack(ItemStack item_stack) {
-        item_stack.editMeta(meta -> {
-            final var modifier_damage = new AttributeModifier(
-                namespaced_key("attack_damage"),
-                config_attack_damage,
+    public ItemStack updateItemStack(ItemStack itemStack) {
+        itemStack.editMeta(meta -> {
+            final var modifierDamage = new AttributeModifier(
+                namespacedKey("attack_damage"),
+                    configAttackDamage,
                 AttributeModifier.Operation.ADD_NUMBER,
                 EquipmentSlotGroup.HAND
             );
-            final var modifier_speed = new AttributeModifier(
-                namespaced_key("attack_speed"),
-                config_attack_speed,
+            final var modifierSpeed = new AttributeModifier(
+                namespacedKey("attack_speed"),
+                    configAttackSpeed,
                 AttributeModifier.Operation.ADD_NUMBER,
                 EquipmentSlotGroup.HAND
             );
-            meta.removeAttributeModifier(Attribute.ATTACK_DAMAGE, modifier_damage);
-            meta.addAttributeModifier(Attribute.ATTACK_DAMAGE, modifier_damage);
-            meta.removeAttributeModifier(Attribute.ATTACK_SPEED, modifier_speed);
-            meta.addAttributeModifier(Attribute.ATTACK_SPEED, modifier_speed);
+            meta.removeAttributeModifier(Attribute.ATTACK_DAMAGE, modifierDamage);
+            meta.addAttributeModifier(Attribute.ATTACK_DAMAGE, modifierDamage);
+            meta.removeAttributeModifier(Attribute.ATTACK_SPEED, modifierSpeed);
+            meta.addAttributeModifier(Attribute.ATTACK_SPEED, modifierSpeed);
         });
-        return item_stack;
+        return itemStack;
     }
 
     @Override

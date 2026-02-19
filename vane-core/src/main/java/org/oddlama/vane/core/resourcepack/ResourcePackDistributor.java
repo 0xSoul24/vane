@@ -37,160 +37,160 @@ public class ResourcePackDistributor extends Listener<Core> {
     // a better way.
     // https://github.com/jpenilla/run-paper/issues/14
     private static final boolean localDev =
-        Nms.server_handle().options.hasArgument("add-plugin") && Boolean.getBoolean("disable.watchdog");
+        Nms.serverHandle().options.hasArgument("add-plugin") && Boolean.getBoolean("disable.watchdog");
 
     @ConfigBoolean(
         def = true,
         desc = "Kick players if they deny to use the specified resource pack (if set)."
     )
-    public boolean config_force;
+    public boolean configForce;
 
     @LangMessage
-    public TranslatedMessage lang_pack_required;
+    public TranslatedMessage langPackRequired;
 
     @LangMessage
-    public TranslatedMessage lang_pack_suggested;
+    public TranslatedMessage langPackSuggested;
 
-    public String pack_url = null;
-    public String pack_sha1 = null;
-    public UUID pack_uuid = UUID.fromString("fbba121a-8f87-4e97-922d-2059777311bf");
+    public String packUrl = null;
+    public String packSha1 = null;
+    public UUID packUuid = UUID.fromString("fbba121a-8f87-4e97-922d-2059777311bf");
     public int counter = 0;
 
-    public CustomResourcePackConfig custom_resource_pack_config;
-    private ResourcePackFileWatcher file_watcher;
-    private ResourcePackDevServer dev_server;
+    public CustomResourcePackConfig customResourcePackConfig;
+    private ResourcePackFileWatcher fileWatcher;
+    private ResourcePackDevServer devServer;
 
     private final ConcurrentHashMap<UUID, CountDownLatch> latches = new ConcurrentHashMap<>();
 
     public ResourcePackDistributor(Context<Core> context) {
-        super(context.group("resource_pack", "Enable resource pack distribution."));
+        super(context.group("ResourcePack", "Enable resource pack distribution."));
 
-        custom_resource_pack_config = new CustomResourcePackConfig(get_context());
+        customResourcePackConfig = new CustomResourcePackConfig(getContext());
     }
 
     @Override
-    public void on_enable() {
+    public void onEnable() {
         if (localDev) {
             try {
-                File pack_output = new File("vane-resource-pack.zip");
-                if (!pack_output.exists()) {
-                    get_module().log.info("Resource Pack Missing, first run? Generating resource pack.");
-                    pack_output = get_module().generate_resource_pack();
+                File packOutput = new File("VaneResourcePack.zip");
+                if (!packOutput.exists()) {
+                    getModule().log.info("Resource Pack Missing, first run? Generating resource pack.");
+                    packOutput = getModule().generateResourcePack();
                 }
-                file_watcher = new ResourcePackFileWatcher(this, pack_output);
-                dev_server = new ResourcePackDevServer(this, pack_output);
-                dev_server.serve();
-                file_watcher.watch_for_changes();
+                fileWatcher = new ResourcePackFileWatcher(this, packOutput);
+                devServer = new ResourcePackDevServer(this, packOutput);
+                devServer.serve();
+                fileWatcher.watchForChanges();
             } catch (IOException | InterruptedException e) {
-                get_module().log.log(
+                getModule().log.log(
                     java.util.logging.Level.SEVERE,
                     "Failed to initialize resource pack dev server or file watcher",
                     e
                 );
             }
 
-            get_module().log.info("Setting up dev lazy server");
-        } else if (((ModuleGroup<Core>) custom_resource_pack_config.get_context()).config_enabled) {
-            get_module().log.info("Serving custom resource pack");
-            pack_url = custom_resource_pack_config.config_url;
-            pack_sha1 = custom_resource_pack_config.config_sha1;
-            pack_uuid = UUID.fromString(custom_resource_pack_config.config_uuid);
+            getModule().log.info("Setting up dev lazy server");
+        } else if (((ModuleGroup<Core>) customResourcePackConfig.getContext()).configEnabled) {
+            getModule().log.info("Serving custom resource pack");
+            packUrl = customResourcePackConfig.configUrl;
+            packSha1 = customResourcePackConfig.configSha1;
+            packUuid = UUID.fromString(customResourcePackConfig.configUuid);
         } else {
-            get_module().log.info("Serving official vane resource pack");
+            getModule().log.info("Serving official vane resource pack");
             try {
                 Properties properties = new Properties();
                 properties.load(Core.class.getResourceAsStream("/vane-core.properties"));
-                pack_url = properties.getProperty("resource_pack_url");
-                pack_sha1 = properties.getProperty("resource_pack_sha1");
-                pack_uuid = UUID.fromString(properties.getProperty("resource_pack_uuid"));
+                packUrl = properties.getProperty("resourcePackUrl");
+                packSha1 = properties.getProperty("resourcePackSha1");
+                packUuid = UUID.fromString(properties.getProperty("resourcePackUuid"));
             } catch (IOException e) {
-                get_module().log.severe("Could not load official resource pack sha1 from included properties file");
-                pack_url = "";
-                pack_sha1 = "";
-                pack_uuid = UUID.randomUUID();
+                getModule().log.severe("Could not load official resource pack sha1 from included properties file");
+                packUrl = "";
+                packSha1 = "";
+                packUuid = UUID.randomUUID();
             }
         }
 
         // Check sha1 sum validity
-        if (pack_sha1.length() != 40) {
-            get_module()
+        if (packSha1.length() != 40) {
+            getModule()
                 .log.warning(
                     "Invalid resource pack SHA-1 sum '" +
-                        pack_sha1 +
+                            packSha1 +
                     "', should be 40 characters long but has " +
-                    pack_sha1.length() +
+                    packSha1.length() +
                     " characters"
                 );
-            get_module().log.warning("Disabling resource pack serving and message delaying");
+            getModule().log.warning("Disabling resource pack serving and message delaying");
 
             // Disable resource pack
-            pack_url = "";
+            packUrl = "";
         }
 
         // Propagate enable after determining whether the player message delayer is active,
         // so it is only enabled when needed.
-        super.on_enable();
+        super.onEnable();
 
-        pack_sha1 = pack_sha1.toLowerCase();
-        if (!pack_url.isEmpty()) {
+        packSha1 = packSha1.toLowerCase();
+        if (!packUrl.isEmpty()) {
             // Check if the server has a manually configured resource pack.
             // This would conflict.
-            Nms.server_handle()
+            Nms.serverHandle()
                 .settings.getProperties()
-                .serverResourcePackInfo.ifPresent(rp_info -> {
-                    if (!rp_info.url().trim().isEmpty()) {
-                        get_module()
+                .serverResourcePackInfo.ifPresent(rpInfo -> {
+                    if (!rpInfo.url().trim().isEmpty()) {
+                        getModule()
                             .log.warning(
                                 "You have manually configured a resource pack in your server.properties. This cannot be used together with vane, as servers only allow serving a single resource pack."
                             );
                     }
                 });
 
-            get_module().log.info("Distributing resource pack from '" + pack_url + "' with sha1 " + pack_sha1);
+            getModule().log.info("Distributing resource pack from '" + packUrl + "' with sha1 " + packSha1);
         }
     }
 
     @EventHandler
-    public void on_player_async_connection_configure(AsyncPlayerConnectionConfigureEvent event) {
-        var profile_uuid = event.getConnection().getProfile().getId();
-        if (profile_uuid == null) { return; }
+    public void onPlayerAsyncConnectionConfigure(AsyncPlayerConnectionConfigureEvent event) {
+        var profileUuid = event.getConnection().getProfile().getId();
+        if (profileUuid == null) { return; }
 
         // Block the thread to prevent the question screen from going away
         var latch = new CountDownLatch(1);
-        var old_latch = latches.put(profile_uuid, latch);
-        if (old_latch != null) {
-            old_latch.countDown(); // Unblock thread that might still be waiting
+        var oldLatch = latches.put(profileUuid, latch);
+        if (oldLatch != null) {
+            oldLatch.countDown(); // Unblock thread that might still be waiting
         }
 
-        send_resource_pack_during_configuration(event.getConnection());
+        sendResourcePackDuringConfiguration(event.getConnection());
 
         try {
             latch.await();
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
-            get_module().log.warning("Resource pack wait interrupted for player " + profile_uuid);
+            getModule().log.warning("Resource pack wait interrupted for player " + profileUuid);
         }
 
         event.getConnection().completeReconfiguration();
     }
 
     @EventHandler
-    public void on_player_connection_reconfigure(PlayerConnectionReconfigureEvent event) {
-        send_resource_pack_during_configuration(event.getConnection());
+    public void onPlayerConnectionReconfigure(PlayerConnectionReconfigureEvent event) {
+        sendResourcePackDuringConfiguration(event.getConnection());
     }
 
     @EventHandler
-    public void on_player_connection_close(PlayerConnectionCloseEvent event) {
+    public void onPlayerConnectionClose(PlayerConnectionCloseEvent event) {
         // Cleanup
         Optional.ofNullable(latches.remove(event.getPlayerUniqueId())).ifPresent(CountDownLatch::countDown);
     }
 
-    public void send_resource_pack_during_configuration(@NotNull PlayerConfigurationConnection connection) {
-        var info = ResourcePackInfo.resourcePackInfo(pack_uuid, URI.create(pack_url), pack_sha1);
-        var prompt_lang = (config_force) ? lang_pack_required : lang_pack_suggested;
-        var prompt = prompt_lang.str().isEmpty() ? null : prompt_lang.str_component();
+    public void sendResourcePackDuringConfiguration(@NotNull PlayerConfigurationConnection connection) {
+        var info = ResourcePackInfo.resourcePackInfo(packUuid, URI.create(packUrl), packSha1);
+        var promptLang = (configForce) ? langPackRequired : langPackSuggested;
+        var prompt = promptLang.str().isEmpty() ? null : promptLang.strComponent();
         var request = ResourcePackRequest.resourcePackRequest()
-            .required(config_force).replace(true)
+            .required(configForce).replace(true)
             .packs(info).callback((uuid, status, audience) -> {
                 if (!status.intermediate()) {
                     Optional.ofNullable(latches.remove(connection.getProfile().getId())).ifPresent(CountDownLatch::countDown);
@@ -203,27 +203,27 @@ public class ResourcePackDistributor extends Listener<Core> {
     }
 
     // For sending the resource pack during gameplay
-    public void send_resource_pack(@NotNull Audience audience) {
-        var url2 = pack_url;
+    public void sendResourcePack(@NotNull Audience audience) {
+        var url2 = packUrl;
         if (localDev) {
-            url2 = pack_url + "?" + counter;
-            audience.sendMessage(Component.text(url2 + " " + pack_sha1));
+            url2 = packUrl + "?" + counter;
+            audience.sendMessage(Component.text(url2 + " " + packSha1));
         }
 
         try {
-            ResourcePackInfo info = ResourcePackInfo.resourcePackInfo(pack_uuid, new URI(url2), pack_sha1);
+            ResourcePackInfo info = ResourcePackInfo.resourcePackInfo(packUuid, new URI(url2), packSha1);
             audience.sendResourcePacks(ResourcePackRequest.resourcePackRequest().packs(info).asResourcePackRequest());
         } catch (URISyntaxException e) {
-            get_module().log.warning("The provided resource pack URL is incorrect: " + url2);
+            getModule().log.warning("The provided resource pack URL is incorrect: " + url2);
         }
     }
 
     @SuppressWarnings({ "deprecation", "UnstableApiUsage" })
-    public void update_sha1(File file) {
+    public void updateSha1(File file) {
         if (!localDev) return;
         try {
             var hash = Files.asByteSource(file).hash(Hashing.sha1());
-            ResourcePackDistributor.this.pack_sha1 = hash.toString();
+            ResourcePackDistributor.this.packSha1 = hash.toString();
         } catch (IOException ignored) {}
     }
 }

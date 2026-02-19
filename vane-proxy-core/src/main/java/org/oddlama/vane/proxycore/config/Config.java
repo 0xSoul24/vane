@@ -10,9 +10,9 @@ import java.util.Set;
 
 public class Config {
 
-    // multiplexer_id, { Integer port, List<UUID> allowed_uuids }
-    public LinkedHashMap<Integer, AuthMultiplex> auth_multiplex;
-    public LinkedHashMap<String, ManagedServer> managed_servers;
+    // multiplexerId, { Integer port, List<UUID> allowed_uuids }
+    public LinkedHashMap<Integer, AuthMultiplex> authMultiplex;
+    public LinkedHashMap<String, ManagedServer> managedServers;
 
     public Config(File file) throws IOException {
         CommentedFileConfig config = CommentedFileConfig.builder(file)
@@ -23,58 +23,58 @@ public class Config {
 
         config.load();
 
-        LinkedHashMap<Integer, AuthMultiplex> auth_multiplex = new LinkedHashMap<>();
-        LinkedHashMap<String, ManagedServer> managed_servers = new LinkedHashMap<>();
+        LinkedHashMap<Integer, AuthMultiplex> authMultiplex = new LinkedHashMap<>();
+        LinkedHashMap<String, ManagedServer> managedServers = new LinkedHashMap<>();
 
-        Set<Integer> registered_ports = new HashSet<>();
-        CommentedConfig multiplexers_config = config.get("auth_multiplex");
-        for (final var multiplexer_conf : multiplexers_config.entrySet()) {
-            final var key_string = multiplexer_conf.getKey();
+        Set<Integer> registeredPorts = new HashSet<>();
+        CommentedConfig multiplexersConfig = config.get("auth_multiplex");
+        for (final var multiplexerConf : multiplexersConfig.entrySet()) {
+            final var keyString = multiplexerConf.getKey();
             int key;
             try {
-                key = Integer.parseInt(key_string);
+                key = Integer.parseInt(keyString);
             } catch (Exception ignored) {
-                throw new IllegalArgumentException("Multiplexer ID '" + key_string + "' is not an integer!");
+                throw new IllegalArgumentException("Multiplexer ID '" + keyString + "' is not an integer!");
             }
 
-            final var value = multiplexer_conf.getValue();
-            if (!(value instanceof final CommentedConfig multiplexer_config)) throw new IllegalArgumentException(
+            final var value = multiplexerConf.getValue();
+            if (!(value instanceof final CommentedConfig multiplexerConfig)) throw new IllegalArgumentException(
                 "Multiplexer '" + key + "' has an invalid configuration!"
             );
 
-            final var port = multiplexer_config.getInt("port");
-            if (registered_ports.contains(port)) throw new IllegalArgumentException(
-                "Multiplexer ID '" + key_string + "' uses an already registered port!"
+            final var port = multiplexerConfig.getInt("port");
+            if (registeredPorts.contains(port)) throw new IllegalArgumentException(
+                "Multiplexer ID '" + keyString + "' uses an already registered port!"
             );
 
-            final var multiplexer = new AuthMultiplex(port, multiplexer_config.get("allowed_uuids"));
+            final var multiplexer = new AuthMultiplex(port, multiplexerConfig.get("allowed_uuids"));
 
-            registered_ports.add(multiplexer.port);
-            auth_multiplex.put(key, multiplexer);
+            registeredPorts.add(multiplexer.port);
+            authMultiplex.put(key, multiplexer);
         }
 
-        this.auth_multiplex = auth_multiplex;
+        this.authMultiplex = authMultiplex;
 
-        CommentedConfig servers_config = config.get("managed_servers");
-        for (final var server_conf : servers_config.entrySet()) {
-            final var key = server_conf.getKey();
+        CommentedConfig serversConfig = config.get("managed_servers");
+        for (final var serverConf : serversConfig.entrySet()) {
+            final var key = serverConf.getKey();
 
-            final var value = server_conf.getValue();
-            if (!(value instanceof final CommentedConfig managed_server_config)) throw new IllegalArgumentException(
+            final var value = serverConf.getValue();
+            if (!(value instanceof final CommentedConfig managedServerConfig)) throw new IllegalArgumentException(
                 "Managed server '" + key + "' has an invalid configuration!"
             );
 
-            final var managed_server = new ManagedServer(
+            final var managedServer = new ManagedServer(
                 key,
-                managed_server_config.get("display_name"),
-                managed_server_config.get("online"),
-                managed_server_config.get("offline"),
-                managed_server_config.get("start")
+                managedServerConfig.get("displayName"),
+                managedServerConfig.get("online"),
+                managedServerConfig.get("offline"),
+                managedServerConfig.get("start")
             );
 
-            managed_servers.put(key, managed_server);
+            managedServers.put(key, managedServer);
         }
 
-        this.managed_servers = managed_servers;
+        this.managedServers = managedServers;
     }
 }

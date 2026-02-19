@@ -1,6 +1,6 @@
 package org.oddlama.vane.proxycore.commands;
 
-import static org.oddlama.vane.proxycore.util.TimeUtil.parse_time;
+import static org.oddlama.vane.proxycore.util.TimeUtil.parseTime;
 
 import org.oddlama.vane.proxycore.Maintenance;
 import org.oddlama.vane.proxycore.ProxyPlayer;
@@ -16,19 +16,19 @@ public class ProxyMaintenanceCommand extends ProxyCommand {
 
     public void execute(ProxyCommandSender sender, String[] args) {
         // Only check permission on players
-        if (sender instanceof ProxyPlayer player && !has_permission(player.get_unique_id())) {
-            sender.send_message("No permission!");
+        if (sender instanceof ProxyPlayer player && !hasPermission(player.getUniqueId())) {
+            sender.sendMessage("No permission!");
             return;
         }
 
-        Maintenance maintenance = plugin.get_maintenance();
+        Maintenance maintenance = plugin.getMaintenance();
 
         if (args.length == 1) {
             switch (args[0].toLowerCase()) {
                 case "status" -> {
                     if (maintenance.start() != 0) {
-                        sender.send_message(
-                            maintenance.format_message(org.oddlama.vane.proxycore.Maintenance.MESSAGE_INFO)
+                        sender.sendMessage(
+                            maintenance.formatMessage(org.oddlama.vane.proxycore.Maintenance.MESSAGE_INFO)
                         );
                     }
 
@@ -48,16 +48,16 @@ public class ProxyMaintenanceCommand extends ProxyCommand {
             long duration;
 
             try {
-                time = parse_time(args[1]);
+                time = parseTime(args[1]);
             } catch (NumberFormatException e) {
-                sender.send_message(MESSAGE_INVALID_TIME_FORMAT.replace("%time%", args[1]));
+                sender.sendMessage(MESSAGE_INVALID_TIME_FORMAT.replace("%time%", args[1]));
                 return;
             }
 
             try {
-                duration = parse_time(args[2]);
+                duration = parseTime(args[2]);
             } catch (NumberFormatException e) {
-                sender.send_message(MESSAGE_INVALID_TIME_FORMAT.replace("%time%", args[2]));
+                sender.sendMessage(MESSAGE_INVALID_TIME_FORMAT.replace("%time%", args[2]));
                 return;
             }
 
@@ -65,7 +65,7 @@ public class ProxyMaintenanceCommand extends ProxyCommand {
             return;
         }
 
-        sender.send_message(
+        sender.sendMessage(
             """
             §7> §3/maintenance §3[ §7cancel§r|§7off §3] §f- Cancel any scheduled/active maintenance
             §7> §3/maintenance §3[ §7status §3] §f- Display info about scheduled/active maintenance

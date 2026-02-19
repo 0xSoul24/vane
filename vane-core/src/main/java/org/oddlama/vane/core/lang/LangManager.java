@@ -22,19 +22,19 @@ import org.oddlama.vane.core.resourcepack.ResourcePackGenerator;
 public class LangManager {
 
     Module<?> module;
-    private List<LangField<?>> lang_fields = new ArrayList<>();
-    LangVersionField field_version;
+    private List<LangField<?>> langFields = new ArrayList<>();
+    LangVersionField fieldVersion;
 
     public LangManager(Module<?> module) {
         this.module = module;
         compile(module, s -> s);
     }
 
-    public long expected_version() {
-        return module.annotation.lang_version();
+    public long expectedVersion() {
+        return module.annotation.langVersion();
     }
 
-    private boolean has_lang_annotation(Field field) {
+    private boolean hasLangAnnotation(Field field) {
         for (var a : field.getAnnotations()) {
             if (a.annotationType().getName().startsWith("org.oddlama.vane.annotation.lang.Lang")) {
                 return true;
@@ -43,14 +43,14 @@ public class LangManager {
         return false;
     }
 
-    private void assert_field_prefix(Field field) {
-        if (!field.getName().startsWith("lang_")) {
-            throw new RuntimeException("Language fields must be prefixed lang_. This is a bug.");
+    private void assertFieldPrefix(Field field) {
+        if (!field.getName().startsWith("lang")) {
+            throw new RuntimeException("Language fields must be prefixed lang. This is a bug.");
         }
     }
 
-    private LangField<?> compile_field(Object owner, Field field, Function<String, String> map_name) {
-        assert_field_prefix(field);
+    private LangField<?> compileField(Object owner, Field field, Function<String, String> mapName) {
+        assertFieldPrefix(field);
 
         // Get the annotation
         Annotation annotation = null;
@@ -68,27 +68,27 @@ public class LangManager {
 
         // Return a correct wrapper object
         if (atype.equals(LangMessage.class)) {
-            return new LangMessageField(module, owner, field, map_name, (LangMessage) annotation);
+            return new LangMessageField(module, owner, field, mapName, (LangMessage) annotation);
         } else if (atype.equals(LangMessageArray.class)) {
-            return new LangMessageArrayField(module, owner, field, map_name, (LangMessageArray) annotation);
+            return new LangMessageArrayField(module, owner, field, mapName, (LangMessageArray) annotation);
         } else if (atype.equals(LangVersion.class)) {
             if (owner != module) {
                 throw new RuntimeException("@LangVersion can only be used inside the main module. This is a bug.");
             }
-            if (field_version != null) {
+            if (fieldVersion != null) {
                 throw new RuntimeException(
                     "There must be exactly one @LangVersion field! (found multiple). This is a bug."
                 );
             }
-            return field_version = new LangVersionField(module, owner, field, map_name, (LangVersion) annotation);
+            return fieldVersion = new LangVersionField(module, owner, field, mapName, (LangVersion) annotation);
         } else {
             throw new RuntimeException("Missing LangField handler for @" + atype.getName() + ". This is a bug.");
         }
     }
 
-    private boolean verify_version(File file, long version) {
-        if (version != expected_version()) {
-            module.log.severe(file.getName() + ": expected version " + expected_version() + ", but got " + version);
+    private boolean verifyVersion(File file, long version) {
+        if (version != expectedVersion()) {
+            module.log.severe(file.getName() + ": expected version " + expectedVersion() + ", but got " + version);
 
             if (version == 0) {
                 module.log.severe("Something went wrong while generating or loading the configuration.");
@@ -96,7 +96,7 @@ public class LangManager {
                 module.log.severe(
                     "system permission issue, please report this to https://github.com/oddlama/vane/issues"
                 );
-            } else if (version < expected_version()) {
+            } else if (version < expectedVersion()) {
                 module.log.severe("This language file is for an older version of " + module.getName() + ".");
                 module.log.severe("Please update your file or use an officially supported language file.");
             } else {
@@ -112,53 +112,53 @@ public class LangManager {
     }
 
     @SuppressWarnings("unchecked")
-    public void compile(Object owner, Function<String, String> map_name) {
+    public void compile(Object owner, Function<String, String> mapName) {
         // Compile all annotated fields
-        lang_fields.addAll(
+        langFields.addAll(
             getAllFields(owner.getClass())
                 .stream()
-                .filter(this::has_lang_annotation)
-                .map(f -> compile_field(owner, f, map_name))
+                .filter(this::hasLangAnnotation)
+                .map(f -> compileField(owner, f, mapName))
                 .toList()
         );
 
-        if (owner == module && field_version == null) {
+        if (owner == module && fieldVersion == null) {
             throw new RuntimeException("There must be exactly one @LangVersion field! (found none). This is a bug.");
         }
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T get_field(String name) {
-        var field = lang_fields
+    public <T> T getField(String name) {
+        var field = langFields
             .stream()
-            .filter(f -> f.get_name().equals(name))
+            .filter(f -> f.getName().equals(name))
             .findFirst()
-            .orElseThrow(() -> new RuntimeException("Missing lang field lang_" + name));
+            .orElseThrow(() -> new RuntimeException("Missing lang field lang" + name));
 
         try {
             return (T) field;
         } catch (ClassCastException e) {
-            throw new RuntimeException("Invalid lang field type for lang_" + name, e);
+            throw new RuntimeException("Invalid lang field type for lang" + name, e);
         }
     }
 
     public boolean reload(File file) {
         // Load file
-        final var yaml = YamlConfiguration.loadConfiguration(file);
+        var yaml = YamlConfiguration.loadConfiguration(file);
 
         // Check version
-        final var version = yaml.getLong("version", -1);
-        if (!verify_version(file, version)) {
+        final var version = yaml.getLong("Version", -1);
+        if (!verifyVersion(file, version)) {
             return false;
         }
 
         try {
             // Check languration for errors
-            for (var f : lang_fields) {
-                f.check_loadable(yaml);
+            for (var f : langFields) {
+                f.checkLoadable(yaml);
             }
 
-            for (var f : lang_fields) {
+            for (var f : langFields) {
                 f.load(module.namespace(), yaml);
             }
         } catch (YamlLoadException e) {
@@ -168,15 +168,15 @@ public class LangManager {
         return true;
     }
 
-    public void generate_resource_pack(final ResourcePackGenerator pack, YamlConfiguration yaml, File lang_file) {
-        var lang_code = yaml.getString("resource_pack_lang_code");
-        if (lang_code == null) {
-            throw new RuntimeException("Missing yaml key: resource_pack_lang_code");
+    public void generateResourcePack(final ResourcePackGenerator pack, YamlConfiguration yaml, File langFile) {
+        var langCode = yaml.getString("ResourcePackLangCode");
+        if (langCode == null) {
+            throw new RuntimeException("Missing yaml key: ResourcePackLangCode");
         }
         var errors = new LinkedList<YamlLoadException.Lang>();
-        for (var f : lang_fields) {
+        for (var f : langFields) {
             try {
-                f.add_translations(pack, yaml, lang_code);
+                f.addTranslations(pack, yaml, langCode);
             } catch (YamlLoadException.Lang e) {
                 errors.add(e);
             } catch (YamlLoadException e) {
@@ -184,16 +184,16 @@ public class LangManager {
             }
         }
         if (errors.size() > 0) {
-            final String errored_lang_nodes = errors
+            final String erroredLangNodes = errors
                 .stream()
                 .map(Throwable::getMessage)
                 .collect(Collectors.joining("\n\t\t"));
             module.log.log(
                 Level.SEVERE,
                 "The following errors were identified while adding translations from \n\t" +
-                lang_file.getAbsolutePath() +
+                langFile.getAbsolutePath() +
                 " \n\t\t" +
-                errored_lang_nodes
+                erroredLangNodes
             );
         }
     }

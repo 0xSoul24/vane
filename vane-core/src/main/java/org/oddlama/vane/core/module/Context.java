@@ -12,7 +12,7 @@ import org.oddlama.vane.core.resourcepack.ResourcePackGenerator;
  * variables with a common namespace.
  */
 public interface Context<T extends Module<T>> {
-    public static String append_yaml_path(String ns1, String ns2, String separator) {
+    public static String appendYamlPath(String ns1, String ns2, String separator) {
         if (ns1.isEmpty()) {
             return ns2;
         }
@@ -39,34 +39,34 @@ public interface Context<T extends Module<T>> {
         return new ModuleGroup<T>(this, group, description);
     }
 
-    public default ModuleGroup<T> group(String group, String description, boolean default_enabled) {
+    public default ModuleGroup<T> group(String group, String description, boolean defaultEnabled) {
         final var g = new ModuleGroup<T>(this, group, description);
-        g.config_enabled_def = default_enabled;
+        g.configEnabledDef = defaultEnabled;
         return g;
     }
 
     /** create a sub-context group */
-    public default ModuleGroup<T> group_default_disabled(String group, String description) {
+    public default ModuleGroup<T> groupDefaultDisabled(String group, String description) {
         final var g = group(group, description);
-        g.config_enabled_def = false;
+        g.configEnabledDef = false;
         return g;
     }
 
     /**
      * Compile the given component (processes lang and config definitions) and registers it for
-     * on_enable, on_disable and on_config_change events.
+     * onModuleEnable, onModuleDisable and onConfigChange events.
      */
     public void compile(ModuleComponent<T> component);
 
-    public void add_child(Context<T> subcontext);
+    public void addChild(Context<T> subcontext);
 
-    public Context<T> get_context();
+    public Context<T> getContext();
 
-    public T get_module();
+    public T getModule();
 
-    public String yaml_path();
+    public String yamlPath();
 
-    public String variable_yaml_path(String variable);
+    public String variableYamlPath(String variable);
 
     public boolean enabled();
 
@@ -74,44 +74,44 @@ public interface Context<T extends Module<T>> {
 
     public void disable();
 
-    public void config_change();
+    public void configChange();
 
-    public void generate_resource_pack(final ResourcePackGenerator pack) throws IOException;
+    public void generateResourcePack(final ResourcePackGenerator pack) throws IOException;
 
-    public void for_each_module_component(final Consumer1<ModuleComponent<?>> f);
+    public void forEachModuleComponent(final Consumer1<ModuleComponent<?>> f);
 
-    public default void on_enable() {}
+    public default void onModuleEnable() {}
 
-    public default void on_disable() {}
+    public default void onModuleDisable() {}
 
-    public default void on_config_change() {}
+    public default void onConfigChange() {}
 
-    public default void on_generate_resource_pack(final ResourcePackGenerator pack) throws IOException {}
+    public default void onGenerateResourcePack(final ResourcePackGenerator pack) throws IOException {}
 
-    public default BukkitTask schedule_task_timer(Runnable task, long delay_ticks, long period_ticks) {
-        return get_module().getServer().getScheduler().runTaskTimer(get_module(), task, delay_ticks, period_ticks);
+    public default BukkitTask scheduleTaskTimer(Runnable task, long delayTicks, long periodTicks) {
+        return getModule().getServer().getScheduler().runTaskTimer(getModule(), task, delayTicks, periodTicks);
     }
 
-    public default BukkitTask schedule_task(Runnable task, long delay_ticks) {
-        return get_module().getServer().getScheduler().runTaskLater(get_module(), task, delay_ticks);
+    public default BukkitTask scheduleTask(Runnable task, long delayTicks) {
+        return getModule().getServer().getScheduler().runTaskLater(getModule(), task, delayTicks);
     }
 
-    public default BukkitTask schedule_next_tick(Runnable task) {
-        return get_module().getServer().getScheduler().runTask(get_module(), task);
+    public default BukkitTask scheduleNextTick(Runnable task) {
+        return getModule().getServer().getScheduler().runTask(getModule(), task);
     }
 
-    public default void add_storage_migration_to(long to, String name, Consumer<JSONObject> migrator) {
-        get_module().persistent_storage_manager.add_migration_to(to, name, migrator);
+    public default void addStorageMigrationTo(long to, String name, Consumer<JSONObject> migrator) {
+        getModule().persistentStorageManager.addMigrationTo(to, name, migrator);
     }
 
-    public default String storage_path_of(String field) {
-        if (!field.startsWith("storage_")) {
-            throw new RuntimeException("Configuration fields must be prefixed storage_. This is a bug.");
+    public default String storagePathOf(String field) {
+        if (!field.startsWith("storage")) {
+            throw new RuntimeException("Configuration fields must be prefixed storage. This is a bug.");
         }
-        return variable_yaml_path(field.substring("storage_".length()));
+        return variableYamlPath(field.substring("storage".length()));
     }
 
-    public default void mark_persistent_storage_dirty() {
-        get_module().mark_persistent_storage_dirty();
+    public default void markPersistentStorageDirty() {
+        getModule().markPersistentStorageDirty();
     }
 }

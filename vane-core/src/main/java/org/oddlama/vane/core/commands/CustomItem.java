@@ -22,11 +22,11 @@ public class CustomItem extends Command<Core> {
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
+    public LiteralArgumentBuilder<CommandSourceStack> getCommandBase() {
         // Help
-        return super.get_command_base()
+        return super.getCommandBase()
             .executes(stack -> {
-                print_help2(stack);
+                printHelp2(stack);
                 return SINGLE_SUCCESS;
             })
             .then(help())
@@ -35,19 +35,19 @@ public class CustomItem extends Command<Core> {
                 literal("give")
                     .requires(stack -> stack.getSender() instanceof Player)
                     .then(
-                        argument("custom_item", CustomItemArgumentType.customItem(get_module())).executes(ctx -> {
+                        argument("custom_item", CustomItemArgumentType.customItem(getModule())).executes(ctx -> {
                             org.oddlama.vane.core.item.api.CustomItem item = ctx.getArgument(
                                 "custom_item",
                                 org.oddlama.vane.core.item.api.CustomItem.class
                             );
-                            give_custom_item((Player) ctx.getSource().getSender(), item);
+                            giveCustomItem((Player) ctx.getSource().getSender(), item);
                             return SINGLE_SUCCESS;
                         })
                     )
             );
     }
 
-    private void give_custom_item(final Player player, final org.oddlama.vane.core.item.api.CustomItem custom_item) {
-        PlayerUtil.give_item(player, custom_item.newStack());
+    private void giveCustomItem(final Player player, final org.oddlama.vane.core.item.api.CustomItem customItem) {
+        PlayerUtil.giveItem(player, customItem.newStack());
     }
 }

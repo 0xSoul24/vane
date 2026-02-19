@@ -17,7 +17,7 @@ public class CookingRecipeDefinition extends RecipeDefinition {
     private String input = null;
     private String result = null;
     private float experience = 0.0f;
-    private int cooking_time = 10;
+    private int cookingTime = 10;
     private String type;
 
     public CookingRecipeDefinition(String name, String type) {
@@ -53,64 +53,68 @@ public class CookingRecipeDefinition extends RecipeDefinition {
     }
 
     @Override
-    public Object to_dict() {
+    public Object toDict() {
         final HashMap<String, Object> dict = new HashMap<>();
-        dict.put("cooking_time", this.cooking_time);
-        dict.put("experience", this.experience);
-        dict.put("input", this.input);
-        dict.put("result", this.result);
-        dict.put("type", type);
+        dict.put("CookingTime", this.cookingTime);
+        dict.put("Experience", this.experience);
+        dict.put("Input", this.input);
+        dict.put("Result", this.result);
+        dict.put("Type", type);
         return dict;
     }
 
     @Override
-    public RecipeDefinition from_dict(Object dict) {
+    public RecipeDefinition fromDict(Object dict) {
         if (!(dict instanceof Map<?, ?>)) {
             throw new IllegalArgumentException(
                 "Invalid " + type + " recipe dictionary: Argument must be a Map<String, Object>!"
             );
         }
-        final var dict_map = (Map<?, ?>) dict;
-        if (dict_map.get("input") instanceof String input) {
+        final var dictMap = (Map<?, ?>) dict;
+        final Object inputObj = dictMap.containsKey("Input") ? dictMap.get("Input") : dictMap.get("input");
+        if (inputObj instanceof String input) {
             this.input = input;
         } else {
             throw new IllegalArgumentException("Invalid " + type + " recipe dictionary: input must be a string");
         }
 
-        if (dict_map.get("result") instanceof String result) {
+        final Object resultObj = dictMap.containsKey("Result") ? dictMap.get("Result") : dictMap.get("result");
+        if (resultObj instanceof String result) {
             this.result = result;
         } else {
             throw new IllegalArgumentException("Invalid " + type + " recipe dictionary: result must be a string");
         }
 
-        if (dict_map.get("experience") instanceof Float experience) {
+        final Object experienceObj = dictMap.containsKey("Experience") ? dictMap.get("Experience") : dictMap.get("experience");
+        if (experienceObj instanceof Float experience) {
             this.experience = experience;
         } else {
             throw new IllegalArgumentException("Invalid " + type + " recipe dictionary: experience must be a float");
         }
 
-        if (dict_map.get("cooking_time") instanceof Integer cooking_time) {
-            this.cooking_time = cooking_time;
+        final Object cookingTimeObj = dictMap.containsKey("CookingTime") ? dictMap.get("CookingTime") : dictMap.get("cookingTime");
+        if (cookingTimeObj instanceof Integer cookingTime) {
+            this.cookingTime = cookingTime;
         } else {
-            throw new IllegalArgumentException("Invalid " + type + " recipe dictionary: cooking_time must be a int");
+            throw new IllegalArgumentException("Invalid " + type + " recipe dictionary: cookingTime must be a int");
         }
 
         return this;
     }
 
     @Override
-    public Recipe to_recipe(NamespacedKey base_key) {
-        final var out = ItemUtil.itemstack_from_string(this.result).getLeft();
-        final var in = RecipeDefinition.recipe_choice(input);
+    public Recipe toRecipe(NamespacedKey baseKey) {
+        final var out = ItemUtil.itemstackFromString(this.result).getLeft();
+        final var in = RecipeDefinition.recipeChoice(input);
         switch (this.type) {
             case "blasting":
-                return new BlastingRecipe(key(base_key), out, in, experience, cooking_time);
+                return new BlastingRecipe(key(baseKey), out, in, experience, cookingTime);
             case "furnace":
-                return new FurnaceRecipe(key(base_key), out, in, experience, cooking_time);
+                return new FurnaceRecipe(key(baseKey), out, in, experience, cookingTime);
             case "campfire":
-                return new CampfireRecipe(key(base_key), out, in, experience, cooking_time);
+                return new CampfireRecipe(key(baseKey), out, in, experience, cookingTime);
             case "smoking":
-                return new SmokingRecipe(key(base_key), out, in, experience, cooking_time);
+                return new SmokingRecipe(key(baseKey), out, in, experience, cookingTime);
             default:
                 throw new IllegalArgumentException("Invalid cooking recipe: Unknown type '" + this.type + "'");
         }

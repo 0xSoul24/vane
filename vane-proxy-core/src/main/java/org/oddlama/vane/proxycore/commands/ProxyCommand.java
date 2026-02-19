@@ -16,7 +16,7 @@ public abstract class ProxyCommand {
     public abstract void execute(ProxyCommandSender sender, String[] args);
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean has_permission(UUID uuid) {
-        return this.permission == null || plugin.get_proxy().has_permission(uuid, this.permission);
+    public boolean hasPermission(UUID uuid) {
+        return this.permission == null || plugin.getProxy().hasPermission(uuid, this.permission);
     }
 }

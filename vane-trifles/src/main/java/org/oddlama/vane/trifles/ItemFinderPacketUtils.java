@@ -32,55 +32,55 @@ public class ItemFinderPacketUtils {
     private final static float CONTAINER_DEFAULT_TRANSLATION = (1 - CONTAINER_DEFAULT_SCALE) * 0.5f;
     private final static float CHEST_DEFAULT_SCALE = 0.85f;
 
-    static void indicate_entity_match(@NotNull Trifles module, @NotNull Player player, @NotNull Entity entity) {
+    static void indicateEntityMatch(@NotNull Trifles module, @NotNull Player player, @NotNull Entity entity) {
         // Get base entity data
-        var base_entity_data = SpigotConversionUtil.getEntityMetadata(entity);
+        var baseEntityData = SpigotConversionUtil.getEntityMetadata(entity);
 
         // Generate metadata with glowing turned on
-        var glowing_entity_data = new ArrayList<>(base_entity_data);
-        var glow_data = new EntityData<>(0, EntityDataTypes.BYTE, (byte) 0x40);
-        glowing_entity_data.add(glow_data);
+        var glowingEntityData = new ArrayList<>(baseEntityData);
+        var glowData = new EntityData<>(0, EntityDataTypes.BYTE, (byte) 0x40);
+        glowingEntityData.add(glowData);
 
         // Create packet and set glowing metadata
-        var glowing_packet = new WrapperPlayServerEntityMetadata(
+        var glowingPacket = new WrapperPlayServerEntityMetadata(
                 entity.getEntityId(),
-                glowing_entity_data
+                glowingEntityData
         );
 
         // Send packet
-        PacketEvents.getAPI().getPlayerManager().sendPacket(player, glowing_packet);
+        PacketEvents.getAPI().getPlayerManager().sendPacket(player, glowingPacket);
 
         // Schedule repeating packet b/c if the player looks away from entities, they will stop glowing
-        var repeating_packet_task = new BukkitRunnable() {
+        var repeatingPacketTask = new BukkitRunnable() {
             @Override
             public void run() {
                 if (!player.isOnline()) {
                     this.cancel();
                 }
 
-                PacketEvents.getAPI().getPlayerManager().sendPacket(player, glowing_packet);
+                PacketEvents.getAPI().getPlayerManager().sendPacket(player, glowingPacket);
             }
         }.runTaskTimer(module, 1, 1);
 
         // Create non-glowing packet
-        var non_glowing_entity_data = new ArrayList<>(base_entity_data);
-        WrapperPlayServerEntityMetadata non_glowing_packet = new WrapperPlayServerEntityMetadata(
+        var nonGlowingEntityData = new ArrayList<>(baseEntityData);
+        WrapperPlayServerEntityMetadata nonGlowingPacket = new WrapperPlayServerEntityMetadata(
                 entity.getEntityId(),
-                non_glowing_entity_data
+                nonGlowingEntityData
         );
 
         // Run task later to send packet to stop glowing
-        new ResetGlowingPacketTask(player, non_glowing_packet, repeating_packet_task).runTaskLater(module, GLOW_DURATION);
+        new ResetGlowingPacketTask(player, nonGlowingPacket, repeatingPacketTask).runTaskLater(module, GLOW_DURATION);
     }
 
-    static void indicate_container_match(@NotNull Trifles module, @NotNull Player player, @NotNull Container container) {
-        int display_id = SpigotReflectionUtil.generateEntityId();
+    static void indicateContainerMatch(@NotNull Trifles module, @NotNull Player player, @NotNull Container container) {
+        int displayId = SpigotReflectionUtil.generateEntityId();
         // Check for Shulkers so we can handle them differently
-        var entity_type = (container instanceof ShulkerBox) ? EntityTypes.SHULKER : EntityTypes.BLOCK_DISPLAY;
-        var display_packet = new WrapperPlayServerSpawnEntity(
-                display_id,
+        var entityType = (container instanceof ShulkerBox) ? EntityTypes.SHULKER : EntityTypes.BLOCK_DISPLAY;
+        var displayPacket = new WrapperPlayServerSpawnEntity(
+                displayId,
                 UUID.randomUUID(),
-                entity_type,
+                entityType,
                 SpigotConversionUtil.fromBukkitLocation(container.getLocation()),
                 container.getLocation().getYaw(),
                 0,
@@ -88,60 +88,60 @@ public class ItemFinderPacketUtils {
         );
 
         // Metadata
-        var display_metadata = new ArrayList<EntityData<?>>();
-        display_metadata.add(new EntityData<>(0, EntityDataTypes.BYTE, (byte) (0x20 | 0x40)));
-        if (entity_type == EntityTypes.BLOCK_DISPLAY) {
-            display_metadata.add(new EntityData<>(11, EntityDataTypes.VECTOR3F, new Vector3f(CONTAINER_DEFAULT_TRANSLATION, CONTAINER_DEFAULT_TRANSLATION, CONTAINER_DEFAULT_TRANSLATION)));
-            display_metadata.add(new EntityData<>(12, EntityDataTypes.VECTOR3F, new Vector3f(CONTAINER_DEFAULT_SCALE, CONTAINER_DEFAULT_SCALE, CONTAINER_DEFAULT_SCALE)));
-            display_metadata.add(new EntityData<>(23, EntityDataTypes.BLOCK_STATE, SpigotConversionUtil.fromBukkitBlockData(container.getBlockData()).getGlobalId()));
+        var displayMetadata = new ArrayList<EntityData<?>>();
+        displayMetadata.add(new EntityData<>(0, EntityDataTypes.BYTE, (byte) (0x20 | 0x40)));
+        if (entityType == EntityTypes.BLOCK_DISPLAY) {
+            displayMetadata.add(new EntityData<>(11, EntityDataTypes.VECTOR3F, new Vector3f(CONTAINER_DEFAULT_TRANSLATION, CONTAINER_DEFAULT_TRANSLATION, CONTAINER_DEFAULT_TRANSLATION)));
+            displayMetadata.add(new EntityData<>(12, EntityDataTypes.VECTOR3F, new Vector3f(CONTAINER_DEFAULT_SCALE, CONTAINER_DEFAULT_SCALE, CONTAINER_DEFAULT_SCALE)));
+            displayMetadata.add(new EntityData<>(23, EntityDataTypes.BLOCK_STATE, SpigotConversionUtil.fromBukkitBlockData(container.getBlockData()).getGlobalId()));
         }
-        var display_metadata_packet = new WrapperPlayServerEntityMetadata(
-                display_id,
-                display_metadata
+        var displayMetadataPacket = new WrapperPlayServerEntityMetadata(
+                displayId,
+                displayMetadata
         );
 
         // Send packets
-        PacketEvents.getAPI().getPlayerManager().sendPacket(player, display_packet);
-        PacketEvents.getAPI().getPlayerManager().sendPacket(player, display_metadata_packet);
+        PacketEvents.getAPI().getPlayerManager().sendPacket(player, displayPacket);
+        PacketEvents.getAPI().getPlayerManager().sendPacket(player, displayMetadataPacket);
 
         // Shulker specific scale attribute packet
-        if (entity_type == EntityTypes.SHULKER) {
-            var scale_attribute = Attributes.SCALE;
+        if (entityType == EntityTypes.SHULKER) {
+            var scaleAttribute = Attributes.SCALE;
 
             // Create scale attribute modifier
-            var attribute_modifier = new WrapperPlayServerUpdateAttributes.PropertyModifier(
+            var attributeModifier = new WrapperPlayServerUpdateAttributes.PropertyModifier(
                     UUID.randomUUID(),
                     CONTAINER_DEFAULT_SCALE - 1,
                     WrapperPlayServerUpdateAttributes.PropertyModifier.Operation.ADDITION
             );
             // Create scale attribute base property
-            var attribute_property = new WrapperPlayServerUpdateAttributes.Property(
-                    scale_attribute,
+            var attributeProperty = new WrapperPlayServerUpdateAttributes.Property(
+                    scaleAttribute,
                     1.0,
-                    Collections.singletonList(attribute_modifier)
+                    Collections.singletonList(attributeModifier)
             );
             // Create update attribute packet
-            var attribute_packet = new WrapperPlayServerUpdateAttributes(
-                    display_id,
-                    Collections.singletonList(attribute_property)
+            var attributePacket = new WrapperPlayServerUpdateAttributes(
+                    displayId,
+                    Collections.singletonList(attributeProperty)
             );
 
             // Send packet
-            PacketEvents.getAPI().getPlayerManager().sendPacket(player, attribute_packet);
+            PacketEvents.getAPI().getPlayerManager().sendPacket(player, attributePacket);
         }
 
         // Construct destroy entity packet
-        var destroy_entity_packet = new WrapperPlayServerDestroyEntities(display_id);
+        var destroyEntityPacket = new WrapperPlayServerDestroyEntities(displayId);
 
         // Run task later to remove entity
-        new ResetGlowingPacketTask(player, destroy_entity_packet, null).runTaskLater(module, GLOW_DURATION);
+        new ResetGlowingPacketTask(player, destroyEntityPacket, null).runTaskLater(module, GLOW_DURATION);
     }
 
     // Special function for chests
-    static void indicate_chest_match(@NotNull Trifles module, @NotNull Player player, @NotNull Container container) {
-        int display_id = SpigotReflectionUtil.generateEntityId();
-        var display_packet = new WrapperPlayServerSpawnEntity(
-                display_id,
+    static void indicateChestMatch(@NotNull Trifles module, @NotNull Player player, @NotNull Container container) {
+        int displayId = SpigotReflectionUtil.generateEntityId();
+        var displayPacket = new WrapperPlayServerSpawnEntity(
+                displayId,
                 UUID.randomUUID(),
                 EntityTypes.SHULKER,
                 SpigotConversionUtil.fromBukkitLocation(container.getLocation()),
@@ -151,57 +151,57 @@ public class ItemFinderPacketUtils {
         );
 
         // Metadata
-        var display_metadata = new ArrayList<EntityData<?>>();
-        display_metadata.add(new EntityData<>(0, EntityDataTypes.BYTE, (byte) (0x20 | 0x40)));
-        var display_metadata_packet = new WrapperPlayServerEntityMetadata(
-                display_id,
-                display_metadata
+        var displayMetadata = new ArrayList<EntityData<?>>();
+        displayMetadata.add(new EntityData<>(0, EntityDataTypes.BYTE, (byte) (0x20 | 0x40)));
+        var displayMetadataPacket = new WrapperPlayServerEntityMetadata(
+                displayId,
+                displayMetadata
         );
 
         // Send packets
-        PacketEvents.getAPI().getPlayerManager().sendPacket(player, display_packet);
-        PacketEvents.getAPI().getPlayerManager().sendPacket(player, display_metadata_packet);
+        PacketEvents.getAPI().getPlayerManager().sendPacket(player, displayPacket);
+        PacketEvents.getAPI().getPlayerManager().sendPacket(player, displayMetadataPacket);
 
         // Shulker specific scale attribute packet
-        var scale_attribute = Attributes.SCALE;
+        var scaleAttribute = Attributes.SCALE;
 
         // Create scale attribute modifier
-        var attribute_modifier = new WrapperPlayServerUpdateAttributes.PropertyModifier(
+        var attributeModifier = new WrapperPlayServerUpdateAttributes.PropertyModifier(
                 UUID.randomUUID(),
                 CHEST_DEFAULT_SCALE - 1,
                 WrapperPlayServerUpdateAttributes.PropertyModifier.Operation.ADDITION
         );
         // Create scale attribute base property
-        var attribute_property = new WrapperPlayServerUpdateAttributes.Property(
-                scale_attribute,
+        var attributeProperty = new WrapperPlayServerUpdateAttributes.Property(
+                scaleAttribute,
                 1.0,
-                Collections.singletonList(attribute_modifier)
+                Collections.singletonList(attributeModifier)
         );
         // Create update attribute packet
-        var attribute_packet = new WrapperPlayServerUpdateAttributes(
-                display_id,
-                Collections.singletonList(attribute_property)
+        var attributePacket = new WrapperPlayServerUpdateAttributes(
+                displayId,
+                Collections.singletonList(attributeProperty)
         );
 
         // Send packet
-        PacketEvents.getAPI().getPlayerManager().sendPacket(player, attribute_packet);
+        PacketEvents.getAPI().getPlayerManager().sendPacket(player, attributePacket);
 
         // Construct destroy entity packet
-        var destroy_entity_packet = new WrapperPlayServerDestroyEntities(display_id);
+        var destroyEntityPacket = new WrapperPlayServerDestroyEntities(displayId);
 
         // Run task later to remove entity
-        new ResetGlowingPacketTask(player, destroy_entity_packet, null).runTaskLater(module, GLOW_DURATION);
+        new ResetGlowingPacketTask(player, destroyEntityPacket, null).runTaskLater(module, GLOW_DURATION);
     }
 
     private static class ResetGlowingPacketTask extends BukkitRunnable {
         private final Player player;
         private final PacketWrapper<?> packet;
-        private final BukkitTask optional_repeating_packet_task;
+        private final BukkitTask optionalRepeatingPacketTask;
 
-        public ResetGlowingPacketTask(@NotNull Player player, @NotNull PacketWrapper<?> packet, @Nullable BukkitTask optional_repeating_packet_task) {
+        public ResetGlowingPacketTask(@NotNull Player player, @NotNull PacketWrapper<?> packet, @Nullable BukkitTask optionalRepeatingPacketTask) {
             this.player = player;
             this.packet = packet;
-            this.optional_repeating_packet_task = optional_repeating_packet_task;
+            this.optionalRepeatingPacketTask = optionalRepeatingPacketTask;
         }
 
         @Override
@@ -210,8 +210,8 @@ public class ItemFinderPacketUtils {
                 this.cancel();
             }
 
-            if (optional_repeating_packet_task != null && !optional_repeating_packet_task.isCancelled()) {
-                optional_repeating_packet_task.cancel();
+            if (optionalRepeatingPacketTask != null && !optionalRepeatingPacketTask.isCancelled()) {
+                optionalRepeatingPacketTask.cancel();
             }
 
             PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);

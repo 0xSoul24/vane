@@ -20,17 +20,17 @@ public class Region extends Command<Regions> {
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
-        return super.get_command_base()
+    public LiteralArgumentBuilder<CommandSourceStack> getCommandBase() {
+        return super.getCommandBase()
             .then(help())
             .requires(ctx -> ctx.getSender() instanceof Player)
             .executes(ctx -> {
-                open_menu((Player) ctx.getSource().getSender());
+                openMenu((Player) ctx.getSource().getSender());
                 return SINGLE_SUCCESS;
             });
     }
 
-    private void open_menu(Player player) {
-        get_module().menus.main_menu.create(player).open(player);
+    private void openMenu(Player player) {
+        getModule().menus.mainMenu.create(player).open(player);
     }
 }

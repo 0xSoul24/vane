@@ -12,91 +12,91 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 5
+Version: 5
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'fr_fr'
+ResourcePackLangCode: 'fr_fr'
 
-command_not_a_player: "§cerreur:§6 cette commande doit être exécutée par un·e joueur·se !"
-command_permission_denied: "§cerreur:§6 permission refusée!"
-invalid_time_format: "§cerreur:§6 format d'heure invalide: %1$s"
-break_loot_block_prevented: "§6Ce bloc a une table de butin, et sera automatiquement rempli à nouveau après quelque temps. Si vous tenez vraiment à briser ce bloc, attendez 5 secondes et tentez de le briser à nouveau."
+CommandNotAPlayer: "§cerreur:§6 cette commande doit être exécutée par un·e joueur·se !"
+CommandPermissionDenied: "§cerreur:§6 permission refusée!"
+InvalidTimeFormat: "§cerreur:§6 format d'heure invalide: %1$s"
+BreakLootBlockPrevented: "§6Ce bloc a une table de butin, et sera automatiquement rempli à nouveau après quelque temps. Si vous tenez vraiment à briser ce bloc, attendez 5 secondes et tentez de le briser à nouveau."
 
-command_customitem:
-  usage: "%1$s §agive §7<§bobjet§7>"
-  description: "Donne un objet personnalisé à le·a joueur·se."
-  help: "§agive §7<§bobjet§7>:§r Donne un objet personnalisé à le·a joueur·se."
+CommandCustomitem:
+  Usage: "%1$s §agive §7<§bobjet§7>"
+  Description: "Donne un objet personnalisé à le·a joueur·se."
+  Help: "§agive §7<§bobjet§7>:§r Donne un objet personnalisé à le·a joueur·se."
 
-command_enchant:
-  level_too_low: "§cerreur:§6 le niveau %1$s§6 est trop bas, un minimum de %2$s§6 est requis"
-  level_too_high: "§cerreur:§6 le niveau d'enchantement %1$s§6 est trop élevé, un maximum de %2$s§6 est autorisé"
-  invalid_enchantment: "§cerreur: %1$s§6 ne peux pas être appliqué sur %2$s"
-  usage: "%1$s §benchantment §7[§bniveau§7]"
-  description: "Enchante l'objet que vous tenez dans votre main."
-  help: "Enchante l'objet que vous tenez dans votre main."
+CommandEnchant:
+  LevelTooLow: "§cerreur:§6 le niveau %1$s§6 est trop bas, un minimum de %2$s§6 est requis"
+  LevelTooHigh: "§cerreur:§6 le niveau d'enchantement %1$s§6 est trop élevé, un maximum de %2$s§6 est autorisé"
+  InvalidEnchantment: "§cerreur: %1$s§6 ne peux pas être appliqué sur %2$s"
+  Usage: "%1$s §benchantment §7[§bniveau§7]"
+  Description: "Enchante l'objet que vous tenez dans votre main."
+  Help: "Enchante l'objet que vous tenez dans votre main."
 
-command_vane:
-  reload_success: "%1$s§7: §arechargé avec succès"
-  reload_fail: "%1$s§7: §céchec du rechargement"
-  resource_pack_generate_success: "§aPack de ressources généré avec succès: %1$s"
-  resource_pack_generate_fail: "§cUne erreur est survenue pendant la génération du pack de ressources"
-  usage: "%1$s §7<§areload§7|§agenerate_resource_pack§7>"
-  description: "Gère les plugins de vane."
-  help: "§areload §7[§bmodule§7]:§r Recharge tous les modules, ou seulement le module spécifié.\n\
+CommandVane:
+  ReloadSuccess: "%1$s§7: §arechargé avec succès"
+  ReloadFail: "%1$s§7: §céchec du rechargement"
+  ResourcePackGenerateSuccess: "§aPack de ressources généré avec succès: %1$s"
+  ResourcePackGenerateFail: "§cUne erreur est survenue pendant la génération du pack de ressources"
+  Usage: "%1$s §7<§areload§7|§agenerate_resource_pack§7>"
+  Description: "Gère les plugins de vane."
+  Help: "§areload §7[§bmodule§7]:§r Recharge tous les modules, ou seulement le module spécifié.\n\
     §agenerate_resource_pack§7:§r génère le pack de ressources de vane."
 
-resource_pack:
-  pack_required: "§eCe pack de ressources personnalisé requis est utilisé pour la localisation et les textures d'objets personnalisés."
-  pack_suggested: "§eCe pack de ressources personnalisé facultatif est utilisé pour la localisation et les textures d'objets personnalisés."
+ResourcePack:
+  PackRequired: "§eCe pack de ressources personnalisé requis est utilisé pour la localisation et les textures d'objets personnalisés."
+  PackSuggested: "§eCe pack de ressources personnalisé facultatif est utilisé pour la localisation et les textures d'objets personnalisés."
 
-menus:
-  head_selector:
-    title: "%1$s §8§lTêtes"
-    filter_title: "§8§lFiltrer la liste de Têtes"
-    select_head:
-      name: "%1$s"
-      lore:
+Menus:
+  HeadSelector:
+    Title: "%1$s §8§lTêtes"
+    FilterTitle: "§8§lFiltrer la liste de Têtes"
+    SelectHead:
+      Name: "%1$s"
+      Lore:
         - ""
         - "Catégorie: %2$s"
         - "§7Mots-clés: %3$s"
 
-  item_selector:
-    accept:
-      name: "§a§lAccepter"
-      lore: ["§bChoisir§7 l'objet actuellement sélectionné."]
+  ItemSelector:
+    Accept:
+      Name: "§a§lAccepter"
+      Lore: ["§bChoisir§7 l'objet actuellement sélectionné."]
 
-    cancel:
-      name: "§c§lAnnuler"
-      lore: ["§6Annule§7 la sélection."]
+    Cancel:
+      Name: "§c§lAnnuler"
+      Lore: ["§6Annule§7 la sélection."]
 
-    selected:
-      name: "§d§lObjet sélectionné"
-      lore:
+    Selected:
+      Name: "§d§lObjet sélectionné"
+      Lore:
         - ""
         - "Cliquer sur un objet de votre inventaire pour le sélectionner."
         - ""
         - "§bClic gauche§7 pour réinitialiser les changements."
         - "§bClic droit§7 pour tout désélectionner (si possible)."
 
-  generic_selector:
-    page:
-      name: "§bPage %1$s"
-      lore: []
+  GenericSelector:
+    Page:
+      Name: "§bPage %1$s"
+      Lore: []
 
-    current_page:
-      name: "Page actuelle: %1$s §7/ %2$s"
-      lore:
+    CurrentPage:
+      Name: "Page actuelle: %1$s §7/ %2$s"
+      Lore:
         - ""
         - "§b#Objets filtrés: %3$s"
 
-    filter:
-      name: "§d§lFiltre"
-      lore:
+    Filter:
+      Name: "§d§lFiltre"
+      Lore:
         - ""
         - "§bClic gauche§7 pour ouvrir le menu de filtrage."
         - "§bClic droit§7 pour réinitialiser le filtre."
 
-    cancel:
-      name: "§c§lAnnuler"
-      lore: ["§6Annule§7 la sélection."]
+    Cancel:
+      Name: "§c§lAnnuler"
+      Lore: ["§6Annule§7 la sélection."]

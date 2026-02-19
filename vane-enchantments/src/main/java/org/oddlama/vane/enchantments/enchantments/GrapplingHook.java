@@ -20,7 +20,7 @@ import java.util.List;
 
 @VaneEnchantment(
     name = "grappling_hook",
-    max_level = 3,
+    maxLevel = 3,
     rarity = Rarity.UNCOMMON,
     treasure = true
 )
@@ -36,36 +36,36 @@ public class GrapplingHook extends CustomEnchantment<Enchantments> {
         max = 50.0,
         desc = "Ideal grappling distance for maximum grapple strength. Strength increases rapidly before, and falls of slowly after."
     )
-    private double config_ideal_distance;
+    private double configIdealDistance;
 
     @ConfigDoubleList(def = { 1.6, 2.1, 2.7 }, min = 0.0, desc = "Grappling strength for each enchantment level.")
-    private List<Double> config_strength;
+    private List<Double> configStrength;
 
     public GrapplingHook(Context<Enchantments> context) {
         super(context);
     }
 
     @Override
-    public RecipeList default_recipes() {
+    public RecipeList defaultRecipes() {
         return RecipeList.of(
             new ShapedRecipeDefinition("generic")
-                .shape("h", "l", "b")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_knowledge")
-                .set_ingredient('l', Material.LEAD)
-                .set_ingredient('h', Material.TRIPWIRE_HOOK)
+                .shape("H", "L", "B")
+                .setIngredient('B', "vane_enchantments:ancient_tome_of_knowledge")
+                .setIngredient('L', Material.LEAD)
+                .setIngredient('H', Material.TRIPWIRE_HOOK)
                 .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
         );
     }
 
-    private double get_strength(int level) {
-        if (level > 0 && level <= config_strength.size()) {
-            return config_strength.get(level - 1);
+    private double getStrength(int level) {
+        if (level > 0 && level <= configStrength.size()) {
+            return configStrength.get(level - 1);
         }
-        return config_strength.get(0);
+        return configStrength.get(0);
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void on_player_fish_event(final PlayerFishEvent event) {
+    public void onPlayerFishEvent(final PlayerFishEvent event) {
         // Get enchantment level
         final var player = event.getPlayer();
         var item = player.getEquipment().getItemInMainHand();
@@ -85,12 +85,12 @@ public class GrapplingHook extends CustomEnchantment<Enchantments> {
                 // Check if the hook is colliding with blocks, worldborder, or entities
                 // We won't activate the grappling hook if it collides with an entity because the event
                 // would instead be in the CAUGHT_ENTITY state
-                double hook_x = event.getHook().getLocation().getX();
-                double hook_y = event.getHook().getLocation().getY();
-                double hook_z = event.getHook().getLocation().getZ();
+                double hookX = event.getHook().getLocation().getX();
+                double hookY = event.getHook().getLocation().getY();
+                double hookZ = event.getHook().getLocation().getZ();
                 if (!event.getHook().wouldCollideUsing(new BoundingBox(
-                        hook_x - BOUNDING_BOX_RADIUS, hook_y - BOUNDING_BOX_RADIUS, hook_z - BOUNDING_BOX_RADIUS,
-                        hook_x + BOUNDING_BOX_RADIUS, hook_y + BOUNDING_BOX_RADIUS, hook_z + BOUNDING_BOX_RADIUS))
+                        hookX - BOUNDING_BOX_RADIUS, hookY - BOUNDING_BOX_RADIUS, hookZ - BOUNDING_BOX_RADIUS,
+                        hookX + BOUNDING_BOX_RADIUS, hookY + BOUNDING_BOX_RADIUS, hookZ + BOUNDING_BOX_RADIUS))
                 ) { return; }
                 break;
             default:
@@ -99,21 +99,21 @@ public class GrapplingHook extends CustomEnchantment<Enchantments> {
 
         var direction = event.getHook().getLocation().subtract(player.getLocation()).toVector();
         var distance = direction.length();
-        var attenuation = distance / config_ideal_distance;
+        var attenuation = distance / configIdealDistance;
 
         // Reset fall distance
         player.setFallDistance(0.0f);
 
-        var vector_multiplier = get_strength(level) * Math.exp(1.0 - attenuation) * attenuation;
-        var adjusted_vector = direction.normalize().multiply(vector_multiplier).add(CONSTANT_OFFSET);
+        var vectorMultiplier = getStrength(level) * Math.exp(1.0 - attenuation) * attenuation;
+        var adjustedVector = direction.normalize().multiply(vectorMultiplier).add(CONSTANT_OFFSET);
 
         // If the hook is below the player, set the Y component to 0.0 and only add the constant offset.
         // This prevents the player from just sliding against the ground when the hook is below them.
         if (player.getY() - event.getHook().getY() > 0) {
-            adjusted_vector.setY(0.0).add(CONSTANT_OFFSET);
+            adjustedVector.setY(0.0).add(CONSTANT_OFFSET);
         }
 
         // Set player velocity
-        player.setVelocity(player.getVelocity().add(adjusted_vector));
+        player.setVelocity(player.getVelocity().add(adjustedVector));
     }
 }

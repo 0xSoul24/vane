@@ -15,84 +15,84 @@ public class RegionDynmapLayer extends ModuleComponent<Regions> {
     public static final String LAYER_ID = "vane_regions.regions";
 
     @ConfigInt(def = 35, min = 0, desc = "Layer ordering priority.")
-    public int config_layer_priority;
+    public int configLayerPriority;
 
     @ConfigBoolean(def = false, desc = "If the layer should be hidden by default.")
-    public boolean config_layer_hide;
+    public boolean configLayerHide;
 
     @ConfigInt(def = 0xffb422, min = 0, max = 0xffffff, desc = "Area marker fill color (0xRRGGBB).")
-    public int config_fill_color;
+    public int configFillColor;
 
     @ConfigDouble(def = 0.05, min = 0.0, max = 1.0, desc = "Area marker fill opacity.")
-    public double config_fill_opacity;
+    public double configFillOpacity;
 
     @ConfigInt(def = 2, min = 1, desc = "Area marker line weight.")
-    public int config_line_weight;
+    public int configLineWeight;
 
     @ConfigInt(def = 0xffb422, min = 0, max = 0xffffff, desc = "Area marker line color (0xRRGGBB).")
-    public int config_line_color;
+    public int configLineColor;
 
     @ConfigDouble(def = 1.0, min = 0.0, max = 1.0, desc = "Area marker line opacity.")
-    public double config_line_opacity;
+    public double configLineOpacity;
 
     @LangMessage
-    public TranslatedMessage lang_layer_label;
+    public TranslatedMessage langLayerLabel;
 
     @LangMessage
-    public TranslatedMessage lang_marker_label;
+    public TranslatedMessage langMarkerLabel;
 
     private RegionDynmapLayerDelegate delegate = null;
 
     public RegionDynmapLayer(final Context<Regions> context) {
         super(
-            context.group("dynmap", "Enable dynmap integration. Regions will then be shown on a separate dynmap layer.")
+            context.group("Dynmap", "Enable Dynmap integration. Regions will then be shown on a separate Dynmap layer.")
         );
     }
 
-    public void delayed_on_enable() {
-        final var plugin = get_module().getServer().getPluginManager().getPlugin("dynmap");
+    public void delayedOnEnable() {
+        final var plugin = getModule().getServer().getPluginManager().getPlugin("dynmap");
         if (plugin == null) {
             return;
         }
 
         delegate = new RegionDynmapLayerDelegate(this);
-        delegate.on_enable(plugin);
+        delegate.onEnable(plugin);
     }
 
     @Override
-    public void on_enable() {
-        schedule_next_tick(this::delayed_on_enable);
+    public void onEnable() {
+        scheduleNextTick(this::delayedOnEnable);
     }
 
     @Override
-    public void on_disable() {
+    public void onDisable() {
         if (delegate != null) {
-            delegate.on_disable();
+            delegate.onDisable();
             delegate = null;
         }
     }
 
-    public void update_marker(final Region region) {
+    public void updateMarker(final Region region) {
         if (delegate != null) {
-            delegate.update_marker(region);
+            delegate.updateMarker(region);
         }
     }
 
-    public void remove_marker(final UUID region_id) {
+    public void removeMarker(final UUID regionId) {
         if (delegate != null) {
-            delegate.remove_marker(region_id);
+            delegate.removeMarker(regionId);
         }
     }
 
-    public void remove_marker(final String marker_id) {
+    public void removeMarker(final String markerId) {
         if (delegate != null) {
-            delegate.remove_marker(marker_id);
+            delegate.removeMarker(markerId);
         }
     }
 
-    public void update_all_markers() {
+    public void updateAllMarkers() {
         if (delegate != null) {
-            delegate.update_all_markers();
+            delegate.updateAllMarkers();
         }
     }
 }

@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 public @interface VaneEnchantment {
     String name();
 
-    int max_level() default 1;
+    int maxLevel() default 1;
 
     Rarity rarity() default Rarity.COMMON;
 
@@ -20,8 +20,8 @@ public @interface VaneEnchantment {
 
     boolean treasure() default false;
 
-    boolean generate_in_treasure() default false;
+    boolean generateInTreasure() default false;
 
 
-    boolean allow_custom() default false;
+    boolean allowCustom() default false;
 }

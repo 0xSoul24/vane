@@ -13,19 +13,19 @@ import org.jetbrains.annotations.Nullable;
  */
 public class SingleDoor {
 
-    private final Block lower_block; // Must be the lower block
+    private final Block lowerBlock; // Must be the lower block
     private Door lower;
     private Door upper;
 
     /**
      * Assumes valid door location already.
      *
-     * @param lower_block Block of the lower part of the door.
+     * @param lowerBlock Block of the lower part of the door.
      */
-    private SingleDoor(Block lower_block) {
-        this.lower_block = lower_block;
-        this.lower = as_door_state(lower_block);
-        this.upper = as_door_state(lower_block.getRelative(BlockFace.UP));
+    private SingleDoor(Block lowerBlock) {
+        this.lowerBlock = lowerBlock;
+        this.lower = asDoorState(lowerBlock);
+        this.upper = asDoorState(lowerBlock.getRelative(BlockFace.UP));
     }
 
     /**
@@ -37,16 +37,16 @@ public class SingleDoor {
      * @return the SingleDoor instance representing the door structure.
      */
     @Nullable
-    public static SingleDoor create_door_from_block(final Block originBlock) {
+    public static SingleDoor createDoorFromBlock(final Block originBlock) {
         // if half is null, a door was not valid.
-        if (!validate_single_door(originBlock)) {
+        if (!validateSingleDoor(originBlock)) {
             return null;
         }
-        return new SingleDoor(get_lower(originBlock));
+        return new SingleDoor(getLower(originBlock));
     }
 
-    private static Block get_lower(Block originBlock) {
-        final var half = as_door_state(originBlock).getHalf();
+    private static Block getLower(Block originBlock) {
+        final var half = asDoorState(originBlock).getHalf();
         return switch (half) {
             case TOP -> originBlock.getRelative(BlockFace.DOWN);
             case BOTTOM -> originBlock;
@@ -54,75 +54,75 @@ public class SingleDoor {
     }
 
     /** Validates the door structure, and returns the half of the door we are examining. */
-    private static boolean validate_single_door(final Block originBlock) {
+    private static boolean validateSingleDoor(final Block originBlock) {
         // block must be door.
-        if (!is_door(originBlock)) {
+        if (!isDoor(originBlock)) {
             return false;
         }
 
-        final var other_half = other_vertical_half(originBlock);
+        final var otherHalf = otherVerticalHalf(originBlock);
 
         // another half must be door.
-        if (!is_door(other_half)) {
+        if (!isDoor(otherHalf)) {
             return false;
         }
 
         // door components must be a matching pair, e.g., top and bottom.
-        return door_vertical_halves_match(originBlock, other_half);
+        return doorVerticalHalvesMatch(originBlock, otherHalf);
     }
 
-    private static boolean is_door(final Block block) {
-        final var block_data = block.getBlockData();
-        return block_data instanceof Door;
+    private static boolean isDoor(final Block block) {
+        final var blockData = block.getBlockData();
+        return blockData instanceof Door;
     }
 
     /**
      * @param block Must be a door.
      */
-    private static Block other_vertical_half(Block block) {
-        final Door door = as_door_state(block);
+    private static Block otherVerticalHalf(Block block) {
+        final Door door = asDoorState(block);
         return switch (door.getHalf()) {
             case TOP -> block.getRelative(BlockFace.DOWN);
             case BOTTOM -> block.getRelative(BlockFace.UP);
         };
     }
 
-    private static boolean door_vertical_halves_match(Block origin_block, Block other_block) {
-        final Door originState = as_door_state(origin_block);
-        final var expected = get_opposite(originState.getHalf());
-        return as_door_state(other_block).getHalf() == expected;
+    private static boolean doorVerticalHalvesMatch(Block originBlock, Block otherBlock) {
+        final Door originState = asDoorState(originBlock);
+        final var expected = getOpposite(originState.getHalf());
+        return asDoorState(otherBlock).getHalf() == expected;
     }
 
-    private static Bisected.Half get_opposite(Bisected.Half half) {
+    private static Bisected.Half getOpposite(Bisected.Half half) {
         if (half == Bisected.Half.TOP) return Bisected.Half.BOTTOM;
         else if (half == Bisected.Half.BOTTOM) return Bisected.Half.TOP;
         throw new IllegalArgumentException("Something has fundamentally changed with Bisected.Half");
     }
 
-    private static Door as_door_state(Block block) {
-        return as_door_state(block.getBlockData());
+    private static Door asDoorState(Block block) {
+        return asDoorState(block.getBlockData());
     }
 
-    private static Door as_door_state(BlockData block_data) {
-        if (!(block_data instanceof Door)) return null;
-        return (Door) block_data;
+    private static Door asDoorState(BlockData blockData) {
+        if (!(blockData instanceof Door)) return null;
+        return (Door) blockData;
     }
 
-    public boolean update_cached_state() {
+    public boolean updateCachedState() {
         // Update to the current state if possible
-        final var lower_data = lower_block.getBlockData();
-        lower = as_door_state(lower_data);
-        final var upper_data = other_vertical_half(lower_block).getBlockData();
-        upper = as_door_state(upper_data);
+        final var lowerData = lowerBlock.getBlockData();
+        lower = asDoorState(lowerData);
+        final var upperData = otherVerticalHalf(lowerBlock).getBlockData();
+        upper = asDoorState(upperData);
 
         if (lower == null) return false;
         return upper != null;
     }
 
-    public void set_open(boolean open) {
-        var data = as_door_state(lower_block);
+    public void setOpen(boolean open) {
+        var data = asDoorState(lowerBlock);
         data.setOpen(open);
-        lower_block.setBlockData(data);
+        lowerBlock.setBlockData(data);
     }
 
     /**
@@ -130,7 +130,7 @@ public class SingleDoor {
      *
      * @return null, if no matching door was found.
      */
-    public SingleDoor get_second_door() {
+    public SingleDoor getSecondDoor() {
         // What defines a second door in minecraft?
         // Hinges *must* be (visually) on opposite sides.
         // The doors align visually.
@@ -231,69 +231,69 @@ public class SingleDoor {
         // we prioritize
         // opening over closing.
 
-        var normal_door = find_other_door(false);
-        var hacked_door = find_other_door(true);
+        var normalDoor = findOtherDoor(false);
+        var hackedDoor = findOtherDoor(true);
 
         // User testing showed that doors 'looked weird' unless you prioritized the doors that
         // 'connect' in a case of
         // conflict
-        return priortize(normal_door, hacked_door);
+        return priortize(normalDoor, hackedDoor);
     }
 
-    private SingleDoor priortize(SingleDoor normal_door, SingleDoor hacked_door) {
-        if (normal_door == null) return hacked_door;
-        if (hacked_door == null) return normal_door;
-        if (lower.isOpen()) return hacked_door;
-        return normal_door;
+    private SingleDoor priortize(SingleDoor normalDoor, SingleDoor hackedDoor) {
+        if (normalDoor == null) return hackedDoor;
+        if (hackedDoor == null) return normalDoor;
+        if (lower.isOpen()) return hackedDoor;
+        return normalDoor;
     }
 
     @org.jetbrains.annotations.Nullable
-    private SingleDoor find_other_door(boolean hacked) {
-        var otherDoorDirection = this.other_door_direction(lower, hacked);
+    private SingleDoor findOtherDoor(boolean hacked) {
+        var otherDoorDirection = this.otherDoorDirection(lower, hacked);
 
-        final Block potentialOtherDoor = lower_block.getRelative(otherDoorDirection);
+        final Block potentialOtherDoor = lowerBlock.getRelative(otherDoorDirection);
 
-        final Door potential_other_door_state = as_door_state(potentialOtherDoor);
-        if (potential_other_door_state == null) return null;
+        final Door potentialOtherDoorState = asDoorState(potentialOtherDoor);
+        if (potentialOtherDoorState == null) return null;
 
         // no iron door shenanigans.
-        if (lower_block.getType() != potentialOtherDoor.getType()) {
+        if (lowerBlock.getType() != potentialOtherDoor.getType()) {
             return null;
         }
 
         // heights must match
-        if (potential_other_door_state.getHalf() != lower.getHalf()) return null;
+        if (potentialOtherDoorState.getHalf() != lower.getHalf()) return null;
 
         // Door states must match, or else the door shouldn't be flapped.
         // This works for hacked doors, and normal doors, but not franken-doors (half-half)
-        if (potential_other_door_state.isOpen() != lower.isOpen()) return null;
+        if (potentialOtherDoorState.isOpen() != lower.isOpen()) return null;
 
         // Another door must agree that our door is its partner!
-        final var other_pointing = other_door_direction(potential_other_door_state, hacked);
+        final var otherPointing = otherDoorDirection(potentialOtherDoorState, hacked);
 
-        var should_be_us = potentialOtherDoor.getRelative(other_pointing);
+        var shouldBeUs = potentialOtherDoor.getRelative(otherPointing);
 
-        var is_us =
-            should_be_us.getX() == lower_block.getX() &&
-            should_be_us.getY() == lower_block.getY() &&
-            should_be_us.getZ() == lower_block.getZ();
+        var isUs =
+            shouldBeUs.getX() == lowerBlock.getX() &&
+            shouldBeUs.getY() == lowerBlock.getY() &&
+            shouldBeUs.getZ() == lowerBlock.getZ();
 
-        return is_us ? create_door_from_block(potentialOtherDoor) : null;
+        return isUs ? createDoorFromBlock(potentialOtherDoor) : null;
     }
 
-    private BlockFace other_door_direction(Door our_door, boolean hacked) {
+    private BlockFace otherDoorDirection(Door ourDoor, boolean hacked) {
         // So, to find a door, we simply trace the way the door is pointing.
         // We can safely ignore opened status, since it relies upon their closed state, even for
         // hacked doors.
-        final var blank_part_when_closed = our_door.getFacing();
+        final var blankPartWhenClosed = ourDoor.getFacing();
         // hacked doors always face their partner.
-        if (hacked) return our_door.getFacing();
+        if (hacked) return ourDoor.getFacing();
 
         // closed doors point towards another door depending on the hinge.
         // this is still true for open doors, since the block state is based on the closed state.
-        return switch (our_door.getHinge()) {
-            case LEFT -> rotateCW(blank_part_when_closed);
-            case RIGHT -> rotateCCW(blank_part_when_closed);
+        return switch (ourDoor.getHinge()) {
+            case LEFT -> rotateCW(blankPartWhenClosed);
+            case RIGHT -> rotateCCW(blankPartWhenClosed);
         };
     }
 

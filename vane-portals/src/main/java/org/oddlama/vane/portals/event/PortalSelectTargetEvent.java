@@ -11,13 +11,13 @@ public class PortalSelectTargetEvent extends PortalEvent {
     private Player player;
     private Portal portal;
     private Portal target;
-    private boolean check_only;
+    private boolean checkOnly;
 
-    public PortalSelectTargetEvent(final Player player, final Portal portal, final Portal target, boolean check_only) {
+    public PortalSelectTargetEvent(final Player player, final Portal portal, final Portal target, boolean checkOnly) {
         this.player = player;
         this.portal = portal;
         this.target = target;
-        this.check_only = check_only;
+        this.checkOnly = checkOnly;
     }
 
     public Player getPlayer() {
@@ -33,7 +33,7 @@ public class PortalSelectTargetEvent extends PortalEvent {
     }
 
     public boolean checkOnly() {
-        return check_only;
+        return checkOnly;
     }
 
     public HandlerList getHandlers() {

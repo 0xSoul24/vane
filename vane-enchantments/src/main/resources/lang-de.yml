@@ -12,69 +12,69 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 4
+Version: 4
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'de_de'
+ResourcePackLangCode: 'de_de'
 
-item_ancient_tome:
+ItemAncientTome:
   # The display name of this item variant.
-  name: "Antiker Foliant"
+  Name: "Antiker Foliant"
 
-item_enchanted_ancient_tome:
+ItemEnchantedAncientTome:
   # The display name of this item variant.
-  name: "Antiker Foliant"
+  Name: "Antiker Foliant"
 
-item_ancient_tome_of_knowledge:
+ItemAncientTomeOfKnowledge:
   # The display name of this item variant.
-  name: "Antiker Foliant des Wissens"
+  Name: "Antiker Foliant des Wissens"
 
-item_enchanted_ancient_tome_of_knowledge:
+ItemEnchantedAncientTomeOfKnowledge:
   # The display name of this item variant.
-  name: "Antiker Foliant des Wissens"
+  Name: "Antiker Foliant des Wissens"
 
-item_ancient_tome_of_the_gods:
+ItemAncientTomeOfTheGods:
   # The display name of this item variant.
-  name: "Antiker Foliant der Götter"
+  Name: "Antiker Foliant der Götter"
 
-item_enchanted_ancient_tome_of_the_gods:
+ItemEnchantedAncientTomeOfTheGods:
   # The display name of this item variant.
-  name: "Antiker Foliant der Götter"
+  Name: "Antiker Foliant der Götter"
 
-enchantment_angel:
-  name: "Engel"
+EnchantmentAngel:
+  Name: "Engel"
 
-enchantment_grappling_hook:
-  name: "Greifhaken"
+EnchantmentGrapplingHook:
+  Name: "Greifhaken"
 
-enchantment_hell_bent:
-  name: "Dickschädel"
+EnchantmentHellBent:
+  Name: "Dickschädel"
 
-enchantment_leafchopper:
-  name: "Blattschneider"
+EnchantmentLeafchopper:
+  Name: "Blattschneider"
 
 # FIXME: translation missing
-enchantment_lightning:
-  name: "Blitzschlag"
+EnchantmentLightning:
+  Name: "Blitzschlag"
 
-enchantment_rake:
-  name: "Harke"
+EnchantmentRake:
+  Name: "Harke"
 
-enchantment_seeding:
-  name: "Saat"
+EnchantmentSeeding:
+  Name: "Saat"
 
-enchantment_soulbound:
-  name: "Seelengebunden"
-  drop_lock_warning: "Soulbound Items can only be dropped using mouse"
-  drop_cooldown: "Drop again to confirm drop"
-  dropped_notification: "Soulbound Item Dropped: %1$s"
+EnchantmentSoulbound:
+  Name: "Seelengebunden"
+  DropLockWarning: "Soulbound Items can only be dropped using mouse"
+  DropCooldown: "Drop again to confirm drop"
+  DroppedNotification: "Soulbound Item Dropped: %1$s"
 
-enchantment_take_off:
-  name: "Abflug"
+EnchantmentTakeOff:
+  Name: "Abflug"
 
-enchantment_unbreakable:
-  name: "Unzerbrechlich"
+EnchantmentUnbreakable:
+  Name: "Unzerbrechlich"
 
-enchantment_wings:
-  name: "Flügel"
+EnchantmentWings:
+  Name: "Flügel"

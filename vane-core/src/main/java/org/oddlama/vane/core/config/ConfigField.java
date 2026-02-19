@@ -17,37 +17,37 @@ public abstract class ConfigField<T> implements Comparable<ConfigField<?>> {
     protected Object owner;
     protected Field field;
     protected String path;
-    protected String type_name;
-    protected int sort_priority = 0;
+    protected String typeName;
+    protected int sortPriority = 0;
 
-    private String[] yaml_path_components;
-    private String yaml_group_path;
+    private String[] yamlPathComponents;
+    private String yamlGroupPath;
     private String basename;
     private Supplier<String> description;
 
     public ConfigField(
         Object owner,
         Field field,
-        Function<String, String> map_name,
-        String type_name,
+        Function<String, String> mapName,
+        String typeName,
         String description
     ) {
         this.owner = owner;
         this.field = field;
-        this.path = map_name.apply(field.getName().substring("config_".length()));
-        this.yaml_path_components = path.split("\\.");
+        this.path = mapName.apply(field.getName().substring("config".length()));
+        this.yamlPathComponents = path.split("\\.");
 
-        var last_dot = path.lastIndexOf(".");
-        this.yaml_group_path = last_dot == -1 ? "" : path.substring(0, last_dot);
+        var lastDot = path.lastIndexOf(".");
+        this.yamlGroupPath = lastDot == -1 ? "" : path.substring(0, lastDot);
 
-        this.basename = yaml_path_components[yaml_path_components.length - 1];
-        this.type_name = type_name;
+        this.basename = yamlPathComponents[yamlPathComponents.length - 1];
+        this.typeName = typeName;
 
         // lang, enabled, metrics_enabled should be at the top
         switch (this.path) {
-            case "lang" -> this.sort_priority = -10;
-            case "enabled" -> this.sort_priority = -9;
-            case "metrics_enabled" -> this.sort_priority = -8;
+            case "Lang" -> this.sortPriority = -10;
+            case "Enabled" -> this.sortPriority = -9;
+            case "MetricsEnabled" -> this.sortPriority = -8;
         }
 
         field.setAccessible(true);
@@ -55,7 +55,7 @@ public abstract class ConfigField<T> implements Comparable<ConfigField<?>> {
         // Dynamic description
         this.description = () -> {
             try {
-                return (String) owner.getClass().getMethod(field.getName() + "_desc").invoke(owner);
+                return (String) owner.getClass().getMethod(field.getName() + "Desc").invoke(owner);
             } catch (NoSuchMethodException e) {
                 // Ignore, field wasn't overridden
                 return description;
@@ -65,7 +65,7 @@ public abstract class ConfigField<T> implements Comparable<ConfigField<?>> {
                     owner.getClass().getName() +
                     "." +
                     field.getName() +
-                    "_desc() to override description value",
+                    "Desc() to override description value",
                     e
                 );
             }
@@ -73,9 +73,9 @@ public abstract class ConfigField<T> implements Comparable<ConfigField<?>> {
     }
 
     @SuppressWarnings("unchecked")
-    protected T overridden_def() {
+    protected T overriddenDef() {
         try {
-            return (T) owner.getClass().getMethod(field.getName() + "_def").invoke(owner);
+            return (T) owner.getClass().getMethod(field.getName() + "Def").invoke(owner);
         } catch (NoSuchMethodException e) {
             // Ignore, field wasn't overridden
             return null;
@@ -85,15 +85,15 @@ public abstract class ConfigField<T> implements Comparable<ConfigField<?>> {
                 owner.getClass().getName() +
                 "." +
                 field.getName() +
-                "_def() to override default value",
+                "Def() to override default value",
                 e
             );
         }
     }
 
-    protected Boolean overridden_metrics() {
+    protected Boolean overriddenMetrics() {
         try {
-            return (Boolean) owner.getClass().getMethod(field.getName() + "_metrics").invoke(owner);
+            return (Boolean) owner.getClass().getMethod(field.getName() + "Metrics").invoke(owner);
         } catch (NoSuchMethodException e) {
             // Ignore, field wasn't overridden
             return null;
@@ -103,33 +103,33 @@ public abstract class ConfigField<T> implements Comparable<ConfigField<?>> {
                 owner.getClass().getName() +
                 "." +
                 field.getName() +
-                "_metrics() to override metrics status",
+                "Metrics() to override metrics status",
                 e
             );
         }
     }
 
-    protected String escape_yaml(String s) {
+    protected String escapeYaml(String s) {
         return s.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 
-    public String get_yaml_group_path() {
+    public String getYamlGroupPath() {
         return path;
     }
 
-    public String yaml_path() {
+    public String yamlPath() {
         return path;
     }
 
-    public String yaml_group_path() {
-        return yaml_group_path;
+    public String yamlGroupPath() {
+        return yamlGroupPath;
     }
 
     public String basename() {
         return basename;
     }
 
-    private String modify_yaml_path_for_sorting(String path) {
+    private String modifyYamlPathForSorting(String path) {
         // "enable" fields should always be at the top, and therefore
         // get treated without the suffix.
         if (path.endsWith(".enabled")) {
@@ -140,29 +140,29 @@ public abstract class ConfigField<T> implements Comparable<ConfigField<?>> {
 
     @Override
     public int compareTo(ConfigField<?> other) {
-        if (sort_priority != other.sort_priority) {
-            return sort_priority - other.sort_priority;
+        if (sortPriority != other.sortPriority) {
+            return sortPriority - other.sortPriority;
         } else {
-            for (int i = 0; i < Math.min(yaml_path_components.length, other.yaml_path_components.length) - 1; ++i) {
-                var c = yaml_path_components[i].compareTo(other.yaml_path_components[i]);
+            for (int i = 0; i < Math.min(yamlPathComponents.length, other.yamlPathComponents.length) - 1; ++i) {
+                var c = yamlPathComponents[i].compareTo(other.yamlPathComponents[i]);
                 if (c != 0) {
                     return c;
                 }
             }
-            return modify_yaml_path_for_sorting(yaml_path()).compareTo(modify_yaml_path_for_sorting(other.yaml_path()));
+            return modifyYamlPathForSorting(yamlPath()).compareTo(modifyYamlPathForSorting(other.yamlPath()));
         }
     }
 
-    protected void append_description(StringBuilder builder, String indent) {
-        final var description_wrapped =
+    protected void appendDescription(StringBuilder builder, String indent) {
+        final var descriptionWrapped =
             indent +
             "# " +
             WordUtils.wrap(description.get(), Math.max(60, 80 - indent.length()), "\n" + indent + "# ", false);
-        builder.append(description_wrapped);
+        builder.append(descriptionWrapped);
         builder.append("\n");
     }
 
-    protected <U> void append_list_definition(
+    protected <U> void appendListDefinition(
         StringBuilder builder,
         String indent,
         String prefix,
@@ -180,18 +180,18 @@ public abstract class ConfigField<T> implements Comparable<ConfigField<?>> {
             });
     }
 
-    protected <U> void append_value_range(
+    protected <U> void appendValueRange(
         StringBuilder builder,
         String indent,
         U min,
         U max,
-        U invalid_min,
-        U invalid_max
+        U invalidMin,
+        U invalidMax
     ) {
         builder.append(indent);
         builder.append("# Valid values: ");
-        if (!min.equals(invalid_min)) {
-            if (!max.equals(invalid_max)) {
+        if (!min.equals(invalidMin)) {
+            if (!max.equals(invalidMax)) {
                 builder.append("[");
                 builder.append(min);
                 builder.append(",");
@@ -203,25 +203,25 @@ public abstract class ConfigField<T> implements Comparable<ConfigField<?>> {
                 builder.append(",)");
             }
         } else {
-            if (!max.equals(invalid_max)) {
+            if (!max.equals(invalidMax)) {
                 builder.append("(,");
                 builder.append(max);
                 builder.append("]");
             } else {
-                builder.append("Any " + type_name);
+                builder.append("Any " + typeName);
             }
         }
         builder.append("\n");
     }
 
-    protected void append_default_value(StringBuilder builder, String indent, Object def) {
+    protected void appendDefaultValue(StringBuilder builder, String indent, Object def) {
         builder.append(indent);
         builder.append("# Default: ");
         builder.append(def);
         builder.append("\n");
     }
 
-    protected void append_field_definition(StringBuilder builder, String indent, Object def) {
+    protected void appendFieldDefinition(StringBuilder builder, String indent, Object def) {
         builder.append(indent);
         builder.append(basename);
         builder.append(": ");
@@ -229,7 +229,7 @@ public abstract class ConfigField<T> implements Comparable<ConfigField<?>> {
         builder.append("\n");
     }
 
-    protected void check_yaml_path(YamlConfiguration yaml) throws YamlLoadException {
+    protected void checkYamlPath(YamlConfiguration yaml) throws YamlLoadException {
         if (!yaml.contains(path, true)) {
             throw new YamlLoadException("yaml is missing entry with path '" + path + "'");
         }
@@ -242,13 +242,13 @@ public abstract class ConfigField<T> implements Comparable<ConfigField<?>> {
         return false;
     }
 
-    public abstract void generate_yaml(
+    public abstract void generateYaml(
         StringBuilder builder,
         String indent,
-        YamlConfiguration existing_compatible_config
+        YamlConfiguration existingCompatibleConfig
     );
 
-    public abstract void check_loadable(YamlConfiguration yaml) throws YamlLoadException;
+    public abstract void checkLoadable(YamlConfiguration yaml) throws YamlLoadException;
 
     public abstract void load(YamlConfiguration yaml);
 
@@ -261,35 +261,35 @@ public abstract class ConfigField<T> implements Comparable<ConfigField<?>> {
         }
     }
 
-    public void register_metrics(Metrics metrics) {
+    public void registerMetrics(Metrics metrics) {
         if (!metrics()) return;
-        metrics.addCustomChart(new SimplePie(yaml_path(), () -> get().toString()));
+        metrics.addCustomChart(new SimplePie(yamlPath(), () -> get().toString()));
     }
 
     public String[] components() {
-        return yaml_path_components;
+        return yamlPathComponents;
     }
 
-    public int group_count() {
-        return yaml_path_components.length - 1;
+    public int groupCount() {
+        return yamlPathComponents.length - 1;
     }
 
-    public static boolean same_group(ConfigField<?> a, ConfigField<?> b) {
-        if (a.yaml_path_components.length != b.yaml_path_components.length) {
+    public static boolean sameGroup(ConfigField<?> a, ConfigField<?> b) {
+        if (a.yamlPathComponents.length != b.yamlPathComponents.length) {
             return false;
         }
-        for (int i = 0; i < a.yaml_path_components.length - 1; ++i) {
-            if (!a.yaml_path_components[i].equals(b.yaml_path_components[i])) {
+        for (int i = 0; i < a.yamlPathComponents.length - 1; ++i) {
+            if (!a.yamlPathComponents[i].equals(b.yamlPathComponents[i])) {
                 return false;
             }
         }
         return true;
     }
 
-    public static int common_group_count(ConfigField<?> a, ConfigField<?> b) {
+    public static int commonGroupCount(ConfigField<?> a, ConfigField<?> b) {
         int i;
-        for (i = 0; i < Math.min(a.yaml_path_components.length, b.yaml_path_components.length) - 1; ++i) {
-            if (!a.yaml_path_components[i].equals(b.yaml_path_components[i])) {
+        for (i = 0; i < Math.min(a.yamlPathComponents.length, b.yamlPathComponents.length) - 1; ++i) {
+            if (!a.yamlPathComponents[i].equals(b.yamlPathComponents[i])) {
                 return i;
             }
         }

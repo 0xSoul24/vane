@@ -1,6 +1,6 @@
 package org.oddlama.vane.core.config;
 
-import static org.oddlama.vane.util.StorageUtil.namespaced_key;
+import static org.oddlama.vane.util.StorageUtil.namespacedKey;
 
 import java.lang.reflect.Field;
 import java.util.function.Function;
@@ -16,16 +16,16 @@ public class ConfigExtendedMaterialField extends ConfigField<ExtendedMaterial> {
     public ConfigExtendedMaterialField(
         Object owner,
         Field field,
-        Function<String, String> map_name,
+        Function<String, String> mapName,
         ConfigExtendedMaterial annotation
     ) {
-        super(owner, field, map_name, "extended material", annotation.desc());
+        super(owner, field, mapName, "extended material", annotation.desc());
         this.annotation = annotation;
     }
 
     @Override
     public ExtendedMaterial def() {
-        final var override = overridden_def();
+        final var override = overriddenDef();
         if (override != null) {
             return override;
         } else {
@@ -33,19 +33,19 @@ public class ConfigExtendedMaterialField extends ConfigField<ExtendedMaterial> {
             if (split.length != 2) {
                 throw new RuntimeException(
                     "Invalid default extended material entry for '" +
-                    yaml_path() +
+                    yamlPath() +
                     "': '" +
                     annotation.def() +
                     "' is not a valid namespaced key"
                 );
             }
-            return ExtendedMaterial.from(namespaced_key(split[0], split[1]));
+            return ExtendedMaterial.from(namespacedKey(split[0], split[1]));
         }
     }
 
     @Override
     public boolean metrics() {
-        final var override = overridden_metrics();
+        final var override = overriddenMetrics();
         if (override != null) {
             return override;
         } else {
@@ -54,59 +54,59 @@ public class ConfigExtendedMaterialField extends ConfigField<ExtendedMaterial> {
     }
 
     @Override
-    public void generate_yaml(StringBuilder builder, String indent, YamlConfiguration existing_compatible_config) {
-        append_description(builder, indent);
-        append_default_value(
+    public void generateYaml(StringBuilder builder, String indent, YamlConfiguration existingCompatibleConfig) {
+        appendDescription(builder, indent);
+        appendDefaultValue(
             builder,
             indent,
-            "\"" + escape_yaml(def().key().getNamespace()) + ":" + escape_yaml(def().key().getKey()) + "\""
+            "\"" + escapeYaml(def().key().getNamespace()) + ":" + escapeYaml(def().key().getKey()) + "\""
         );
-        final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
+        final var def = existingCompatibleConfig != null && existingCompatibleConfig.contains(yamlPath())
+            ? loadFromYaml(existingCompatibleConfig)
             : def();
-        append_field_definition(
+        appendFieldDefinition(
             builder,
             indent,
-            "\"" + escape_yaml(def.key().getNamespace()) + ":" + escape_yaml(def.key().getKey()) + "\""
+            "\"" + escapeYaml(def.key().getNamespace()) + ":" + escapeYaml(def.key().getKey()) + "\""
         );
     }
 
     @Override
-    public void check_loadable(YamlConfiguration yaml) throws YamlLoadException {
-        check_yaml_path(yaml);
+    public void checkLoadable(YamlConfiguration yaml) throws YamlLoadException {
+        checkYamlPath(yaml);
 
-        if (!yaml.isString(yaml_path())) {
-            throw new YamlLoadException("Invalid type for yaml path '" + yaml_path() + "', expected string");
+        if (!yaml.isString(yamlPath())) {
+            throw new YamlLoadException("Invalid type for yaml path '" + yamlPath() + "', expected string");
         }
 
-        final var str = yaml.getString(yaml_path());
+        final var str = yaml.getString(yamlPath());
         final var split = str.split(":");
         if (split.length != 2) {
             throw new YamlLoadException(
                 "Invalid extended material entry in list '" +
-                yaml_path() +
+                yamlPath() +
                 "': '" +
                 str +
                 "' is not a valid namespaced key"
             );
         }
 
-        final var mat = ExtendedMaterial.from(namespaced_key(split[0], split[1]));
+        final var mat = ExtendedMaterial.from(namespacedKey(split[0], split[1]));
         if (mat == null) {
             throw new YamlLoadException(
-                "Invalid extended material entry in list '" + yaml_path() + "': '" + str + "' does not exist"
+                "Invalid extended material entry in list '" + yamlPath() + "': '" + str + "' does not exist"
             );
         }
     }
 
-    public ExtendedMaterial load_from_yaml(YamlConfiguration yaml) {
-        final var split = yaml.getString(yaml_path()).split(":");
-        return ExtendedMaterial.from(namespaced_key(split[0], split[1]));
+    public ExtendedMaterial loadFromYaml(YamlConfiguration yaml) {
+        final var split = yaml.getString(yamlPath()).split(":");
+        return ExtendedMaterial.from(namespacedKey(split[0], split[1]));
     }
 
     public void load(YamlConfiguration yaml) {
         try {
-            field.set(owner, load_from_yaml(yaml));
+            field.set(owner, loadFromYaml(yaml));
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Invalid field access on '" + field.getName() + "'. This is a bug.");
         }

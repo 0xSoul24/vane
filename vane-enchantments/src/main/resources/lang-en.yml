@@ -12,79 +12,79 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 4
+Version: 4
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'en_us'
+ResourcePackLangCode: 'en_us'
 
-item_ancient_tome:
+ItemAncientTome:
   # The display name of this item variant.
-  name: "Ancient Tome"
+  Name: "Ancient Tome"
 
-item_enchanted_ancient_tome:
+ItemEnchantedAncientTome:
   # The display name of this item variant.
-  name: "Ancient Tome"
+  Name: "Ancient Tome"
 
-item_ancient_tome_of_knowledge:
+ItemAncientTomeOfKnowledge:
   # The display name of this item variant.
-  name: "Ancient Tome of Knowledge"
+  Name: "Ancient Tome of Knowledge"
 
-item_enchanted_ancient_tome_of_knowledge:
+ItemEnchantedAncientTomeOfKnowledge:
   # The display name of this item variant.
-  name: "Ancient Tome of Knowledge"
+  Name: "Ancient Tome of Knowledge"
 
-item_ancient_tome_of_the_gods:
+ItemAncientTomeOfTheGods:
   # The display name of this item variant.
-  name: "Ancient Tome of The Gods"
+  Name: "Ancient Tome of The Gods"
 
-item_enchanted_ancient_tome_of_the_gods:
+ItemEnchantedAncientTomeOfTheGods:
   # The display name of this item variant.
-  name: "Ancient Tome of The Gods"
+  Name: "Ancient Tome of The Gods"
 
-enchantment_angel:
+EnchantmentAngel:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Angel"
+  Name: "Angel"
 
-enchantment_grappling_hook:
+EnchantmentGrapplingHook:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Grappling Hook"
+  Name: "Grappling Hook"
 
-enchantment_hell_bent:
+EnchantmentHellBent:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Hell Bent"
+  Name: "Hell Bent"
 
-enchantment_leafchopper:
+EnchantmentLeafchopper:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Leafchopper"
+  Name: "Leafchopper"
 
-enchantment_lightning:
+EnchantmentLightning:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Lightning"
+  Name: "Lightning"
   
-enchantment_rake:
+EnchantmentRake:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Rake"
+  Name: "Rake"
 
-enchantment_seeding:
+EnchantmentSeeding:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Seeding"
+  Name: "Seeding"
 
-enchantment_soulbound:
+EnchantmentSoulbound:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Soulbound"
-  drop_lock_warning: "Soulbound Items can only be dropped using mouse"
-  drop_cooldown: "Drop again to confirm drop"
-  dropped_notification: "Soulbound Item Dropped: %1$s"
+  Name: "Soulbound"
+  DropLockWarning: "Soulbound Items can only be dropped using mouse"
+  DropCooldown: "Drop again to confirm drop"
+  DroppedNotification: "Soulbound Item Dropped: %1$s"
 
-enchantment_take_off:
+EnchantmentTakeOff:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Takeoff"
+  Name: "Takeoff"
 
-enchantment_unbreakable:
+EnchantmentUnbreakable:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Unbreakable"
+  Name: "Unbreakable"
 
-enchantment_wings:
+EnchantmentWings:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Wings"
+  Name: "Wings"

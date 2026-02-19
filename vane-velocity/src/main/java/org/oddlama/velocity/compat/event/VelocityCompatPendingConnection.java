@@ -28,27 +28,27 @@ public class VelocityCompatPendingConnection implements ProxyPendingConnection {
     }
 
     @Override
-    public String get_name() {
+    public String getName() {
         return username;
     }
 
     @Override
-    public @Nullable UUID get_unique_id() {
+    public @Nullable UUID getUniqueId() {
         return uuid;
     }
 
     @Override
-    public int get_port() {
+    public int getPort() {
         return connection.getVirtualHost().get().getPort();
     }
 
     @Override
-    public SocketAddress get_socket_address() {
+    public SocketAddress getSocketAddress() {
         return connection.getVirtualHost().get();
     }
 
     @Override
-    public boolean has_permission(ProxyServer server, String... permission) {
+    public boolean hasPermission(ProxyServer server, String... permission) {
         // Safe cast, we don't use this outside the case where this is constructed
         // with a Player
         return Arrays.stream(permission).anyMatch(perm -> ((Player) connection).hasPermission(perm));

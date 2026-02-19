@@ -9,49 +9,49 @@ import org.oddlama.vane.proxycore.config.IVaneProxyServerInfo;
 public abstract class LoginEvent implements ProxyEvent, ProxyCancellableEvent {
 
     VaneProxyPlugin plugin;
-    IVaneProxyServerInfo server_info;
+    IVaneProxyServerInfo serverInfo;
     ProxyPendingConnection connection;
 
-    public LoginEvent(VaneProxyPlugin plugin, IVaneProxyServerInfo server_info, ProxyPendingConnection connection) {
+    public LoginEvent(VaneProxyPlugin plugin, IVaneProxyServerInfo serverInfo, ProxyPendingConnection connection) {
         this.plugin = plugin;
-        this.server_info = server_info;
+        this.serverInfo = serverInfo;
         this.connection = connection;
     }
 
     public final void fire() {
-        final var connection_uuid = connection.get_unique_id();
+        final var connectionUuid = connection.getUniqueId();
 
         // We're in the LoginEvent, the UUID should be resolved
-        assert connection_uuid != null;
+        assert connectionUuid != null;
 
-        final var uuid = plugin.get_multiplexed_uuids().getOrDefault(connection_uuid, connection_uuid);
+        final var uuid = plugin.getMultiplexedUuids().getOrDefault(connectionUuid, connectionUuid);
 
-        if (!plugin.can_join_maintenance(uuid)) {
-            this.cancel(plugin.get_maintenance().format_message(Maintenance.MESSAGE_CONNECT));
+        if (!plugin.canJoinMaintenance(uuid)) {
+            this.cancel(plugin.getMaintenance().formatMessage(Maintenance.MESSAGE_CONNECT));
             return;
         }
 
         plugin
-            .get_logger()
+            .getLogger()
             .log(
                 Level.INFO,
-                "Connection '" + connection.get_name() + "' is connecting to '" + server_info.getName() + "'"
+                "Connection '" + connection.getName() + "' is connecting to '" + serverInfo.getName() + "'"
             );
 
         // Start server if necessary
-        if (!plugin.is_online(server_info)) {
+        if (!plugin.isOnline(serverInfo)) {
             // For use inside callback
-            final var cms = plugin.get_config().managed_servers.get(server_info.getName());
+            final var cms = plugin.getConfig().managedServers.get(serverInfo.getName());
 
-            if (!cms.start.allow_anyone && !connection.can_start_server(plugin.get_proxy(), server_info.getName())) {
+            if (!cms.start.allowAnyone && !connection.canStartServer(plugin.getProxy(), serverInfo.getName())) {
                 plugin
-                    .get_logger()
+                    .getLogger()
                     .log(
                         Level.INFO,
                         "Disconnecting '" +
-                        connection.get_name() +
+                        connection.getName() +
                         "' because they don't have the permission to start server '" +
-                        server_info.getName() +
+                        serverInfo.getName() +
                         "'"
                     );
                 // TODO: This could probably use a configurable message?
@@ -59,22 +59,22 @@ public abstract class LoginEvent implements ProxyEvent, ProxyCancellableEvent {
                 return;
             }
 
-            if (cms == null || cms.start_cmd() == null) {
+            if (cms == null || cms.startCmd() == null) {
                 plugin
-                    .get_logger()
+                    .getLogger()
                     .log(
                         Level.SEVERE,
-                        "Could not start server '" + server_info.getName() + "', no start command was set!"
+                        "Could not start server '" + serverInfo.getName() + "', no start command was set!"
                     );
                 this.cancel("Could not start server");
             } else {
                 // Client is connecting while startup
-                plugin.try_start_server(cms);
+                plugin.tryStartServer(cms);
 
-                if (cms.start_kick_msg() == null) {
+                if (cms.startKickMsg() == null) {
                     this.cancel("Server is starting");
                 } else {
-                    this.cancel(cms.start_kick_msg());
+                    this.cancel(cms.startKickMsg());
                 }
             }
         }

@@ -32,97 +32,97 @@ import org.jetbrains.annotations.NotNull;
 
 public class Nms {
 
-	public static ServerPlayer get_player(Player player) {
+	public static ServerPlayer getPlayer(Player player) {
 		return ((CraftPlayer)player).getHandle();
 	}
 
-	public static Entity entity_handle(final org.bukkit.entity.Entity entity) {
+	public static Entity entityHandle(final org.bukkit.entity.Entity entity) {
 		return ((CraftEntity)entity).getHandle();
 	}
 
 	@NotNull
-	public static org.bukkit.inventory.ItemStack bukkit_item_stack(ItemStack stack) {
+	public static org.bukkit.inventory.ItemStack bukkitItemStack(ItemStack stack) {
 		return CraftItemStack.asCraftMirror(stack);
 	}
 
 
-	public static ItemStack item_handle(org.bukkit.inventory.ItemStack item_stack) {
-		if (item_stack == null) {
+	public static ItemStack itemHandle(org.bukkit.inventory.ItemStack itemStack) {
+		if (itemStack == null) {
 			return null;
 		}
 
-		if (!(item_stack instanceof CraftItemStack)) {
-			return CraftItemStack.asNMSCopy(item_stack);
+		if (!(itemStack instanceof CraftItemStack)) {
+			return CraftItemStack.asNMSCopy(itemStack);
 		}
 
 		try {
 			final var handle = CraftItemStack.class.getDeclaredField("handle");
 			handle.setAccessible(true);
-			return (ItemStack)handle.get(item_stack);
+			return (ItemStack)handle.get(itemStack);
 		} catch (NoSuchFieldException | IllegalAccessException e) {
 			return null;
 		}
 	}
 
-	public static ServerPlayer player_handle(org.bukkit.entity.Player player) {
+	public static ServerPlayer playerHandle(org.bukkit.entity.Player player) {
 		if (!(player instanceof CraftPlayer)) {
 			return null;
 		}
 		return ((CraftPlayer)player).getHandle();
 	}
 
-	public static ServerLevel world_handle(org.bukkit.World world) {
+	public static ServerLevel worldHandle(org.bukkit.World world) {
 		return ((CraftWorld)world).getHandle();
 	}
 
-	public static DedicatedServer server_handle() {
-		final var bukkit_server = Bukkit.getServer();
-		return ((CraftServer)bukkit_server).getServer();
+	public static DedicatedServer serverHandle() {
+		final var bukkitServer = Bukkit.getServer();
+		return ((CraftServer)bukkitServer).getServer();
 	}
 
 	@SuppressWarnings({"unchecked", "deprecation"})
-	public static void register_entity(
-	    final NamespacedKey base_entity_type,
-	    final String pseudo_namespace,
+	public static void registerEntity(
+	    final NamespacedKey baseEntityType,
+	    final String pseudoNamespace,
 	    final String key,
         final EntityType.Builder<?> builder
     ) {
-		final var id = pseudo_namespace + "_" + key;
+		final var id = pseudoNamespace + "_" + key;
 		// From:
 		// https://papermc.io/forums/t/register-and-spawn-a-custom-entity-on-1-13-x/293,
 		// adapted for 1.18
 		// Get the datafixer
-		final var world_version = SharedConstants.getCurrentVersion().dataVersion().version();
-		final var world_version_key = DataFixUtils.makeKey(world_version);
-		final var data_types = DataFixers.getDataFixer()
-		                           .getSchema(world_version_key)
+		final var worldVersion = SharedConstants.getCurrentVersion().dataVersion().version();
+		final var worldVersionKey = DataFixUtils.makeKey(worldVersion);
+		final var dataTypes = DataFixers.getDataFixer()
+		                           .getSchema(worldVersionKey)
 		                           .findChoiceType(References.ENTITY)
 		                           .types();
-		final var data_types_map = (Map<Object, Type<?>>)data_types;
+		final var dataTypesMap = (Map<Object, Type<?>>)dataTypes;
 		// Inject the new custom entity (this registers the key/id with the server,
 		// so it will be available in vanilla constructs like the /summon command)
-		data_types_map.put("minecraft:" + id, data_types_map.get(base_entity_type.toString()));
+		dataTypesMap.put("minecraft:" + id, dataTypesMap.get(baseEntityType.toString()));
 		// Store a new type in registry
 		final var rk = ResourceKey.create(Registries.ENTITY_TYPE, Identifier.withDefaultNamespace(id));
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, id, builder.build(rk));
 	}
 
 	public static void spawn(org.bukkit.World world, Entity entity) {
-		world_handle(world).addFreshEntity(entity);
+		worldHandle(world).addFreshEntity(entity);
 	}
 
-	public static int unlock_all_recipes(final org.bukkit.entity.Player player) {
-		final var recipes = server_handle().getRecipeManager().getRecipes();
-		return player_handle(player).awardRecipes(recipes);
+	public static int unlockAllRecipes(final org.bukkit.entity.Player player) {
+		final var recipes = serverHandle().getRecipeManager().getRecipes();
+		return playerHandle(player).awardRecipes(recipes);
 	}
 
-	public static int creative_tab_id(final ItemStack item_stack) {
+	public static int creativeTabId(final ItemStack itemStack) {
 		// TODO FIXME BUG this is broken and always returns 0
-		return (int)CreativeModeTabs.allTabs().stream().takeWhile(tab -> tab.contains(item_stack)).count();
+		return (int)CreativeModeTabs.allTabs().stream().takeWhile(tab -> tab.contains(itemStack)).count();
 	}
 
-	public static void set_air_no_drops(final org.bukkit.block.Block block) {
-        final var entity = world_handle(block.getWorld()).getBlockEntity(
+	public static void setAirNoDrops(final org.bukkit.block.Block block) {
+        final var entity = worldHandle(block.getWorld()).getBlockEntity(
             new BlockPos(block.getX(), block.getY(), block.getZ())
         );
 		block.setType(Material.AIR, false);

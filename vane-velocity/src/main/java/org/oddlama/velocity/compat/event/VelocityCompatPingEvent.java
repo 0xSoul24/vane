@@ -17,12 +17,12 @@ public class VelocityCompatPingEvent extends PingEvent {
     }
 
     @Override
-    public void send_response() {
+    public void sendResponse() {
         event.setPing(((VelocityCompatProxyServerPing) ping).ping.build());
     }
 
     @Override
-    public ProxyPendingConnection get_connection() {
+    public ProxyPendingConnection getConnection() {
         return null;
     }
 }

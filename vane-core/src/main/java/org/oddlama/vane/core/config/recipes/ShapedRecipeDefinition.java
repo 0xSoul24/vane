@@ -27,17 +27,17 @@ public class ShapedRecipeDefinition extends RecipeDefinition {
         return this;
     }
 
-    public ShapedRecipeDefinition set_ingredient(char id, String ingredient) {
+    public ShapedRecipeDefinition setIngredient(char id, String ingredient) {
         this.ingredients.put("" + id, ingredient);
         return this;
     }
 
-    public ShapedRecipeDefinition set_ingredient(char id, final Tag<?> tag) {
-        return set_ingredient(id, "#" + tag.key());
+    public ShapedRecipeDefinition setIngredient(char id, final Tag<?> tag) {
+        return setIngredient(id, "#" + tag.key());
     }
 
-    public ShapedRecipeDefinition set_ingredient(char id, Material material) {
-        return set_ingredient(id, material.key().toString());
+    public ShapedRecipeDefinition setIngredient(char id, Material material) {
+        return setIngredient(id, material.key().toString());
     }
 
     public ShapedRecipeDefinition result(String result) {
@@ -46,24 +46,25 @@ public class ShapedRecipeDefinition extends RecipeDefinition {
     }
 
     @Override
-    public Object to_dict() {
+    public Object toDict() {
         final HashMap<String, Object> dict = new HashMap<>();
-        dict.put("type", "shaped");
-        dict.put("shape", this.shape);
-        dict.put("ingredients", this.ingredients);
-        dict.put("result", this.result);
+        dict.put("Type", "shaped");
+        dict.put("Shape", this.shape);
+        dict.put("Ingredients", this.ingredients);
+        dict.put("Result", this.result);
         return dict;
     }
 
     @Override
-    public RecipeDefinition from_dict(Object dict) {
+    public RecipeDefinition fromDict(Object dict) {
         if (!(dict instanceof Map<?, ?>)) {
             throw new IllegalArgumentException(
                 "Invalid shaped recipe dictionary: Argument must be a Map<String, Object>!"
             );
         }
-        final var dict_map = (Map<?, ?>) dict;
-        if (dict_map.get("shape") instanceof List<?> shape) {
+        final var dictMap = (Map<?, ?>) dict;
+        final Object shapeObj = dictMap.containsKey("Shape") ? dictMap.get("Shape") : dictMap.get("shape");
+        if (shapeObj instanceof List<?> shape) {
             this.shape = shape.stream().map(row -> (String) row).toList();
             if (this.shape.size() < 1 && this.shape.size() > 3) {
                 throw new IllegalArgumentException(
@@ -74,7 +75,8 @@ public class ShapedRecipeDefinition extends RecipeDefinition {
             throw new IllegalArgumentException("Invalid shaped recipe dictionary: shape must be a list of strings");
         }
 
-        if (dict_map.get("ingredients") instanceof Map<?, ?> ingredients) {
+        final Object ingredientsObj = dictMap.containsKey("Ingredients") ? dictMap.get("Ingredients") : dictMap.get("ingredients");
+        if (ingredientsObj instanceof Map<?, ?> ingredients) {
             this.ingredients = ingredients
                 .entrySet()
                 .stream()
@@ -85,7 +87,8 @@ public class ShapedRecipeDefinition extends RecipeDefinition {
             );
         }
 
-        if (dict_map.get("result") instanceof String result) {
+        final Object resultObj = dictMap.containsKey("Result") ? dictMap.get("Result") : dictMap.get("result");
+        if (resultObj instanceof String result) {
             this.result = result;
         } else {
             throw new IllegalArgumentException("Invalid shaped recipe dictionary: result must be a string");
@@ -95,11 +98,11 @@ public class ShapedRecipeDefinition extends RecipeDefinition {
     }
 
     @Override
-    public Recipe to_recipe(NamespacedKey base_key) {
-        final var recipe = new ShapedRecipe(key(base_key), ItemUtil.itemstack_from_string(this.result).getLeft());
+    public Recipe toRecipe(NamespacedKey baseKey) {
+        final var recipe = new ShapedRecipe(key(baseKey), ItemUtil.itemstackFromString(this.result).getLeft());
         recipe.shape(this.shape.toArray(new String[0]));
         this.ingredients.forEach((name, definition) ->
-                recipe.setIngredient(name.charAt(0), RecipeDefinition.recipe_choice(definition))
+                recipe.setIngredient(name.charAt(0), RecipeDefinition.recipeChoice(definition))
             );
         return recipe;
     }

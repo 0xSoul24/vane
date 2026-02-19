@@ -24,8 +24,8 @@ public class Finditem extends Command<Trifles> {
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
-        return super.get_command_base()
+    public LiteralArgumentBuilder<CommandSourceStack> getCommandBase() {
+        return super.getCommandBase()
             .then(help())
             .then(
                 argument("material", ArgumentTypes.resource(RegistryKey.ITEM)).executes(ctx -> {
@@ -33,8 +33,8 @@ public class Finditem extends Command<Trifles> {
                     final Material material = Material.matchMaterial(itemType.getKey().getKey());
 
                     if (material != null) {
-                        get_module()
-                            .item_finder.find_item(
+                        getModule()
+                            .itemFinder.findItem(
                                 (Player) ctx.getSource().getSender(),
                                 material
                             );

@@ -24,19 +24,19 @@ public class Tomes extends ModuleGroup<Enchantments> {
     public Tomes(Context<Enchantments> context) {
         super(
             context,
-            "tomes",
+            "Tomes",
             "These tomes are needed to craft custom enchantments. If you disable them here, you will need to adjust the recipes for the enchantments accordingly."
         );
-        new GrindstoneListener(get_context());
-        new AncientTome(get_context());
-        new EnchantedAncientTome(get_context());
-        new AncientTomeOfKnowledge(get_context());
-        new EnchantedAncientTomeOfKnowledge(get_context());
-        new AncientTomeOfTheGods(get_context());
-        new EnchantedAncientTomeOfTheGods(get_context());
+        new GrindstoneListener(getContext());
+        new AncientTome(getContext());
+        new EnchantedAncientTome(getContext());
+        new AncientTomeOfKnowledge(getContext());
+        new EnchantedAncientTomeOfKnowledge(getContext());
+        new AncientTomeOfTheGods(getContext());
+        new EnchantedAncientTomeOfTheGods(getContext());
     }
 
-    @VaneItem(name = "ancient_tome", base = Material.BOOK, model_data = 0x770000, version = 1)
+    @VaneItem(name = "ancient_tome", base = Material.BOOK, modelData = 0x770000, version = 1)
     public static class AncientTome extends CustomItem<Enchantments> {
 
         public AncientTome(Context<Enchantments> context) {
@@ -44,7 +44,7 @@ public class Tomes extends ModuleGroup<Enchantments> {
         }
 
         @Override
-        public LootTableList default_loot_tables() {
+        public LootTableList defaultLootTables() {
             return LootTableList.of(
                 new LootDefinition("generic")
                     .in(LootTables.ABANDONED_MINESHAFT)
@@ -71,52 +71,52 @@ public class Tomes extends ModuleGroup<Enchantments> {
                 new LootDefinition("ancientcity").in(LootTables.ANCIENT_CITY).add(1.0 / 20, 0, 2, key().toString()),
                 new LootDefinition("terralith_generic")
                     // terralith low
-                    .in(StorageUtil.namespaced_key("terralith", "spire/common"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/generic_low"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/generic_low"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/smith/novice"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/smith/novice"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/tavern_downstairs"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/tavern_upstairs"))
+                    .in(StorageUtil.namespacedKey("terralith", "spire/common"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/generic_low"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/generic_low"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/smith/novice"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/smith/novice"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/tavern_downstairs"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/tavern_upstairs"))
                     // terralith normal
-                    .in(StorageUtil.namespaced_key("terralith", "ruin/glacial/main_cs"))
-                    .in(StorageUtil.namespaced_key("terralith", "spire/treasure"))
-                    .in(StorageUtil.namespaced_key("terralith", "underground/chest"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/archer"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/attic"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/butcher"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/cartographer"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/generic"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/library"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/mason"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/smith"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/treasure"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/archer"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/attic"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/butcher"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/cartographer"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/fisherman"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/food"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/generic"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/library"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/mason"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/smith"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/treasure"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/treasure/diamond"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/treasure/emerald"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/treasure/golem"))
+                    .in(StorageUtil.namespacedKey("terralith", "ruin/glacial/main_cs"))
+                    .in(StorageUtil.namespacedKey("terralith", "spire/treasure"))
+                    .in(StorageUtil.namespacedKey("terralith", "underground/chest"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/archer"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/attic"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/butcher"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/cartographer"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/generic"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/library"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/mason"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/smith"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/treasure"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/archer"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/attic"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/butcher"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/cartographer"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/fisherman"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/food"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/generic"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/library"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/mason"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/smith"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/treasure"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/treasure/diamond"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/treasure/emerald"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/treasure/golem"))
                     .add(1.0 / 5, 0, 2, key().toString()),
                 new LootDefinition("terralith_rare")
                     // terralith rare
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/smith/expert"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/smith/expert"))
-                    .in(StorageUtil.namespaced_key("terralith", "spire/rare"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/smith/expert"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/smith/expert"))
+                    .in(StorageUtil.namespacedKey("terralith", "spire/rare"))
                     .add(1.0 / 20, 0, 2, key().toString())
             );
         }
     }
 
-    @VaneItem(name = "enchanted_ancient_tome", base = Material.ENCHANTED_BOOK, model_data = 0x770001, version = 1)
+    @VaneItem(name = "enchanted_ancient_tome", base = Material.ENCHANTED_BOOK, modelData = 0x770001, version = 1)
     public static class EnchantedAncientTome extends CustomItem<Enchantments> {
 
         public EnchantedAncientTome(Context<Enchantments> context) {
@@ -124,7 +124,7 @@ public class Tomes extends ModuleGroup<Enchantments> {
         }
     }
 
-    @VaneItem(name = "ancient_tome_of_knowledge", base = Material.BOOK, model_data = 0x770002, version = 1)
+    @VaneItem(name = "ancient_tome_of_knowledge", base = Material.BOOK, modelData = 0x770002, version = 1)
     public static class AncientTomeOfKnowledge extends CustomItem<Enchantments> {
 
         public AncientTomeOfKnowledge(Context<Enchantments> context) {
@@ -132,19 +132,19 @@ public class Tomes extends ModuleGroup<Enchantments> {
         }
 
         @Override
-        public RecipeList default_recipes() {
+        public RecipeList defaultRecipes() {
             return RecipeList.of(
                 new ShapelessRecipeDefinition("generic")
-                    .add_ingredient("vane_enchantments:ancient_tome")
-                    .add_ingredient(Material.FEATHER)
-                    .add_ingredient(Material.BLAZE_ROD)
-                    .add_ingredient(Material.GHAST_TEAR)
+                    .addIngredient("vane_enchantments:ancient_tome")
+                    .addIngredient(Material.FEATHER)
+                    .addIngredient(Material.BLAZE_ROD)
+                    .addIngredient(Material.GHAST_TEAR)
                     .result(key().toString())
             );
         }
 
         @Override
-        public LootTableList default_loot_tables() {
+        public LootTableList defaultLootTables() {
             return LootTableList.of(
                 new LootDefinition("generic")
                     .in(LootTables.ABANDONED_MINESHAFT)
@@ -165,38 +165,38 @@ public class Tomes extends ModuleGroup<Enchantments> {
                     .add(1.0 / 30, 1, 1, key().toString()),
                 new LootDefinition("terralith_generic")
                     // terralith normal
-                    .in(StorageUtil.namespaced_key("terralith", "ruin/glacial/main_cs"))
-                    .in(StorageUtil.namespaced_key("terralith", "spire/treasure"))
-                    .in(StorageUtil.namespaced_key("terralith", "underground/chest"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/archer"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/attic"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/butcher"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/cartographer"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/generic"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/library"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/mason"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/smith"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/treasure"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/archer"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/attic"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/butcher"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/cartographer"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/fisherman"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/food"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/generic"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/library"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/mason"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/smith"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/treasure"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/treasure/diamond"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/treasure/emerald"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/treasure/golem"))
+                    .in(StorageUtil.namespacedKey("terralith", "ruin/glacial/main_cs"))
+                    .in(StorageUtil.namespacedKey("terralith", "spire/treasure"))
+                    .in(StorageUtil.namespacedKey("terralith", "underground/chest"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/archer"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/attic"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/butcher"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/cartographer"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/generic"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/library"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/mason"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/smith"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/treasure"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/archer"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/attic"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/butcher"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/cartographer"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/fisherman"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/food"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/generic"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/library"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/mason"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/smith"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/treasure"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/treasure/diamond"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/treasure/emerald"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/treasure/golem"))
                     .add(1.0 / 40, 1, 1, key().toString()),
                 new LootDefinition("terralith_rare")
                     // terralith rare
-                    .in(StorageUtil.namespaced_key("terralith", "village/desert/smith/expert"))
-                    .in(StorageUtil.namespaced_key("terralith", "village/fortified/smith/expert"))
-                    .in(StorageUtil.namespaced_key("terralith", "spire/rare"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/desert/smith/expert"))
+                    .in(StorageUtil.namespacedKey("terralith", "village/fortified/smith/expert"))
+                    .in(StorageUtil.namespacedKey("terralith", "spire/rare"))
                     .add(1.0 / 30, 1, 1, key().toString()) // duplicate for more consistent spawn
                     .add(1.0 / 30, 1, 1, key().toString())
             );
@@ -206,7 +206,7 @@ public class Tomes extends ModuleGroup<Enchantments> {
     @VaneItem(
         name = "enchanted_ancient_tome_of_knowledge",
         base = Material.ENCHANTED_BOOK,
-        model_data = 0x770003,
+        modelData = 0x770003,
         version = 1
     )
     public static class EnchantedAncientTomeOfKnowledge extends CustomItem<Enchantments> {
@@ -216,7 +216,7 @@ public class Tomes extends ModuleGroup<Enchantments> {
         }
     }
 
-    @VaneItem(name = "ancient_tome_of_the_gods", base = Material.BOOK, model_data = 0x770004, version = 1)
+    @VaneItem(name = "ancient_tome_of_the_gods", base = Material.BOOK, modelData = 0x770004, version = 1)
     public static class AncientTomeOfTheGods extends CustomItem<Enchantments> {
 
         public AncientTomeOfTheGods(Context<Enchantments> context) {
@@ -224,20 +224,20 @@ public class Tomes extends ModuleGroup<Enchantments> {
         }
 
         @Override
-        public RecipeList default_recipes() {
+        public RecipeList defaultRecipes() {
             return RecipeList.of(
                 new ShapedRecipeDefinition("generic")
-                    .shape(" s ", "ebe", " n ")
-                    .set_ingredient('b', "vane_enchantments:ancient_tome_of_knowledge")
-                    .set_ingredient('e', Material.ENCHANTED_BOOK)
-                    .set_ingredient('s', Material.NETHER_STAR)
-                    .set_ingredient('n', Material.NAUTILUS_SHELL)
+                    .shape(" S ", "EBE", " N ")
+                    .setIngredient('B', "vane_enchantments:ancient_tome_of_knowledge")
+                    .setIngredient('E', Material.ENCHANTED_BOOK)
+                    .setIngredient('S', Material.NETHER_STAR)
+                    .setIngredient('N', Material.NAUTILUS_SHELL)
                     .result(key().toString())
             );
         }
 
         @Override
-        public LootTableList default_loot_tables() {
+        public LootTableList defaultLootTables() {
             return LootTableList.of(
                 new LootDefinition("generic")
                     .in(LootTables.BASTION_TREASURE)
@@ -248,12 +248,12 @@ public class Tomes extends ModuleGroup<Enchantments> {
                 new LootDefinition("ancientcity").in(LootTables.ANCIENT_CITY).add(1.0 / 150, 1, 1, key().toString()),
                 new LootDefinition("terralith_generic")
                     // terralith normal
-                    .in(StorageUtil.namespaced_key("terralith", "spire/treasure"))
-                    .in(StorageUtil.namespaced_key("terralith", "underground/chest"))
+                    .in(StorageUtil.namespacedKey("terralith", "spire/treasure"))
+                    .in(StorageUtil.namespacedKey("terralith", "underground/chest"))
                     .add(1.0 / 200, 1, 1, key().toString()),
                 new LootDefinition("terralith_rare")
                     // terralith rare
-                    .in(StorageUtil.namespaced_key("terralith", "spire/rare"))
+                    .in(StorageUtil.namespacedKey("terralith", "spire/rare"))
                     .add(1.0 / 150, 1, 1, key().toString())
             );
         }
@@ -262,7 +262,7 @@ public class Tomes extends ModuleGroup<Enchantments> {
     @VaneItem(
         name = "enchanted_ancient_tome_of_the_gods",
         base = Material.ENCHANTED_BOOK,
-        model_data = 0x770005,
+        modelData = 0x770005,
         version = 1
     )
     public static class EnchantedAncientTomeOfTheGods extends CustomItem<Enchantments> {
@@ -275,7 +275,7 @@ public class Tomes extends ModuleGroup<Enchantments> {
     @VaneItem(
         name = "enchanted_ancient_tome_of_the_gods",
         base = Material.ENCHANTED_BOOK,
-        model_data = 0x770005,
+        modelData = 0x770005,
         version = 1
     )
     public static class GrindstoneListener extends Listener<Enchantments> {
@@ -285,7 +285,7 @@ public class Tomes extends ModuleGroup<Enchantments> {
         }
 
         @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-        public void on_prepare_grindstone(PrepareGrindstoneEvent event) {
+        public void onPrepareGrindstone(PrepareGrindstoneEvent event) {
             // Make sure to remove the enchanted variant when disenchanting a tome
             var res = event.getResult();
             if (res == null) {
@@ -298,12 +298,12 @@ public class Tomes extends ModuleGroup<Enchantments> {
                 return;
             }
 
-            final var custom_item = get_module().core.item_registry().get(res);
-            if (custom_item instanceof EnchantedAncientTome) {
+            final var customItem = getModule().core.itemRegistry().get(res);
+            if (customItem instanceof EnchantedAncientTome) {
                 event.setResult(CustomItemHelper.newStack("vane_enchantments:ancient_tome"));
-            } else if (custom_item instanceof EnchantedAncientTomeOfKnowledge) {
+            } else if (customItem instanceof EnchantedAncientTomeOfKnowledge) {
                 event.setResult(CustomItemHelper.newStack("vane_enchantments:ancient_tome_of_knowledge"));
-            } else if (custom_item instanceof EnchantedAncientTomeOfTheGods) {
+            } else if (customItem instanceof EnchantedAncientTomeOfTheGods) {
                 event.setResult(CustomItemHelper.newStack("vane_enchantments:ancient_tome_of_the_gods"));
             }
         }

@@ -10,14 +10,14 @@ public class ConfigBooleanField extends ConfigField<Boolean> {
 
     private ConfigBoolean annotation;
 
-    public ConfigBooleanField(Object owner, Field field, Function<String, String> map_name, ConfigBoolean annotation) {
-        super(owner, field, map_name, "boolean", annotation.desc());
+    public ConfigBooleanField(Object owner, Field field, Function<String, String> mapName, ConfigBoolean annotation) {
+        super(owner, field, mapName, "boolean", annotation.desc());
         this.annotation = annotation;
     }
 
     @Override
     public Boolean def() {
-        final var override = overridden_def();
+        final var override = overriddenDef();
         if (override != null) {
             return override;
         } else {
@@ -27,7 +27,7 @@ public class ConfigBooleanField extends ConfigField<Boolean> {
 
     @Override
     public boolean metrics() {
-        final var override = overridden_metrics();
+        final var override = overriddenMetrics();
         if (override != null) {
             return override;
         } else {
@@ -36,31 +36,31 @@ public class ConfigBooleanField extends ConfigField<Boolean> {
     }
 
     @Override
-    public void generate_yaml(StringBuilder builder, String indent, YamlConfiguration existing_compatible_config) {
-        append_description(builder, indent);
-        append_default_value(builder, indent, def());
-        final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
+    public void generateYaml(StringBuilder builder, String indent, YamlConfiguration existingCompatibleConfig) {
+        appendDescription(builder, indent);
+        appendDefaultValue(builder, indent, def());
+        final var def = existingCompatibleConfig != null && existingCompatibleConfig.contains(yamlPath())
+            ? loadFromYaml(existingCompatibleConfig)
             : def();
-        append_field_definition(builder, indent, def);
+        appendFieldDefinition(builder, indent, def);
     }
 
     @Override
-    public void check_loadable(YamlConfiguration yaml) throws YamlLoadException {
-        check_yaml_path(yaml);
+    public void checkLoadable(YamlConfiguration yaml) throws YamlLoadException {
+        checkYamlPath(yaml);
 
-        if (!yaml.isBoolean(yaml_path())) {
-            throw new YamlLoadException("Invalid type for yaml path '" + yaml_path() + "', expected boolean");
+        if (!yaml.isBoolean(yamlPath())) {
+            throw new YamlLoadException("Invalid type for yaml path '" + yamlPath() + "', expected boolean");
         }
     }
 
-    public boolean load_from_yaml(YamlConfiguration yaml) {
-        return yaml.getBoolean(yaml_path());
+    public boolean loadFromYaml(YamlConfiguration yaml) {
+        return yaml.getBoolean(yamlPath());
     }
 
     public void load(YamlConfiguration yaml) {
         try {
-            field.setBoolean(owner, load_from_yaml(yaml));
+            field.setBoolean(owner, loadFromYaml(yaml));
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Invalid field access on '" + field.getName() + "'. This is a bug.");
         }

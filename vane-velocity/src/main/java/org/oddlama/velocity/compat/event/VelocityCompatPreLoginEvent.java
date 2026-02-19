@@ -26,7 +26,7 @@ public class VelocityCompatPreLoginEvent extends PreLoginEvent {
     @Override
     public void cancel(String reason) {
         plugin
-            .get_logger()
+            .getLogger()
             .log(
                 Level.WARNING,
                 "Denying multiplexer connection from " +
@@ -44,12 +44,12 @@ public class VelocityCompatPreLoginEvent extends PreLoginEvent {
     }
 
     @Override
-    public ProxyPendingConnection get_connection() {
+    public ProxyPendingConnection getConnection() {
         return new VelocityCompatPendingConnection(event.getConnection(), event.getUsername());
     }
 
     @Override
-    public boolean implementation_specific_auth(MultiplexedPlayer multiplexed_player) {
+    public boolean implementationSpecificAuth(MultiplexedPlayer multiplexedPlayer) {
         // Not applicable, all handled in `ProxyGameProfileRequestListener`
         return true;
     }

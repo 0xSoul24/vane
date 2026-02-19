@@ -44,10 +44,10 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Level;
 
-import static org.oddlama.vane.util.Conversions.ms_to_ticks;
-import static org.oddlama.vane.util.IOUtil.read_json_from_url;
+import static org.oddlama.vane.util.Conversions.msToTicks;
+import static org.oddlama.vane.util.IOUtil.readJsonFromUrl;
 
-@VaneModule(name = "core", bstats = 8637, config_version = 6, lang_version = 5, storage_version = 1)
+@VaneModule(name = "core", bstats = 8637, configVersion = 6, langVersion = 5, storageVersion = 1)
 public class Core extends Module<Core> {
 
     /** Use sparingly. */
@@ -57,63 +57,63 @@ public class Core extends Module<Core> {
         return INSTANCE;
     }
 
-    public EnchantmentManager enchantment_manager;
-    private CustomModelDataRegistry model_data_registry;
-    private CustomItemRegistry item_registry;
+    public EnchantmentManager enchantmentManager;
+    private CustomModelDataRegistry modelDataRegistry;
+    private CustomItemRegistry itemRegistry;
 
     @ConfigBoolean(
         def = true,
         desc = "Allow loading of player heads in relevant menus. Disabling this will show all player heads using the Steve skin, which may perform better on low-performance servers and clients."
     )
-    public boolean config_player_heads_in_menus;
+    public boolean configPlayerHeadsInMenus;
 
     @LangMessage
-    public TranslatedMessage lang_command_not_a_player;
+    public TranslatedMessage langCommandNotAPlayer;
 
     @LangMessage
-    public TranslatedMessage lang_command_permission_denied;
+    public TranslatedMessage langCommandPermissionDenied;
 
     @LangMessage
-    public TranslatedMessage lang_invalid_time_format;
+    public TranslatedMessage langInvalidTimeFormat;
 
     // Module registry
-    private SortedSet<Module<?>> vane_modules = new TreeSet<>((a, b) -> a.get_name().compareTo(b.get_name()));
+    private SortedSet<Module<?>> vaneModules = new TreeSet<>((a, b) -> a.getAnnotationName().compareTo(b.getAnnotationName()));
 
-    public final ResourcePackDistributor resource_pack_distributor;
+    public final ResourcePackDistributor resourcePackDistributor;
 
-    public void register_module(Module<?> module) {
-        vane_modules.add(module);
+    public void registerModule(Module<?> module) {
+        vaneModules.add(module);
     }
 
-    public void unregister_module(Module<?> module) {
-        vane_modules.remove(module);
+    public void unregisterModule(Module<?> module) {
+        vaneModules.remove(module);
     }
 
-    public SortedSet<Module<?>> get_modules() {
-        return Collections.unmodifiableSortedSet(vane_modules);
+    public SortedSet<Module<?>> getModules() {
+        return Collections.unmodifiableSortedSet(vaneModules);
     }
 
     // Vane global command catch-all permission
-    public Permission permission_command_catchall = new Permission(
+    public Permission permissionCommandCatchall = new Permission(
         "vane.*.commands.*",
         "Allow access to all vane commands (ONLY FOR ADMINS!)",
         PermissionDefault.FALSE
     );
 
-    public MenuManager menu_manager;
+    public MenuManager menuManager;
 
     // core-config
     @ConfigBoolean(
         def = true,
         desc = "Let the client translate messages using the generated resource pack. This allows every player to select their preferred language, and all plugin messages will also be translated. Disabling this won't allow you to skip generating the resource pack, as it will be needed for custom item textures."
     )
-    public boolean config_client_side_translations;
+    public boolean configClientSideTranslations;
 
     @ConfigBoolean(def = true, desc = "Send update notices to OPed player when a new version of vane is available.")
-    public boolean config_update_notices;
+    public boolean configUpdateNotices;
 
-    public String current_version = null;
-    public String latest_version = null;
+    public String currentVersion = null;
+    public String latestVersion = null;
 
     public Core() {
         if (INSTANCE != null) {
@@ -122,13 +122,13 @@ public class Core extends Module<Core> {
         INSTANCE = this;
 
         // Create global command catch-all permission
-        register_permission(permission_command_catchall);
+        registerPermission(permissionCommandCatchall);
 
         // Allow registration of new enchantments and entities
-        unfreeze_registries();
+        unfreezeRegistries();
 
         // Components
-        enchantment_manager = new EnchantmentManager(this);
+        enchantmentManager = new EnchantmentManager(this);
         new HeadLibrary(this);
         new AuthMultiplexer(this);
         new LootChestProtector(this);
@@ -137,39 +137,39 @@ public class Core extends Module<Core> {
         new org.oddlama.vane.core.commands.Vane(this);
         new org.oddlama.vane.core.commands.CustomItem(this);
         new org.oddlama.vane.core.commands.Enchant(this);
-        menu_manager = new MenuManager(this);
-        resource_pack_distributor = new ResourcePackDistributor(this);
+        menuManager = new MenuManager(this);
+        resourcePackDistributor = new ResourcePackDistributor(this);
         new CommandHider(this);
-        model_data_registry = new CustomModelDataRegistry();
-        item_registry = new CustomItemRegistry();
+        modelDataRegistry = new CustomModelDataRegistry();
+        itemRegistry = new CustomItemRegistry();
         new ExistingItemConverter(this);
     }
 
     @Override
-    public void on_enable() {
-        if (config_update_notices) {
+    public void onModuleEnable() {
+        if (configUpdateNotices) {
             // Now, and every hour after that, check if a new version is available.
             // OPs will get a message about this when they join.
-            schedule_task_timer(this::check_for_update, 1l, ms_to_ticks(2 * 60l * 60l * 1000l));
+            scheduleTaskTimer(this::checkForUpdate, 1l, msToTicks(2 * 60l * 60l * 1000l));
         }
     }
 
-    public void unfreeze_registries() {
+    public void unfreezeRegistries() {
         // NOTE: MAGIC VALUES! Introduced for 1.18.2 when registries were frozen. Sad, no workaround
         // at the time.
         try {
             // Make relevant fields accessible
             final var frozen = MappedRegistry.class.getDeclaredField("frozen"/* frozen */);
             frozen.setAccessible(true);
-            final var intrusive_holder_cache =
+            final var intrusiveHolderCache =
                 MappedRegistry.class.getDeclaredField(
                         "unregisteredIntrusiveHolders"/* unregisteredIntrusiveHolders (1.19.3+), intrusiveHolderCache (until 1.19.2) */
                     );
-            intrusive_holder_cache.setAccessible(true);
+            intrusiveHolderCache.setAccessible(true);
 
             // Unfreeze required registries
             frozen.set(BuiltInRegistries.ENTITY_TYPE, false);
-            intrusive_holder_cache.set(
+            intrusiveHolderCache.set(
                 BuiltInRegistries.ENTITY_TYPE,
                 new IdentityHashMap<EntityType<?>, Holder.Reference<EntityType<?>>>()
             );
@@ -180,15 +180,15 @@ public class Core extends Module<Core> {
     }
 
     @Override
-    public void on_disable() {}
+    public void onModuleDisable() {}
 
-    public File generate_resource_pack() {
+    public File generateResourcePack() {
         try {
-            var file = new File("vane-resource-pack.zip");
+            var file = new File("VaneResourcePack.zip");
             var pack = new ResourcePackGenerator();
 
-            for (var m : vane_modules) {
-                m.generate_resource_pack(pack);
+            for (var m : vaneModules) {
+                m.generateResourcePack(pack);
             }
 
             pack.write(file);
@@ -199,26 +199,26 @@ public class Core extends Module<Core> {
         }
     }
 
-    public void for_all_module_components(final Consumer1<ModuleComponent<?>> f) {
-        for (var m : vane_modules) {
-            m.for_each_module_component(f);
+    public void forAllModuleComponents(final Consumer1<ModuleComponent<?>> f) {
+        for (var m : vaneModules) {
+            m.forEachModuleComponent(f);
         }
     }
 
-    public CustomItemRegistry item_registry() {
-        return item_registry;
+    public CustomItemRegistry itemRegistry() {
+        return itemRegistry;
     }
 
-    public CustomModelDataRegistry model_data_registry() {
-        return model_data_registry;
+    public CustomModelDataRegistry modelDataRegistry() {
+        return modelDataRegistry;
     }
 
-    public void check_for_update() {
-        if (current_version == null) {
+    public void checkForUpdate() {
+        if (currentVersion == null) {
             try {
                 Properties properties = new Properties();
                 properties.load(Core.class.getResourceAsStream("/vane-core.properties"));
-                current_version = "v" + properties.getProperty("version");
+                currentVersion = "v" + properties.getProperty("version");
             } catch (IOException e) {
                 log.severe("Could not load current version from included properties file: " + e);
                 return;
@@ -226,14 +226,14 @@ public class Core extends Module<Core> {
         }
 
         try {
-            final var json = read_json_from_url("https://api.github.com/repos/oddlama/vane/releases/latest");
-            latest_version = json.getString("tag_name");
-            if (latest_version != null && !latest_version.equals(current_version)) {
+            final var json = readJsonFromUrl("https://api.github.com/repos/oddlama/vane/releases/latest");
+            latestVersion = json.getString("tag_name");
+            if (latestVersion != null && !latestVersion.equals(currentVersion)) {
                 log.warning(
                     "A newer version of vane is available online! (current=" +
-                    current_version +
+                            currentVersion +
                     ", new=" +
-                    latest_version +
+                            latestVersion +
                     ")"
                 );
                 log.warning("Please update as soon as possible to get the latest features and fixes.");
@@ -245,20 +245,20 @@ public class Core extends Module<Core> {
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-    public void on_player_join_send_update_notice(PlayerJoinEvent event) {
-        if (!config_update_notices) {
+    public void onPlayerJoinSendUpdateNotice(PlayerJoinEvent event) {
+        if (!configUpdateNotices) {
             return;
         }
 
         // Send an update message if a new version is available and player is OP.
-        if (latest_version != null && !latest_version.equals(current_version) && event.getPlayer().isOp()) {
+        if (latestVersion != null && !latestVersion.equals(currentVersion) && event.getPlayer().isOp()) {
             // This message is intentionally not translated to ensure it will
             // be displayed correctly and so that everyone understands it.
             event
                 .getPlayer()
                 .sendMessage(
                     Component.text("A new version of vane ", NamedTextColor.GREEN)
-                        .append(Component.text("(" + latest_version + ")", NamedTextColor.AQUA))
+                        .append(Component.text("(" + latestVersion + ")", NamedTextColor.AQUA))
                         .append(Component.text(" is available!", NamedTextColor.GREEN))
                 );
             event

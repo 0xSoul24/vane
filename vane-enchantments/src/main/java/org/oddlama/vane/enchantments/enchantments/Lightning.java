@@ -19,7 +19,7 @@ import org.oddlama.vane.enchantments.Enchantments;
 
 @VaneEnchantment(
     name = "lightning",
-    max_level = 1,
+    maxLevel = 1,
     rarity = Rarity.RARE,
     treasure = true
 )
@@ -33,29 +33,29 @@ public class Lightning extends CustomEnchantment<Enchantments> {
         def = true,
         desc = "Toggle lightning enchantment to cancel lightning damage for wielders of the enchant"
     )
-    private boolean config_lightning_protection;
+    private boolean configLightningProtection;
 
     @ConfigInt(def = 4, min = 0, max = 20, desc = "Damage modifier for the lightning enchant")
-    private int config_lightning_damage;
+    private int configLightningDamage;
 
     @ConfigBoolean(def = true, desc = "Enable lightning to work in rainstorms as well")
-    private boolean config_lightning_rain;
+    private boolean configLightningRain;
 
     @Override
-    public RecipeList default_recipes() {
+    public RecipeList defaultRecipes() {
         return RecipeList.of(
             new ShapedRecipeDefinition("generic")
-                .shape("r r", "utu", " b ")
-                .set_ingredient('r', Material.LIGHTNING_ROD)
-                .set_ingredient('t', "vane_enchantments:ancient_tome_of_knowledge")
-                .set_ingredient('b', Material.BEACON)
-                .set_ingredient('u', Material.TOTEM_OF_UNDYING)
+                .shape("R R", "UTU", " B ")
+                .setIngredient('R', Material.LIGHTNING_ROD)
+                .setIngredient('T', "vane_enchantments:ancient_tome_of_knowledge")
+                .setIngredient('B', Material.BEACON)
+                .setIngredient('U', Material.TOTEM_OF_UNDYING)
                 .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
         );
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void on_lightning_attack(final EntityDamageEvent event) {
+    public void onLightningAttack(final EntityDamageEvent event) {
         // Check if an entity is a player
         if (!(event.getEntity() instanceof Player)) return;
 
@@ -63,7 +63,7 @@ public class Lightning extends CustomEnchantment<Enchantments> {
         if (!(event.getCause() == DamageCause.LIGHTNING)) return;
 
         // Check to see if lightning protection is off
-        if (!config_lightning_protection) return;
+        if (!configLightningProtection) return;
 
         Player player = (Player) event.getEntity();
         final var item = player.getEquipment().getItemInMainHand();
@@ -77,7 +77,7 @@ public class Lightning extends CustomEnchantment<Enchantments> {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void on_sword_attack(final EntityDamageByEntityEvent event) {
+    public void onSwordAttack(final EntityDamageByEntityEvent event) {
         // Only strike when an entity is a player
         if (!(event.getDamager() instanceof Player)) return;
 
@@ -97,13 +97,13 @@ public class Lightning extends CustomEnchantment<Enchantments> {
         if (!world.hasStorm()) return;
 
         // Exit if config set to thunder only
-        if (!config_lightning_rain && !world.isThundering()) return;
+        if (!configLightningRain && !world.isThundering()) return;
 
         // Test if sky is visible
         if (damagee.getLocation().getBlockY() < world.getHighestBlockYAt(damagee.getLocation())) return;
 
         // Execute
-        event.setDamage(event.getDamage() + config_lightning_damage);
+        event.setDamage(event.getDamage() + configLightningDamage);
         world.strikeLightning(damagee.getLocation());
     }
 }

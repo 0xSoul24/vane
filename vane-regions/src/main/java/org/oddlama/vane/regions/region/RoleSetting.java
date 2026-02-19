@@ -10,25 +10,25 @@ public enum RoleSetting {
     PORTAL(false, true);
 
     private boolean def;
-    private boolean def_admin;
+    private boolean defAdmin;
 
-    private RoleSetting(final boolean def, final boolean def_admin) {
+    private RoleSetting(final boolean def, final boolean defAdmin) {
         this.def = def;
-        this.def_admin = def_admin;
+        this.defAdmin = defAdmin;
     }
 
-    public boolean default_value(final boolean admin) {
+    public boolean defaultValue(final boolean admin) {
         if (admin) {
-            return def_admin;
+            return defAdmin;
         }
         return def;
     }
 
-    public boolean has_override() {
-        return get_override() != 0;
+    public boolean hasOverride() {
+        return getOverride() != 0;
     }
 
-    public int get_override() {
-        return Regions.role_overrides.get_override(this);
+    public int getOverride() {
+        return Regions.roleOverrides.getOverride(this);
     }
 }

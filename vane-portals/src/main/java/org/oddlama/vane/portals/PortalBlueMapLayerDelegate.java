@@ -17,66 +17,66 @@ public class PortalBlueMapLayerDelegate {
 
     private final PortalBlueMapLayer parent;
 
-    private boolean bluemap_enabled = false;
+    private boolean bluemapEnabled = false;
 
     public PortalBlueMapLayerDelegate(final PortalBlueMapLayer parent) {
         this.parent = parent;
     }
 
-    public Portals get_module() {
-        return parent.get_module();
+    public Portals getModule() {
+        return parent.getModule();
     }
 
-    public void on_enable(final Plugin plugin) {
+    public void onEnable(final Plugin plugin) {
         BlueMapAPI.onEnable(api -> {
-            get_module().log.info("Enabling BlueMap integration");
-            bluemap_enabled = true;
+            getModule().log.info("Enabling BlueMap integration");
+            bluemapEnabled = true;
 
             // Create marker sets
-            for (final var world : get_module().getServer().getWorlds()) {
-                create_marker_set(api, world);
+            for (final var world : getModule().getServer().getWorlds()) {
+                createMarkerSet(api, world);
             }
 
-            update_all_markers();
+            updateAllMarkers();
         });
     }
 
-    public void on_disable() {
-        if (!bluemap_enabled) {
+    public void onDisable() {
+        if (!bluemapEnabled) {
             return;
         }
 
-        get_module().log.info("Disabling BlueMap integration");
-        bluemap_enabled = false;
+        getModule().log.info("Disabling BlueMap integration");
+        bluemapEnabled = false;
     }
 
-    // world_id -> MarkerSet
-    private final HashMap<UUID, MarkerSet> marker_sets = new HashMap<>();
+    // worldId -> MarkerSet
+    private final HashMap<UUID, MarkerSet> markerSets = new HashMap<>();
 
-    private void create_marker_set(final BlueMapAPI api, final World world) {
-        if (marker_sets.containsKey(world.getUID())) {
+    private void createMarkerSet(final BlueMapAPI api, final World world) {
+        if (markerSets.containsKey(world.getUID())) {
             return;
         }
 
-        final var marker_set = MarkerSet.builder()
-            .label(parent.lang_layer_label.str())
+        final var markerSet = MarkerSet.builder()
+            .label(parent.langLayerLabel.str())
             .toggleable(true)
-            .defaultHidden(parent.config_hide_by_default)
+            .defaultHidden(parent.configHideByDefault)
             .build();
 
         api
             .getWorld(world)
-            .ifPresent(bm_world -> {
-                for (final var map : bm_world.getMaps()) {
-                    map.getMarkerSets().put(MARKER_SET_ID, marker_set);
+            .ifPresent(bmWorld -> {
+                for (final var map : bmWorld.getMaps()) {
+                    map.getMarkerSets().put(MARKER_SET_ID, markerSet);
                 }
             });
 
-        marker_sets.put(world.getUID(), marker_set);
+        markerSets.put(world.getUID(), markerSet);
     }
 
-    public void update_marker(final Portal portal) {
-        remove_marker(portal.id());
+    public void updateMarker(final Portal portal) {
+        removeMarker(portal.id());
 
         // Don't show private portals
         if (portal.visibility() == Portal.Visibility.PRIVATE) {
@@ -87,27 +87,27 @@ public class PortalBlueMapLayerDelegate {
         final var marker = HtmlMarker.builder()
             .position(loc.getX(), loc.getY(), loc.getZ())
             .label("Portal " + portal.name())
-            .html(parent.lang_marker_label.str(escapeHtml4(portal.name())))
+            .html(parent.langMarkerLabel.str(escapeHtml4(portal.name())))
             .build();
 
         // Existing markers will be overwritten.
-        marker_sets.get(loc.getWorld().getUID()).getMarkers().put(portal.id().toString(), marker);
+        markerSets.get(loc.getWorld().getUID()).getMarkers().put(portal.id().toString(), marker);
     }
 
-    public void remove_marker(final UUID portal_id) {
-        for (final var marker_set : marker_sets.values()) {
-            marker_set.getMarkers().remove(portal_id.toString());
+    public void removeMarker(final UUID portalId) {
+        for (final var markerSet : markerSets.values()) {
+            markerSet.getMarkers().remove(portalId.toString());
         }
     }
 
-    public void update_all_markers() {
-        for (final var portal : get_module().all_available_portals()) {
+    public void updateAllMarkers() {
+        for (final var portal : getModule().allAvailablePortals()) {
             // Don't show private portals
             if (portal.visibility() == Portal.Visibility.PRIVATE) {
                 continue;
             }
 
-            update_marker(portal);
+            updateMarker(portal);
         }
     }
 }

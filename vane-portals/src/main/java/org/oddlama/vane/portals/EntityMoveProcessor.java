@@ -22,23 +22,23 @@ public class EntityMoveProcessor extends ModuleComponent<Portals> {
     // but wasn't processed, we don't need to update it. This ensures that no entities
     // will be accidentally skipped when we are struggling to keep up.
     // This stores entity_id -> (entity, old location).
-    private LinkedHashMap<UUID, Pair<Entity, Location>> move_event_processing_queue = new LinkedHashMap<>();
+    private LinkedHashMap<UUID, Pair<Entity, Location>> moveEventProcessingQueue = new LinkedHashMap<>();
 
     // Two hash maps to store old and current positions for each entity.
-    private HashMap<UUID, Pair<Entity, Location>> move_event_current_positions = new HashMap<>();
-    private HashMap<UUID, Pair<Entity, Location>> move_event_old_positions = new HashMap<>();
+    private HashMap<UUID, Pair<Entity, Location>> moveEventCurrentPositions = new HashMap<>();
+    private HashMap<UUID, Pair<Entity, Location>> moveEventOldPositions = new HashMap<>();
 
     private BukkitTask task;
 
     // Never process entity-move events for more than ~30% of a tick.
     // We use 15ms threshold time, and 50ms would be 1 tick.
-    private static final long move_event_max_nanoseconds_per_tick = 15000000l;
+    private static final long MOVE_EVENT_MAX_NANOSECONDS_PER_TICK = 15000000L;
 
     public EntityMoveProcessor(Context<Portals> context) {
         super(context);
     }
 
-    private static boolean is_movement(final Location l1, final Location l2) {
+    private static boolean isMovement(final Location l1, final Location l2) {
         // Different worlds = not a movement event.
         return (
             l1.getWorld() == l2.getWorld() &&
@@ -50,7 +50,7 @@ public class EntityMoveProcessor extends ModuleComponent<Portals> {
         );
     }
 
-    private void process_entity_movements() {
+    private void processEntityMovements() {
         // This custom event detector is necessary as PaperMC's entity move events trigger for
         // LivingEntities,
         // but we need move events for all entities. Wanna throw that potion through the portal?
@@ -74,19 +74,19 @@ public class EntityMoveProcessor extends ModuleComponent<Portals> {
         // Phase 1 - Movement detection
         // --------------------------------------------
 
-        final var active_portal_worlds = new HashSet<UUID>();
-        for (final var portal : get_module().all_available_portals()) {
-            if (get_module().is_activated(portal)) {
-                active_portal_worlds.add(portal.spawn_world());
+        final var activePortalWorlds = new HashSet<UUID>();
+        for (final var portal : getModule().allAvailablePortals()) {
+            if (getModule().isActivated(portal)) {
+                activePortalWorlds.add(portal.spawnWorld());
             }
         }
 
         // Store current positions for each entity
-        for (final var world_id : active_portal_worlds) {
-            final var world = get_module().getServer().getWorld(world_id);
+        for (final var worldId : activePortalWorlds) {
+            final var world = getModule().getServer().getWorld(worldId);
             if (world != null) {
                 for (final var entity : world.getEntities()) {
-                    move_event_current_positions.put(entity.getUniqueId(), Pair.of(entity, entity.getLocation()));
+                    moveEventCurrentPositions.put(entity.getUniqueId(), Pair.of(entity, entity.getLocation()));
                 }
             }
         }
@@ -97,62 +97,62 @@ public class EntityMoveProcessor extends ModuleComponent<Portals> {
         // If the processing queue already contained the entity, we remove it before iterating
         // as there is nothing to do - we simply lose information about the intermediate position.
         for (final var eid : Sets.difference(
-            Sets.intersection(move_event_old_positions.keySet(), move_event_current_positions.keySet()),
-            move_event_processing_queue.keySet()
+            Sets.intersection(moveEventOldPositions.keySet(), moveEventCurrentPositions.keySet()),
+            moveEventProcessingQueue.keySet()
         )) {
-            final var old_entity_and_loc = move_event_old_positions.get(eid);
-            final var new_entity_and_loc = move_event_current_positions.get(eid);
+            final var oldEntityAndLoc = moveEventOldPositions.get(eid);
+            final var newEntityAndLoc = moveEventCurrentPositions.get(eid);
             if (
-                old_entity_and_loc == null ||
-                new_entity_and_loc == null ||
-                !is_movement(old_entity_and_loc.getRight(), new_entity_and_loc.getRight())
+                oldEntityAndLoc == null ||
+                newEntityAndLoc == null ||
+                !isMovement(oldEntityAndLoc.getRight(), newEntityAndLoc.getRight())
             ) {
                 continue;
             }
 
-            move_event_processing_queue.put(eid, Pair.of(old_entity_and_loc));
+            moveEventProcessingQueue.put(eid, Pair.of(oldEntityAndLoc));
         }
 
         // Swap old and current position hash maps, and only retain the now-old positions.
         // This avoids unnecessary allocations.
-        final var tmp = move_event_current_positions;
-        move_event_current_positions = move_event_old_positions;
-        move_event_old_positions = tmp;
-        move_event_current_positions.clear();
+        final var tmp = moveEventCurrentPositions;
+        moveEventCurrentPositions = moveEventOldPositions;
+        moveEventOldPositions = tmp;
+        moveEventCurrentPositions.clear();
 
         // Phase 2 - Event dispatching
         // --------------------------------------------
 
-        final var time_begin = System.nanoTime();
-        final var pm = get_module().getServer().getPluginManager();
-        final var iter = move_event_processing_queue.entrySet().iterator();
+        final var timeBegin = System.nanoTime();
+        final var pm = getModule().getServer().getPluginManager();
+        final var iter = moveEventProcessingQueue.entrySet().iterator();
         while (iter.hasNext()) {
-            final var e_and_old_loc = iter.next().getValue();
+            final var eAndOldLoc = iter.next().getValue();
             iter.remove();
 
             // Dispatch event.
-            final var entity = e_and_old_loc.getLeft();
-            final var event = new EntityMoveEvent(entity, e_and_old_loc.getRight(), entity.getLocation());
+            final var entity = eAndOldLoc.getLeft();
+            final var event = new EntityMoveEvent(entity, eAndOldLoc.getRight(), entity.getLocation());
             pm.callEvent(event);
 
             // Abort if we exceed the threshold time
-            final var time_now = System.nanoTime();
-            if (time_now - time_begin > move_event_max_nanoseconds_per_tick) {
+            final var timeNow = System.nanoTime();
+            if (timeNow - timeBegin > MOVE_EVENT_MAX_NANOSECONDS_PER_TICK) {
                 break;
             }
         }
     }
 
     @Override
-    protected void on_enable() {
+    protected void onEnable() {
         // Each tick we need to recalculate whether entities moved.
         // This is using a scheduling algorithm (see function implementation) to
         // keep it lightweight and to prevent lags.
-        task = schedule_task_timer(this::process_entity_movements, 1l, 1l);
+        task = scheduleTaskTimer(this::processEntityMovements, 1l, 1l);
     }
 
     @Override
-    protected void on_disable() {
+    protected void onDisable() {
         task.cancel();
     }
 }

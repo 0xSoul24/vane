@@ -1,6 +1,6 @@
 package org.oddlama.vane.regions.region;
 
-import static org.oddlama.vane.util.PlayerUtil.has_items;
+import static org.oddlama.vane.util.PlayerUtil.hasItems;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -20,14 +20,14 @@ public class RegionSelection {
         this.regions = regions;
     }
 
-    public boolean intersects_existing() {
+    public boolean intersectsExisting() {
         final var extent = extent();
-        for (final var r : regions.all_regions()) {
+        for (final var r : regions.allRegions()) {
             if (!r.extent().min().getWorld().equals(primary.getWorld())) {
                 continue;
             }
 
-            if (extent.intersects_extent(r.extent())) {
+            if (extent.intersectsExtent(r.extent())) {
                 return true;
             }
         }
@@ -40,17 +40,17 @@ public class RegionSelection {
         final var dy = 1 + Math.abs(primary.getY() - secondary.getY());
         final var dz = 1 + Math.abs(primary.getZ() - secondary.getZ());
         final var cost =
-            ((Math.pow(regions.config_cost_y_multiplicator, dy / 16.0) * regions.config_cost_xz_base) / 256.0) *
+            ((Math.pow(regions.configCostYMultiplicator, dy / 16.0) * regions.configCostXzBase) / 256.0) *
             dx *
             dz;
-        if (regions.config_economy_as_currency) {
-            int decimal_places = regions.config_economy_decimal_places;
-            if (decimal_places == -1) {
-                decimal_places = regions.economy.fractionalDigits();
+        if (regions.configEconomyAsCurrency) {
+            int decimalPlaces = regions.configEconomyDecimalPlaces;
+            if (decimalPlaces == -1) {
+                decimalPlaces = regions.economy.fractionalDigits();
             }
 
-            if (decimal_places >= 0) {
-                return new BigDecimal(cost).setScale(decimal_places, RoundingMode.UP).doubleValue();
+            if (decimalPlaces >= 0) {
+                return new BigDecimal(cost).setScale(decimalPlaces, RoundingMode.UP).doubleValue();
             } else {
                 return cost;
             }
@@ -59,22 +59,22 @@ public class RegionSelection {
         }
     }
 
-    public boolean can_afford(final Player player) {
+    public boolean canAfford(final Player player) {
         final var price = price();
         if (price <= 0) {
             return true;
         }
 
-        if (regions.config_economy_as_currency) {
+        if (regions.configEconomyAsCurrency) {
             return regions.economy.has(player, price);
         } else {
             final var map = new HashMap<ItemStack, Integer>();
-            map.put(new ItemStack(regions.config_currency), (int) price);
-            return has_items(player, map);
+            map.put(new ItemStack(regions.configCurrency), (int) price);
+            return hasItems(player, map);
         }
     }
 
-    public boolean is_valid(final Player player) {
+    public boolean isValid(final Player player) {
         // Both block sets
         if (primary == null || secondary == null) {
             return false;
@@ -91,23 +91,23 @@ public class RegionSelection {
 
         // min <= extent <= max
         if (
-            dx < regions.config_min_region_extent_x ||
-            dy < regions.config_min_region_extent_y ||
-            dz < regions.config_min_region_extent_z ||
-            dx > regions.config_max_region_extent_x ||
-            dy > regions.config_max_region_extent_y ||
-            dz > regions.config_max_region_extent_z
+            dx < regions.configMinRegionExtentX ||
+            dy < regions.configMinRegionExtentY ||
+            dz < regions.configMinRegionExtentZ ||
+            dx > regions.configMaxRegionExtentX ||
+            dy > regions.configMaxRegionExtentY ||
+            dz > regions.configMaxRegionExtentZ
         ) {
             return false;
         }
 
         // Assert that it doesn't intersect an existing region
-        if (intersects_existing()) {
+        if (intersectsExisting()) {
             return false;
         }
 
         // Check that the player can afford it
-        return can_afford(player);
+        return canAfford(player);
     }
 
     public RegionExtent extent() {

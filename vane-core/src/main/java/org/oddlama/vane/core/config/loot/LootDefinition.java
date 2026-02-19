@@ -12,40 +12,40 @@ import org.oddlama.vane.util.StorageUtil;
 
 public class LootDefinition {
 
-    private static record Entry(double chance, int amount_min, int amount_max, String item_definition) {
+    private record Entry(double chance, int amountMin, int amountMax, String itemDefinition) {
         public Object serialize() {
             final HashMap<String, Object> dict = new HashMap<>();
-            dict.put("chance", chance);
-            dict.put("amount_min", amount_min);
-            dict.put("amount_max", amount_max);
-            dict.put("item", item_definition);
+            dict.put("Chance", chance);
+            dict.put("AmountMin", amountMin);
+            dict.put("AmountMax", amountMax);
+            dict.put("Item", itemDefinition);
             return dict;
         }
 
         public static Entry deserialize(Map<String, Object> map) {
-            if (!(map.get("chance") instanceof Double chance)) {
+            if (!(map.get("Chance") instanceof Double chance)) {
                 throw new IllegalArgumentException("Invalid loot table entry: chance must be a double!");
             }
 
-            if (!(map.get("amount_min") instanceof Integer amount_min)) {
-                throw new IllegalArgumentException("Invalid loot table entry: amount_min must be a int!");
+            if (!(map.get("AmountMin") instanceof Integer amountMin)) {
+                throw new IllegalArgumentException("Invalid loot table entry: amountMin must be a int!");
             }
 
-            if (!(map.get("amount_max") instanceof Integer amount_max)) {
-                throw new IllegalArgumentException("Invalid loot table entry: amount_max must be a int!");
+            if (!(map.get("AmountMax") instanceof Integer amountMax)) {
+                throw new IllegalArgumentException("Invalid loot table entry: amountMax must be a int!");
             }
 
-            if (!(map.get("item") instanceof String item_definition)) {
-                throw new IllegalArgumentException("Invalid loot table entry: item_definition must be a String!");
+            if (!(map.get("Item") instanceof String itemDefinition)) {
+                throw new IllegalArgumentException("Invalid loot table entry: itemDefinition must be a String!");
             }
 
-            return new Entry(chance, amount_min, amount_max, item_definition);
+            return new Entry(chance, amountMin, amountMax, itemDefinition);
         }
     }
 
     public String name;
-    public List<NamespacedKey> affected_tables = new ArrayList<>();
-    public List<Entry> entries = new ArrayList<>();
+    public List<NamespacedKey> affectedTables = new ArrayList<>();
+    private List<Entry> entries = new ArrayList<>();
 
     public LootDefinition(final String name) {
         this.name = name;
@@ -55,12 +55,12 @@ public class LootDefinition {
         return name;
     }
 
-    public NamespacedKey key(final NamespacedKey base_key) {
-        return StorageUtil.namespaced_key(base_key.namespace(), base_key.value() + "." + name);
+    public NamespacedKey key(final NamespacedKey baseKey) {
+        return StorageUtil.namespacedKey(baseKey.namespace(), baseKey.value() + "." + name);
     }
 
     public LootDefinition in(final NamespacedKey table) {
-        affected_tables.add(table);
+        affectedTables.add(table);
         return this;
     }
 
@@ -73,35 +73,38 @@ public class LootDefinition {
         return this;
     }
 
-    public LootDefinition add(double chance, int amount_min, int amount_max, String item_definition) {
-        return add(new Entry(chance, amount_min, amount_max, item_definition));
+    public LootDefinition add(double chance, int amountMin, int amountMax, String itemDefinition) {
+        return add(new Entry(chance, amountMin, amountMax, itemDefinition));
     }
 
     public Object serialize() {
         final HashMap<String, Object> dict = new HashMap<>();
-        dict.put("tables", affected_tables.stream().map(NamespacedKey::toString).toList());
-        dict.put("items", entries.stream().map(Entry::serialize).toList());
+        // Use capitalized keys for YAML generation: "Tables" and "Items"
+        dict.put("Tables", affectedTables.stream().map(NamespacedKey::toString).toList());
+        dict.put("Items", entries.stream().map(Entry::serialize).toList());
         return dict;
     }
 
     @SuppressWarnings("unchecked")
-    public static LootDefinition deserialize(String name, Object raw_dict) {
-        if (!(raw_dict instanceof Map<?, ?> dict)) {
+    public static LootDefinition deserialize(String name, Object rawDict) {
+        if (!(rawDict instanceof Map<?, ?> dict)) {
             throw new IllegalArgumentException(
-                "Invalid loot table: Argument must be a Map<String, Object>, but is " + raw_dict.getClass() + "!"
+                "Invalid loot table: Argument must be a Map<String, Object>, but is " + rawDict.getClass() + "!"
             );
         }
 
-        final var table_dict = (Map<String, Object>) dict;
-        if (!(table_dict.get("tables") instanceof List<?> tables)) {
+        final var tableDict = (Map<String, Object>) dict;
+        final Object tablesObj = tableDict.containsKey("Tables") ? tableDict.get("Tables") : tableDict.get("tables");
+        if (!(tablesObj instanceof List<?> tables)) {
             throw new IllegalArgumentException(
-                "Invalid loot table: Argument must be a Map<String, Object>, but is " + raw_dict.getClass() + "!"
+                "Invalid loot table: 'tables' must be a list"
             );
         }
 
-        if (!(table_dict.get("items") instanceof List<?> items)) {
+        final Object itemsObj = tableDict.containsKey("Items") ? tableDict.get("Items") : tableDict.get("items");
+        if (!(itemsObj instanceof List<?> items)) {
             throw new IllegalArgumentException(
-                "Invalid loot table: Argument must be a Map<String, Object>, but is " + raw_dict.getClass() + "!"
+                "Invalid loot table: 'items' must be a list"
             );
         }
 
@@ -126,9 +129,9 @@ public class LootDefinition {
             .map(e ->
                 new LootTableEntry(
                     e.chance,
-                    ItemUtil.itemstack_from_string(e.item_definition).getLeft(),
-                    e.amount_min,
-                    e.amount_max
+                    ItemUtil.itemstackFromString(e.itemDefinition).getLeft(),
+                    e.amountMin,
+                    e.amountMax
                 )
             )
             .toList();

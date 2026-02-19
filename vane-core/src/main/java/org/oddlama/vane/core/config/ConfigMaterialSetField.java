@@ -1,7 +1,7 @@
 package org.oddlama.vane.core.config;
 
-import static org.oddlama.vane.util.MaterialUtil.material_from;
-import static org.oddlama.vane.util.StorageUtil.namespaced_key;
+import static org.oddlama.vane.util.MaterialUtil.materialFrom;
+import static org.oddlama.vane.util.StorageUtil.namespacedKey;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -23,31 +23,31 @@ public class ConfigMaterialSetField extends ConfigField<Set<Material>> {
     public ConfigMaterialSetField(
         Object owner,
         Field field,
-        Function<String, String> map_name,
+        Function<String, String> mapName,
         ConfigMaterialSet annotation
     ) {
-        super(owner, field, map_name, "set of materials", annotation.desc());
+        super(owner, field, mapName, "set of materials", annotation.desc());
         this.annotation = annotation;
     }
 
-    private void append_material_set_definition(
+    private void appendMaterialSetDefinition(
         StringBuilder builder,
         String indent,
         String prefix,
         Set<Material> def
     ) {
-        append_list_definition(builder, indent, prefix, def, (b, m) -> {
+        appendListDefinition(builder, indent, prefix, def, (b, m) -> {
             b.append("\"");
-            b.append(escape_yaml(m.getKey().getNamespace()));
+            b.append(escapeYaml(m.getKey().getNamespace()));
             b.append(":");
-            b.append(escape_yaml(m.getKey().getKey()));
+            b.append(escapeYaml(m.getKey().getKey()));
             b.append("\"");
         });
     }
 
     @Override
     public Set<Material> def() {
-        final var override = overridden_def();
+        final var override = overriddenDef();
         if (override != null) {
             return override;
         } else {
@@ -57,7 +57,7 @@ public class ConfigMaterialSetField extends ConfigField<Set<Material>> {
 
     @Override
     public boolean metrics() {
-        final var override = overridden_metrics();
+        final var override = overriddenMetrics();
         if (override != null) {
             return override;
         } else {
@@ -66,10 +66,10 @@ public class ConfigMaterialSetField extends ConfigField<Set<Material>> {
     }
 
     @Override
-    public void register_metrics(Metrics metrics) {
+    public void registerMetrics(Metrics metrics) {
         if (!this.metrics()) return;
         metrics.addCustomChart(
-            new AdvancedPie(yaml_path(), () -> {
+            new AdvancedPie(yamlPath(), () -> {
                 final var values = new HashMap<String, Integer>();
                 for (final var v : get()) {
                     values.put(v.getKey().toString(), 1);
@@ -80,66 +80,66 @@ public class ConfigMaterialSetField extends ConfigField<Set<Material>> {
     }
 
     @Override
-    public void generate_yaml(StringBuilder builder, String indent, YamlConfiguration existing_compatible_config) {
-        append_description(builder, indent);
+    public void generateYaml(StringBuilder builder, String indent, YamlConfiguration existingCompatibleConfig) {
+        appendDescription(builder, indent);
 
         // Default
         builder.append(indent);
         builder.append("# Default:\n");
-        append_material_set_definition(builder, indent, "# ", def());
+        appendMaterialSetDefinition(builder, indent, "# ", def());
 
         // Definition
         builder.append(indent);
         builder.append(basename());
         builder.append(":\n");
-        final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
+        final var def = existingCompatibleConfig != null && existingCompatibleConfig.contains(yamlPath())
+            ? loadFromYaml(existingCompatibleConfig)
             : def();
-        append_material_set_definition(builder, indent, "", def);
+        appendMaterialSetDefinition(builder, indent, "", def);
     }
 
     @Override
-    public void check_loadable(YamlConfiguration yaml) throws YamlLoadException {
-        check_yaml_path(yaml);
+    public void checkLoadable(YamlConfiguration yaml) throws YamlLoadException {
+        checkYamlPath(yaml);
 
-        if (!yaml.isList(yaml_path())) {
-            throw new YamlLoadException("Invalid type for yaml path '" + yaml_path() + "', expected list");
+        if (!yaml.isList(yamlPath())) {
+            throw new YamlLoadException("Invalid type for yaml path '" + yamlPath() + "', expected list");
         }
 
-        for (var obj : yaml.getList(yaml_path())) {
+        for (var obj : yaml.getList(yamlPath())) {
             if (!(obj instanceof String)) {
-                throw new YamlLoadException("Invalid type for yaml path '" + yaml_path() + "', expected string");
+                throw new YamlLoadException("Invalid type for yaml path '" + yamlPath() + "', expected string");
             }
 
             final var str = (String) obj;
             final var split = str.split(":");
             if (split.length != 2) {
                 throw new YamlLoadException(
-                    "Invalid material entry in list '" + yaml_path() + "': '" + str + "' is not a valid namespaced key"
+                    "Invalid material entry in list '" + yamlPath() + "': '" + str + "' is not a valid namespaced key"
                 );
             }
 
-            final var mat = material_from(namespaced_key(split[0], split[1]));
+            final var mat = materialFrom(namespacedKey(split[0], split[1]));
             if (mat == null) {
                 throw new YamlLoadException(
-                    "Invalid material entry in list '" + yaml_path() + "': '" + str + "' does not exist"
+                    "Invalid material entry in list '" + yamlPath() + "': '" + str + "' does not exist"
                 );
             }
         }
     }
 
-    public Set<Material> load_from_yaml(YamlConfiguration yaml) {
+    public Set<Material> loadFromYaml(YamlConfiguration yaml) {
         final var set = new HashSet<Material>();
-        for (var obj : yaml.getList(yaml_path())) {
+        for (var obj : yaml.getList(yamlPath())) {
             final var split = ((String) obj).split(":");
-            set.add(material_from(namespaced_key(split[0], split[1])));
+            set.add(materialFrom(namespacedKey(split[0], split[1])));
         }
         return set;
     }
 
     public void load(YamlConfiguration yaml) {
         try {
-            field.set(owner, load_from_yaml(yaml));
+            field.set(owner, loadFromYaml(yaml));
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Invalid field access on '" + field.getName() + "'. This is a bug.");
         }

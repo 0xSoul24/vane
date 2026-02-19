@@ -6,7 +6,7 @@ import org.bukkit.block.Block;
 
 public class LazyBlock {
 
-    private final UUID world_id;
+    private final UUID worldId;
     private int x;
     private int y;
     private int z;
@@ -14,12 +14,12 @@ public class LazyBlock {
 
     public LazyBlock(final Block block) {
         if (block == null) {
-            this.world_id = null;
+            this.worldId = null;
             this.x = 0;
             this.y = 0;
             this.z = 0;
         } else {
-            this.world_id = block.getWorld().getUID();
+            this.worldId = block.getWorld().getUID();
             this.x = block.getX();
             this.y = block.getY();
             this.z = block.getZ();
@@ -27,16 +27,16 @@ public class LazyBlock {
         this.block = block;
     }
 
-    public LazyBlock(final UUID world_id, int x, int y, int z) {
-        this.world_id = world_id;
+    public LazyBlock(final UUID worldId, int x, int y, int z) {
+        this.worldId = worldId;
         this.x = x;
         this.y = y;
         this.z = z;
         this.block = null;
     }
 
-    public UUID world_id() {
-        return world_id;
+    public UUID worldId() {
+        return worldId;
     }
 
     public int x() {
@@ -52,8 +52,8 @@ public class LazyBlock {
     }
 
     public Block block() {
-        if (world_id != null && block == null) {
-            this.block = Bukkit.getWorld(world_id).getBlockAt(x, y, z);
+        if (worldId != null && block == null) {
+            this.block = Bukkit.getWorld(worldId).getBlockAt(x, y, z);
         }
 
         return block;

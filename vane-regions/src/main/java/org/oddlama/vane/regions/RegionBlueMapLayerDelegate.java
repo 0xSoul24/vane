@@ -17,93 +17,93 @@ public class RegionBlueMapLayerDelegate {
 
     private final RegionBlueMapLayer parent;
 
-    private boolean bluemap_enabled = false;
+    private boolean bluemapEnabled = false;
 
     public RegionBlueMapLayerDelegate(final RegionBlueMapLayer parent) {
         this.parent = parent;
     }
 
-    public Regions get_module() {
-        return parent.get_module();
+    public Regions getModule() {
+        return parent.getModule();
     }
 
-    public void on_enable(final Plugin plugin) {
+    public void onEnable(final Plugin plugin) {
         BlueMapAPI.onEnable(api -> {
-            get_module().log.info("Enabling BlueMap integration");
-            bluemap_enabled = true;
+            getModule().log.info("Enabling BlueMap integration");
+            bluemapEnabled = true;
 
             // Create marker sets
-            for (final var world : get_module().getServer().getWorlds()) {
-                create_marker_set(api, world);
+            for (final var world : getModule().getServer().getWorlds()) {
+                createMarkerSet(api, world);
             }
 
-            update_all_markers();
+            updateAllMarkers();
         });
     }
 
-    public void on_disable() {
-        if (!bluemap_enabled) {
+    public void onDisable() {
+        if (!bluemapEnabled) {
             return;
         }
 
-        get_module().log.info("Disabling BlueMap integration");
-        bluemap_enabled = false;
+        getModule().log.info("Disabling BlueMap integration");
+        bluemapEnabled = false;
     }
 
-    // world_id -> MarkerSet
-    private final HashMap<UUID, MarkerSet> marker_sets = new HashMap<>();
+    // worldId -> MarkerSet
+    private final HashMap<UUID, MarkerSet> markerSets = new HashMap<>();
 
-    private void create_marker_set(final BlueMapAPI api, final World world) {
-        if (marker_sets.containsKey(world.getUID())) {
+    private void createMarkerSet(final BlueMapAPI api, final World world) {
+        if (markerSets.containsKey(world.getUID())) {
             return;
         }
 
-        final var marker_set = MarkerSet.builder()
-            .label(parent.lang_layer_label.str())
+        final var markerSet = MarkerSet.builder()
+            .label(parent.langLayerLabel.str())
             .toggleable(true)
-            .defaultHidden(parent.config_hide_by_default)
+            .defaultHidden(parent.configHideByDefault)
             .build();
 
         api
             .getWorld(world)
-            .ifPresent(bm_world -> {
-                for (final var map : bm_world.getMaps()) {
-                    map.getMarkerSets().put(MARKER_SET_ID, marker_set);
+            .ifPresent(bmWorld -> {
+                for (final var map : bmWorld.getMaps()) {
+                    map.getMarkerSets().put(MARKER_SET_ID, markerSet);
                 }
             });
 
-        marker_sets.put(world.getUID(), marker_set);
+        markerSets.put(world.getUID(), markerSet);
     }
 
-    public void update_marker(final Region region) {
-        remove_marker(region.id());
+    public void updateMarker(final Region region) {
+        removeMarker(region.id());
         final var min = region.extent().min();
         final var max = region.extent().max();
         final var shape = Shape.createRect(min.getX(), min.getZ(), max.getX() + 1, max.getZ() + 1);
 
         final var marker = ExtrudeMarker.builder()
             .shape(shape, min.getY(), max.getY() + 1)
-            .label(parent.lang_marker_label.str(region.name()))
-            .lineWidth(parent.config_line_width)
-            .lineColor(new Color(parent.config_line_color, (float) parent.config_line_opacity))
-            .fillColor(new Color(parent.config_fill_color, (float) parent.config_fill_opacity))
-            .depthTestEnabled(parent.config_depth_test)
+            .label(parent.langMarkerLabel.str(region.name()))
+            .lineWidth(parent.configLineWidth)
+            .lineColor(new Color(parent.configLineColor, (float) parent.configLineOpacity))
+            .fillColor(new Color(parent.configFillColor, (float) parent.configFillOpacity))
+            .depthTestEnabled(parent.configDepthTest)
             .centerPosition()
             .build();
 
         // Existing markers will be overwritten.
-        marker_sets.get(min.getWorld().getUID()).getMarkers().put(region.id().toString(), marker);
+        markerSets.get(min.getWorld().getUID()).getMarkers().put(region.id().toString(), marker);
     }
 
-    public void remove_marker(final UUID region_id) {
-        for (final var marker_set : marker_sets.values()) {
-            marker_set.getMarkers().remove(region_id.toString());
+    public void removeMarker(final UUID regionId) {
+        for (final var markerSet : markerSets.values()) {
+            markerSet.getMarkers().remove(regionId.toString());
         }
     }
 
-    public void update_all_markers() {
-        for (final var region : get_module().all_regions()) {
-            update_marker(region);
+    public void updateAllMarkers() {
+        for (final var region : getModule().allRegions()) {
+            updateMarker(region);
         }
     }
 }

@@ -15,75 +15,75 @@ public class BedtimeDynmapLayer extends ModuleComponent<Bedtime> {
     public static final String LAYER_ID = "vane_bedtime.bedtime";
 
     @ConfigInt(def = 25, min = 0, desc = "Layer ordering priority.")
-    public int config_layer_priority;
+    public int configLayerPriority;
 
     @ConfigBoolean(def = false, desc = "If the layer should be hidden by default.")
-    public boolean config_layer_hide;
+    public boolean configLayerHide;
 
     @ConfigString(def = "house", desc = "The dynmap marker icon.")
-    public String config_marker_icon;
+    public String configMarkerIcon;
 
     @LangMessage
-    public TranslatedMessage lang_layer_label;
+    public TranslatedMessage langLayerLabel;
 
     @LangMessage
-    public TranslatedMessage lang_marker_label;
+    public TranslatedMessage langMarkerLabel;
 
     private BedtimeDynmapLayerDelegate delegate = null;
 
     public BedtimeDynmapLayer(final Context<Bedtime> context) {
         super(
             context.group(
-                "dynmap",
-                "Enable dynmap integration. Player spawnpoints (beds) will then be shown on a separate dynmap layer."
+                "Dynmap",
+                "Enable Dynmap integration. Player spawnpoints (beds) will then be shown on a separate dynmap layer."
             )
         );
     }
 
-    public void delayed_on_enable() {
-        final var plugin = get_module().getServer().getPluginManager().getPlugin("dynmap");
+    public void delayedOnEnable() {
+        final var plugin = getModule().getServer().getPluginManager().getPlugin("dynmap");
         if (plugin == null) {
             return;
         }
 
         delegate = new BedtimeDynmapLayerDelegate(this);
-        delegate.on_enable(plugin);
+        delegate.onEnable(plugin);
     }
 
     @Override
-    public void on_enable() {
-        schedule_next_tick(this::delayed_on_enable);
+    public void onEnable() {
+        scheduleNextTick(this::delayedOnEnable);
     }
 
     @Override
-    public void on_disable() {
+    public void onDisable() {
         if (delegate != null) {
-            delegate.on_disable();
+            delegate.onDisable();
             delegate = null;
         }
     }
 
-    public void update_marker(final OfflinePlayer player) {
+    public void updateMarker(final OfflinePlayer player) {
         if (delegate != null) {
-            delegate.update_marker(player);
+            delegate.updateMarker(player);
         }
     }
 
-    public void remove_marker(final UUID player_id) {
+    public void removeMarker(final UUID playerId) {
         if (delegate != null) {
-            delegate.remove_marker(player_id);
+            delegate.removeMarker(playerId);
         }
     }
 
-    public void remove_marker(final String marker_id) {
+    public void removeMarker(final String markerId) {
         if (delegate != null) {
-            delegate.remove_marker(marker_id);
+            delegate.removeMarker(markerId);
         }
     }
 
-    public void update_all_markers() {
+    public void updateAllMarkers() {
         if (delegate != null) {
-            delegate.update_all_markers();
+            delegate.updateAllMarkers();
         }
     }
 }

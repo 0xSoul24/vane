@@ -13,7 +13,7 @@ import org.oddlama.vane.core.resourcepack.ResourcePackGenerator;
 public class ModuleContext<T extends Module<T>> implements Context<T> {
 
     protected Context<T> context;
-    protected T module; // cache to not generate chains of get_context()
+    protected T module; // cache to not generate chains of getContext()
     protected String name;
     private List<Context<T>> subcontexts = new ArrayList<>();
     private List<ModuleComponent<T>> components = new ArrayList<>();
@@ -24,25 +24,25 @@ public class ModuleContext<T extends Module<T>> implements Context<T> {
         this(context, name, description, separator, true);
     }
 
-    public ModuleContext(Context<T> context, String name, String description, String separator, boolean compile_self) {
+    public ModuleContext(Context<T> context, String name, String description, String separator, boolean compileSelf) {
         this.context = context;
-        this.module = context.get_module();
+        this.module = context.getModule();
         this.name = name;
         this.description = description;
         this.separator = separator;
 
-        if (compile_self) {
-            compile_self();
+        if (compileSelf) {
+            compileSelf();
         }
     }
 
     @Override
-    public String yaml_path() {
-        return Context.append_yaml_path(context.yaml_path(), name, separator);
+    public String yamlPath() {
+        return Context.appendYamlPath(context.yamlPath(), name, separator);
     }
 
-    public String variable_yaml_path(String variable) {
-        return Context.append_yaml_path(yaml_path(), variable, separator);
+    public String variableYamlPath(String variable) {
+        return Context.appendYamlPath(yamlPath(), variable, separator);
     }
 
     @Override
@@ -50,47 +50,47 @@ public class ModuleContext<T extends Module<T>> implements Context<T> {
         return context.enabled();
     }
 
-    private void compile_component(Object component) {
-        module.lang_manager.compile(component, this::variable_yaml_path);
-        module.config_manager.compile(component, this::variable_yaml_path);
+    private void compileComponent(Object component) {
+        module.langManager.compile(component, this::variableYamlPath);
+        module.configManager.compile(component, this::variableYamlPath);
         if (description != null) {
-            module.config_manager.add_section_description(yaml_path(), description);
+            module.configManager.addSectionDescription(yamlPath(), description);
         }
-        module.persistent_storage_manager.compile(component, this::variable_yaml_path);
+        module.persistentStorageManager.compile(component, this::variableYamlPath);
     }
 
-    protected void compile_self() {
+    protected void compileSelf() {
         // Compile localization and config fields
-        compile_component(this);
-        context.add_child(this);
+        compileComponent(this);
+        context.addChild(this);
     }
 
     @Override
     public void compile(ModuleComponent<T> component) {
         components.add(component);
-        compile_component(component);
+        compileComponent(component);
     }
 
     @Override
-    public void add_child(Context<T> subcontext) {
+    public void addChild(Context<T> subcontext) {
         subcontexts.add(subcontext);
     }
 
     @Override
-    public Context<T> get_context() {
+    public Context<T> getContext() {
         return context;
     }
 
     @Override
-    public T get_module() {
+    public T getModule() {
         return module;
     }
 
     @Override
     public void enable() {
-        on_enable();
+        onModuleEnable();
         for (var component : components) {
-            component.on_enable();
+            component.onEnable();
         }
         for (var subcontext : subcontexts) {
             subcontext.enable();
@@ -103,40 +103,40 @@ public class ModuleContext<T extends Module<T>> implements Context<T> {
             subcontexts.get(i).disable();
         }
         for (int i = components.size() - 1; i >= 0; --i) {
-            components.get(i).on_disable();
+            components.get(i).onDisable();
         }
-        on_disable();
+        onModuleDisable();
     }
 
     @Override
-    public void config_change() {
-        on_config_change();
+    public void configChange() {
+        onConfigChange();
         for (var component : components) {
-            component.on_config_change();
+            component.onConfigChange();
         }
         for (var subcontext : subcontexts) {
-            subcontext.config_change();
+            subcontext.configChange();
         }
     }
 
     @Override
-    public void generate_resource_pack(final ResourcePackGenerator pack) throws IOException {
-        on_generate_resource_pack(pack);
+    public void generateResourcePack(final ResourcePackGenerator pack) throws IOException {
+        onGenerateResourcePack(pack);
         for (var component : components) {
-            component.on_generate_resource_pack(pack);
+            component.onGenerateResourcePack(pack);
         }
         for (var subcontext : subcontexts) {
-            subcontext.generate_resource_pack(pack);
+            subcontext.generateResourcePack(pack);
         }
     }
 
     @Override
-    public void for_each_module_component(final Consumer1<ModuleComponent<?>> f) {
+    public void forEachModuleComponent(final Consumer1<ModuleComponent<?>> f) {
         for (var component : components) {
             f.apply(component);
         }
         for (var subcontext : subcontexts) {
-            subcontext.for_each_module_component(f);
+            subcontext.forEachModuleComponent(f);
         }
     }
 }

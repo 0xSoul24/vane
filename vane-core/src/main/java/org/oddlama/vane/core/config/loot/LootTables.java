@@ -10,80 +10,80 @@ import org.oddlama.vane.core.module.ModuleComponent;
 
 public class LootTables<T extends Module<T>> extends ModuleComponent<T> {
 
-    private final NamespacedKey base_loot_key;
+    private final NamespacedKey baseLootKey;
 
     @ConfigBoolean(
         def = true,
         desc = "Whether the loot should be registered. Set to false to quickly disable all associated loot."
     )
-    public boolean config_register_loot;
+    public boolean configRegisterLoot;
 
     @ConfigDict(cls = LootTableList.class, desc = "")
-    private LootTableList config_loot;
+    private LootTableList configLoot;
 
-    private Supplier<LootTableList> def_loot;
+    private Supplier<LootTableList> defLoot;
     private String desc;
 
     public LootTables(
         final Context<T> context,
-        final NamespacedKey base_loot_key,
-        final Supplier<LootTableList> def_loot
+        final NamespacedKey baseLootKey,
+        final Supplier<LootTableList> defLoot
     ) {
         this(
             context,
-            base_loot_key,
-            def_loot,
+                baseLootKey,
+                defLoot,
             "The associated loot. This is a map of loot tables (as defined by minecraft) to additional loot. This additional loot is a list of loot definitions, which specify the amount and loot percentage for a particular item."
         );
     }
 
     public LootTables(
         final Context<T> context,
-        final NamespacedKey base_loot_key,
-        final Supplier<LootTableList> def_loot,
+        final NamespacedKey baseLootKey,
+        final Supplier<LootTableList> defLoot,
         final String desc
     ) {
         super(context);
-        this.base_loot_key = base_loot_key;
-        this.def_loot = def_loot;
+        this.baseLootKey = baseLootKey;
+        this.defLoot = defLoot;
         this.desc = desc;
     }
 
-    public LootTableList config_loot_def() {
-        return def_loot.get();
+    public LootTableList configLootDef() {
+        return defLoot.get();
     }
 
-    public String config_loot_desc() {
+    public String configLootDesc() {
         return desc;
     }
 
     @Override
-    public void on_config_change() {
-        // Loot tables are processed in on_config_change and not in on_disable() / on_enable(),
+    public void onConfigChange() {
+        // Loot tables are processed in onConfigChange and not in onModuleDisable() / onModuleEnable(),
         // as the current loot table modifications need to be removed even if we are disabled
-        // afterwards.
-        config_loot
+        // afterward.
+        configLoot
             .tables()
             .forEach(table ->
-                table.affected_tables.forEach(table_key ->
-                    get_module().loot_table(table_key).remove(table.key(base_loot_key))
+                table.affectedTables.forEach(tableKey ->
+                    getModule().lootTable(tableKey).remove(table.key(baseLootKey))
                 )
             );
-        if (enabled() && config_register_loot) {
-            config_loot
+        if (enabled() && configRegisterLoot) {
+            configLoot
                 .tables()
                 .forEach(table -> {
                     final var entries = table.entries();
-                    table.affected_tables.forEach(table_key ->
-                        get_module().loot_table(table_key).put(table.key(base_loot_key), entries)
+                    table.affectedTables.forEach(tableKey ->
+                        getModule().lootTable(tableKey).put(table.key(baseLootKey), entries)
                     );
                 });
         }
     }
 
     @Override
-    protected void on_enable() {}
+    protected void onEnable() {}
 
     @Override
-    protected void on_disable() {}
+    protected void onDisable() {}
 }

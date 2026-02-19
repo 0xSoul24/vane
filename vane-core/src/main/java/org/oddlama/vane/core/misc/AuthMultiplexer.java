@@ -1,6 +1,6 @@
 package org.oddlama.vane.core.misc;
 
-import static org.oddlama.vane.util.Resolve.resolve_skin;
+import static org.oddlama.vane.util.Resolve.resolveSkin;
 
 import com.destroystokyo.paper.profile.ProfileProperty;
 import java.io.ByteArrayInputStream;
@@ -31,69 +31,69 @@ public class AuthMultiplexer extends Listener<Core> implements PluginMessageList
 
     // Persistent storage
     @Persistent
-    public Map<UUID, UUID> storage_auth_multiplex = new HashMap<>();
+    public Map<UUID, UUID> storageAuthMultiplex = new HashMap<>();
 
     @Persistent
-    public Map<UUID, Integer> storage_auth_multiplexer_id = new HashMap<>();
+    public Map<UUID, Integer> storageAuthMultiplexerId = new HashMap<>();
 
     public AuthMultiplexer(Context<Core> context) {
         super(context);
     }
 
     @Override
-    protected void on_enable() {
-        super.on_enable();
-        get_module()
+    protected void onEnable() {
+        super.onEnable();
+        getModule()
             .getServer()
             .getMessenger()
-            .registerIncomingPluginChannel(get_module(), CHANNEL_AUTH_MULTIPLEX, this);
+            .registerIncomingPluginChannel(getModule(), CHANNEL_AUTH_MULTIPLEX, this);
     }
 
     @Override
-    protected void on_disable() {
-        super.on_disable();
-        get_module()
+    protected void onDisable() {
+        super.onDisable();
+        getModule()
             .getServer()
             .getMessenger()
-            .unregisterIncomingPluginChannel(get_module(), CHANNEL_AUTH_MULTIPLEX, this);
+            .unregisterIncomingPluginChannel(getModule(), CHANNEL_AUTH_MULTIPLEX, this);
     }
 
-    public synchronized String auth_multiplex_player_name(final UUID uuid) {
-        final var original_player_id = storage_auth_multiplex.get(uuid);
-        final var multiplexer_id = storage_auth_multiplexer_id.get(uuid);
-        if (original_player_id == null || multiplexer_id == null) {
+    public synchronized String authMultiplexPlayerName(final UUID uuid) {
+        final var originalPlayerId = storageAuthMultiplex.get(uuid);
+        final var multiplexerId = storageAuthMultiplexerId.get(uuid);
+        if (originalPlayerId == null || multiplexerId == null) {
             return null;
         }
 
-        final var original_player = get_module().getServer().getOfflinePlayer(original_player_id);
-        return "§7[" + multiplexer_id + "]§r " + original_player.getName();
+        final var originalPlayer = getModule().getServer().getOfflinePlayer(originalPlayerId);
+        return "§7[" + multiplexerId + "]§r " + originalPlayer.getName();
     }
 
-    private void try_init_multiplexed_player_name(final Player player) {
+    private void tryInitMultiplexedPlayerName(final Player player) {
         final var id = player.getUniqueId();
-        final var display_name = auth_multiplex_player_name(id);
-        if (display_name == null) {
+        final var displayName = authMultiplexPlayerName(id);
+        if (displayName == null) {
             return;
         }
 
-        get_module()
+        getModule()
             .log.info(
                 "[multiplex] Init player '" +
-                display_name +
+                displayName +
                 "' for registered auth multiplexed player {" +
                 id +
                 ", " +
                 player.getName() +
                 "}"
             );
-        final var display_name_component = LegacyComponentSerializer.legacySection().deserialize(display_name);
-        player.displayName(display_name_component);
-        player.playerListName(display_name_component);
+        final var displayNameComponent = LegacyComponentSerializer.legacySection().deserialize(displayName);
+        player.displayName(displayNameComponent);
+        player.playerListName(displayNameComponent);
 
-        final var original_player_id = storage_auth_multiplex.get(id);
+        final var originalPlayerId = storageAuthMultiplex.get(id);
         Resolve.Skin skin;
         try {
-            skin = resolve_skin(original_player_id);
+            skin = resolveSkin(originalPlayerId);
         } catch (IOException | URISyntaxException e) {
             Bukkit.getLogger().log(Level.WARNING, "Failed to resolve skin for uuid '" + id + "'", e);
             return;
@@ -105,8 +105,8 @@ public class AuthMultiplexer extends Listener<Core> implements PluginMessageList
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-    public void on_player_join(PlayerJoinEvent event) {
-        try_init_multiplexed_player_name(event.getPlayer());
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        tryInitMultiplexedPlayerName(event.getPlayer());
     }
 
     @Override
@@ -119,35 +119,35 @@ public class AuthMultiplexer extends Listener<Core> implements PluginMessageList
         final var in = new DataInputStream(stream);
 
         try {
-            final var multiplexer_id = in.readInt();
-            final var old_uuid = UUID.fromString(in.readUTF());
-            final var old_name = in.readUTF();
-            final var new_uuid = UUID.fromString(in.readUTF());
-            final var new_name = in.readUTF();
+            final var multiplexerId = in.readInt();
+            final var oldUuid = UUID.fromString(in.readUTF());
+            final var oldName = in.readUTF();
+            final var newUuid = UUID.fromString(in.readUTF());
+            final var newName = in.readUTF();
 
-            get_module()
+            getModule()
                 .log.info(
                     "[multiplex] Registered auth multiplexed player {" +
-                    new_uuid +
+                    newUuid +
                     ", " +
-                    new_name +
+                    newName +
                     "} from player {" +
-                    old_uuid +
+                    oldUuid +
                     ", " +
-                    old_name +
-                    "} multiplexer_id " +
-                    multiplexer_id
+                    oldName +
+                    "} multiplexerId " +
+                    multiplexerId
                 );
-            storage_auth_multiplex.put(new_uuid, old_uuid);
-            storage_auth_multiplexer_id.put(new_uuid, multiplexer_id);
-            mark_persistent_storage_dirty();
+            storageAuthMultiplex.put(newUuid, oldUuid);
+            storageAuthMultiplexerId.put(newUuid, multiplexerId);
+            markPersistentStorageDirty();
 
-            final var multiplexed_player = get_module().getServer().getOfflinePlayer(new_uuid);
-            if (multiplexed_player.isOnline()) {
-                try_init_multiplexed_player_name(multiplexed_player.getPlayer());
+            final var multiplexedPlayer = getModule().getServer().getOfflinePlayer(newUuid);
+            if (multiplexedPlayer.isOnline()) {
+                tryInitMultiplexedPlayerName(multiplexedPlayer.getPlayer());
             }
         } catch (IOException e) {
-            get_module().log.log(Level.SEVERE, "Failed to process auth multiplex message", e);
+            getModule().log.log(Level.SEVERE, "Failed to process auth multiplex message", e);
         }
     }
 }

@@ -11,9 +11,9 @@ import org.oddlama.vane.proxycore.VaneProxyPlugin;
 public class ConfigManager {
 
     // name → managed server
-    public final Map<String, ManagedServer> managed_servers = new HashMap<>();
+    public final Map<String, ManagedServer> managedServers = new HashMap<>();
     // port → alias id (starts at 1)
-    public final Map<Integer, AuthMultiplex> multiplexer_by_id = new HashMap<>();
+    public final Map<Integer, AuthMultiplex> multiplexerById = new HashMap<>();
     private final VaneProxyPlugin plugin;
 
     public ConfigManager(final VaneProxyPlugin plugin) {
@@ -21,49 +21,49 @@ public class ConfigManager {
     }
 
     private File file() {
-        return new File(plugin.get_data_folder(), "config.toml");
+        return new File(plugin.getDataFolder(), "config.toml");
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean load() {
         final var file = file();
-        if (!file.exists() && !save_default(file)) {
-            plugin.get_logger().log(Level.SEVERE, "Unable to create default config! Bailing.");
+        if (!file.exists() && !saveDefault(file)) {
+            plugin.getLogger().log(Level.SEVERE, "Unable to create default config! Bailing.");
             return false;
         }
 
-        Config parsed_config;
+        Config parsedConfig;
         try {
-            parsed_config = new Config(file);
+            parsedConfig = new Config(file);
         } catch (Exception e) {
-            plugin.get_logger().log(Level.SEVERE, "Error while loading config file '" + file + "'", e);
+            plugin.getLogger().log(Level.SEVERE, "Error while loading config file '" + file + "'", e);
             return false;
         }
 
-        if (parsed_config.auth_multiplex.containsKey(0)) {
-            plugin.get_logger().log(Level.SEVERE, "Attempted to register a multiplexer with id 0!");
+        if (parsedConfig.authMultiplex.containsKey(0)) {
+            plugin.getLogger().log(Level.SEVERE, "Attempted to register a multiplexer with id 0!");
             return false;
         }
 
         // Make sure there are no duplicate ports
-        Set<Integer> registered_ports = new HashSet<>();
-        for (final var multiplexer : parsed_config.auth_multiplex.values()) {
-            registered_ports.add(multiplexer.port);
+        Set<Integer> registeredPorts = new HashSet<>();
+        for (final var multiplexer : parsedConfig.authMultiplex.values()) {
+            registeredPorts.add(multiplexer.port);
         }
 
-        if (parsed_config.auth_multiplex.size() != registered_ports.size()) {
-            plugin.get_logger().log(Level.SEVERE, "Attempted to register multiple multiplexers on the same port!");
+        if (parsedConfig.authMultiplex.size() != registeredPorts.size()) {
+            plugin.getLogger().log(Level.SEVERE, "Attempted to register multiple multiplexers on the same port!");
             return false;
         }
 
-        multiplexer_by_id.putAll(parsed_config.auth_multiplex);
-        managed_servers.putAll(parsed_config.managed_servers);
+        multiplexerById.putAll(parsedConfig.authMultiplex);
+        managedServers.putAll(parsedConfig.managedServers);
 
         return true;
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public boolean save_default(final File file) {
+    public boolean saveDefault(final File file) {
         try {
             file.getParentFile().mkdirs();
             Files.copy(
@@ -73,14 +73,14 @@ public class ConfigManager {
             );
             return true;
         } catch (Exception e) {
-            plugin.get_logger().log(Level.SEVERE, "Error while writing config file '" + file + "'", e);
+            plugin.getLogger().log(Level.SEVERE, "Error while writing config file '" + file + "'", e);
             return false;
         }
     }
 
     @Nullable
-    public Map.Entry<Integer, AuthMultiplex> get_multiplexer_for_port(Integer port) {
-        for (final var multiplexer : multiplexer_by_id.entrySet()) {
+    public Map.Entry<Integer, AuthMultiplex> getMultiplexerForPort(Integer port) {
+        for (final var multiplexer : multiplexerById.entrySet()) {
             // We already checked there are no duplicate ports when parsing
             if (Objects.equals(multiplexer.getValue().port, port)) {
                 return multiplexer;

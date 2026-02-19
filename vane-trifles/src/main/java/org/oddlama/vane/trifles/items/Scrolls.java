@@ -1,8 +1,8 @@
 package org.oddlama.vane.trifles.items;
 
-import static org.oddlama.vane.util.Conversions.ms_to_ticks;
-import static org.oddlama.vane.util.ItemUtil.damage_item;
-import static org.oddlama.vane.util.PlayerUtil.swing_arm;
+import static org.oddlama.vane.util.Conversions.msToTicks;
+import static org.oddlama.vane.util.ItemUtil.damageItem;
+import static org.oddlama.vane.util.PlayerUtil.swingArm;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,32 +28,32 @@ import org.oddlama.vane.trifles.event.PlayerTeleportScrollEvent;
 public class Scrolls extends Listener<Trifles> {
 
     private Set<Scroll> scrolls = new HashSet<>();
-    private Set<Material> base_materials = new HashSet<>();
+    private Set<Material> baseMaterials = new HashSet<>();
 
     @ConfigInt(
         def = 15000,
         min = 0,
         desc = "A cooldown in milliseconds that is applied when the player takes damage (prevents combat logging). Set to 0 to allow combat logging."
     )
-    private int config_damage_cooldown;
+    private int configDamageCooldown;
 
     public Scrolls(Context<Trifles> context) {
-        super(context.group("scrolls", "Several scrolls that allow player teleportation, and related behavior."));
-        scrolls.add(new HomeScroll(get_context()));
-        scrolls.add(new UnstableScroll(get_context()));
-        scrolls.add(new SpawnScroll(get_context()));
-        scrolls.add(new LodestoneScroll(get_context()));
-        scrolls.add(new DeathScroll(get_context()));
+        super(context.group("Scrolls", "Several scrolls that allow player teleportation, and related behavior."));
+        scrolls.add(new HomeScroll(getContext()));
+        scrolls.add(new UnstableScroll(getContext()));
+        scrolls.add(new SpawnScroll(getContext()));
+        scrolls.add(new LodestoneScroll(getContext()));
+        scrolls.add(new DeathScroll(getContext()));
 
         // Accumulate base materials so the cooldown can be applied to all scrolls regardless of
         // base material.
         for (final var scroll : scrolls) {
-            base_materials.add(scroll.baseMaterial());
+            baseMaterials.add(scroll.baseMaterial());
         }
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = false) // ignoreCancelled = false to catch right-click-air events
-    public void on_player_right_click(final PlayerInteractEvent event) {
+    public void onPlayerRightClick(final PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) {
             return;
         }
@@ -65,8 +65,8 @@ public class Scrolls extends Listener<Trifles> {
         // Assert this is a matching custom item
         final var player = event.getPlayer();
         final var item = player.getEquipment().getItem(event.getHand());
-        final var custom_item = get_module().core.item_registry().get(item);
-        if (!(custom_item instanceof Scroll scroll) || !scroll.enabled()) {
+        final var customItem = getModule().core.itemRegistry().get(item);
+        if (!(customItem instanceof Scroll scroll) || !scroll.enabled()) {
             return;
         }
 
@@ -87,8 +87,8 @@ public class Scrolls extends Listener<Trifles> {
                 break;
         }
 
-        final var to_location = scroll.teleport_location(item, player, true);
-        if (to_location == null) {
+        final var toLocation = scroll.teleportLocation(item, player, true);
+        if (toLocation == null) {
             return;
         }
 
@@ -97,22 +97,22 @@ public class Scrolls extends Listener<Trifles> {
             return;
         }
 
-        final var current_location = player.getLocation();
-        if (teleport_from_scroll(player, current_location, to_location)) {
+        final var currentLocation = player.getLocation();
+        if (teleportFromScroll(player, currentLocation, toLocation)) {
             // Set cooldown
-            cooldown_all(player, scroll.config_cooldown);
+            cooldownAll(player, scroll.configCooldown);
 
             // Damage item
-            damage_item(player, item, 1);
-            swing_arm(player, event.getHand());
+            damageItem(player, item, 1);
+            swingArm(player, event.getHand());
         }
     }
 
-    public boolean teleport_from_scroll(final Player player, final Location from, final Location to) {
+    public boolean teleportFromScroll(final Player player, final Location from, final Location to) {
         // Send scroll teleport event
-        final var teleport_scroll_event = new PlayerTeleportScrollEvent(player, from, to);
-        get_module().getServer().getPluginManager().callEvent(teleport_scroll_event);
-        if (teleport_scroll_event.isCancelled()) {
+        final var teleportScrollEvent = new PlayerTeleportScrollEvent(player, from, to);
+        getModule().getServer().getPluginManager().callEvent(teleportScrollEvent);
+        if (teleportScrollEvent.isCancelled()) {
             return false;
         }
 
@@ -131,20 +131,20 @@ public class Scrolls extends Listener<Trifles> {
         return true;
     }
 
-    public void cooldown_all(final Player player, int cooldown_ms) {
-        final var cooldown_ticks = (int) ms_to_ticks(cooldown_ms);
-        for (final var mat : base_materials) {
+    public void cooldownAll(final Player player, int cooldownMs) {
+        final var cooldownTicks = (int) msToTicks(cooldownMs);
+        for (final var mat : baseMaterials) {
             // Don't ever decrease cooldown
-            if (player.getCooldown(mat) < cooldown_ticks) {
-                player.setCooldown(mat, cooldown_ticks);
+            if (player.getCooldown(mat) < cooldownTicks) {
+                player.setCooldown(mat, cooldownTicks);
             }
         }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on_player_take_damage(final EntityDamageEvent event) {
+    public void onPlayerTakeDamage(final EntityDamageEvent event) {
         if (event.getEntity() instanceof Player player) {
-            cooldown_all(player, config_damage_cooldown);
+            cooldownAll(player, configDamageCooldown);
         }
     }
 }

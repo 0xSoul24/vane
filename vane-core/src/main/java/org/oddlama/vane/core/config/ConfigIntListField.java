@@ -14,18 +14,18 @@ public class ConfigIntListField extends ConfigField<List<Integer>> {
 
     public ConfigIntList annotation;
 
-    public ConfigIntListField(Object owner, Field field, Function<String, String> map_name, ConfigIntList annotation) {
-        super(owner, field, map_name, "int list", annotation.desc());
+    public ConfigIntListField(Object owner, Field field, Function<String, String> mapName, ConfigIntList annotation) {
+        super(owner, field, mapName, "int list", annotation.desc());
         this.annotation = annotation;
     }
 
-    private void append_int_list_definition(StringBuilder builder, String indent, String prefix, List<Integer> def) {
-        append_list_definition(builder, indent, prefix, def, (b, i) -> b.append(i));
+    private void appendIntListDefinition(StringBuilder builder, String indent, String prefix, List<Integer> def) {
+        appendListDefinition(builder, indent, prefix, def, (b, i) -> b.append(i));
     }
 
     @Override
     public List<Integer> def() {
-        final var override = overridden_def();
+        final var override = overriddenDef();
         if (override != null) {
             return override;
         } else {
@@ -35,7 +35,7 @@ public class ConfigIntListField extends ConfigField<List<Integer>> {
 
     @Override
     public boolean metrics() {
-        final var override = overridden_metrics();
+        final var override = overriddenMetrics();
         if (override != null) {
             return override;
         } else {
@@ -44,55 +44,55 @@ public class ConfigIntListField extends ConfigField<List<Integer>> {
     }
 
     @Override
-    public void generate_yaml(StringBuilder builder, String indent, YamlConfiguration existing_compatible_config) {
-        append_description(builder, indent);
-        append_value_range(builder, indent, annotation.min(), annotation.max(), Integer.MIN_VALUE, Integer.MAX_VALUE);
+    public void generateYaml(StringBuilder builder, String indent, YamlConfiguration existingCompatibleConfig) {
+        appendDescription(builder, indent);
+        appendValueRange(builder, indent, annotation.min(), annotation.max(), Integer.MIN_VALUE, Integer.MAX_VALUE);
 
         // Default
         builder.append(indent);
         builder.append("# Default:\n");
-        append_int_list_definition(builder, indent, "# ", def());
+        appendIntListDefinition(builder, indent, "# ", def());
 
         // Definition
         builder.append(indent);
         builder.append(basename());
         builder.append(":\n");
-        final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
+        final var def = existingCompatibleConfig != null && existingCompatibleConfig.contains(yamlPath())
+            ? loadFromYaml(existingCompatibleConfig)
             : def();
-        append_int_list_definition(builder, indent, "", def);
+        appendIntListDefinition(builder, indent, "", def);
     }
 
     @Override
-    public void check_loadable(YamlConfiguration yaml) throws YamlLoadException {
-        check_yaml_path(yaml);
+    public void checkLoadable(YamlConfiguration yaml) throws YamlLoadException {
+        checkYamlPath(yaml);
 
-        if (!yaml.isList(yaml_path())) {
-            throw new YamlLoadException("Invalid type for yaml path '" + yaml_path() + "', expected list");
+        if (!yaml.isList(yamlPath())) {
+            throw new YamlLoadException("Invalid type for yaml path '" + yamlPath() + "', expected list");
         }
 
-        for (var obj : yaml.getList(yaml_path())) {
+        for (var obj : yaml.getList(yamlPath())) {
             if (!(obj instanceof Number)) {
-                throw new YamlLoadException("Invalid type for yaml path '" + yaml_path() + "', expected int");
+                throw new YamlLoadException("Invalid type for yaml path '" + yamlPath() + "', expected int");
             }
 
-            var val = yaml.getInt(yaml_path());
+            var val = yaml.getInt(yamlPath());
             if (annotation.min() != Integer.MIN_VALUE && val < annotation.min()) {
                 throw new YamlLoadException(
-                    "Configuration '" + yaml_path() + "' has an invalid value: Value must be >= " + annotation.min()
+                    "Configuration '" + yamlPath() + "' has an invalid value: Value must be >= " + annotation.min()
                 );
             }
             if (annotation.max() != Integer.MAX_VALUE && val > annotation.max()) {
                 throw new YamlLoadException(
-                    "Configuration '" + yaml_path() + "' has an invalid value: Value must be <= " + annotation.max()
+                    "Configuration '" + yamlPath() + "' has an invalid value: Value must be <= " + annotation.max()
                 );
             }
         }
     }
 
-    public List<Integer> load_from_yaml(YamlConfiguration yaml) {
+    public List<Integer> loadFromYaml(YamlConfiguration yaml) {
         final var list = new ArrayList<Integer>();
-        for (var obj : yaml.getList(yaml_path())) {
+        for (var obj : yaml.getList(yamlPath())) {
             list.add(((Number) obj).intValue());
         }
         return list;
@@ -100,7 +100,7 @@ public class ConfigIntListField extends ConfigField<List<Integer>> {
 
     public void load(YamlConfiguration yaml) {
         try {
-            field.set(owner, load_from_yaml(yaml));
+            field.set(owner, loadFromYaml(yaml));
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Invalid field access on '" + field.getName() + "'. This is a bug.");
         }

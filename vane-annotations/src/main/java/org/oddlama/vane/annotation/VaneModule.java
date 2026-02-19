@@ -12,9 +12,9 @@ public @interface VaneModule {
 
     int bstats() default -1;
 
-    long config_version();
+    long configVersion();
 
-    long lang_version();
+    long langVersion();
 
-    long storage_version();
+    long storageVersion();
 }

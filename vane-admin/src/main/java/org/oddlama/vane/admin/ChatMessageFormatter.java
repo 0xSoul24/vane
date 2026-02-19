@@ -19,28 +19,28 @@ import org.oddlama.vane.core.module.Context;
 public class ChatMessageFormatter extends Listener<Admin> {
 
     @LangMessage
-    private TranslatedMessage lang_player_chat_format;
+    private TranslatedMessage langPlayerChatFormat;
 
     @LangMessage
-    private TranslatedMessage lang_player_join;
+    private TranslatedMessage langPlayerJoin;
 
     @LangMessage
-    private TranslatedMessage lang_player_kick;
+    private TranslatedMessage langPlayerKick;
 
     @LangMessage
-    private TranslatedMessage lang_player_quit;
+    private TranslatedMessage langPlayerQuit;
 
-    final ChatRenderer chat_renderer;
+    final ChatRenderer chatRenderer;
 
     public ChatMessageFormatter(Context<Admin> context) {
         super(
             context.group(
-                "chat_message_formatter",
+                "ChatMessageFormatter",
                 "Enables custom formatting of chat messages like player chats and join / quit messages."
             )
         );
         // Create custom chat renderer
-        chat_renderer = new ChatRenderer() {
+        chatRenderer = new ChatRenderer() {
             public Component render(
                 final Player source,
                 final Component sourceDisplayName,
@@ -49,24 +49,24 @@ public class ChatMessageFormatter extends Listener<Admin> {
             ) {
                 // TODO more sophisticated formatting?
                 final var who = sourceDisplayName.color(NamedTextColor.AQUA);
-                return lang_player_chat_format.str_component(who, message);
+                return langPlayerChatFormat.strComponent(who, message);
             }
         };
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_player_chat(AsyncChatEvent event) {
-        event.renderer(chat_renderer);
+    public void onPlayerChat(AsyncChatEvent event) {
+        event.renderer(chatRenderer);
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_player_join(final PlayerJoinEvent event) {
+    public void onPlayerJoin(final PlayerJoinEvent event) {
         event.joinMessage(null);
-        lang_player_join.broadcast_server(event.getPlayer().playerListName().color(NamedTextColor.GOLD));
+        langPlayerJoin.broadcastServer(event.getPlayer().playerListName().color(NamedTextColor.GOLD));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void on_player_kick(final PlayerKickEvent event) {
+    public void onPlayerKick(final PlayerKickEvent event) {
         // Bug in Spigot, doesn't do anything. But fixed in Paper since 1.17.
         // https://hub.spigotmc.org/jira/browse/SPIGOT-3034
         event.leaveMessage(Component.text(""));
@@ -74,12 +74,12 @@ public class ChatMessageFormatter extends Listener<Admin> {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void on_player_quit(final PlayerQuitEvent event) {
+    public void onPlayerQuit(final PlayerQuitEvent event) {
         event.quitMessage(null);
         if (event.getReason() == PlayerQuitEvent.QuitReason.KICKED) {
-            lang_player_kick.broadcast_server(event.getPlayer().playerListName().color(NamedTextColor.GOLD));
+            langPlayerKick.broadcastServer(event.getPlayer().playerListName().color(NamedTextColor.GOLD));
         } else {
-            lang_player_quit.broadcast_server(event.getPlayer().playerListName().color(NamedTextColor.GOLD));
+            langPlayerQuit.broadcastServer(event.getPlayer().playerListName().color(NamedTextColor.GOLD));
         }
     }
 }

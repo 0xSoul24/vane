@@ -1,9 +1,9 @@
 package org.oddlama.vane.portals.portal;
 
-import static org.oddlama.vane.core.persistent.PersistentSerializer.from_json;
-import static org.oddlama.vane.core.persistent.PersistentSerializer.to_json;
-import static org.oddlama.vane.util.BlockUtil.adjacent_blocks_3d;
-import static org.oddlama.vane.util.BlockUtil.update_lever;
+import static org.oddlama.vane.core.persistent.PersistentSerializer.fromJson;
+import static org.oddlama.vane.core.persistent.PersistentSerializer.toJson;
+import static org.oddlama.vane.util.BlockUtil.adjacentBlocks3D;
+import static org.oddlama.vane.util.BlockUtil.updateLever;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,6 +29,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
+import org.oddlama.vane.core.persistent.PersistentSerializer;
 import org.oddlama.vane.portals.Portals;
 import org.oddlama.vane.portals.event.PortalActivateEvent;
 import org.oddlama.vane.portals.event.PortalDeactivateEvent;
@@ -41,25 +42,25 @@ public class Portal {
     public static Object serialize(@NotNull final Object o) throws IOException {
         final var portal = (Portal) o;
         final var json = new JSONObject();
-        json.put("id", to_json(UUID.class, portal.id));
-        json.put("owner", to_json(UUID.class, portal.owner));
-        json.put("orientation", to_json(Orientation.class, portal.orientation));
-        json.put("spawn", to_json(LazyLocation.class, portal.spawn));
+        json.put("id", PersistentSerializer.toJson(UUID.class, portal.id));
+        json.put("owner", PersistentSerializer.toJson(UUID.class, portal.owner));
+        json.put("orientation", PersistentSerializer.toJson(Orientation.class, portal.orientation));
+        json.put("spawn", PersistentSerializer.toJson(LazyLocation.class, portal.spawn));
         try {
-            json.put("blocks", to_json(Portal.class.getDeclaredField("blocks"), portal.blocks));
+            json.put("blocks", PersistentSerializer.toJson(Portal.class.getDeclaredField("blocks"), portal.blocks));
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Invalid field. This is a bug.", e);
         }
 
-        json.put("name", to_json(String.class, portal.name));
-        json.put("style", to_json(NamespacedKey.class, portal.style));
-        json.put("style_override", to_json(Style.class, portal.style_override));
-        json.put("icon", to_json(ItemStack.class, portal.icon));
-        json.put("visibility", to_json(Visibility.class, portal.visibility));
+        json.put("name", PersistentSerializer.toJson(String.class, portal.name));
+        json.put("style", PersistentSerializer.toJson(NamespacedKey.class, portal.style));
+        json.put("styleOverride", PersistentSerializer.toJson(Style.class, portal.styleOverride));
+        json.put("icon", PersistentSerializer.toJson(ItemStack.class, portal.icon));
+        json.put("visibility", PersistentSerializer.toJson(Visibility.class, portal.visibility));
 
-        json.put("exit_orientation_locked", to_json(boolean.class, portal.exit_orientation_locked));
-        json.put("target_id", to_json(UUID.class, portal.target_id));
-        json.put("target_locked", to_json(boolean.class, portal.target_locked));
+        json.put("exitOrientationLocked", PersistentSerializer.toJson(boolean.class, portal.exitOrientationLocked));
+        json.put("targetId", PersistentSerializer.toJson(UUID.class, portal.targetId));
+        json.put("targetLocked", PersistentSerializer.toJson(boolean.class, portal.targetLocked));
         return json;
     }
 
@@ -67,32 +68,32 @@ public class Portal {
     public static Portal deserialize(@NotNull final Object o) throws IOException {
         final var json = (JSONObject) o;
         final var portal = new Portal();
-        portal.id = from_json(UUID.class, json.get("id"));
-        portal.owner = from_json(UUID.class, json.get("owner"));
-        portal.orientation = from_json(Orientation.class, json.get("orientation"));
-        portal.spawn = from_json(LazyLocation.class, json.get("spawn"));
+        portal.id = PersistentSerializer.fromJson(UUID.class, json.get("id"));
+        portal.owner = PersistentSerializer.fromJson(UUID.class, json.get("owner"));
+        portal.orientation = PersistentSerializer.fromJson(Orientation.class, json.get("orientation"));
+        portal.spawn = PersistentSerializer.fromJson(LazyLocation.class, json.get("spawn"));
         try {
-            portal.blocks = (List<PortalBlock>) from_json(Portal.class.getDeclaredField("blocks"), json.get("blocks"));
+            portal.blocks = (List<PortalBlock>) PersistentSerializer.fromJson(Portal.class.getDeclaredField("blocks"), json.get("blocks"));
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Invalid field. This is a bug.", e);
         }
 
-        portal.name = from_json(String.class, json.get("name"));
-        portal.style = from_json(NamespacedKey.class, json.get("style"));
-        portal.style_override = from_json(Style.class, json.get("style_override"));
-        if (portal.style_override != null) {
+        portal.name = PersistentSerializer.fromJson(String.class, json.get("name"));
+        portal.style = PersistentSerializer.fromJson(NamespacedKey.class, json.get("style"));
+        portal.styleOverride = PersistentSerializer.fromJson(Style.class, json.get("styleOverride"));
+        if (portal.styleOverride != null) {
             try {
-                portal.style_override.check_valid();
+                portal.styleOverride.checkValid();
             } catch (RuntimeException e) {
-                portal.style_override = null;
+                portal.styleOverride = null;
             }
         }
-        portal.icon = from_json(ItemStack.class, json.get("icon"));
-        portal.visibility = from_json(Visibility.class, json.get("visibility"));
+        portal.icon = PersistentSerializer.fromJson(ItemStack.class, json.get("icon"));
+        portal.visibility = PersistentSerializer.fromJson(Visibility.class, json.get("visibility"));
 
-        portal.exit_orientation_locked = from_json(boolean.class, json.optString("exit_orientation_locked", "false"));
-        portal.target_id = from_json(UUID.class, json.get("target_id"));
-        portal.target_locked = from_json(boolean.class, json.get("target_locked"));
+        portal.exitOrientationLocked = PersistentSerializer.fromJson(boolean.class, json.optString("exitOrientationLocked", "false"));
+        portal.targetId = PersistentSerializer.fromJson(UUID.class, json.get("targetId"));
+        portal.targetLocked = PersistentSerializer.fromJson(boolean.class, json.get("targetLocked"));
         return portal;
     }
 
@@ -103,14 +104,14 @@ public class Portal {
     private List<PortalBlock> blocks = new ArrayList<>();
 
     private String name = "Portal";
-    private NamespacedKey style = Style.default_style_key();
-    private Style style_override = null;
+    private NamespacedKey style = Style.defaultStyleKey();
+    private Style styleOverride = null;
     private ItemStack icon = null;
     private Visibility visibility = Visibility.PRIVATE;
 
-    private boolean exit_orientation_locked = false;
-    private UUID target_id = null;
-    private boolean target_locked = false;
+    private boolean exitOrientationLocked = false;
+    private UUID targetId = null;
+    private boolean targetLocked = false;
 
     // Whether the portal should be saved on the next occasion.
     // Not a saved field.
@@ -137,8 +138,8 @@ public class Portal {
         return orientation;
     }
 
-    public UUID spawn_world() {
-        return spawn.world_id();
+    public UUID spawnWorld() {
+        return spawn.worldId();
     }
 
     public Location spawn() {
@@ -159,12 +160,12 @@ public class Portal {
     }
 
     public NamespacedKey style() {
-        return style_override == null ? style : null;
+        return styleOverride == null ? style : null;
     }
 
     public void style(final Style style) {
         if (style.key() == null) {
-            this.style_override = style;
+            this.styleOverride = style;
         } else {
             this.style = style.key();
         }
@@ -189,34 +190,34 @@ public class Portal {
         this.invalidated = true;
     }
 
-    public boolean exit_orientation_locked() {
-        return exit_orientation_locked;
+    public boolean exitOrientationLocked() {
+        return exitOrientationLocked;
     }
 
-    public void exit_orientation_locked(boolean exit_orientation_locked) {
-        this.exit_orientation_locked = exit_orientation_locked;
+    public void exitOrientationLocked(boolean exitOrientationLocked) {
+        this.exitOrientationLocked = exitOrientationLocked;
         this.invalidated = true;
     }
 
-    public UUID target_id() {
-        return target_id;
+    public UUID targetId() {
+        return targetId;
     }
 
-    public void target_id(final UUID target_id) {
-        this.target_id = target_id;
+    public void targetId(final UUID targetId) {
+        this.targetId = targetId;
         this.invalidated = true;
     }
 
-    public boolean target_locked() {
-        return target_locked;
+    public boolean targetLocked() {
+        return targetLocked;
     }
 
-    public void target_locked(boolean target_locked) {
-        this.target_locked = target_locked;
+    public void targetLocked(boolean targetLocked) {
+        this.targetLocked = targetLocked;
         this.invalidated = true;
     }
 
-    public PortalBlock portal_block_for(final Block block) {
+    public PortalBlock portalBlockFor(final Block block) {
         for (final var pb : blocks()) {
             if (pb.block().equals(block)) {
                 return pb;
@@ -226,36 +227,36 @@ public class Portal {
     }
 
     public @Nullable Portal target(final Portals portals) {
-        return portals.portal_for(target_id());
+        return portals.portalFor(targetId());
     }
 
-    private Set<Block> controlling_blocks() {
-        final var controlling_blocks = new HashSet<Block>();
+    private Set<Block> controllingBlocks() {
+        final var controllingBlocks = new HashSet<Block>();
         for (final var pb : blocks()) {
             switch (pb.type()) {
                 default:
                     break;
                 case ORIGIN:
-                case BOUNDARY_1:
-                case BOUNDARY_2:
-                case BOUNDARY_3:
-                case BOUNDARY_4:
-                case BOUNDARY_5:
-                    controlling_blocks.add(pb.block());
+                case BOUNDARY1:
+                case BOUNDARY2:
+                case BOUNDARY3:
+                case BOUNDARY4:
+                case BOUNDARY5:
+                    controllingBlocks.add(pb.block());
                     break;
                 case CONSOLE:
-                    controlling_blocks.add(pb.block());
-                    controlling_blocks.addAll(Arrays.asList(adjacent_blocks_3d(pb.block())));
+                    controllingBlocks.add(pb.block());
+                    controllingBlocks.addAll(Arrays.asList(adjacentBlocks3D(pb.block())));
                     break;
             }
         }
-        return controlling_blocks;
+        return controllingBlocks;
     }
 
-    private void set_controlling_levers(boolean activated) {
-        final var controlling_blocks = controlling_blocks();
+    private void setControllingLevers(boolean activated) {
+        final var controllingBlocks = controllingBlocks();
         final var levers = new HashSet<Block>();
-        for (final var b : controlling_blocks()) {
+        for (final var b : controllingBlocks()) {
             for (final var f : BlockUtil.BLOCK_FACES) {
                 final var l = b.getRelative(f);
                 if (l.getType() != Material.LEVER) {
@@ -263,22 +264,22 @@ public class Portal {
                 }
 
                 final var lever = (Switch) l.getBlockData();
-                final BlockFace attached_face;
+                final BlockFace attachedFace;
                 switch (lever.getAttachedFace()) {
                     default:
                     case WALL:
-                        attached_face = lever.getFacing().getOppositeFace();
+                        attachedFace = lever.getFacing().getOppositeFace();
                         break;
                     case CEILING:
-                        attached_face = BlockFace.UP;
+                        attachedFace = BlockFace.UP;
                         break;
                     case FLOOR:
-                        attached_face = BlockFace.DOWN;
+                        attachedFace = BlockFace.DOWN;
                         break;
                 }
 
                 // Only when attached to a controlling block
-                if (!controlling_blocks.contains(l.getRelative(attached_face))) {
+                if (!controllingBlocks.contains(l.getRelative(attachedFace))) {
                     continue;
                 }
 
@@ -290,12 +291,12 @@ public class Portal {
             final var lever = (Switch) l.getBlockData();
             lever.setPowered(activated);
             l.setBlockData(lever);
-            update_lever(l, lever.getFacing());
+            updateLever(l, lever.getFacing());
         }
     }
 
     public boolean activate(final Portals portals, @Nullable final Player player) {
-        if (portals.is_activated(this)) {
+        if (portals.isActivated(this)) {
             return false;
         }
 
@@ -311,12 +312,12 @@ public class Portal {
             return false;
         }
 
-        portals.connect_portals(this, target);
+        portals.connectPortals(this, target);
         return true;
     }
 
     public boolean deactivate(final Portals portals, @Nullable final Player player) {
-        if (!portals.is_activated(this)) {
+        if (!portals.isActivated(this)) {
             return false;
         }
 
@@ -327,92 +328,92 @@ public class Portal {
             return false;
         }
 
-        portals.disconnect_portals(this);
+        portals.disconnectPortals(this);
         return true;
     }
 
-    public void on_connect(final Portals portals, final Portal target) {
+    public void onConnect(final Portals portals, final Portal target) {
         // Update blocks
-        update_blocks(portals);
+        updateBlocks(portals);
 
         // Activate all controlling levers
-        set_controlling_levers(true);
+        setControllingLevers(true);
 
-        float sound_volume = (float) portals.config_volume_activation;
-        if (sound_volume > 0.0f) {
+        float soundVolume = (float) portals.configVolumeActivation;
+        if (soundVolume > 0.0f) {
             // Play sound
             spawn()
                 .getWorld()
-                .playSound(spawn(), Sound.BLOCK_END_PORTAL_SPAWN, SoundCategory.BLOCKS, sound_volume, 0.8f);
+                .playSound(spawn(), Sound.BLOCK_END_PORTAL_SPAWN, SoundCategory.BLOCKS, soundVolume, 0.8f);
         }
     }
 
-    public void on_disconnect(final Portals portals, final Portal target) {
+    public void onDisconnect(final Portals portals, final Portal target) {
         // Update blocks
-        update_blocks(portals);
+        updateBlocks(portals);
 
         // Deactivate all controlling levers
-        set_controlling_levers(false);
+        setControllingLevers(false);
 
-        float sound_volume = (float) portals.config_volume_deactivation;
-        if (sound_volume > 0.0f) {
+        float soundVolume = (float) portals.configVolumeDeactivation;
+        if (soundVolume > 0.0f) {
             // Play sound
             spawn()
                 .getWorld()
-                .playSound(spawn(), Sound.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, sound_volume, 0.5f);
+                .playSound(spawn(), Sound.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, soundVolume, 0.5f);
         }
     }
 
-    public void update_blocks(final Portals portals) {
-        final Style cur_style;
-        if (style_override == null) {
-            cur_style = portals.style(style);
+    public void updateBlocks(final Portals portals) {
+        final Style curStyle;
+        if (styleOverride == null) {
+            curStyle = portals.style(style);
         } else {
-            cur_style = style_override;
+            curStyle = styleOverride;
         }
 
-        final var active = portals.is_activated(this);
-        for (final var portal_block : blocks) {
-            final var type = cur_style.material(active, portal_block.type());
-            portal_block.block().setType(type);
+        final var active = portals.isActivated(this);
+        for (final var portalBlock : blocks) {
+            final var type = curStyle.material(active, portalBlock.type());
+            portalBlock.block().setType(type);
             if (type == Material.END_GATEWAY) {
                 // Disable beam
-                final var end_gateway = (EndGateway) portal_block.block().getState(false);
-                end_gateway.setAge(200l);
-                end_gateway.update(true, false);
+                final var endGateway = (EndGateway) portalBlock.block().getState(false);
+                endGateway.setAge(200l);
+                endGateway.update(true, false);
 
                 // If there's no exit location, then the game will generate a natural gateway when
                 // the portal is used.
                 // Setting any location will do, since the teleporting is canceled via their events
                 // anyway.
                 if (spawn.location().getWorld().getEnvironment() == World.Environment.THE_END) {
-                    end_gateway.setExitLocation(spawn.location());
-                    end_gateway.setExactTeleport(true);
+                    endGateway.setExitLocation(spawn.location());
+                    endGateway.setExactTeleport(true);
                 }
             }
-            if (portal_block.type() == PortalBlock.Type.CONSOLE) {
-                portals.update_console_item(this, portal_block.block());
+            if (portalBlock.type() == PortalBlock.Type.CONSOLE) {
+                portals.updateConsoleItem(this, portalBlock.block());
             }
         }
     }
 
-    public boolean open_console(final Portals portals, final Player player, final Block console) {
+    public boolean openConsole(final Portals portals, final Player player, final Block console) {
         // Call event
         final var event = new PortalOpenConsoleEvent(player, console, this);
         portals.getServer().getPluginManager().callEvent(event);
-        if (event.isCancelled() && !player.hasPermission(portals.admin_permission)) {
+        if (event.isCancelled() && !player.hasPermission(portals.adminPermission)) {
             return false;
         }
 
-        portals.menus.console_menu.create(this, player, console).open(player);
+        portals.menus.consoleMenu.create(this, player, console).open(player);
         return true;
     }
 
-    public Style copy_style(final Portals portals, final NamespacedKey new_key) {
-        if (style_override == null) {
-            return portals.style(style).copy(new_key);
+    public Style copyStyle(final Portals portals, final NamespacedKey newKey) {
+        if (styleOverride == null) {
+            return portals.style(style).copy(newKey);
         }
-        return style_override.copy(new_key);
+        return styleOverride.copy(newKey);
     }
 
     @Override
@@ -441,11 +442,11 @@ public class Portal {
             return values()[next];
         }
 
-        public boolean is_transient_target() {
+        public boolean isTransientTarget() {
             return this == GROUP || this == PRIVATE;
         }
 
-        public boolean requires_regions() {
+        public boolean requiresRegions() {
             return this == GROUP || this == GROUP_INTERNAL;
         }
     }
@@ -462,19 +463,19 @@ public class Portal {
 
         @Override
         public int compare(final Portal a, final Portal b) {
-            boolean a_same_world = world.equals(a.spawn().getWorld());
-            boolean b_same_world = world.equals(b.spawn().getWorld());
+            boolean aSameWorld = world.equals(a.spawn().getWorld());
+            boolean bSameWorld = world.equals(b.spawn().getWorld());
 
-            if (a_same_world) {
-                if (b_same_world) {
-                    final var a_dist = from.distanceSquared(a.spawn().toVector().setY(0.0));
-                    final var b_dist = from.distanceSquared(b.spawn().toVector().setY(0.0));
-                    return Double.compare(a_dist, b_dist);
+            if (aSameWorld) {
+                if (bSameWorld) {
+                    final var aDist = from.distanceSquared(a.spawn().toVector().setY(0.0));
+                    final var bDist = from.distanceSquared(b.spawn().toVector().setY(0.0));
+                    return Double.compare(aDist, bDist);
                 } else {
                     return -1;
                 }
             } else {
-                if (b_same_world) {
+                if (bSameWorld) {
                     return 1;
                 } else {
                     return a.name().compareToIgnoreCase(b.name());

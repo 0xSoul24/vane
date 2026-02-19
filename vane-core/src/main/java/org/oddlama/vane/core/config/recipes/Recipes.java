@@ -10,68 +10,68 @@ import org.oddlama.vane.core.module.ModuleComponent;
 
 public class Recipes<T extends Module<T>> extends ModuleComponent<T> {
 
-    private final NamespacedKey base_recipe_key;
+    private final NamespacedKey baseRecipeKey;
 
     @ConfigBoolean(
         def = true,
         desc = "Whether these recipes should be registered at all. Set to false to quickly disable all associated recipes."
     )
-    public boolean config_register_recipes;
+    public boolean configRegisterRecipes;
 
     @ConfigDict(cls = RecipeList.class, desc = "")
-    private RecipeList config_recipes;
+    private RecipeList configRecipes;
 
-    private Supplier<RecipeList> def_recipes;
+    private Supplier<RecipeList> defRecipes;
     private String desc;
 
     public Recipes(
         final Context<T> context,
-        final NamespacedKey base_recipe_key,
-        final Supplier<RecipeList> def_recipes
+        final NamespacedKey baseRecipeKey,
+        final Supplier<RecipeList> defRecipes
     ) {
         this(
             context,
-            base_recipe_key,
-            def_recipes,
+                baseRecipeKey,
+                defRecipes,
             "The associated recipes. This is a map of recipe name to recipe definitions."
         );
     }
 
     public Recipes(
         final Context<T> context,
-        final NamespacedKey base_recipe_key,
-        final Supplier<RecipeList> def_recipes,
+        final NamespacedKey baseRecipeKey,
+        final Supplier<RecipeList> defRecipes,
         final String desc
     ) {
         super(context);
-        this.base_recipe_key = base_recipe_key;
-        this.def_recipes = def_recipes;
+        this.baseRecipeKey = baseRecipeKey;
+        this.defRecipes = defRecipes;
         this.desc = desc;
     }
 
-    public RecipeList config_recipes_def() {
-        return def_recipes.get();
+    public RecipeList configRecipesDef() {
+        return defRecipes.get();
     }
 
-    public String config_recipes_desc() {
+    public String configRecipesDesc() {
         return desc;
     }
 
     @Override
-    public void on_config_change() {
-        // Recipes are processed in on_config_change and not in on_disable() / on_enable(),
-        // as the current recipes need to be removed even if we are disabled afterwards.
-        config_recipes.recipes().forEach(recipe -> get_module().getServer().removeRecipe(recipe.key(base_recipe_key)));
-        if (enabled() && config_register_recipes) {
-            config_recipes
+    public void onConfigChange() {
+        // Recipes are processed in onConfigChange and not in onModuleDisable() / onModuleEnable(),
+        // as the current recipes need to be removed even if we are disabled afterward.
+        configRecipes.recipes().forEach(recipe -> getModule().getServer().removeRecipe(recipe.key(baseRecipeKey)));
+        if (enabled() && configRegisterRecipes) {
+            configRecipes
                 .recipes()
-                .forEach(recipe -> get_module().getServer().addRecipe(recipe.to_recipe(base_recipe_key)));
+                .forEach(recipe -> getModule().getServer().addRecipe(recipe.toRecipe(baseRecipeKey)));
         }
     }
 
     @Override
-    protected void on_enable() {}
+    protected void onEnable() {}
 
     @Override
-    protected void on_disable() {}
+    protected void onDisable() {}
 }

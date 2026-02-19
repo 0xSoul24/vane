@@ -28,7 +28,7 @@ public enum Orientation {
         return vector.clone();
     }
 
-    public Vector component_mask() {
+    public Vector componentMask() {
         return this.vector().multiply(this.vector);
     }
 
@@ -55,26 +55,26 @@ public enum Orientation {
     public Location apply(
         final Orientation reference,
         final Location location,
-        final boolean flip_source_if_not_opposing
+        final boolean flipSourceIfNotOpposing
     ) {
         final var l = location.clone();
-        l.setDirection(apply(reference, location.getDirection(), flip_source_if_not_opposing));
+        l.setDirection(apply(reference, location.getDirection(), flipSourceIfNotOpposing));
         return l;
     }
 
-    public Vector apply(final Orientation reference, final Vector vector, final boolean flip_source_if_not_opposing) {
+    public Vector apply(final Orientation reference, final Vector vector, final boolean flipSourceIfNotOpposing) {
         final var x = vector.getX();
         final var y = vector.getY();
         final var z = vector.getZ();
 
-        var effective_source = this;
-        final var cmask = component_mask();
+        var effectiveSource = this;
+        final var cmask = componentMask();
         final var opposing = (this.vector.dot(cmask) < 0) != (vector.dot(cmask) < 0);
-        if (flip_source_if_not_opposing && opposing) {
-            effective_source = effective_source.flip();
+        if (flipSourceIfNotOpposing && opposing) {
+            effectiveSource = effectiveSource.flip();
         }
 
-        switch (effective_source) {
+        switch (effectiveSource) {
             case NEGATIVE_X: // Looking east
                 switch (reference) {
                     case NEGATIVE_X: // west
@@ -181,18 +181,18 @@ public enum Orientation {
         final Plane plane,
         final Block origin,
         final Block console,
-        final Location entity_location
+        final Location entityLocation
     ) {
         switch (plane) {
             case XY: {
-                final var origin_z = origin.getZ() + 0.5;
-                final var console_z = console.getZ() + 0.5;
-                if (console_z > origin_z) {
+                final var originZ = origin.getZ() + 0.5;
+                final var consoleZ = console.getZ() + 0.5;
+                if (consoleZ > originZ) {
                     return NEGATIVE_Z;
-                } else if (console_z < origin_z) {
+                } else if (consoleZ < originZ) {
                     return POSITIVE_Z;
                 } else {
-                    if (entity_location.getZ() > origin_z) {
+                    if (entityLocation.getZ() > originZ) {
                         return NEGATIVE_Z;
                     } else {
                         return POSITIVE_Z;
@@ -200,14 +200,14 @@ public enum Orientation {
                 }
             }
             case YZ: {
-                final var origin_x = origin.getX() + 0.5;
-                final var console_x = console.getX() + 0.5;
-                if (console_x > origin_x) {
+                final var originX = origin.getX() + 0.5;
+                final var consoleX = console.getX() + 0.5;
+                if (consoleX > originX) {
                     return NEGATIVE_X;
-                } else if (console_x < origin_x) {
+                } else if (consoleX < originX) {
                     return POSITIVE_X;
                 } else {
-                    if (entity_location.getX() > origin_x) {
+                    if (entityLocation.getX() > originX) {
                         return NEGATIVE_X;
                     } else {
                         return POSITIVE_X;
@@ -215,11 +215,11 @@ public enum Orientation {
                 }
             }
             case XZ: {
-                final var origin_y = origin.getY() + 0.5;
-                final var console_y = console.getY() + 0.5;
-                if (console_y >= origin_y) {
+                final var originY = origin.getY() + 0.5;
+                final var consoleY = console.getY() + 0.5;
+                if (consoleY >= originY) {
                     return NEGATIVE_Y;
-                } else { // if (console_y < origin_y)
+                } else { // if (consoleY < originY)
                     return POSITIVE_Y;
                 }
             }

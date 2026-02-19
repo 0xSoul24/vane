@@ -12,69 +12,69 @@ import org.oddlama.vane.core.Listener;
 
 public class FastWalkingListener extends Listener<Trifles> {
 
-    FastWalkingGroup fast_walking;
+    FastWalkingGroup fastWalking;
 
     public FastWalkingListener(FastWalkingGroup context) {
         super(context);
-        this.fast_walking = context;
+        this.fastWalking = context;
     }
 
     @ConfigBoolean(def = false, desc = "Whether hostile mobs should be allowed to fast walk on paths.")
-    public boolean config_hostile_speedwalk;
+    public boolean configHostileSpeedwalk;
 
     @ConfigBoolean(def = true, desc = "Whether villagers should be allowed to fast walk on paths.")
-    public boolean config_villager_speedwalk;
+    public boolean configVillagerSpeedwalk;
 
     @ConfigBoolean(
         def = false,
         desc = "Whether players should be the only entities allowed to fast walk on paths (will override other path walk settings)."
     )
-    public boolean config_players_only_speedwalk;
+    public boolean configPlayersOnlySpeedwalk;
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on_player_move(final PlayerMoveEvent event) {
+    public void onPlayerMove(final PlayerMoveEvent event) {
         // Players mustn't be flying
         final var player = event.getPlayer();
         if (player.isGliding()) {
             return;
         }
 
-        LivingEntity effect_entity = player;
+        LivingEntity effectEntity = player;
         if (player.isInsideVehicle() && player.getVehicle() instanceof LivingEntity vehicle) {
-            effect_entity = vehicle;
+            effectEntity = vehicle;
         }
 
         // Inspect a block type just a little below
-        var block = effect_entity.getLocation().clone().subtract(0.0, 0.1, 0.0).getBlock();
-        if (!fast_walking.config_materials.contains(block.getType())) {
+        var block = effectEntity.getLocation().clone().subtract(0.0, 0.1, 0.0).getBlock();
+        if (!fastWalking.configMaterials.contains(block.getType())) {
             return;
         }
 
         // Apply potion effect
-        effect_entity.addPotionEffect(fast_walking.walk_speed_effect);
+        effectEntity.addPotionEffect(fastWalking.walkSpeedEffect);
     }
 
     // This is fired for entities except players.
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on_entity_move(final EntityMoveEvent event) {
+    public void onEntityMove(final EntityMoveEvent event) {
         final var entity = event.getEntity();
 
         // Cancel event if speedwalking is only enabled for players
-        if (config_players_only_speedwalk) return;
+        if (configPlayersOnlySpeedwalk) return;
 
         // Cancel event if speedwalking is disabled for Hostile mobs
-        if (entity instanceof Monster && !config_hostile_speedwalk) return;
+        if (entity instanceof Monster && !configHostileSpeedwalk) return;
 
         // Cancel event if speedwalking is disabled for villagers
-        if (entity.getType() == EntityType.VILLAGER && !config_villager_speedwalk) return;
+        if (entity.getType() == EntityType.VILLAGER && !configVillagerSpeedwalk) return;
 
         // Inspect a block type just a little below
         var block = event.getTo().clone().subtract(0.0, 0.1, 0.0).getBlock();
-        if (!fast_walking.config_materials.contains(block.getType())) {
+        if (!fastWalking.configMaterials.contains(block.getType())) {
             return;
         }
 
         // Apply potion effect
-        entity.addPotionEffect(fast_walking.walk_speed_effect);
+        entity.addPotionEffect(fastWalking.walkSpeedEffect);
     }
 }

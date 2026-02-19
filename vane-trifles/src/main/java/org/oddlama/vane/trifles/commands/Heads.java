@@ -1,8 +1,8 @@
 package org.oddlama.vane.trifles.commands;
 
 import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
-import static org.oddlama.vane.util.PlayerUtil.give_items;
-import static org.oddlama.vane.util.PlayerUtil.take_items;
+import static org.oddlama.vane.util.PlayerUtil.giveItems;
+import static org.oddlama.vane.util.PlayerUtil.takeItems;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -18,15 +18,16 @@ import org.oddlama.vane.core.menu.Menu.ClickResult;
 import org.oddlama.vane.core.menu.MenuFactory;
 import org.oddlama.vane.core.module.Context;
 import org.oddlama.vane.trifles.Trifles;
+import org.oddlama.vane.util.PlayerUtil;
 
 @Name("heads")
 public class Heads extends Command<Trifles> {
 
     @ConfigMaterial(def = Material.BONE, desc = "Currency material used to buy heads.")
-    public Material config_currency;
+    public Material configCurrency;
 
     @ConfigInt(def = 1, min = 0, desc = "Price (in currency) per head. Set to 0 for free heads.")
-    public int config_price_per_head;
+    public int configPricePerHead;
 
     public Heads(Context<Trifles> context) {
         // Anyone may use this by default.
@@ -34,19 +35,19 @@ public class Heads extends Command<Trifles> {
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
-        return super.get_command_base()
+    public LiteralArgumentBuilder<CommandSourceStack> getCommandBase() {
+        return super.getCommandBase()
             .requires(ctx -> ctx.getSender() instanceof Player)
             .then(help())
             .executes(ctx -> {
-                open_head_library((Player) ctx.getSource().getSender());
+                openHeadLibrary((Player) ctx.getSource().getSender());
                 return SINGLE_SUCCESS;
             });
     }
 
-    private void open_head_library(final Player player) {
-        MenuFactory.head_selector(
-            get_context(),
+    private void openHeadLibrary(final Player player) {
+        MenuFactory.headSelector(
+            getContext(),
             player,
             (player2, m, t, event) -> {
                 final int amount;
@@ -73,13 +74,13 @@ public class Heads extends Command<Trifles> {
 
                 // Take currency items
                 if (
-                    config_price_per_head > 0 &&
-                    !take_items(player2, new ItemStack(config_currency, config_price_per_head * amount))
+                    configPricePerHead > 0 &&
+                    !PlayerUtil.takeItems(player2, new ItemStack(configCurrency, configPricePerHead * amount))
                 ) {
                     return ClickResult.ERROR;
                 }
 
-                give_items(player2, t.item(), amount);
+                giveItems(player2, t.item(), amount);
                 return ClickResult.SUCCESS;
             },
             player2 -> {}

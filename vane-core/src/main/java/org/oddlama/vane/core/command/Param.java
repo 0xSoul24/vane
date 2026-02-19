@@ -1,6 +1,6 @@
 package org.oddlama.vane.core.command;
 
-import static org.oddlama.vane.util.StorageUtil.namespaced_key;
+import static org.oddlama.vane.util.StorageUtil.namespacedKey;
 
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
@@ -40,131 +40,131 @@ import org.oddlama.vane.core.module.Module;
 
 @SuppressWarnings("overloads")
 public interface Param {
-    public List<Param> get_params();
+    public List<Param> getParams();
 
-    public default boolean require_player(CommandSender sender) {
+    public default boolean requirePlayer(CommandSender sender) {
         if (!(sender instanceof Player)) {
-            get_command().get_module().core.lang_command_not_a_player.send(sender);
+            getCommand().getModule().core.langCommandNotAPlayer.send(sender);
             return false;
         }
 
         return true;
     }
 
-    public default boolean is_executor() {
+    public default boolean isExecutor() {
         return false;
     }
 
-    public default void add_param(Param param) {
-        if (param.is_executor() && get_params().stream().anyMatch(p -> p.is_executor())) {
+    public default void addParam(Param param) {
+        if (param.isExecutor() && getParams().stream().anyMatch(p -> p.isExecutor())) {
             throw new RuntimeException("Cannot define multiple executors for the same parameter! This is a bug.");
         }
-        get_params().add(param);
+        getParams().add(param);
     }
 
-    public default <T1> void exec_player(Consumer1<T1> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f, this::require_player, i -> i == 0));
+    public default <T1> void execPlayer(Consumer1<T1> f) {
+        addParam(new SentinelExecutorParam<>(getCommand(), f, this::requirePlayer, i -> i == 0));
     }
 
-    public default <T1, T2> void exec_player(Consumer2<T1, T2> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f, this::require_player, i -> i == 0));
+    public default <T1, T2> void execPlayer(Consumer2<T1, T2> f) {
+        addParam(new SentinelExecutorParam<>(getCommand(), f, this::requirePlayer, i -> i == 0));
     }
 
-    public default <T1, T2, T3> void exec_player(Consumer3<T1, T2, T3> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f, this::require_player, i -> i == 0));
+    public default <T1, T2, T3> void execPlayer(Consumer3<T1, T2, T3> f) {
+        addParam(new SentinelExecutorParam<>(getCommand(), f, this::requirePlayer, i -> i == 0));
     }
 
-    public default <T1, T2, T3, T4> void exec_player(Consumer4<T1, T2, T3, T4> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f, this::require_player, i -> i == 0));
+    public default <T1, T2, T3, T4> void execPlayer(Consumer4<T1, T2, T3, T4> f) {
+        addParam(new SentinelExecutorParam<>(getCommand(), f, this::requirePlayer, i -> i == 0));
     }
 
-    public default <T1, T2, T3, T4, T5> void exec_player(Consumer5<T1, T2, T3, T4, T5> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f, this::require_player, i -> i == 0));
+    public default <T1, T2, T3, T4, T5> void execPlayer(Consumer5<T1, T2, T3, T4, T5> f) {
+        addParam(new SentinelExecutorParam<>(getCommand(), f, this::requirePlayer, i -> i == 0));
     }
 
-    public default <T1, T2, T3, T4, T5, T6> void exec_player(Consumer6<T1, T2, T3, T4, T5, T6> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f, this::require_player, i -> i == 0));
+    public default <T1, T2, T3, T4, T5, T6> void execPlayer(Consumer6<T1, T2, T3, T4, T5, T6> f) {
+        addParam(new SentinelExecutorParam<>(getCommand(), f, this::requirePlayer, i -> i == 0));
     }
 
-    public default <T1> void exec_player(Function1<T1, Boolean> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f, this::require_player, i -> i == 0));
+    public default <T1> void execPlayer(Function1<T1, Boolean> f) {
+        addParam(new SentinelExecutorParam<>(getCommand(), f, this::requirePlayer, i -> i == 0));
     }
 
-    public default <T1, T2> void exec_player(Function2<T1, T2, Boolean> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f, this::require_player, i -> i == 0));
+    public default <T1, T2> void execPlayer(Function2<T1, T2, Boolean> f) {
+        addParam(new SentinelExecutorParam<>(getCommand(), f, this::requirePlayer, i -> i == 0));
     }
 
-    public default <T1, T2, T3> void exec_player(Function3<T1, T2, T3, Boolean> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f, this::require_player, i -> i == 0));
+    public default <T1, T2, T3> void execPlayer(Function3<T1, T2, T3, Boolean> f) {
+        addParam(new SentinelExecutorParam<>(getCommand(), f, this::requirePlayer, i -> i == 0));
     }
 
-    public default <T1, T2, T3, T4> void exec_player(Function4<T1, T2, T3, T4, Boolean> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f, this::require_player, i -> i == 0));
+    public default <T1, T2, T3, T4> void execPlayer(Function4<T1, T2, T3, T4, Boolean> f) {
+        addParam(new SentinelExecutorParam<>(getCommand(), f, this::requirePlayer, i -> i == 0));
     }
 
-    public default <T1, T2, T3, T4, T5> void exec_player(Function5<T1, T2, T3, T4, T5, Boolean> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f, this::require_player, i -> i == 0));
+    public default <T1, T2, T3, T4, T5> void execPlayer(Function5<T1, T2, T3, T4, T5, Boolean> f) {
+        addParam(new SentinelExecutorParam<>(getCommand(), f, this::requirePlayer, i -> i == 0));
     }
 
-    public default <T1, T2, T3, T4, T5, T6> void exec_player(Function6<T1, T2, T3, T4, T5, T6, Boolean> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f, this::require_player, i -> i == 0));
+    public default <T1, T2, T3, T4, T5, T6> void execPlayer(Function6<T1, T2, T3, T4, T5, T6, Boolean> f) {
+        addParam(new SentinelExecutorParam<>(getCommand(), f, this::requirePlayer, i -> i == 0));
     }
 
     public default <T1> void exec(Consumer1<T1> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f));
+        addParam(new SentinelExecutorParam<>(getCommand(), f));
     }
 
     public default <T1, T2> void exec(Consumer2<T1, T2> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f));
+        addParam(new SentinelExecutorParam<>(getCommand(), f));
     }
 
     public default <T1, T2, T3> void exec(Consumer3<T1, T2, T3> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f));
+        addParam(new SentinelExecutorParam<>(getCommand(), f));
     }
 
     public default <T1, T2, T3, T4> void exec(Consumer4<T1, T2, T3, T4> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f));
+        addParam(new SentinelExecutorParam<>(getCommand(), f));
     }
 
     public default <T1, T2, T3, T4, T5> void exec(Consumer5<T1, T2, T3, T4, T5> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f));
+        addParam(new SentinelExecutorParam<>(getCommand(), f));
     }
 
     public default <T1, T2, T3, T4, T5, T6> void exec(Consumer6<T1, T2, T3, T4, T5, T6> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f));
+        addParam(new SentinelExecutorParam<>(getCommand(), f));
     }
 
     public default <T1> void exec(Function1<T1, Boolean> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f));
+        addParam(new SentinelExecutorParam<>(getCommand(), f));
     }
 
     public default <T1, T2> void exec(Function2<T1, T2, Boolean> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f));
+        addParam(new SentinelExecutorParam<>(getCommand(), f));
     }
 
     public default <T1, T2, T3> void exec(Function3<T1, T2, T3, Boolean> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f));
+        addParam(new SentinelExecutorParam<>(getCommand(), f));
     }
 
     public default <T1, T2, T3, T4> void exec(Function4<T1, T2, T3, T4, Boolean> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f));
+        addParam(new SentinelExecutorParam<>(getCommand(), f));
     }
 
     public default <T1, T2, T3, T4, T5> void exec(Function5<T1, T2, T3, T4, T5, Boolean> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f));
+        addParam(new SentinelExecutorParam<>(getCommand(), f));
     }
 
     public default <T1, T2, T3, T4, T5, T6> void exec(Function6<T1, T2, T3, T4, T5, T6, Boolean> f) {
-        add_param(new SentinelExecutorParam<>(get_command(), f));
+        addParam(new SentinelExecutorParam<>(getCommand(), f));
     }
 
-    public default Param any_string() {
+    public default Param anyString() {
         return any("string", str -> str);
     }
 
-    public default <T> AnyParam<? extends T> any(String argument_type, Function1<String, ? extends T> from_string) {
-        var p = new AnyParam<>(get_command(), argument_type, from_string);
-        add_param(p);
+    public default <T> AnyParam<? extends T> any(String argumentType, Function1<String, ? extends T> fromString) {
+        var p = new AnyParam<>(getCommand(), argumentType, fromString);
+        addParam(p);
         return p;
     }
 
@@ -172,9 +172,9 @@ public interface Param {
         return fixed(fixed, str -> str);
     }
 
-    public default <T> FixedParam<T> fixed(T fixed, Function1<T, String> to_string) {
-        var p = new FixedParam<>(get_command(), fixed, to_string);
-        add_param(p);
+    public default <T> FixedParam<T> fixed(T fixed, Function1<T, String> toString) {
+        var p = new FixedParam<>(getCommand(), fixed, toString);
+        addParam(p);
         return p;
     }
 
@@ -183,50 +183,50 @@ public interface Param {
     }
 
     public default <T> ChoiceParam<T> choice(
-        String argument_type,
+        String argumentType,
         Collection<? extends T> choices,
-        Function1<T, String> to_string
+        Function1<T, String> toString
     ) {
-        var p = new ChoiceParam<>(get_command(), argument_type, choices, to_string);
-        add_param(p);
+        var p = new ChoiceParam<>(getCommand(), argumentType, choices, toString);
+        addParam(p);
         return p;
     }
 
     public default <T> DynamicChoiceParam<T> choice(
-        String argument_type,
+        String argumentType,
         Function1<CommandSender, Collection<? extends T>> choices,
-        Function2<CommandSender, T, String> to_string,
-        Function2<CommandSender, String, ? extends T> from_string
+        Function2<CommandSender, T, String> toString,
+        Function2<CommandSender, String, ? extends T> fromString
     ) {
-        var p = new DynamicChoiceParam<>(get_command(), argument_type, choices, to_string, from_string);
-        add_param(p);
+        var p = new DynamicChoiceParam<>(getCommand(), argumentType, choices, toString, fromString);
+        addParam(p);
         return p;
     }
 
-    public default DynamicChoiceParam<Module<?>> choose_module() {
+    public default DynamicChoiceParam<Module<?>> chooseModule() {
         return choice(
             "module",
-            sender -> get_command().get_module().core.get_modules(),
-            (sender, m) -> m.get_name(),
+            sender -> getCommand().getModule().core.getModules(),
+            (sender, m) -> m.getAnnotationName(),
             (sender, str) ->
-                get_command()
-                    .get_module()
-                    .core.get_modules()
+                getCommand()
+                    .getModule()
+                    .core.getModules()
                     .stream()
-                    .filter(k -> k.get_name().equalsIgnoreCase(str))
+                    .filter(k -> k.getAnnotationName().equalsIgnoreCase(str))
                     .findFirst()
                     .orElse(null)
         );
     }
 
-    public default DynamicChoiceParam<World> choose_world() {
+    public default DynamicChoiceParam<World> chooseWorld() {
         return choice(
             "world",
-            sender -> get_command().get_module().getServer().getWorlds(),
+            sender -> getCommand().getModule().getServer().getWorlds(),
             (sender, w) -> w.getName().toLowerCase(),
             (sender, str) ->
-                get_command()
-                    .get_module()
+                getCommand()
+                    .getModule()
                     .getServer()
                     .getWorlds()
                     .stream()
@@ -236,15 +236,15 @@ public interface Param {
         );
     }
 
-    public default DynamicChoiceParam<OfflinePlayer> choose_any_player() {
+    public default DynamicChoiceParam<OfflinePlayer> chooseAnyPlayer() {
         return choice(
             "any_player",
-            sender -> get_command().get_module().get_offline_players_with_valid_name(),
+            sender -> getCommand().getModule().getOfflinePlayersWithValidName(),
             (sender, p) -> p.getName(),
             (sender, str) ->
-                get_command()
-                    .get_module()
-                    .get_offline_players_with_valid_name()
+                getCommand()
+                    .getModule()
+                    .getOfflinePlayersWithValidName()
                     .stream()
                     .filter(k -> k.getName().equalsIgnoreCase(str))
                     .findFirst()
@@ -252,14 +252,14 @@ public interface Param {
         );
     }
 
-    public default DynamicChoiceParam<Player> choose_online_player() {
+    public default DynamicChoiceParam<Player> chooseOnlinePlayer() {
         return choice(
             "online_player",
-            sender -> get_command().get_module().getServer().getOnlinePlayers(),
+            sender -> getCommand().getModule().getServer().getOnlinePlayers(),
             (sender, p) -> p.getName(),
             (sender, str) ->
-                get_command()
-                    .get_module()
+                getCommand()
+                    .getModule()
                     .getServer()
                     .getOnlinePlayers()
                     .stream()
@@ -269,26 +269,26 @@ public interface Param {
         );
     }
 
-    // TODO (minor): Make choose_permission filter results based on the previously
+    // TODO (minor): Make choosePermission filter results based on the previously
     // specified player.
-    public default DynamicChoiceParam<Permission> choose_permission() {
+    public default DynamicChoiceParam<Permission> choosePermission() {
         return choice(
             "permission",
-            sender -> get_command().get_module().getServer().getPluginManager().getPermissions(),
+            sender -> getCommand().getModule().getServer().getPluginManager().getPermissions(),
             (sender, p) -> p.getName(),
-            (sender, str) -> get_command().get_module().getServer().getPluginManager().getPermission(str)
+            (sender, str) -> getCommand().getModule().getServer().getPluginManager().getPermission(str)
         );
     }
 
-    public default ChoiceParam<GameMode> choose_gamemode() {
-        return choice("gamemode", List.of(GameMode.values()), m -> m.name().toLowerCase()).ignore_case();
+    public default ChoiceParam<GameMode> chooseGamemode() {
+        return choice("gamemode", List.of(GameMode.values()), m -> m.name().toLowerCase()).ignoreCase();
     }
 
-    public default DynamicChoiceParam<Enchantment> choose_enchantment() {
-        return choose_enchantment((sender, e) -> true);
+    public default DynamicChoiceParam<Enchantment> chooseEnchantment() {
+        return chooseEnchantment((sender, e) -> true);
     }
 
-    public default DynamicChoiceParam<Enchantment> choose_enchantment(
+    public default DynamicChoiceParam<Enchantment> chooseEnchantment(
         final Function2<CommandSender, Enchantment, Boolean> filter
     ) {
         return choice(
@@ -307,7 +307,7 @@ public interface Param {
                 }
                 var e = RegistryAccess.registryAccess()
                     .getRegistry(RegistryKey.ENCHANTMENT)
-                    .get(namespaced_key(parts[0], parts[1]));
+                    .get(namespacedKey(parts[0], parts[1]));
                 if (!filter.apply(sender, e)) {
                     return null;
                 }
@@ -316,13 +316,13 @@ public interface Param {
         );
     }
 
-    public default CheckResult check_accept_delegate(CommandSender sender, String[] args, int offset) {
-        if (get_params().isEmpty()) {
+    public default CheckResult checkAcceptDelegate(CommandSender sender, String[] args, int offset) {
+        if (getParams().isEmpty()) {
             throw new RuntimeException("Encountered parameter without sentinel! This is a bug.");
         }
 
         // Delegate to children
-        var results = get_params().stream().map(p -> p.check_accept(sender, args, offset + 1)).toList();
+        var results = getParams().stream().map(p -> p.checkAccept(sender, args, offset + 1)).toList();
 
         // Return the first executor result, if any
         for (var r : results) {
@@ -332,11 +332,11 @@ public interface Param {
         }
 
         // Only retain errors from maximum depth
-        var max_depth = results.stream().map(r -> r.depth()).reduce(0, Integer::max);
+        var maxDepth = results.stream().map(r -> r.depth()).reduce(0, Integer::max);
 
         var errors = results
             .stream()
-            .filter(r -> r.depth() == max_depth)
+            .filter(r -> r.depth() == maxDepth)
             .map(ErrorCheckResult.class::cast)
             .collect(Collectors.toList());
 
@@ -349,49 +349,49 @@ public interface Param {
         }
     }
 
-    public default CheckResult check_accept(CommandSender sender, String[] args, int offset) {
-        var result = check_parse(sender, args, offset);
+    public default CheckResult checkAccept(CommandSender sender, String[] args, int offset) {
+        var result = checkParse(sender, args, offset);
         if (!(result instanceof ParseCheckResult)) {
             return result;
         }
 
         var p = (ParseCheckResult) result;
-        return check_accept_delegate(sender, args, offset).prepend(p.argument_type(), p.parsed(), p.include_param());
+        return checkAcceptDelegate(sender, args, offset).prepend(p.argumentType(), p.parsed(), p.includeParam());
     }
 
-    public default List<String> build_completions_delegate(CommandSender sender, String[] args, int offset) {
-        if (get_params().isEmpty()) {
+    public default List<String> buildCompletionsDelegate(CommandSender sender, String[] args, int offset) {
+        if (getParams().isEmpty()) {
             throw new RuntimeException("Encountered parameter without sentinel! This is a bug.");
         }
 
         // Delegate to children
-        return get_params()
+        return getParams()
             .stream()
-            .map(p -> p.build_completions(sender, args, offset + 1))
+            .map(p -> p.buildCompletions(sender, args, offset + 1))
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
     }
 
-    public default List<String> build_completions(CommandSender sender, String[] args, int offset) {
+    public default List<String> buildCompletions(CommandSender sender, String[] args, int offset) {
         if (offset < args.length - 1) {
             // We are not the last argument.
             // Delegate completion to children if the param accepts the given arguments,
             // return no completions if it doesn't
-            if (check_parse(sender, args, offset) instanceof ParseCheckResult) {
-                return build_completions_delegate(sender, args, offset);
+            if (checkParse(sender, args, offset) instanceof ParseCheckResult) {
+                return buildCompletionsDelegate(sender, args, offset);
             } else {
                 return Collections.emptyList();
             }
         } else {
             // We are the parameter that needs to be completed.
             // Offer (partial) completions if our depth is the completion depth
-            return completions_for(sender, args, offset);
+            return completionsFor(sender, args, offset);
         }
     }
 
-    public List<String> completions_for(CommandSender sender, String[] args, int offset);
+    public List<String> completionsFor(CommandSender sender, String[] args, int offset);
 
-    public CheckResult check_parse(CommandSender sender, String[] args, int offset);
+    public CheckResult checkParse(CommandSender sender, String[] args, int offset);
 
-    public Command<?> get_command();
+    public Command<?> getCommand();
 }

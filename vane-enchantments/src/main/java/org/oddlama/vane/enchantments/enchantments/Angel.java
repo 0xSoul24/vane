@@ -19,7 +19,7 @@ import org.oddlama.vane.core.enchantments.CustomEnchantment;
 import org.oddlama.vane.core.module.Context;
 import org.oddlama.vane.enchantments.Enchantments;
 
-@VaneEnchantment(name = "angel", max_level = 5, rarity = Rarity.VERY_RARE, treasure = true, allow_custom = true)
+@VaneEnchantment(name = "angel", maxLevel = 5, rarity = Rarity.VERY_RARE, treasure = true, allowCustom = true)
 public class Angel extends CustomEnchantment<Enchantments> {
 
     @ConfigDouble(
@@ -28,35 +28,35 @@ public class Angel extends CustomEnchantment<Enchantments> {
         max = 1.0,
         desc = "Acceleration percentage. Each tick, the current flying speed is increased X percent towards the target speed. Low values (~0.1) typically result in a smooth acceleration curve and a natural feeling."
     )
-    private double config_acceleration_percentage;
+    private double configAccelerationPercentage;
 
     @ConfigDoubleList(
         def = { 0.7, 1.1, 1.4, 1.7, 2.0 },
         min = 0.0,
         desc = "Flying speed in blocks per second for each enchantment level."
     )
-    private List<Double> config_speed;
+    private List<Double> configSpeed;
 
     public Angel(Context<Enchantments> context) {
         super(context);
     }
 
     @Override
-    public RecipeList default_recipes() {
+    public RecipeList defaultRecipes() {
         return RecipeList.of(
             new ShapedRecipeDefinition("generic")
-                .shape("prp", "mbm", "mdm")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_the_gods")
-                .set_ingredient('m', Material.PHANTOM_MEMBRANE)
-                .set_ingredient('d', Material.DRAGON_BREATH)
-                .set_ingredient('p', Material.PUFFERFISH_BUCKET)
-                .set_ingredient('r', Material.FIREWORK_ROCKET)
+                .shape("PRP", "MBM", "MDM")
+                .setIngredient('B', "vane_enchantments:ancient_tome_of_the_gods")
+                .setIngredient('M', Material.PHANTOM_MEMBRANE)
+                .setIngredient('D', Material.DRAGON_BREATH)
+                .setIngredient('P', Material.PUFFERFISH_BUCKET)
+                .setIngredient('R', Material.FIREWORK_ROCKET)
                 .result(on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
         );
     }
 
     @Override
-    public LootTableList default_loot_tables() {
+    public LootTableList defaultLootTables() {
         return LootTableList.of(
             new LootDefinition("generic")
                 .in(LootTables.BURIED_TREASURE)
@@ -69,15 +69,15 @@ public class Angel extends CustomEnchantment<Enchantments> {
         );
     }
 
-    private double get_speed(int level) {
-        if (level > 0 && level <= config_speed.size()) {
-            return config_speed.get(level - 1);
+    private double getSpeed(int level) {
+        if (level > 0 && level <= configSpeed.size()) {
+            return configSpeed.get(level - 1);
         }
-        return config_speed.get(0);
+        return configSpeed.get(0);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on_player_move(final PlayerMoveEvent event) {
+    public void onPlayerMove(final PlayerMoveEvent event) {
         // Check sneaking and flying
         final var player = event.getPlayer();
         if (!player.isSneaking() || !player.isGliding()) {
@@ -102,14 +102,14 @@ public class Angel extends CustomEnchantment<Enchantments> {
 
         // Scale the delta dependent on the angle. Higher angle -> less effect
         final var vel = player.getVelocity();
-        final var delta = config_acceleration_percentage * (1.0 - dir.angle(vel) / Math.PI);
-        final var factor = get_speed(level);
+        final var delta = configAccelerationPercentage * (1.0 - dir.angle(vel) / Math.PI);
+        final var factor = getSpeed(level);
 
         // Exponential moving average between velocity and target velocity
-        final var new_vel = vel.multiply(1.0 - delta).add(dir.normalize().multiply(delta * factor));
-        player.setVelocity(new_vel);
+        final var newVel = vel.multiply(1.0 - delta).add(dir.normalize().multiply(delta * factor));
+        player.setVelocity(newVel);
 
         // Spawn particles
-        loc.getWorld().spawnParticle(Particle.FIREWORK, loc, 0, -new_vel.getX(), -new_vel.getY(), -new_vel.getZ(), 0.4);
+        loc.getWorld().spawnParticle(Particle.FIREWORK, loc, 0, -newVel.getX(), -newVel.getY(), -newVel.getZ(), 0.4);
     }
 }

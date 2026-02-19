@@ -6,7 +6,7 @@ import org.oddlama.vane.proxycore.commands.ProxyCommandSender;
 public interface ProxyPlayer extends ProxyCommandSender {
     void disconnect(String message);
 
-    UUID get_unique_id();
+    UUID getUniqueId();
 
-    long get_ping();
+    long getPing();
 }

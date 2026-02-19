@@ -20,14 +20,33 @@ public class ConfigStringListMapField extends ConfigField<Map<String, List<Strin
     public ConfigStringListMapField(
         Object owner,
         Field field,
-        Function<String, String> map_name,
+        Function<String, String> mapName,
         ConfigStringListMap annotation
     ) {
-        super(owner, field, map_name, "map of string to string list", annotation.desc());
+        super(owner, field, mapName, "map of string to string list", annotation.desc());
         this.annotation = annotation;
     }
 
-    private void append_string_list_map_definition(
+    // Convert a key like "default" or "terralith_rare" into PascalCase: "Default" / "TerralithRare"
+    private static String toPascalCase(final String key) {
+        if (key == null || key.isEmpty()) return key;
+        final var parts = key.split("[^A-Za-z0-9]+");
+        final var sb = new StringBuilder();
+        for (final var p : parts) {
+            if (p.isEmpty()) continue;
+            sb.append(Character.toUpperCase(p.charAt(0)));
+            if (p.length() > 1) sb.append(p.substring(1));
+        }
+        return sb.toString();
+    }
+
+    // Normalize keys from YAML back to canonical internal form (lowercase, non-alphanum -> underscore)
+    private static String normalizeKey(final String key) {
+        if (key == null) return null;
+        return key.toLowerCase().replaceAll("[^a-z0-9]+", "_");
+    }
+
+    private void appendStringListMapDefinition(
         StringBuilder builder,
         String indent,
         String prefix,
@@ -37,14 +56,15 @@ public class ConfigStringListMapField extends ConfigField<Map<String, List<Strin
             builder.append(indent);
             builder.append(prefix);
             builder.append("  ");
-            builder.append(escape_yaml(k));
+            // Use PascalCase for keys in generated YAML
+            builder.append(escapeYaml(toPascalCase(k)));
             builder.append(":\n");
 
             list.forEach(s -> {
                 builder.append(indent);
                 builder.append(prefix);
                 builder.append("    - ");
-                builder.append(escape_yaml(s));
+                builder.append(escapeYaml(s));
                 builder.append("\n");
             });
         });
@@ -52,7 +72,7 @@ public class ConfigStringListMapField extends ConfigField<Map<String, List<Strin
 
     @Override
     public Map<String, List<String>> def() {
-        final var override = overridden_def();
+        final var override = overriddenDef();
         if (override != null) {
             return override;
         } else {
@@ -64,7 +84,7 @@ public class ConfigStringListMapField extends ConfigField<Map<String, List<Strin
 
     @Override
     public boolean metrics() {
-        final var override = overridden_metrics();
+        final var override = overriddenMetrics();
         if (override != null) {
             return override;
         } else {
@@ -73,53 +93,54 @@ public class ConfigStringListMapField extends ConfigField<Map<String, List<Strin
     }
 
     @Override
-    public void generate_yaml(StringBuilder builder, String indent, YamlConfiguration existing_compatible_config) {
-        append_description(builder, indent);
+    public void generateYaml(StringBuilder builder, String indent, YamlConfiguration existingCompatibleConfig) {
+        appendDescription(builder, indent);
 
         // Default
         builder.append(indent);
         builder.append("# Default:\n");
-        append_string_list_map_definition(builder, indent, "# ", def());
+        appendStringListMapDefinition(builder, indent, "# ", def());
 
         // Definition
         builder.append(indent);
         builder.append(basename());
         builder.append(":\n");
-        final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
+        final var def = existingCompatibleConfig != null && existingCompatibleConfig.contains(yamlPath())
+            ? loadFromYaml(existingCompatibleConfig)
             : def();
-        append_string_list_map_definition(builder, indent, "", def);
+        appendStringListMapDefinition(builder, indent, "", def);
     }
 
     @Override
-    public void check_loadable(YamlConfiguration yaml) throws YamlLoadException {
-        check_yaml_path(yaml);
+    public void checkLoadable(YamlConfiguration yaml) throws YamlLoadException {
+        checkYamlPath(yaml);
 
-        if (!yaml.isConfigurationSection(yaml_path())) {
-            throw new YamlLoadException("Invalid type for yaml path '" + yaml_path() + "', expected group");
+        if (!yaml.isConfigurationSection(yamlPath())) {
+            throw new YamlLoadException("Invalid type for yaml path '" + yamlPath() + "', expected group");
         }
 
-        for (var list_key : yaml.getConfigurationSection(yaml_path()).getKeys(false)) {
-            final var list_path = yaml_path() + "." + list_key;
-            if (!yaml.isList(list_path)) {
-                throw new YamlLoadException("Invalid type for yaml path '" + list_path + "', expected list");
+        for (var listKey : yaml.getConfigurationSection(yamlPath()).getKeys(false)) {
+            final var listPath = yamlPath() + "." + listKey;
+            if (!yaml.isList(listPath)) {
+                throw new YamlLoadException("Invalid type for yaml path '" + listPath + "', expected list");
             }
 
-            for (var obj : yaml.getList(list_path)) {
+            for (var obj : yaml.getList(listPath)) {
                 if (!(obj instanceof String)) {
-                    throw new YamlLoadException("Invalid type for yaml path '" + list_path + "', expected string");
+                    throw new YamlLoadException("Invalid type for yaml path '" + listPath + "', expected string");
                 }
             }
         }
     }
 
-    public Map<String, List<String>> load_from_yaml(YamlConfiguration yaml) {
+    public Map<String, List<String>> loadFromYaml(YamlConfiguration yaml) {
         final var map = new HashMap<String, List<String>>();
-        for (final var list_key : yaml.getConfigurationSection(yaml_path()).getKeys(false)) {
-            final var list_path = yaml_path() + "." + list_key;
+        for (final var listKey : yaml.getConfigurationSection(yamlPath()).getKeys(false)) {
+            final var listPath = yamlPath() + "." + listKey;
             final var list = new ArrayList<String>();
-            map.put(list_key, list);
-            for (final var obj : yaml.getList(list_path)) {
+            // Normalize keys so in-memory representation stays lowercase/underscore
+            map.put(normalizeKey(listKey), list);
+            for (final var obj : yaml.getList(listPath)) {
                 list.add((String) obj);
             }
         }
@@ -128,7 +149,7 @@ public class ConfigStringListMapField extends ConfigField<Map<String, List<Strin
 
     public void load(YamlConfiguration yaml) {
         try {
-            field.set(owner, load_from_yaml(yaml));
+            field.set(owner, loadFromYaml(yaml));
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Invalid field access on '" + field.getName() + "'. This is a bug.");
         }

@@ -12,62 +12,62 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 4
+Version: 4
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'zh_cn'
+ResourcePackLangCode: 'zh_cn'
 
-item_ancient_tome:
-  name: "古老的卷轴"
+ItemAncientTome:
+  Name: "古老的卷轴"
 
-item_enchanted_ancient_tome:
-  name: "古老的卷轴"
+ItemEnchantedAncientTome:
+  Name: "古老的卷轴"
 
-item_ancient_tome_of_knowledge:
-  name: "古老知识卷轴"
+ItemAncientTomeOfKnowledge:
+  Name: "古老知识卷轴"
 
-item_enchanted_ancient_tome_of_knowledge:
-  name: "古老知识卷轴"
+ItemEnchantedAncientTomeOfKnowledge:
+  Name: "古老知识卷轴"
 
-item_ancient_tome_of_the_gods:
-  name: "古老众神卷轴"
+ItemAncientTomeOfTheGods:
+  Name: "古老众神卷轴"
 
-item_enchanted_ancient_tome_of_the_gods:
-  name: "古老众神卷轴"
+ItemEnchantedAncientTomeOfTheGods:
+  Name: "古老众神卷轴"
 
-enchantment_angel:
-  name: "天使"
+EnchantmentAngel:
+  Name: "天使"
 
-enchantment_grappling_hook:
-  name: "抓钩"
+EnchantmentGrapplingHook:
+  Name: "抓钩"
 
-enchantment_hell_bent:
-  name: "铁头功"
+EnchantmentHellBent:
+  Name: "铁头功"
 
-enchantment_leafchopper:
-  name: "园丁"
+EnchantmentLeafchopper:
+  Name: "园丁"
 
-enchantment_lightning:
-  name: "闪电"
+EnchantmentLightning:
+  Name: "闪电"
 
-enchantment_rake:
-  name: "快速耕地"
+EnchantmentRake:
+  Name: "快速耕地"
 
-enchantment_seeding:
-  name: "播种"
+EnchantmentSeeding:
+  Name: "播种"
 
-enchantment_soulbound:
-  name: "灵魂绑定"
-  drop_lock_warning: "灵魂绑定物品只能使用鼠标丢弃"
-  drop_cooldown: "再次丢弃以确认丢弃"
-  dropped_notification: "灵魂绑定物品已丢弃：%1$s"
+EnchantmentSoulbound:
+  Name: "灵魂绑定"
+  DropLockWarning: "灵魂绑定物品只能使用鼠标丢弃"
+  DropCooldown: "再次丢弃以确认丢弃"
+  DroppedNotification: "灵魂绑定物品已丢弃：%1$s"
 
-enchantment_take_off:
-  name: "起飞"
+EnchantmentTakeOff:
+  Name: "起飞"
 
-enchantment_unbreakable:
-  name: "牢不可破"
+EnchantmentUnbreakable:
+  Name: "牢不可破"
 
-enchantment_wings:
-  name: "飞行加速"
+EnchantmentWings:
+  Name: "飞行加速"

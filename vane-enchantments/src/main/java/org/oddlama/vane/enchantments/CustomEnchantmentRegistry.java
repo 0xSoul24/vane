@@ -17,37 +17,38 @@ import org.bukkit.inventory.ItemType;
 public abstract class CustomEnchantmentRegistry {
 
     public static final String NAMESPACE = "vane_enchantments";
-    private static final String TRANSLATE_KEY = "vane_enchantments.enchantment_%s.name";
     Key key;
     Component description;
-    int max_level;
+    int maxLevel;
 
-    TagKey<ItemType> supported_item_tags;
-    List<TypedKey<ItemType>> supported_items = List.of();
+    TagKey<ItemType> supportedItemTags;
+    List<TypedKey<ItemType>> supportedItems = List.of();
 
-    TagKey<Enchantment> exclusive_with_tags;
-    List<TypedKey<Enchantment>> exclusive_with = List.of();
+    TagKey<Enchantment> exclusiveWithTags;
+    List<TypedKey<Enchantment>> exclusiveWith = List.of();
 
-    public CustomEnchantmentRegistry(String name, TagKey<ItemType> supported_item_tags, int max_level) {
+    public CustomEnchantmentRegistry(String name, TagKey<ItemType> supportedItemTags, int maxLevel) {
         this.key = Key.key(NAMESPACE, name);
-        this.description = Component.translatable(String.format(TRANSLATE_KEY, name));
-        this.supported_item_tags = supported_item_tags;
-        this.max_level = max_level;
+        final var pascal = snakeCaseToPascalCase(name);
+        this.description = Component.translatable(NAMESPACE + ".Enchantment" + pascal + ".Name");
+        this.supportedItemTags = supportedItemTags;
+        this.maxLevel = maxLevel;
     }
 
-    public CustomEnchantmentRegistry(String name, List<TypedKey<ItemType>> supported_items, int max_level) {
+    public CustomEnchantmentRegistry(String name, List<TypedKey<ItemType>> supportedItems, int maxLevel) {
         this.key = Key.key(NAMESPACE, name);
-        this.description = Component.translatable(String.format(TRANSLATE_KEY, name));
-        this.supported_items = supported_items;
-        this.max_level = max_level;
+        final var pascal = snakeCaseToPascalCase(name);
+        this.description = Component.translatable(NAMESPACE + ".Enchantment" + pascal + ".Name");
+        this.supportedItems = supportedItems;
+        this.maxLevel = maxLevel;
     }
 
     /**
      * Add exclusive enchantments to this enchantment: exclusive enchantments can't be on the same
      * tool.
      */
-    public CustomEnchantmentRegistry exclusive_with(List<TypedKey<Enchantment>> enchantments) {
-        this.exclusive_with = enchantments;
+    public CustomEnchantmentRegistry exclusiveWith(List<TypedKey<Enchantment>> enchantments) {
+        this.exclusiveWith = enchantments;
         return this;
     }
 
@@ -55,19 +56,19 @@ public abstract class CustomEnchantmentRegistry {
      * Add exclusive enchantment <b>tag</b> to this enchantment: exclusive enchantments can't be on
      * the same tool.
      */
-    public CustomEnchantmentRegistry exclusive_with(TagKey<Enchantment> enchantment_tag) {
-        this.exclusive_with_tags = enchantment_tag;
+    public CustomEnchantmentRegistry exclusiveWith(TagKey<Enchantment> enchantmentTag) {
+        this.exclusiveWithTags = enchantmentTag;
         return this;
     }
 
     /** Get exclusive enchantments */
-    public RegistryKeySet<Enchantment> exclusive_with(
+    public RegistryKeySet<Enchantment> exclusiveWith(
         RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent
     ) {
-        if (this.exclusive_with_tags != null) {
-            return composeEvent.getOrCreateTag(exclusive_with_tags);
+        if (this.exclusiveWithTags != null) {
+            return composeEvent.getOrCreateTag(exclusiveWithTags);
         } else {
-            return RegistrySet.keySet(RegistryKey.ENCHANTMENT, this.exclusive_with);
+            return RegistrySet.keySet(RegistryKey.ENCHANTMENT, this.exclusiveWith);
         }
     }
 
@@ -83,21 +84,33 @@ public abstract class CustomEnchantmentRegistry {
                 e
                     .description(description)
                     .supportedItems(
-                        supported_items.size() > 0
-                            ? RegistrySet.keySet(RegistryKey.ITEM, supported_items)
-                            : composeEvent.getOrCreateTag(supported_item_tags)
+                        supportedItems.size() > 0
+                            ? RegistrySet.keySet(RegistryKey.ITEM, supportedItems)
+                            : composeEvent.getOrCreateTag(supportedItemTags)
                     )
                     .anvilCost(1)
-                    .maxLevel(max_level)
+                    .maxLevel(maxLevel)
                     .weight(10)
                     .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(1, 1))
                     .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(3, 1))
                     .activeSlots(EquipmentSlotGroup.ANY)
-                    .exclusiveWith(this.exclusive_with(composeEvent))
+                    .exclusiveWith(this.exclusiveWith(composeEvent))
             );
     }
 
     public TypedKey<Enchantment> typedKey(String name) {
         return TypedKey.create(RegistryKey.ENCHANTMENT, Key.key(NAMESPACE, name));
+    }
+
+    // Utility: convert snake_case names like "lightning" or "life_mending" to PascalCase "Lightning"/"LifeMending"
+    private static String snakeCaseToPascalCase(String snake) {
+        final var parts = snake.split("_");
+        final var sb = new StringBuilder();
+        for (var part : parts) {
+            if (part == null || part.isEmpty()) continue;
+            sb.append(Character.toUpperCase(part.charAt(0)));
+            if (part.length() > 1) sb.append(part.substring(1));
+        }
+        return sb.toString();
     }
 }

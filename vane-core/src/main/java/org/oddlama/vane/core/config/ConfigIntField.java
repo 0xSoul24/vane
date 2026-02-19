@@ -10,14 +10,14 @@ public class ConfigIntField extends ConfigField<Integer> {
 
     public ConfigInt annotation;
 
-    public ConfigIntField(Object owner, Field field, Function<String, String> map_name, ConfigInt annotation) {
-        super(owner, field, map_name, "int", annotation.desc());
+    public ConfigIntField(Object owner, Field field, Function<String, String> mapName, ConfigInt annotation) {
+        super(owner, field, mapName, "int", annotation.desc());
         this.annotation = annotation;
     }
 
     @Override
     public Integer def() {
-        final var override = overridden_def();
+        final var override = overriddenDef();
         if (override != null) {
             return override;
         } else {
@@ -27,7 +27,7 @@ public class ConfigIntField extends ConfigField<Integer> {
 
     @Override
     public boolean metrics() {
-        final var override = overridden_metrics();
+        final var override = overriddenMetrics();
         if (override != null) {
             return override;
         } else {
@@ -36,44 +36,44 @@ public class ConfigIntField extends ConfigField<Integer> {
     }
 
     @Override
-    public void generate_yaml(StringBuilder builder, String indent, YamlConfiguration existing_compatible_config) {
-        append_description(builder, indent);
-        append_value_range(builder, indent, annotation.min(), annotation.max(), Integer.MIN_VALUE, Integer.MAX_VALUE);
-        append_default_value(builder, indent, def());
-        final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
+    public void generateYaml(StringBuilder builder, String indent, YamlConfiguration existingCompatibleConfig) {
+        appendDescription(builder, indent);
+        appendValueRange(builder, indent, annotation.min(), annotation.max(), Integer.MIN_VALUE, Integer.MAX_VALUE);
+        appendDefaultValue(builder, indent, def());
+        final var def = existingCompatibleConfig != null && existingCompatibleConfig.contains(yamlPath())
+            ? loadFromYaml(existingCompatibleConfig)
             : def();
-        append_field_definition(builder, indent, def);
+        appendFieldDefinition(builder, indent, def);
     }
 
     @Override
-    public void check_loadable(YamlConfiguration yaml) throws YamlLoadException {
-        check_yaml_path(yaml);
+    public void checkLoadable(YamlConfiguration yaml) throws YamlLoadException {
+        checkYamlPath(yaml);
 
-        if (!(yaml.get(yaml_path()) instanceof Number)) {
-            throw new YamlLoadException("Invalid type for yaml path '" + yaml_path() + "', expected int");
+        if (!(yaml.get(yamlPath()) instanceof Number)) {
+            throw new YamlLoadException("Invalid type for yaml path '" + yamlPath() + "', expected int");
         }
 
-        final var val = yaml.getInt(yaml_path());
+        final var val = yaml.getInt(yamlPath());
         if (annotation.min() != Integer.MIN_VALUE && val < annotation.min()) {
             throw new YamlLoadException(
-                "Configuration '" + yaml_path() + "' has an invalid value: Value must be >= " + annotation.min()
+                "Configuration '" + yamlPath() + "' has an invalid value: Value must be >= " + annotation.min()
             );
         }
         if (annotation.max() != Integer.MAX_VALUE && val > annotation.max()) {
             throw new YamlLoadException(
-                "Configuration '" + yaml_path() + "' has an invalid value: Value must be <= " + annotation.max()
+                "Configuration '" + yamlPath() + "' has an invalid value: Value must be <= " + annotation.max()
             );
         }
     }
 
-    public int load_from_yaml(YamlConfiguration yaml) {
-        return yaml.getInt(yaml_path());
+    public int loadFromYaml(YamlConfiguration yaml) {
+        return yaml.getInt(yamlPath());
     }
 
     public void load(YamlConfiguration yaml) {
         try {
-            field.setInt(owner, load_from_yaml(yaml));
+            field.setInt(owner, loadFromYaml(yaml));
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Invalid field access on '" + field.getName() + "'. This is a bug.");
         }

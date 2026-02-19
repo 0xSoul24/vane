@@ -17,40 +17,40 @@ import org.oddlama.vane.regions.Regions;
 public class EnterRoleNameMenu extends ModuleComponent<Regions> {
 
     @LangMessage
-    public TranslatedMessage lang_title;
+    public TranslatedMessage langTitle;
 
     @ConfigMaterial(def = Material.BOOK, desc = "The item used to name roles.")
-    public Material config_material;
+    public Material configMaterial;
 
     public EnterRoleNameMenu(Context<Regions> context) {
-        super(context.namespace("enter_role_name"));
+        super(context.namespace("EnterRoleName"));
     }
 
-    public Menu create(final Player player, final Function2<Player, String, ClickResult> on_click) {
-        return create(player, "Role", on_click);
+    public Menu create(final Player player, final Function2<Player, String, ClickResult> onClick) {
+        return create(player, "Role", onClick);
     }
 
     public Menu create(
         final Player player,
-        final String default_name,
-        final Function2<Player, String, ClickResult> on_click
+        final String defaultName,
+        final Function2<Player, String, ClickResult> onClick
     ) {
-        return MenuFactory.anvil_string_input(
-            get_context(),
+        return MenuFactory.anvilStringInput(
+            getContext(),
             player,
-            lang_title.str(),
-            new ItemStack(config_material),
-            default_name,
+            langTitle.str(),
+            new ItemStack(configMaterial),
+            defaultName,
             (p, menu, name) -> {
                 menu.close(p);
-                return on_click.apply(p, name);
+                return onClick.apply(p, name);
             }
         );
     }
 
     @Override
-    public void on_enable() {}
+    public void onEnable() {}
 
     @Override
-    public void on_disable() {}
+    public void onDisable() {}
 }

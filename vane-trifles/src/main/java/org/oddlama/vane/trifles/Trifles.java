@@ -7,25 +7,25 @@ import org.oddlama.vane.trifles.items.XpBottles;
 import java.util.HashMap;
 import java.util.UUID;
 
-@VaneModule(name = "trifles", bstats = 8644, config_version = 4, lang_version = 4, storage_version = 1)
+@VaneModule(name = "trifles", bstats = 8644, configVersion = 4, langVersion = 4, storageVersion = 1)
 public class Trifles extends Module<Trifles> {
 
-    public final HashMap<UUID, Long> last_xp_bottle_consume_time = new HashMap<>();
-    public XpBottles xp_bottles;
-    public ItemFinder item_finder;
-    public StorageGroup storage_group;
-    public boolean packet_events_enabled;
+    public final HashMap<UUID, Long> lastXpBottleConsumeTime = new HashMap<>();
+    public XpBottles xpBottles;
+    public ItemFinder itemFinder;
+    public StorageGroup storageGroup;
+    public boolean packetEventsEnabled;
 
     public Trifles() {
-        final var fast_walking_group = new FastWalkingGroup(this);
-        new FastWalkingListener(fast_walking_group);
+        final var fastWalkingGroup = new FastWalkingGroup(this);
+        new FastWalkingListener(fastWalkingGroup);
         new DoubleDoorListener(this);
 		new ItemFrameListener(this);
         new HarvestListener(this);
         new RepairCostLimiter(this);
         new RecipeUnlock(this);
         new ChestSorter(this);
-        item_finder = new ItemFinder(this);
+        itemFinder = new ItemFinder(this);
 
         new org.oddlama.vane.trifles.commands.Heads(this);
         new org.oddlama.vane.trifles.commands.Setspawn(this);
@@ -37,24 +37,24 @@ public class Trifles extends Module<Trifles> {
         new org.oddlama.vane.trifles.items.File(this);
         new org.oddlama.vane.trifles.items.Sickles(this);
         new org.oddlama.vane.trifles.items.EmptyXpBottle(this);
-        xp_bottles = new org.oddlama.vane.trifles.items.XpBottles(this);
+        xpBottles = new XpBottles(this);
         new org.oddlama.vane.trifles.items.Trowel(this);
         new org.oddlama.vane.trifles.items.NorthCompass(this);
         new org.oddlama.vane.trifles.items.SlimeBucket(this);
 
-        storage_group = new StorageGroup(this);
-        new org.oddlama.vane.trifles.items.storage.Pouch(storage_group.get_context());
-        new org.oddlama.vane.trifles.items.storage.Backpack(storage_group.get_context());
+        storageGroup = new StorageGroup(this);
+        new org.oddlama.vane.trifles.items.storage.Pouch(storageGroup.getContext());
+        new org.oddlama.vane.trifles.items.storage.Backpack(storageGroup.getContext());
     }
 
     @Override
-    public void on_enable() {
-        get_module().schedule_next_tick(() -> {
-            var packet_events_plugin = get_module().getServer().getPluginManager().getPlugin("PacketEvents");
+    public void onModuleEnable() {
+        getModule().scheduleNextTick(() -> {
+            var packetEventsPlugin = getModule().getServer().getPluginManager().getPlugin("PacketEvents");
 
-            if (packet_events_plugin != null && packet_events_plugin.isEnabled()) {
-                packet_events_enabled = true;
-                get_module().log.info("Enabling PacketEvents integration");
+            if (packetEventsPlugin != null && packetEventsPlugin.isEnabled()) {
+                packetEventsEnabled = true;
+                getModule().log.info("Enabling PacketEvents integration");
             }
         });
     }

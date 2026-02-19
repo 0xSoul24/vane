@@ -29,7 +29,7 @@ import org.oddlama.vane.core.module.Context;
 import org.oddlama.vane.enchantments.Enchantments;
 import org.oddlama.vane.util.StorageUtil;
 
-@VaneEnchantment(name = "soulbound", rarity = Rarity.RARE, treasure = true, allow_custom = true)
+@VaneEnchantment(name = "soulbound", rarity = Rarity.RARE, treasure = true, allowCustom = true)
 public class Soulbound extends CustomEnchantment<Enchantments> {
 
     @ConfigLong(
@@ -37,52 +37,52 @@ public class Soulbound extends CustomEnchantment<Enchantments> {
         min = 0,
         desc = "Window to allow Soulbound item drop immediately after a previous drop in milliseconds"
     )
-    public long config_cooldown;
+    public long configCooldown;
 
-    private static final NamespacedKey IGNORE_SOULBOUND_DROP = StorageUtil.namespaced_key(
+    private static final NamespacedKey IGNORE_SOULBOUND_DROP = StorageUtil.namespacedKey(
         "vane_enchantments",
         "ignore_soulbound_drop"
     );
-    private CooldownData drop_cooldown = new CooldownData(IGNORE_SOULBOUND_DROP, config_cooldown);
+    private CooldownData dropCooldown = new CooldownData(IGNORE_SOULBOUND_DROP, configCooldown);
 
     @LangMessage
-    public TranslatedMessage lang_drop_lock_warning;
+    public TranslatedMessage langDropLockWarning;
 
     @LangMessage
-    public TranslatedMessage lang_dropped_notification;
+    public TranslatedMessage langDroppedNotification;
 
     @LangMessage
-    public TranslatedMessage lang_drop_cooldown;
+    public TranslatedMessage langDropCooldown;
 
     public Soulbound(Context<Enchantments> context) {
         super(context);
     }
 
     @Override
-    public void on_config_change() {
-        super.on_config_change();
-        drop_cooldown = new CooldownData(IGNORE_SOULBOUND_DROP, config_cooldown);
+    public void onConfigChange() {
+        super.onConfigChange();
+        dropCooldown = new CooldownData(IGNORE_SOULBOUND_DROP, configCooldown);
     }
 
     @Override
-    public RecipeList default_recipes() {
+    public RecipeList defaultRecipes() {
         return RecipeList.of(
             new ShapedRecipeDefinition("generic")
-                .shape("cqc", "obe", "rgt")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_the_gods")
-                .set_ingredient('c', Material.IRON_CHAIN)
-                .set_ingredient('q', Material.WRITABLE_BOOK)
-                .set_ingredient('o', Material.BONE)
-                .set_ingredient('r', "minecraft:enchanted_book#enchants{minecraft:binding_curse*1}")
-                .set_ingredient('g', Material.GHAST_TEAR)
-                .set_ingredient('t', Material.TOTEM_OF_UNDYING)
-                .set_ingredient('e', Material.ENDER_EYE)
+                .shape("CQC", "OBE", "RGT")
+                .setIngredient('B', "vane_enchantments:ancient_tome_of_the_gods")
+                .setIngredient('C', Material.IRON_CHAIN)
+                .setIngredient('Q', Material.WRITABLE_BOOK)
+                .setIngredient('O', Material.BONE)
+                .setIngredient('R', "minecraft:enchanted_book#enchants{minecraft:binding_curse*1}")
+                .setIngredient('G', Material.GHAST_TEAR)
+                .setIngredient('T', Material.TOTEM_OF_UNDYING)
+                .setIngredient('E', Material.ENDER_EYE)
                 .result(on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
         );
     }
 
     @Override
-    public LootTableList default_loot_tables() {
+    public LootTableList defaultLootTables() {
         return LootTableList.of(
             new LootDefinition("generic")
                 .in(LootTables.BASTION_TREASURE)
@@ -91,39 +91,39 @@ public class Soulbound extends CustomEnchantment<Enchantments> {
     }
 
     @Override
-    public Component apply_display_format(Component component) {
+    public Component applyDisplayFormat(Component component) {
         return component.color(NamedTextColor.DARK_GRAY);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on_player_death(final PlayerDeathEvent event) {
-        final var keep_items = event.getItemsToKeep();
+    public void onPlayerDeath(final PlayerDeathEvent event) {
+        final var keepItems = event.getItemsToKeep();
 
         // Keep all soulbound items
         final var it = event.getDrops().iterator();
         while (it.hasNext()) {
             final var drop = it.next();
-            if (is_soulbound(drop)) {
-                keep_items.add(drop);
+            if (isSoulbound(drop)) {
+                keepItems.add(drop);
                 it.remove();
             }
         }
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void on_player_inventory_check(final InventoryClickEvent event) {
+    public void onPlayerInventoryCheck(final InventoryClickEvent event) {
         if (event.getCursor() == null) return;
-        if (!is_soulbound(event.getCursor())) return;
+        if (!isSoulbound(event.getCursor())) return;
         if (
             event.getAction() == InventoryAction.DROP_ALL_CURSOR || event.getAction() == InventoryAction.DROP_ONE_CURSOR
         ) {
-            boolean too_slow = drop_cooldown.peek_cooldown(event.getCursor().getItemMeta());
-            if (too_slow) {
+            boolean tooSlow = dropCooldown.peekCooldown(event.getCursor().getItemMeta());
+            if (tooSlow) {
                 // Dropped too slowly, refresh and cancel
                 final ItemMeta meta = event.getCursor().getItemMeta();
-                drop_cooldown.check_or_update_cooldown(meta);
+                dropCooldown.checkOrUpdateCooldown(meta);
                 event.getCursor().setItemMeta(meta);
-                lang_drop_cooldown.send_action_bar(event.getWhoClicked());
+                langDropCooldown.sendActionBar(event.getWhoClicked());
                 event.setResult(Event.Result.DENY);
                 return;
             }
@@ -132,25 +132,25 @@ public class Soulbound extends CustomEnchantment<Enchantments> {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void on_player_drop_item(final PlayerDropItemEvent event) {
+    public void onPlayerDropItem(final PlayerDropItemEvent event) {
         // A player cannot drop soulbound items.
         // Prevents yeeting your best sword out of existence.
         // (It's okay to put them into chests.)
-        final var dropped_item = event.getItemDrop().getItemStack();
-        if (is_soulbound(dropped_item)) {
-            boolean too_slow = drop_cooldown.peek_cooldown(dropped_item.getItemMeta());
-            if (!too_slow) {
-                var meta = dropped_item.getItemMeta();
-                drop_cooldown.clear(dropped_item.getItemMeta());
-                dropped_item.setItemMeta(meta);
-                lang_dropped_notification.send(event.getPlayer(), dropped_item.displayName());
+        final var droppedItem = event.getItemDrop().getItemStack();
+        if (isSoulbound(droppedItem)) {
+            boolean tooSlow = dropCooldown.peekCooldown(droppedItem.getItemMeta());
+            if (!tooSlow) {
+                var meta = droppedItem.getItemMeta();
+                dropCooldown.clear(droppedItem.getItemMeta());
+                droppedItem.setItemMeta(meta);
+                langDroppedNotification.send(event.getPlayer(), droppedItem.displayName());
                 return;
             }
             final var inventory = event.getPlayer().getInventory();
             if (inventory.firstEmpty() != -1) {
                 // We still have space in the inventory, so the player tried to drop it with Q.
                 event.setCancelled(true);
-                lang_drop_lock_warning.send_action_bar(
+                langDropLockWarning.sendActionBar(
                     event.getPlayer(),
                     event.getItemDrop().getItemStack().displayName()
                 );
@@ -158,19 +158,19 @@ public class Soulbound extends CustomEnchantment<Enchantments> {
                 // Inventory is full (e.g., when exiting crafting table with soulbound item in it)
                 // so we drop the first non-soulbound item (if any) instead.
                 final var it = inventory.iterator();
-                ItemStack non_soulbound_item = null;
-                int non_soulbound_item_slot = 0;
+                ItemStack nonSoulboundItem = null;
+                int nonSoulboundItemSlot = 0;
                 while (it.hasNext()) {
                     final var item = it.next();
                     if (item.getEnchantmentLevel(this.bukkit()) == 0) {
-                        non_soulbound_item = item;
+                        nonSoulboundItem = item;
                         break;
                     }
 
-                    ++non_soulbound_item_slot;
+                    ++nonSoulboundItemSlot;
                 }
 
-                if (non_soulbound_item == null) {
+                if (nonSoulboundItem == null) {
                     // We can't prevent dropping a soulbound item.
                     // Well, that sucks.
                     return;
@@ -178,15 +178,15 @@ public class Soulbound extends CustomEnchantment<Enchantments> {
 
                 // Drop the other item
                 final var player = event.getPlayer();
-                inventory.setItem(non_soulbound_item_slot, dropped_item);
-                player.getLocation().getWorld().dropItem(player.getLocation(), non_soulbound_item);
-                lang_drop_lock_warning.send_action_bar(player, event.getItemDrop().getItemStack().displayName());
+                inventory.setItem(nonSoulboundItemSlot, droppedItem);
+                player.getLocation().getWorld().dropItem(player.getLocation(), nonSoulboundItem);
+                langDropLockWarning.sendActionBar(player, event.getItemDrop().getItemStack().displayName());
                 event.setCancelled(true);
             }
         }
     }
 
-    private boolean is_soulbound(ItemStack dropped_item) {
-        return dropped_item.getEnchantmentLevel(this.bukkit()) > 0;
+    private boolean isSoulbound(ItemStack droppedItem) {
+        return droppedItem.getEnchantmentLevel(this.bukkit()) > 0;
     }
 }

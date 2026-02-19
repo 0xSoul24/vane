@@ -12,15 +12,15 @@ public class ProxyPingCommand extends ProxyCommand {
     @Override
     public void execute(ProxyCommandSender sender, String[] args) {
         if (!(sender instanceof final ProxyPlayer player)) {
-            sender.send_message("Not a player!");
+            sender.sendMessage("Not a player!");
             return;
         }
 
-        if (!has_permission(player.get_unique_id())) {
-            sender.send_message("No permission!");
+        if (!hasPermission(player.getUniqueId())) {
+            sender.sendMessage("No permission!");
             return;
         }
 
-        player.send_message("§7ping: §3" + player.get_ping() + "ms");
+        player.sendMessage("§7ping: §3" + player.getPing() + "ms");
     }
 }

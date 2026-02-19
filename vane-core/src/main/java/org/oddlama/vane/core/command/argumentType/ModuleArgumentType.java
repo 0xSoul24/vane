@@ -34,9 +34,9 @@ public class ModuleArgumentType implements CustomArgumentType.Converted<Module<?
     @Override
     public @NotNull Module<?> convert(@NotNull String nativeType) throws CommandSyntaxException {
         return core
-            .get_modules()
+            .getModules()
             .stream()
-            .filter(module -> module.get_name().equalsIgnoreCase(nativeType))
+            .filter(module -> module.getAnnotationName().equalsIgnoreCase(nativeType))
             .findFirst()
             .orElseThrow();
     }
@@ -46,7 +46,7 @@ public class ModuleArgumentType implements CustomArgumentType.Converted<Module<?
         @NotNull CommandContext<S> context,
         @NotNull SuggestionsBuilder builder
     ) {
-        Stream<String> stream = core.get_modules().stream().map(Module::get_name);
+        Stream<String> stream = core.getModules().stream().map(Module::getAnnotationName);
         if (!builder.getRemaining().isBlank()) {
             stream = stream.filter(module -> module.contains(builder.getRemainingLowerCase()));
         }

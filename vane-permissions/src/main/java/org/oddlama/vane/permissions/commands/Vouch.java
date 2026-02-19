@@ -26,29 +26,29 @@ import org.oddlama.vane.permissions.Permissions;
 public class Vouch extends Command<Permissions> {
 
     @LangMessage
-    private TranslatedMessage lang_vouched;
+    private TranslatedMessage langVouched;
 
     @LangMessage
-    private TranslatedMessage lang_already_vouched;
+    private TranslatedMessage langAlreadyVouched;
 
     @ConfigString(def = "user", desc = "The group to assign to players when someone vouches for them.", metrics = true)
-    private String config_vouch_group;
+    private String configVouchGroup;
 
     // Persistent storage
     @Persistent
-    public Map<UUID, Set<UUID>> storage_vouched_by = new HashMap<>();
+    public Map<UUID, Set<UUID>> storageVouchedBy = new HashMap<>();
 
     public Vouch(Context<Permissions> context) {
         super(context);
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
-        return super.get_command_base()
+    public LiteralArgumentBuilder<CommandSourceStack> getCommandBase() {
+        return super.getCommandBase()
             .then(help())
             .then(
                 argument("offline_player", OfflinePlayerArgumentType.offlinePlayer()).executes(ctx -> {
-                    vouch_for_player(
+                    vouchForPlayer(
                         (Player) ctx.getSource().getSender(),
                         ctx.getArgument("offline_player", OfflinePlayer.class)
                     );
@@ -57,21 +57,21 @@ public class Vouch extends Command<Permissions> {
             );
     }
 
-    private void vouch_for_player(final Player sender, final OfflinePlayer vouched_player) {
-        var vouched_by_set = storage_vouched_by.computeIfAbsent(vouched_player.getUniqueId(), k -> new HashSet<>());
+    private void vouchForPlayer(final Player sender, final OfflinePlayer vouchedPlayer) {
+        var vouchedBySet = storageVouchedBy.computeIfAbsent(vouchedPlayer.getUniqueId(), k -> new HashSet<>());
 
-        if (vouched_by_set.add(sender.getUniqueId())) {
+        if (vouchedBySet.add(sender.getUniqueId())) {
             // If it was the first one, we assign the group,
             // otherwise we just record that the player also vouched.
-            if (vouched_by_set.size() == 1) {
-                get_module().add_player_to_group(vouched_player, config_vouch_group);
+            if (vouchedBySet.size() == 1) {
+                getModule().addPlayerToGroup(vouchedPlayer, configVouchGroup);
             }
 
-            lang_vouched.send(sender, "§b" + vouched_player.getName());
+            langVouched.send(sender, "§b" + vouchedPlayer.getName());
         } else {
-            lang_already_vouched.send(sender, "§b" + vouched_player.getName());
+            langAlreadyVouched.send(sender, "§b" + vouchedPlayer.getName());
         }
 
-        mark_persistent_storage_dirty();
+        markPersistentStorageDirty();
     }
 }

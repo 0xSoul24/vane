@@ -6,22 +6,22 @@ import org.oddlama.vane.portals.Portals;
 
 public class PortalMenuGroup extends ModuleComponent<Portals> {
 
-    public EnterNameMenu enter_name_menu;
-    public ConsoleMenu console_menu;
-    public SettingsMenu settings_menu;
-    public StyleMenu style_menu;
+    public EnterNameMenu enterNameMenu;
+    public ConsoleMenu consoleMenu;
+    public SettingsMenu settingsMenu;
+    public StyleMenu styleMenu;
 
     public PortalMenuGroup(Context<Portals> context) {
-        super(context.namespace("menus"));
-        enter_name_menu = new EnterNameMenu(get_context());
-        console_menu = new ConsoleMenu(get_context());
-        settings_menu = new SettingsMenu(get_context());
-        style_menu = new StyleMenu(get_context());
+        super(context.namespace("Menus"));
+        enterNameMenu = new EnterNameMenu(getContext());
+        consoleMenu = new ConsoleMenu(getContext());
+        settingsMenu = new SettingsMenu(getContext());
+        styleMenu = new StyleMenu(getContext());
     }
 
     @Override
-    public void on_enable() {}
+    public void onEnable() {}
 
     @Override
-    public void on_disable() {}
+    public void onDisable() {}
 }

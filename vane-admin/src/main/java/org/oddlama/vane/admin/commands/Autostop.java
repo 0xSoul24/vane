@@ -25,8 +25,8 @@ public class Autostop extends Command<Admin> {
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
-        return super.get_command_base()
+    public LiteralArgumentBuilder<CommandSourceStack> getCommandBase() {
+        return super.getCommandBase()
             .executes(ctx -> {
                 status(ctx.getSource().getSender());
                 return SINGLE_SUCCESS;
@@ -52,7 +52,7 @@ public class Autostop extends Command<Admin> {
                     })
                     .then(
                         argument("time", ArgumentTypes.time()).executes(ctx -> {
-                            schedule_delay(ctx.getSource().getSender(), ctx.getArgument("time", Integer.class));
+                            scheduleDelay(ctx.getSource().getSender(), ctx.getArgument("time", Integer.class));
                             return SINGLE_SUCCESS;
                         })
                     )
@@ -71,7 +71,7 @@ public class Autostop extends Command<Admin> {
         autostop.schedule(sender);
     }
 
-    private void schedule_delay(CommandSender sender, int delay) {
-        autostop.schedule(sender, Conversions.ticks_to_ms(delay));
+    private void scheduleDelay(CommandSender sender, int delay) {
+        autostop.schedule(sender, Conversions.ticksToMs(delay));
     }
 }

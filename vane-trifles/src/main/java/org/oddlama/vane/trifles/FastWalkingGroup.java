@@ -1,6 +1,6 @@
 package org.oddlama.vane.trifles;
 
-import static org.oddlama.vane.util.Conversions.ms_to_ticks;
+import static org.oddlama.vane.util.Conversions.msToTicks;
 
 import java.util.Set;
 import org.bukkit.Material;
@@ -15,25 +15,25 @@ import org.oddlama.vane.core.module.ModuleGroup;
 public class FastWalkingGroup extends ModuleGroup<Trifles> {
 
     @ConfigInt(def = 2, min = 1, max = 10, desc = "Speed effect level.")
-    public int config_speed_level;
+    public int configSpeedLevel;
 
     @ConfigLong(def = 2000, min = 50, max = 5000, desc = "Speed effect duration in milliseconds.")
-    public long config_duration;
+    public long configDuration;
 
     @ConfigMaterialSet(def = { Material.DIRT_PATH }, desc = "Materials on which players will walk faster.")
-    public Set<Material> config_materials;
+    public Set<Material> configMaterials;
 
     // Variables
-    public PotionEffect walk_speed_effect;
+    public PotionEffect walkSpeedEffect;
 
     public FastWalkingGroup(Context<Trifles> context) {
-        super(context, "fast_walking", "Enable faster walking on certain materials.");
+        super(context, "FastWalking", "Enable faster walking on certain materials.");
     }
 
     @Override
-    public void on_config_change() {
-        var ticks = ms_to_ticks(config_duration);
-        walk_speed_effect = new PotionEffect(PotionEffectType.SPEED, (int) ticks, config_speed_level - 1)
+    public void onConfigChange() {
+        var ticks = msToTicks(configDuration);
+        walkSpeedEffect = new PotionEffect(PotionEffectType.SPEED, (int) ticks, configSpeedLevel - 1)
             .withAmbient(false)
             .withParticles(false)
             .withIcon(false);

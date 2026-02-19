@@ -11,18 +11,18 @@ import org.oddlama.vane.core.module.ModuleComponent;
 public class HeadSelectorGroup extends ModuleComponent<Core> {
 
     @LangMessage
-    public TranslatedMessage lang_title;
+    public TranslatedMessage langTitle;
 
     @LangMessage
-    public TranslatedMessage lang_filter_title;
+    public TranslatedMessage langFilterTitle;
 
-    public TranslatedItemStack<?> item_select_head;
+    public TranslatedItemStack<?> itemSelectHead;
 
     public HeadSelectorGroup(Context<Core> context) {
-        super(context.namespace("head_selector", "Menu configuration for the head selector menu."));
-        item_select_head = new TranslatedItemStack<>(
-            get_context(),
-            "select_head",
+        super(context.namespace("HeadSelector", "Menu configuration for the head selector menu."));
+        itemSelectHead = new TranslatedItemStack<>(
+            getContext(),
+            "SelectHead",
             Material.BARRIER,
             1,
             "Used to represent a head in the head library."
@@ -30,8 +30,8 @@ public class HeadSelectorGroup extends ModuleComponent<Core> {
     }
 
     @Override
-    public void on_enable() {}
+    public void onEnable() {}
 
     @Override
-    public void on_disable() {}
+    public void onDisable() {}
 }

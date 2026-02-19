@@ -21,8 +21,8 @@ public class Menu {
     protected final MenuManager manager;
     protected Inventory inventory = null;
     private final Set<MenuWidget> widgets = new HashSet<>();
-    private Consumer2<Player, InventoryCloseEvent.Reason> on_close = null;
-    private Consumer1<Player> on_natural_close = null;
+    private Consumer2<Player, InventoryCloseEvent.Reason> onClose = null;
+    private Consumer1<Player> onNaturalClose = null;
     private Object tag = null;
 
     // A tainted menu will refuse to be opened.
@@ -31,11 +31,11 @@ public class Menu {
     protected boolean tainted = false;
 
     protected Menu(final Context<?> context) {
-        this.manager = context.get_module().core.menu_manager;
+        this.manager = context.getModule().core.menuManager;
     }
 
     public Menu(final Context<?> context, final Inventory inventory) {
-        this.manager = context.get_module().core.menu_manager;
+        this.manager = context.getModule().core.menuManager;
         this.inventory = inventory;
     }
 
@@ -72,16 +72,16 @@ public class Menu {
         update(false);
     }
 
-    public void update(boolean force_update) {
+    public void update(boolean forceUpdate) {
         int updated = widgets.stream().mapToInt(w -> w.update(this) ? 1 : 0).sum();
 
-        if (updated > 0 || force_update) {
+        if (updated > 0 || forceUpdate) {
             // Send inventory content to players
             manager.update(this);
         }
     }
 
-    public void open_window(final Player player) {
+    public void openWindow(final Player player) {
         if (tainted) {
             return;
         }
@@ -93,9 +93,9 @@ public class Menu {
             return;
         }
         update(true);
-        manager.schedule_next_tick(() -> {
+        manager.scheduleNextTick(() -> {
             manager.add(player, this);
-            open_window(player);
+            openWindow(player);
         });
     }
 
@@ -104,13 +104,13 @@ public class Menu {
     }
 
     public boolean close(final Player player, final InventoryCloseEvent.Reason reason) {
-        final var top_inventory = player.getOpenInventory().getTopInventory();
-        if (top_inventory != inventory) {
+        final var topInventory = player.getOpenInventory().getTopInventory();
+        if (topInventory != inventory) {
             try {
                 throw new RuntimeException("Invalid close from unrelated menu.");
             } catch (RuntimeException e) {
                 manager
-                    .get_module()
+                    .getModule()
                     .log.log(
                         Level.WARNING,
                         "Tried to close menu inventory that isn't opened by the player " + player,
@@ -120,41 +120,41 @@ public class Menu {
             return false;
         }
 
-        manager.schedule_next_tick(() -> player.closeInventory(reason));
+        manager.scheduleNextTick(() -> player.closeInventory(reason));
         return true;
     }
 
-    public Consumer2<Player, InventoryCloseEvent.Reason> get_on_close() {
-        return on_close;
+    public Consumer2<Player, InventoryCloseEvent.Reason> getOnClose() {
+        return onClose;
     }
 
-    public Menu on_close(final Consumer2<Player, InventoryCloseEvent.Reason> on_close) {
-        this.on_close = on_close;
+    public Menu onClose(final Consumer2<Player, InventoryCloseEvent.Reason> onClose) {
+        this.onClose = onClose;
         return this;
     }
 
-    public Consumer1<Player> get_on_natural_close() {
-        return on_natural_close;
+    public Consumer1<Player> getOnNaturalClose() {
+        return onNaturalClose;
     }
 
-    public Menu on_natural_close(final Consumer1<Player> on_natural_close) {
-        this.on_natural_close = on_natural_close;
+    public Menu onNaturalClose(final Consumer1<Player> onNaturalClose) {
+        this.onNaturalClose = onNaturalClose;
         return this;
     }
 
     public final void closed(final Player player, final InventoryCloseEvent.Reason reason) {
-        if (reason == InventoryCloseEvent.Reason.PLAYER && on_natural_close != null) {
-            on_natural_close.apply(player);
+        if (reason == InventoryCloseEvent.Reason.PLAYER && onNaturalClose != null) {
+            onNaturalClose.apply(player);
         } else {
-            if (on_close != null) {
-                on_close.apply(player, reason);
+            if (onClose != null) {
+                onClose.apply(player, reason);
             }
         }
         inventory.clear();
         manager.remove(player, this);
     }
 
-    public ClickResult on_click(final Player player, final ItemStack item, int slot, final InventoryClickEvent event) {
+    public ClickResult onClick(final Player player, final ItemStack item, int slot, final InventoryClickEvent event) {
         return ClickResult.IGNORE;
     }
 
@@ -166,7 +166,7 @@ public class Menu {
 
         // Send event to this menu
         var result = ClickResult.IGNORE;
-        result = ClickResult.or(result, on_click(player, item, slot, event));
+        result = ClickResult.or(result, onClick(player, item, slot, event));
 
         // Send event to all widgets
         for (final var widget : widgets) {
@@ -187,12 +187,12 @@ public class Menu {
         }
     }
 
-    public static boolean is_left_or_right_click(final InventoryClickEvent event) {
+    public static boolean isLeftOrRightClick(final InventoryClickEvent event) {
         final var type = event.getClick();
         return type == ClickType.LEFT || type == ClickType.RIGHT;
     }
 
-    public static boolean is_left_click(final InventoryClickEvent event) {
+    public static boolean isLeftClick(final InventoryClickEvent event) {
         final var type = event.getClick();
         return type == ClickType.LEFT;
     }

@@ -12,72 +12,72 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 3
+Version: 3
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'tr_tr'
+ResourcePackLangCode: 'tr_tr'
 
 # This message is sent when the player needs to select an area for
 # a new region.
-start_region_selection: "§aChoose an area by selecting two blocks via §bleft-§a and §bright-click§a with an empty hand."
+StartRegionSelection: "§aChoose an area by selecting two blocks via §bleft-§a and §bright-click§a with an empty hand."
 # This message is sent when the player selects the primary block
 # for a new region.
 # %1$s: Block X
 # %2$s: Block Y
 # %3$s: Block Z
-select_primary_block: "§aBirincil blok olarak (%1$s§a, %2$s§a, %3$s§a) seçildi."
+SelectPrimaryBlock: "§aBirincil blok olarak (%1$s§a, %2$s§a, %3$s§a) seçildi."
 # This message is sent when the player selects the secondary block
 # for a new region.
 # %1$s: Block X
 # %2$s: Block Y
 # %3$s: Block Z
-select_secondary_block: "§aİkincil blok olarak (%1$s§a, %2$s§a, %3$s§a) seçildi."
+SelectSecondaryBlock: "§aİkincil blok olarak (%1$s§a, %2$s§a, %3$s§a) seçildi."
 
-command_region:
-  usage: "%1$s"
-  description: "Bölge Yönetimi menüsünü açın."
-  help: "Bölge yönetimi menüsünü açmak için yürütün."
+CommandRegion:
+  Usage: "%1$s"
+  Description: "Bölge Yönetimi menüsünü açın."
+  Help: "Bölge yönetimi menüsünü açmak için yürütün."
 
-dynmap:
+Dynmap:
   # The label for the dynmap layer
-  layer_label: "Bölgeler"
+  LayerLabel: "Bölgeler"
   # The label for the dynmap markers
   # %1$s: Region name
-  marker_label: "%1$s"
+  MarkerLabel: "%1$s"
 
-blue_map:
+BlueMap:
   # The label for the BlueMap marker set
-  layer_label: "Bölgeler"
+  LayerLabel: "Bölgeler"
   # The label for the BlueMap region markers
   # %1$s: Region name
-  marker_label: "%1$s"
+  MarkerLabel: "%1$s"
 
-menus:
+Menus:
   # Settings for the region group naming menu.
-  enter_region_group_name:
+  EnterRegionGroupName:
     # The title for the naming menu.
-    title: "§8§lBölge Grup Adını Girin"
+    Title: "§8§lBölge Grup Adını Girin"
 
   # Settings for the region naming menu.
-  enter_region_name:
+  EnterRegionName:
     # The title for the naming menu.
-    title: "§8§lBölge Adını Girin"
+    Title: "§8§lBölge Adını Girin"
 
   # Settings for the role naming menu.
-  enter_role_name:
+  EnterRoleName:
     # The title for the naming menu.
-    title: "§8§lRol Adını Girin"
+    Title: "§8§lRol Adını Girin"
 
   # Settings for the main menu.
-  main:
+  Main:
     # The title for the main menu.
-    title: "§8§lBölgeleri Yönet"
+    Title: "§8§lBölgeleri Yönet"
 
     # The item used to start a new region selection.
-    create_region_start_selection:
-      name: "§a§lBölge Oluştur"
-      lore:
+    CreateRegionStartSelection:
+      Name: "§a§lBölge Oluştur"
+      Lore:
         - ""
         - "§7Yeni bir bölge seçimi başlatır. boş bir el ile,"
         - "§7İlk bloğu seçmek için §6sol tıklayın§7 ve"
@@ -102,9 +102,9 @@ menus:
     # %15$s: max extent Y
     # %16$s: max extent Z
     # %17$s: price and currency
-    create_region_invalid_selection:
-      name: "§c§lInvalid Selection"
-      lore:
+    CreateRegionInvalidSelection:
+      Name: "§c§lInvalid Selection"
+      Lore:
         - ""
         - "§6Your selection (%8$s§6 x %9$s§6 x %10$s§6) is invalid!"
         - "§6It must meet the following requirements:"
@@ -127,9 +127,9 @@ menus:
     # %8$s: max extent Y
     # %9$s: max extent Z
     # %10$s: price and currency
-    create_region_valid_selection:
-      name: "§a§lBölge Oluştur"
-      lore:
+    CreateRegionValidSelection:
+      Name: "§a§lBölge Oluştur"
+      Lore:
         - ""
         - "§7Senin seçimin (%1$s§7 x %2$s§7 x %3$s§7) geçersiz."
         - "§7Yeni bir bölge oluşturmak için buraya tıklayın."
@@ -143,39 +143,39 @@ menus:
         - "§7- §a✓§7 Karşılayabilir (%10$s§7)"
 
     # This item is used to cancel a pending selection.
-    cancel_selection:
-      name: "§c§lSeçimi İptal Et"
-      lore: []
+    CancelSelection:
+      Name: "§c§lSeçimi İptal Et"
+      Lore: []
 
     # This item is used to select a region where the player is administrator.
-    list_regions:
-      name: "§b§lBölge Seç"
-      lore: []
+    ListRegions:
+      Name: "§b§lBölge Seç"
+      Lore: []
 
     # The title for the region selection menu
-    select_region_title: "§8§lBölge Seç"
+    SelectRegionTitle: "§8§lBölge Seç"
     # The title for the region selection menu filter
-    filter_regions_title: "§8§lBölgeleri Filtrele"
+    FilterRegionsTitle: "§8§lBölgeleri Filtrele"
     # This item is used to represent a region in the selection menu.
     # %1$s: Region name
-    select_region:
-      name: "%1$s"
-      lore: []
+    SelectRegion:
+      Name: "%1$s"
+      Lore: []
 
     # This item is a shortcut to select the region the player is standing in.
     # %1$s: Region name
-    current_region:
-      name: "§b§lMevcut Bölge"
-      lore:
+    CurrentRegion:
+      Name: "§b§lMevcut Bölge"
+      Lore:
         - ""
         - "§7Bölge: %1$s"
         - ""
         - "§7Bulunduğunuz bölgeyi seçin."
 
     # This item is used to create a new region group.
-    create_region_group:
-      name: "§a§lBölge Grubu Oluştur"
-      lore:
+    CreateRegionGroup:
+      Name: "§a§lBölge Grubu Oluştur"
+      Lore:
         - ""
         - "§7Yeni bir §bbölge grubu §7oluştur. Bölge grupları,"
         - "§7oyunculara roller atayarak izinleri ayarlamak"
@@ -183,228 +183,228 @@ menus:
         - "§7bölgeler bu izinleri paylaşacak"
 
     # This item is used to select a region group.
-    list_region_groups:
-      name: "§b§lBölge Grubunu Seçin"
-      lore: []
+    ListRegionGroups:
+      Name: "§b§lBölge Grubunu Seçin"
+      Lore: []
 
     # This item is a shortcut to select the region group of the region the player is standing in.
     # %1$s: Region group name
-    current_region_group:
-      name: "§b§lMevcut Bölge Grubu"
-      lore:
+    CurrentRegionGroup:
+      Name: "§b§lMevcut Bölge Grubu"
+      Lore:
         - ""
         - "§7Bölge Grubu: %1$s"
         - ""
         - "§7Bulunduğunuz bölgenin bölge"
         - "§7grubunu seçin."
 
-    select_region_group_title: "§8§lBölge Grubunu Seçin"
-    filter_region_groups_title: "§8§lBölge Gruplarını Filtrele"
+    SelectRegionGroupTitle: "§8§lBölge Grubunu Seçin"
+    FilterRegionGroupsTitle: "§8§lBölge Gruplarını Filtrele"
     # This item is used to represent a region group in the selection menu.
     # %1$s: Region group name
-    select_region_group:
-      name: "%1$s"
-      lore: []
+    SelectRegionGroup:
+      Name: "%1$s"
+      Lore: []
 
   # Settings for the region menu.
-  region:
+  Region:
     # The title for the region menu.
     # %1$s: Region name
-    title: "§8§lBölge: %1$s"
+    Title: "§8§lBölge: %1$s"
 
     # The item used to rename a region.
-    rename:
-      name: "§b§lBölgeyi Yeniden Adlandır"
-      lore: []
+    Rename:
+      Name: "§b§lBölgeyi Yeniden Adlandır"
+      Lore: []
 
     # The item used to delete a region.
-    delete:
-      name: "§c§lBölgeyi Sil"
-      lore: []
+    Delete:
+      Name: "§c§lBölgeyi Sil"
+      Lore: []
     # The title for the delete confirmation dialog.
-    delete_confirm_title: "§c§lBölgeyi silmek ister misin?"
+    DeleteConfirmTitle: "§c§lBölgeyi silmek ister misin?"
     # The item to accept deleting.
-    delete_confirm_accept:
-      name: "§c§lBÖLGEYİ SİL"
-      lore: []
+    DeleteConfirmAccept:
+      Name: "§c§lBÖLGEYİ SİL"
+      Lore: []
     # The item to cancel deleting.
-    delete_confirm_cancel:
-      name: "§a§lİptal Etmek"
-      lore: []
+    DeleteConfirmCancel:
+      Name: "§a§lİptal Etmek"
+      Lore: []
 
     # The item used to open the list of region groups to assign the region to one
-    assign_region_group:
-      name: "§b§lGruba Katıl"
-      lore: []
+    AssignRegionGroup:
+      Name: "§b§lGruba Katıl"
+      Lore: []
 
-    select_region_group_title: "§8§lBölge Grubunu Seçin"
-    filter_region_groups_title: "§8§lBölge Gruplarını Filtrele"
+    SelectRegionGroupTitle: "§8§lBölge Grubunu Seçin"
+    FilterRegionGroupsTitle: "§8§lBölge Gruplarını Filtrele"
     # The item used to represent a region group.
     # %1$s: Region group name
-    select_region_group:
-      name: "%1$s"
-      lore: []
+    SelectRegionGroup:
+      Name: "%1$s"
+      Lore: []
 
   # Settings for the region group menu.
-  region_group:
+  RegionGroup:
     # The title for the region group menu.
     # %1$s: Region group name
-    title: "§8§lGrup: %1$s"
+    Title: "§8§lGrup: %1$s"
 
-    setting_toggle_on:
-      name: "§a§lAKTİFLEŞTİRİLDİ"
-      lore: []
-    setting_toggle_off:
-      name: "§c§lKAPATILDI"
-      lore: []
-    setting_info_animals:
-      name: "§b§lHayvanlar"
-      lore:
+    SettingToggleOn:
+      Name: "§a§lAKTİFLEŞTİRİLDİ"
+      Lore: []
+    SettingToggleOff:
+      Name: "§c§lKAPATILDI"
+      Lore: []
+    SettingInfoAnimals:
+      Name: "§b§lHayvanlar"
+      Lore:
         - ""
         - "§7Hayvanların doğmasını kontrol eder."
-    setting_info_monsters:
-      name: "§b§lCanavarlar"
-      lore:
+    SettingInfoMonsters:
+      Name: "§b§lCanavarlar"
+      Lore:
         - ""
         - "§7Canavarların (düşman canavarların) doğmalarını kontrol eder."
-    setting_info_explosions:
-      name: "§b§lPatlamalar"
-      lore:
+    SettingInfoExplosions:
+      Name: "§b§lPatlamalar"
+      Lore:
         - ""
         - "§7Her türlü patlamayı kontrol eder."
-    setting_info_fire:
-      name: "§b§lAteş"
-      lore:
+    SettingInfoFire:
+      Name: "§b§lAteş"
+      Lore:
         - ""
         - "§7Yangının blokları yakıp yakmadığını ve yayılıp yayılmadığını kontrol eder."
-    setting_info_pvp:
-      name: "§b§lPVP"
-      lore:
+    SettingInfoPvP:
+      Name: "§b§lPVP"
+      Lore:
         - ""
         - "§7PVP savaşına izin verilip verilmediğini kontrol eder."
-    setting_info_trample:
-      name: "§b§lÇiğnemek"
-      lore:
+    SettingInfoTrample:
+      Name: "§b§lÇiğnemek"
+      Lore:
         - ""
         - "§7Tarım arazilerinin çiğnenip çiğnenemeyeceğini kontrol eder."
-    setting_info_vine_growth:
-      name: "§b§lVine Growth"
-      lore:
+    SettingInfoVineGrowth:
+      Name: "§b§lVine Growth"
+      Lore:
         - ""
         - "§7Bölgede üzüm yetişip yetişmediğini kontrol eder."
 
     # The item used to rename a region group.
-    rename:
-      name: "§b§lGrubu Yeniden Adlandır"
-      lore: []
+    Rename:
+      Name: "§b§lGrubu Yeniden Adlandır"
+      Lore: []
 
     # The item used to delete a region group.
     # %1$s: Checkmark: No region uses this group
-    delete:
-      name: "§c§lGrubu Sil"
-      lore:
+    Delete:
+      Name: "§c§lGrubu Sil"
+      Lore:
         - ""
         - "§6Silme gereksinimleri:"
         - "§7- %1$s §7Hiçbir bölge bu grubu kullanmıyor"
     # The title for the delete confirmation dialog.
-    delete_confirm_title: "§c§lBölge grubunu sil?"
+    DeleteConfirmTitle: "§c§lBölge grubunu sil?"
     # The item to accept deleting.
-    delete_confirm_accept:
-      name: "§c§lBÖLGE GRUBUNU SİL"
-      lore: []
+    DeleteConfirmAccept:
+      Name: "§c§lBÖLGE GRUBUNU SİL"
+      Lore: []
     # The item to cancel deleting.
-    delete_confirm_cancel:
-      name: "§a§lİptal Etmek"
-      lore: []
+    DeleteConfirmCancel:
+      Name: "§a§lİptal Etmek"
+      Lore: []
 
     # This item is used to create a new role.
-    create_role:
-      name: "§a§lRol Oluştur"
-      lore:
+    CreateRole:
+      Name: "§a§lRol Oluştur"
+      Lore:
         - ""
         - "§7Create a new §brole§7. Roles are used"
         - "§7to set permissions for groups of players."
 
     # This item is used to open the role menu for a role.
-    list_roles:
-      name: "§b§lRoller"
-      lore: []
+    ListRoles:
+      Name: "§b§lRoller"
+      Lore: []
 
-    select_role_title: "§8§lRol Seç"
-    filter_roles_title: "§8§lRolleri Filtrele"
+    SelectRoleTitle: "§8§lRol Seç"
+    FilterRolesTitle: "§8§lRolleri Filtrele"
     # This item is used to represent a role in the selection menu.
     # %1$s: Role name
-    select_role:
-      name: "%1$s"
-      lore: []
+    SelectRole:
+      Name: "%1$s"
+      Lore: []
 
 # Settings for the role menu.
-  role:
+  Role:
     # The title for the role menu.
     # %1$s: Role name
-    title: "§8§lGrup: %1$s"
+    Title: "§8§lGrup: %1$s"
 
-    setting_toggle_on:
-      name: "§a§lETKİNLEŞTİRİLMİŞ"
-      lore: []
-    setting_toggle_off:
-      name: "§c§lKAPATILMIŞ"
-      lore: []
-    setting_info_admin:
-      name: "§b§lAdmin"
-      lore:
+    SettingToggleOn:
+      Name: "§a§lETKİNLEŞTİRİLMİŞ"
+      Lore: []
+    SettingToggleOff:
+      Name: "§c§lKAPATILMIŞ"
+      Lore: []
+    SettingInfoAdmin:
+      Name: "§b§lAdmin"
+      Lore:
         - ""
         - "§7Yönetici bayrağı değiştirilemez ve"
         - "§7yalnızca yönetici grubu için ayarlanır."
-    setting_info_build:
-      name: "§b§lYapı"
-      lore:
+    SettingInfoBuild:
+      Name: "§b§lYapı"
+      Lore:
         - ""
         - "§7Yapı yapmaya ve block kırmayı ayarlar."
-    setting_info_use:
-      name: "§b§lEşyaları Kullan"
-      lore:
+    SettingInfoUse:
+      Name: "§b§lEşyaları Kullan"
+      Lore:
         - ""
         - "§7Kapı kolları, düğmeler veya redstone, bileşenleri"
         - "§7gibi çeşitli şeylerin kullanılmasına izin verir."
         - "§7Ayrıca envanterlere §6view-access§7 denetler."
-    setting_info_container:
-      name: "§b§lKonteynerler"
-      lore:
+    SettingInfoContainer:
+      Name: "§b§lKonteynerler"
+      Lore:
         - ""
         - "§7Envanterlerle etkileşimlerin değiştirilmesine izin verir."
         - "§7Bu bayrak olmadan envanterden hiçbir"
         - "§7şey alınamaz veya envantere konulamaz."
-    setting_info_portal:
-      name: "§b§lPortalları Kullan"
-      lore:
+    SettingInfoPortal:
+      Name: "§b§lPortalları Kullan"
+      Lore:
         - ""
         - "§7Portallarla etkileşime izin verir."
 
     # The item used to rename a role.
-    rename:
-      name: "§b§lRolü Yeniden Adlandır"
-      lore: []
+    Rename:
+      Name: "§b§lRolü Yeniden Adlandır"
+      Lore: []
 
     # The item used to delete a role.
-    delete:
-      name: "§c§lRolü Sil"
-      lore: []
+    Delete:
+      Name: "§c§lRolü Sil"
+      Lore: []
     # The title for the delete confirmation dialog.
-    delete_confirm_title: "§c§lRolü silmek ister misin?"
+    DeleteConfirmTitle: "§c§lRolü silmek ister misin?"
     # The item to accept deleting.
-    delete_confirm_accept:
-      name: "§c§lROLÜ SİL"
-      lore: []
+    DeleteConfirmAccept:
+      Name: "§c§lROLÜ SİL"
+      Lore: []
     # The item to cancel deleting.
-    delete_confirm_cancel:
-      name: "§a§lİptal Etmek"
-      lore: []
+    DeleteConfirmCancel:
+      Name: "§a§lİptal Etmek"
+      Lore: []
 
     # This item is used to open the player assignment menu for a role.
-    assign_player:
-      name: "§b§lOyuncuları Ata"
-      lore:
+    AssignPlayer:
+      Name: "§b§lOyuncuları Ata"
+      Lore:
         - ""
         - "§7Oyuncuları üzerlerine tıklayarak bu role atayın."
         - "§7Oyuncunun daha önce farklı bir rolü varsa, bu role"
@@ -412,19 +412,19 @@ menus:
         - "§7atanmamış oyuncuları gösterecektir."
         - "§bOyuncu kaldırma§7 menüsünü kullanarak oyuncuları kaldırabilirsiniz."
     # This item is used to open the player removing a menu for a role.
-    remove_player:
-      name: "§b§lOyuncuları Kaldır"
-      lore:
+    RemovePlayer:
+      Name: "§b§lOyuncuları Kaldır"
+      Lore:
         - ""
         - "§7Oyuncuların üzerlerine tıklayarak bu rolden çıkarın."
         - "§7Bu, daha sonra atanmış bir rolleri olmayacağı ve "
         - "§7tümünü yakalama rolü tarafından yönetilecekleri anlamına gelir. §6[diğerleri]"
 
-    select_assign_player_title: "§8§lOyuncu ata"
-    select_remove_player_title: "§8§lOyuncuları kaldır"
-    filter_players_title: "§8§lOyuncuları filtrele"
+    SelectAssignPlayerTitle: "§8§lOyuncu ata"
+    SelectRemovePlayerTitle: "§8§lOyuncuları kaldır"
+    FilterPlayersTitle: "§8§lOyuncuları filtrele"
     # This item is used to represent a player in the selection menu.
     # %1$s: Player name
-    select_player:
-      name: "%1$s"
-      lore: []
+    SelectPlayer:
+      Name: "%1$s"
+      Lore: []

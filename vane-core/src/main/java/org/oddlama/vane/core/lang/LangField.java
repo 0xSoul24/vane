@@ -9,7 +9,7 @@ import org.oddlama.vane.core.resourcepack.ResourcePackGenerator;
 
 public abstract class LangField<T> {
 
-    public static final String PREFIX = "lang_";
+    public static final String PREFIX = "lang";
 
     private Module<?> module;
     protected Object owner;
@@ -18,30 +18,30 @@ public abstract class LangField<T> {
     private final String namespace;
     private final String key;
 
-    public LangField(Module<?> module, Object owner, Field field, Function<String, String> map_name) {
+    public LangField(Module<?> module, Object owner, Field field, Function<String, String> mapName) {
         this.module = module;
         this.owner = owner;
         this.field = field;
 
-        if (!field.getName().contains(PREFIX)) throw new RuntimeException(
+        if (!field.getName().startsWith(PREFIX)) throw new RuntimeException(
             new YamlLoadException.Lang("field must start with " + PREFIX, this)
         );
-        this.name = map_name.apply(field.getName().substring(PREFIX.length()));
+        this.name = mapName.apply(field.getName().substring(PREFIX.length()));
         this.namespace = module.namespace();
-        this.key = namespace + "." + yaml_path();
+        this.key = namespace + "." + yamlPath();
 
         field.setAccessible(true);
     }
 
-    public String get_name() {
+    public String getName() {
         return name;
     }
 
-    public String yaml_path() {
+    public String yamlPath() {
         return name;
     }
 
-    protected void check_yaml_path(YamlConfiguration yaml) throws YamlLoadException {
+    protected void checkYamlPath(YamlConfiguration yaml) throws YamlLoadException {
         if (!yaml.contains(name, true)) {
             throw new YamlLoadException.Lang("yaml is missing entry with path '" + name + "'", this);
         }
@@ -59,14 +59,14 @@ public abstract class LangField<T> {
         return key;
     }
 
-    public abstract void check_loadable(YamlConfiguration yaml) throws YamlLoadException;
+    public abstract void checkLoadable(YamlConfiguration yaml) throws YamlLoadException;
 
     public abstract void load(final String namespace, final YamlConfiguration yaml);
 
-    public abstract void add_translations(
+    public abstract void addTranslations(
         final ResourcePackGenerator pack,
         final YamlConfiguration yaml,
-        String lang_code
+        String langCode
     ) throws YamlLoadException;
 
     @SuppressWarnings("unchecked")

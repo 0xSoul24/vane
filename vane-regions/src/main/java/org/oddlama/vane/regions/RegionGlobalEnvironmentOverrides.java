@@ -8,58 +8,58 @@ import org.oddlama.vane.regions.region.EnvironmentSetting;
 public class RegionGlobalEnvironmentOverrides extends ModuleComponent<Regions> {
 
     @ConfigInt(def = 0, min = -1, max = 1, desc = "Overrides whether animals can spawn.")
-    public int config_animals;
+    public int configAnimals;
 
     @ConfigInt(def = 0, min = -1, max = 1, desc = "Overrides whether monsters can spawn.")
-    public int config_monsters;
+    public int configMonsters;
 
     @ConfigInt(def = 0, min = -1, max = 1, desc = "Overrides whether explosions can happen.")
-    public int config_explosions;
+    public int configExplosions;
 
     @ConfigInt(def = 0, min = -1, max = 1, desc = "Overrides whether fire spreads and consumes.")
-    public int config_fire;
+    public int configFire;
 
     @ConfigInt(def = 0, min = -1, max = 1, desc = "Overrides whether pvp is allowed.")
-    public int config_pvp;
+    public int configPvp;
 
     @ConfigInt(def = 0, min = -1, max = 1, desc = "Overrides whether fields can be trampled.")
-    public int config_trample;
+    public int configTrample;
 
     @ConfigInt(def = 0, min = -1, max = 1, desc = "Overrides whether vines can grow.")
-    public int config_vine_growth;
+    public int configVineGrowth;
 
     public RegionGlobalEnvironmentOverrides(Context<Regions> context) {
         super(
             context.namespace(
-                "global_environment_overrides",
+                "GlobalEnvironmentOverrides",
                 "This controls global environment setting overrides for all regions on the server. `0` means no-override, the player-configured values are used normally, `1` force-enables this setting for all regions, `-1` force-disables respectively."
             )
         );
     }
 
-    public int get_override(final EnvironmentSetting setting) {
+    public int getOverride(final EnvironmentSetting setting) {
         switch (setting) {
             case ANIMALS:
-                return config_animals;
+                return configAnimals;
             case MONSTERS:
-                return config_monsters;
+                return configMonsters;
             case EXPLOSIONS:
-                return config_explosions;
+                return configExplosions;
             case FIRE:
-                return config_fire;
+                return configFire;
             case PVP:
-                return config_pvp;
+                return configPvp;
             case TRAMPLE:
-                return config_trample;
+                return configTrample;
             case VINE_GROWTH:
-                return config_vine_growth;
+                return configVineGrowth;
         }
         return 0;
     }
 
     @Override
-    public void on_enable() {}
+    public void onEnable() {}
 
     @Override
-    public void on_disable() {}
+    public void onDisable() {}
 }

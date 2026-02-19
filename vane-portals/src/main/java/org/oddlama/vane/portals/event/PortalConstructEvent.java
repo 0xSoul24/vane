@@ -9,12 +9,12 @@ public class PortalConstructEvent extends PortalEvent {
     private static final HandlerList handlers = new HandlerList();
     private Player player;
     private PortalBoundary boundary;
-    private boolean check_only;
+    private boolean checkOnly;
 
-    public PortalConstructEvent(final Player player, final PortalBoundary boundary, boolean check_only) {
+    public PortalConstructEvent(final Player player, final PortalBoundary boundary, boolean checkOnly) {
         this.player = player;
         this.boundary = boundary;
-        this.check_only = check_only;
+        this.checkOnly = checkOnly;
     }
 
     public Player getPlayer() {
@@ -26,7 +26,7 @@ public class PortalConstructEvent extends PortalEvent {
     }
 
     public boolean checkOnly() {
-        return check_only;
+        return checkOnly;
     }
 
     public HandlerList getHandlers() {

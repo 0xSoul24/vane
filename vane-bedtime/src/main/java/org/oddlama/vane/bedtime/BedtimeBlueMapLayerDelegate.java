@@ -17,66 +17,66 @@ public class BedtimeBlueMapLayerDelegate {
 
     private final BedtimeBlueMapLayer parent;
 
-    private boolean bluemap_enabled = false;
+    private boolean bluemapEnabled = false;
 
     public BedtimeBlueMapLayerDelegate(final BedtimeBlueMapLayer parent) {
         this.parent = parent;
     }
 
-    public Bedtime get_module() {
-        return parent.get_module();
+    public Bedtime getModule() {
+        return parent.getModule();
     }
 
-    public void on_enable(final Plugin plugin) {
+    public void onEnable(final Plugin plugin) {
         BlueMapAPI.onEnable(api -> {
-            get_module().log.info("Enabling BlueMap integration");
-            bluemap_enabled = true;
+            getModule().log.info("Enabling BlueMap integration");
+            bluemapEnabled = true;
 
             // Create marker sets
-            for (final var world : get_module().getServer().getWorlds()) {
-                create_marker_set(api, world);
+            for (final var world : getModule().getServer().getWorlds()) {
+                createMarkerSet(api, world);
             }
 
-            update_all_markers();
+            updateAllMarkers();
         });
     }
 
-    public void on_disable() {
-        if (!bluemap_enabled) {
+    public void onDisable() {
+        if (!bluemapEnabled) {
             return;
         }
 
-        get_module().log.info("Disabling BlueMap integration");
-        bluemap_enabled = false;
+        getModule().log.info("Disabling BlueMap integration");
+        bluemapEnabled = false;
     }
 
-    // world_id -> MarkerSet
-    private final HashMap<UUID, MarkerSet> marker_sets = new HashMap<>();
+    // worldId -> MarkerSet
+    private final HashMap<UUID, MarkerSet> markerSets = new HashMap<>();
 
-    private void create_marker_set(final BlueMapAPI api, final World world) {
-        if (marker_sets.containsKey(world.getUID())) {
+    private void createMarkerSet(final BlueMapAPI api, final World world) {
+        if (markerSets.containsKey(world.getUID())) {
             return;
         }
 
-        final var marker_set = MarkerSet.builder()
-            .label(parent.lang_layer_label.str())
+        final var markerSet = MarkerSet.builder()
+            .label(parent.langLayerLabel.str())
             .toggleable(true)
-            .defaultHidden(parent.config_hide_by_default)
+            .defaultHidden(parent.configHideByDefault)
             .build();
 
         api
             .getWorld(world)
-            .ifPresent(bm_world -> {
-                for (final var map : bm_world.getMaps()) {
-                    map.getMarkerSets().put(MARKER_SET_ID, marker_set);
+            .ifPresent(bmWorld -> {
+                for (final var map : bmWorld.getMaps()) {
+                    map.getMarkerSets().put(MARKER_SET_ID, markerSet);
                 }
             });
 
-        marker_sets.put(world.getUID(), marker_set);
+        markerSets.put(world.getUID(), markerSet);
     }
 
-    public void update_marker(final OfflinePlayer player) {
-        remove_marker(player.getUniqueId());
+    public void updateMarker(final OfflinePlayer player) {
+        removeMarker(player.getUniqueId());
         final var loc = player.getRespawnLocation();
         if (loc == null) {
             return;
@@ -85,23 +85,23 @@ public class BedtimeBlueMapLayerDelegate {
         final var marker = HtmlMarker.builder()
             .position(loc.getX(), loc.getY(), loc.getZ())
             .label("Bed for " + player.getName())
-            .html(parent.lang_marker_label.str(escapeHtml4(player.getName())))
+            .html(parent.langMarkerLabel.str(escapeHtml4(player.getName())))
             .build();
 
         // Existing markers will be overwritten.
-        marker_sets.get(loc.getWorld().getUID()).getMarkers().put(player.getUniqueId().toString(), marker);
+        markerSets.get(loc.getWorld().getUID()).getMarkers().put(player.getUniqueId().toString(), marker);
     }
 
-    public void remove_marker(final UUID player_id) {
-        for (final var marker_set : marker_sets.values()) {
-            marker_set.getMarkers().remove(player_id.toString());
+    public void removeMarker(final UUID playerId) {
+        for (final var markerSet : markerSets.values()) {
+            markerSet.getMarkers().remove(playerId.toString());
         }
     }
 
-    public void update_all_markers() {
+    public void updateAllMarkers() {
         // Update all existing
-        for (final var player : get_module().get_offline_players_with_valid_name()) {
-            update_marker(player);
+        for (final var player : getModule().getOfflinePlayersWithValidName()) {
+            updateMarker(player);
         }
     }
 }

@@ -15,17 +15,17 @@ public class RegionEconomyDelegate {
         this.parent = parent;
     }
 
-    public Regions get_module() {
+    public Regions getModule() {
         return parent;
     }
 
     public boolean setup(final Plugin plugin) {
-        RegisteredServiceProvider<Economy> rsp = get_module()
+        RegisteredServiceProvider<Economy> rsp = getModule()
             .getServer()
             .getServicesManager()
             .getRegistration(Economy.class);
         if (rsp == null) {
-            get_module()
+            getModule()
                 .log.severe(
                     "Economy was selected as the currency provider, but no Economy service provider is registered via VaultAPI! Falling back to material currency."
                 );
@@ -48,7 +48,7 @@ public class RegionEconomyDelegate {
         return economy.depositPlayer(player, amount);
     }
 
-    public String currency_name_plural() {
+    public String currencyNamePlural() {
         return economy.currencyNamePlural();
     }
 

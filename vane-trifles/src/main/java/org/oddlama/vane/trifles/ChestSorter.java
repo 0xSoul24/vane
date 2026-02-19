@@ -27,12 +27,12 @@ import org.oddlama.vane.util.StorageUtil;
 
 public class ChestSorter extends Listener<Trifles> {
 
-    public static final NamespacedKey LAST_SORT_TIME = StorageUtil.namespaced_key("vane_trifles", "last_sort_time");
+    public static final NamespacedKey LAST_SORT_TIME = StorageUtil.namespacedKey("vane_trifles", "last_sort_time");
 
     @ConfigLong(def = 1000, min = 0, desc = "Chest sorting cooldown in milliseconds.")
-    public long config_cooldown;
+    public long configCooldown;
 
-    private CooldownData cooldown_data = null;
+    private CooldownData cooldownData = null;
 
     @ConfigInt(
         def = 1,
@@ -40,7 +40,7 @@ public class ChestSorter extends Listener<Trifles> {
         max = 16,
         desc = "Chest sorting radius in X-direction from the button (left-right when looking at the button). A radius of 0 means a column of the block including the button. It is advised to NEVER set the three radius values to more than THREE (3), as sorting a huge area of chests can lead to SEVERE lag! Ideally always keep the Z-radius set to 0 or 1, while only adjusting X and Y. You've been warned."
     )
-    public int config_radius_x;
+    public int configRadiusX;
 
     @ConfigInt(
         def = 1,
@@ -48,7 +48,7 @@ public class ChestSorter extends Listener<Trifles> {
         max = 16,
         desc = "Chest sorting radius in Y-direction from the button (up-down when looking at the button - this can be a horizontal direction if the button is on the ground). A radius of 0 means a column of the block including the button. It is advised to NEVER set the three radius values to more than THREE (3), as sorting a huge area of chests can lead to SEVERE lag! Ideally always keep the Z-radius set to 0 or 1, while only adjusting X and Y. You've been warned."
     )
-    public int config_radius_y;
+    public int configRadiusY;
 
     @ConfigInt(
         def = 1,
@@ -56,48 +56,48 @@ public class ChestSorter extends Listener<Trifles> {
         max = 16,
         desc = "Chest sorting radius in Z-direction from the button (into/out-of the attached block). A radius of 0 means a column of the block including the button. It is advised to NEVER set the three radius values to more than THREE (3), as sorting a huge area of chests can lead to SEVERE lag! Ideally always keep the Z-radius set to 0 or 1, while only adjusting X and Y. You've been warned."
     )
-    public int config_radius_z;
+    public int configRadiusZ;
 
     public ChestSorter(Context<Trifles> context) {
-        super(context.group("chest_sorting", "Enables chest sorting when a nearby button is pressed."));
+        super(context.group("ChestSorting", "Enables chest sorting when a nearby button is pressed."));
     }
 
     @Override
-    protected void on_config_change() {
-        super.on_config_change();
-        this.cooldown_data = new CooldownData(LAST_SORT_TIME, config_cooldown);
+    protected void onConfigChange() {
+        super.onConfigChange();
+        this.cooldownData = new CooldownData(LAST_SORT_TIME, configCooldown);
     }
 
-    private void sort_inventory(final Inventory inventory) {
+    private void sortInventory(final Inventory inventory) {
         // Find number of non-null item stacks
-        final var saved_contents = inventory.getStorageContents();
-        int non_null = 0;
-        for (final var i : saved_contents) {
+        final var savedContents = inventory.getStorageContents();
+        int nonNull = 0;
+        for (final var i : savedContents) {
             if (i != null) {
-                ++non_null;
+                ++nonNull;
             }
         }
 
         // Make a new array without null items
-        final var saved_contents_condensed = new ItemStack[non_null];
+        final var savedContentsCondensed = new ItemStack[nonNull];
         int cur = 0;
-        for (final var i : saved_contents) {
+        for (final var i : savedContents) {
             if (i != null) {
-                saved_contents_condensed[cur++] = i.clone();
+                savedContentsCondensed[cur++] = i.clone();
             }
         }
 
         // Clear and add all items again to stack them. Restore saved contents on failure.
         try {
             inventory.clear();
-            final var leftovers = inventory.addItem(saved_contents_condensed);
+            final var leftovers = inventory.addItem(savedContentsCondensed);
             if (leftovers.size() != 0) {
                 // Abort! Something went totally wrong!
-                inventory.setStorageContents(saved_contents_condensed);
-                get_module().log.warning("Sorting inventory " + inventory + " produced leftovers!");
+                inventory.setStorageContents(savedContentsCondensed);
+                getModule().log.warning("Sorting inventory " + inventory + " produced leftovers!");
             }
         } catch (Exception e) {
-            inventory.setStorageContents(saved_contents_condensed);
+            inventory.setStorageContents(savedContentsCondensed);
             throw e;
         }
 
@@ -107,45 +107,45 @@ public class ChestSorter extends Listener<Trifles> {
         inventory.setStorageContents(contents);
     }
 
-    private void sort_container(final Container container) {
+    private void sortContainer(final Container container) {
         // Check cooldown
-        if (!cooldown_data.check_or_update_cooldown(container)) {
+        if (!cooldownData.checkOrUpdateCooldown(container)) {
             return;
         }
 
-        sort_inventory(container.getInventory());
+        sortInventory(container.getInventory());
     }
 
-    private void sort_chest(final Chest chest) {
+    private void sortChest(final Chest chest) {
         final var inventory = chest.getInventory();
 
         // Get persistent data
-        final Chest persistent_chest;
+        final Chest persistentChest;
         if (inventory instanceof DoubleChestInventory) {
-            final var left_side = (((DoubleChestInventory) inventory).getLeftSide()).getHolder();
-            if (!(left_side instanceof Chest)) {
+            final var leftSide = (((DoubleChestInventory) inventory).getLeftSide()).getHolder();
+            if (!(leftSide instanceof Chest)) {
                 return;
             }
-            persistent_chest = (Chest) left_side;
+            persistentChest = (Chest) leftSide;
         } else {
-            persistent_chest = chest;
+            persistentChest = chest;
         }
 
         // Check cooldown
-        if (!cooldown_data.check_or_update_cooldown(persistent_chest)) {
+        if (!cooldownData.checkOrUpdateCooldown(persistentChest)) {
             return;
         }
 
-        if (persistent_chest != chest) {
+        if (persistentChest != chest) {
             // Save the left side block state if we are the right side
-            persistent_chest.update(true, false);
+            persistentChest.update(true, false);
         }
 
-        sort_inventory(inventory);
+        sortInventory(inventory);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false) // ignoreCancelled = false to catch right-click-air events
-    public void on_player_right_click(final PlayerInteractEvent event) {
+    public void onPlayerRightClick(final PlayerInteractEvent event) {
         if (!event.hasBlock() || event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
@@ -156,14 +156,14 @@ public class ChestSorter extends Listener<Trifles> {
         }
 
         // Require the clicked block to be a button
-        final var root_block = event.getClickedBlock();
-        if (!Tag.BUTTONS.isTagged(root_block.getType())) {
+        final var rootBlock = event.getClickedBlock();
+        if (!Tag.BUTTONS.isTagged(rootBlock.getType())) {
             return;
         }
 
-        final var button_data = root_block.getState().getBlockData();
-        final var facing = ((Directional) button_data).getFacing();
-        final var face = ((FaceAttachable) button_data).getAttachedFace();
+        final var buttonData = rootBlock.getState().getBlockData();
+        final var facing = ((Directional) buttonData).getFacing();
+        final var face = ((FaceAttachable) buttonData).getAttachedFace();
 
         int rx = 0;
         int ry;
@@ -171,33 +171,33 @@ public class ChestSorter extends Listener<Trifles> {
 
         // Determine relative radius rx, ry, rz as seen from the button.
         if (face == FaceAttachable.AttachedFace.WALL) {
-            ry = config_radius_y;
+            ry = configRadiusY;
             switch (facing) {
                 case NORTH:
                 case SOUTH:
-                    rx = config_radius_x;
-                    rz = config_radius_z;
+                    rx = configRadiusX;
+                    rz = configRadiusZ;
                     break;
                 case EAST:
                 case WEST:
-                    rx = config_radius_z;
-                    rz = config_radius_x;
+                    rx = configRadiusZ;
+                    rz = configRadiusX;
                     break;
                 default:
                     break;
             }
         } else {
-            ry = config_radius_z;
+            ry = configRadiusZ;
             switch (facing) {
                 case NORTH:
                 case SOUTH:
-                    rx = config_radius_x;
-                    rz = config_radius_y;
+                    rx = configRadiusX;
+                    rz = configRadiusY;
                     break;
                 case EAST:
                 case WEST:
-                    rx = config_radius_y;
-                    rz = config_radius_x;
+                    rx = configRadiusY;
+                    rz = configRadiusX;
                     break;
                 default:
                     break;
@@ -208,12 +208,12 @@ public class ChestSorter extends Listener<Trifles> {
         for (int x = -rx; x <= rx; ++x) {
             for (int y = -ry; y <= ry; ++y) {
                 for (int z = -rz; z <= rz; ++z) {
-                    final var block = root_block.getRelative(x, y, z);
+                    final var block = rootBlock.getRelative(x, y, z);
                     final var state = block.getState();
                     if (state instanceof Chest) {
-                        sort_chest((Chest) state);
+                        sortChest((Chest) state);
                     } else if (state instanceof Barrel) {
-                        sort_container((Barrel) state);
+                        sortContainer((Barrel) state);
                     }
                 }
             }

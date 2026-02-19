@@ -1,6 +1,6 @@
 package org.oddlama.vane.regions;
 
-import static org.oddlama.vane.util.PlayerUtil.take_items;
+import static org.oddlama.vane.util.PlayerUtil.takeItems;
 
 import com.google.common.collect.Sets;
 import java.io.IOException;
@@ -63,7 +63,7 @@ import org.oddlama.vane.regions.region.Role;
 import org.oddlama.vane.regions.region.RoleSetting;
 import org.oddlama.vane.util.StorageUtil;
 
-@VaneModule(name = "regions", bstats = 8643, config_version = 4, lang_version = 3, storage_version = 1)
+@VaneModule(name = "regions", bstats = 8643, configVersion = 4, langVersion = 3, storageVersion = 1)
 public class Regions extends Module<Regions> {
     //
     //                                                  ┌───────────────────────┐
@@ -104,104 +104,104 @@ public class Regions extends Module<Regions> {
     }
 
     @ConfigInt(def = 4, min = 1, desc = "Minimum region extent in x direction.")
-    public int config_min_region_extent_x;
+    public int configMinRegionExtentX;
 
     @ConfigInt(def = 4, min = 1, desc = "Minimum region extent in y direction.")
-    public int config_min_region_extent_y;
+    public int configMinRegionExtentY;
 
     @ConfigInt(def = 4, min = 1, desc = "Minimum region extent in z direction.")
-    public int config_min_region_extent_z;
+    public int configMinRegionExtentZ;
 
     @ConfigInt(def = 2048, min = 1, desc = "Maximum region extent in x direction.")
-    public int config_max_region_extent_x;
+    public int configMaxRegionExtentX;
 
     @ConfigInt(def = 2048, min = 1, desc = "Maximum region extent in y direction.")
-    public int config_max_region_extent_y;
+    public int configMaxRegionExtentY;
 
     @ConfigInt(def = 2048, min = 1, desc = "Maximum region extent in z direction.")
-    public int config_max_region_extent_z;
+    public int configMaxRegionExtentZ;
 
     @ConfigBoolean(def = false, desc = "Use economy via VaultAPI as currency provider.")
-    public boolean config_economy_as_currency;
+    public boolean configEconomyAsCurrency;
 
     @ConfigBoolean(
         def = false,
         desc = "Enable this to prevent players without the container permission from being able to view chests."
     )
-    public boolean config_prohibit_viewing_containers;
+    public boolean configProhibitViewingContainers;
 
     @ConfigInt(
         def = 0,
         min = -1,
         desc = "The amount of decimal places the costs will be rounded to. If set to -1, it will round to the amount of decimal places specified by your economy plugin. If set to 0, costs will simply be rounded up to the nearest integer."
     )
-    public int config_economy_decimal_places;
+    public int configEconomyDecimalPlaces;
 
     @ConfigMaterial(
         def = Material.DIAMOND,
         desc = "The currency material for regions. The alternative option to an economy plugin."
     )
-    public Material config_currency;
+    public Material configCurrency;
 
     @ConfigDouble(
         def = 2.0,
         min = 0.0,
         desc = "The base amount of currency required to buy an area equal to one chunk (256 blocks)."
     )
-    public double config_cost_xz_base;
+    public double configCostXzBase;
 
     @ConfigDouble(
         def = 1.15,
         min = 1.0,
         desc = "The multiplicator determines how much the cost increases for each additional 16 blocks of height. A region of height h will cost multiplicator^(h / 16.0) * base_amount. Rounding is applied at the end."
     )
-    public double config_cost_y_multiplicator;
+    public double configCostYMultiplicator;
 
     // Primary storage for all regions (region.id → region)
     @Persistent
-    private Map<UUID, Region> storage_regions = new HashMap<>();
+    private Map<UUID, Region> storageRegions = new HashMap<>();
 
     private Map<UUID, Region> regions = new HashMap<>();
 
-    // Primary storage for all region_groups (region_group.id → region_group)
+    // Primary storage for all region_groups (regionGroup.id → regionGroup)
     @Persistent
-    private Map<UUID, RegionGroup> storage_region_groups = new HashMap<>();
+    private Map<UUID, RegionGroup> storageRegionGroups = new HashMap<>();
 
     // Primary storage for the default region groups for new regions created by a player
-    // (player_uuid → region_group.id)
+    // (player_uuid → regionGroup.id)
     @Persistent
-    private Map<UUID, UUID> storage_default_region_group = new HashMap<>();
+    private Map<UUID, UUID> storageDefaultRegionGroup = new HashMap<>();
 
-    // Per-chunk lookup cache (world_id → chunk_key → [possible regions])
-    private Map<UUID, Map<Long, List<Region>>> regions_in_chunk_in_world = new HashMap<>();
+    // Per-chunk lookup cache (worldId → chunk_key → [possible regions])
+    private Map<UUID, Map<Long, List<Region>>> regionsInChunkInWorld = new HashMap<>();
     // A map containing the current extent for each player who is currently selecting a region
     // No key → Player not in selection mode
     // extent.min or extent.max null → Selection mode active, but no selection has been made yet
-    private Map<UUID, RegionSelection> region_selections = new HashMap<>();
+    private Map<UUID, RegionSelection> regionSelections = new HashMap<>();
 
     @LangMessage
-    public TranslatedMessage lang_start_region_selection;
+    public TranslatedMessage langStartRegionSelection;
 
     // This permission allows players (usually admins) to always administrate
     // any region (rename, delete), regardless of whether other restrictions
     // would block access.
-    public final Permission admin_permission;
+    public final Permission adminPermission;
 
     public RegionMenuGroup menus;
 
-    public RegionDynmapLayer dynmap_layer;
-    public RegionBlueMapLayer blue_map_layer;
+    public RegionDynmapLayer dynmapLayer;
+    public RegionBlueMapLayer blueMapLayer;
 
     public RegionEconomyDelegate economy;
-    public boolean vane_portals_available = false;
+    public boolean vanePortalsAvailable = false;
 
-    public static RegionGlobalRoleOverrides role_overrides = null;
-    public static RegionGlobalEnvironmentOverrides environment_overrides = null;
+    public static RegionGlobalRoleOverrides roleOverrides = null;
+    public static RegionGlobalEnvironmentOverrides environmentOverrides = null;
 
     public Regions() {
         menus = new RegionMenuGroup(this);
-        role_overrides = new RegionGlobalRoleOverrides(this);
-        environment_overrides = new RegionGlobalEnvironmentOverrides(this);
+        roleOverrides = new RegionGlobalRoleOverrides(this);
+        environmentOverrides = new RegionGlobalEnvironmentOverrides(this);
 
         new org.oddlama.vane.regions.commands.Region(this);
 
@@ -209,32 +209,32 @@ public class Regions extends Module<Regions> {
         new RegionRoleSettingEnforcer(this);
 
         new RegionSelectionListener(this);
-        dynmap_layer = new RegionDynmapLayer(this);
-        blue_map_layer = new RegionBlueMapLayer(this);
+        dynmapLayer = new RegionDynmapLayer(this);
+        blueMapLayer = new RegionBlueMapLayer(this);
 
         // Register admin permission
-        admin_permission = new Permission(
-            "vane." + get_module().get_name() + ".admin",
+        adminPermission = new Permission(
+            "vane." + getModule().getAnnotationName() + ".admin",
             "Allows administration of any region",
             PermissionDefault.OP
         );
-        get_module().register_permission(admin_permission);
+        getModule().registerPermission(adminPermission);
     }
 
-    public void delayed_on_enable() {
-        if (config_economy_as_currency) {
-            if (!setup_economy()) {
-                config_economy_as_currency = false;
+    public void delayedOnEnable() {
+        if (configEconomyAsCurrency) {
+            if (!setupEconomy()) {
+                configEconomyAsCurrency = false;
             }
         }
     }
 
-    private boolean setup_economy() {
-        get_module().log.info("Enabling economy integration");
+    private boolean setupEconomy() {
+        getModule().log.info("Enabling economy integration");
 
-        Plugin vault_api_plugin = get_module().getServer().getPluginManager().getPlugin("Vault");
-        if (vault_api_plugin == null) {
-            get_module()
+        Plugin vaultApiPlugin = getModule().getServer().getPluginManager().getPlugin("Vault");
+        if (vaultApiPlugin == null) {
+            getModule()
                 .log.severe(
                     "Economy was selected as the currency provider, but the Vault plugin wasn't found! Falling back to material currency."
                 );
@@ -242,23 +242,23 @@ public class Regions extends Module<Regions> {
         }
 
         economy = new RegionEconomyDelegate(this);
-        return economy.setup(vault_api_plugin);
+        return economy.setup(vaultApiPlugin);
     }
 
     @Override
-    public void on_enable() {
-        final var portals_plugin = get_module().getServer().getPluginManager().getPlugin("vane-portals");
-        if (portals_plugin != null) {
-            new RegionPortalIntegration(this, portals_plugin);
-            vane_portals_available = true;
+    public void onModuleEnable() {
+        final var portalsPlugin = getModule().getServer().getPluginManager().getPlugin("vane-portals");
+        if (portalsPlugin != null) {
+            new RegionPortalIntegration(this, portalsPlugin);
+            vanePortalsAvailable = true;
         }
 
-        schedule_next_tick(this::delayed_on_enable);
+        scheduleNextTick(this::delayedOnEnable);
         // Every second: Visualize selections
-        schedule_task_timer(this::visualize_selections, 1l, 20l);
+        scheduleTaskTimer(this::visualizeSelections, 1l, 20l);
     }
 
-    public Collection<Region> all_regions() {
+    public Collection<Region> allRegions() {
         return regions
             .values()
             .stream()
@@ -266,34 +266,34 @@ public class Regions extends Module<Regions> {
             .collect(Collectors.toList());
     }
 
-    public Collection<RegionGroup> all_region_groups() {
-        return storage_region_groups.values();
+    public Collection<RegionGroup> allRegionGroups() {
+        return storageRegionGroups.values();
     }
 
-    public void start_region_selection(final Player player) {
-        region_selections.put(player.getUniqueId(), new RegionSelection(this));
-        lang_start_region_selection.send(player);
+    public void startRegionSelection(final Player player) {
+        regionSelections.put(player.getUniqueId(), new RegionSelection(this));
+        langStartRegionSelection.send(player);
     }
 
-    public void cancel_region_selection(final Player player) {
-        region_selections.remove(player.getUniqueId());
+    public void cancelRegionSelection(final Player player) {
+        regionSelections.remove(player.getUniqueId());
     }
 
-    public boolean is_selecting_region(final Player player) {
-        return region_selections.containsKey(player.getUniqueId());
+    public boolean isSelectingRegion(final Player player) {
+        return regionSelections.containsKey(player.getUniqueId());
     }
 
-    public RegionSelection get_region_selection(final Player player) {
-        return region_selections.get(player.getUniqueId());
+    public RegionSelection getRegionSelection(final Player player) {
+        return regionSelections.get(player.getUniqueId());
     }
 
-    private static final int visualize_max_particles = 20000;
-    private static final int visualize_particles_per_block = 12;
-    private static final double visualize_stddev_compensation = 0.25;
-    private static final DustOptions visualize_dust_invalid = new DustOptions(Color.fromRGB(230, 60, 11), 1.0f);
-    private static final DustOptions visualize_dust_valid = new DustOptions(Color.fromRGB(120, 220, 60), 1.0f);
+    private static final int VISUALIZE_MAX_PARTICLES = 20000;
+    private static final int VISUALIZE_PARTICLES_PER_BLOCK = 12;
+    private static final double VISUALIZE_STDDEV_COMPENSATION = 0.25;
+    private static final DustOptions VISUALIZE_DUST_INVALID = new DustOptions(Color.fromRGB(230, 60, 11), 1.0f);
+    private static final DustOptions VISUALIZE_DUST_VALID = new DustOptions(Color.fromRGB(120, 220, 60), 1.0f);
 
-    private void visualize_edge(final World world, final BlockPos c1, final BlockPos c2, final boolean valid) {
+    private void visualizeEdge(final World world, final BlockPos c1, final BlockPos c2, final boolean valid) {
         // Unfortunately, particle spawns are normally distributed.
         // To still have a good visualization, we need to calculate a stddev that looks
         // good.
@@ -305,12 +305,12 @@ public class Regions extends Module<Regions> {
         double dy = Math.abs(c1.getY() - c2.getY());
         double dz = Math.abs(c1.getZ() - c2.getZ());
         final double len = dx + dy + dz;
-        final int count = Math.min(visualize_max_particles, (int) (visualize_particles_per_block * len));
+        final int count = Math.min(VISUALIZE_MAX_PARTICLES, (int) (VISUALIZE_PARTICLES_PER_BLOCK * len));
 
         // Compensate for using normal distributed particles
-        dx *= visualize_stddev_compensation;
-        dy *= visualize_stddev_compensation;
-        dz *= visualize_stddev_compensation;
+        dx *= VISUALIZE_STDDEV_COMPENSATION;
+        dy *= VISUALIZE_STDDEV_COMPENSATION;
+        dz *= VISUALIZE_STDDEV_COMPENSATION;
 
         // Spawn base particles
         world.spawnParticle(
@@ -338,24 +338,24 @@ public class Regions extends Module<Regions> {
             dy,
             dz,
             0.0, // speed
-            valid ? visualize_dust_valid : visualize_dust_invalid, // data
+            valid ? VISUALIZE_DUST_VALID : VISUALIZE_DUST_INVALID, // data
             true
         ); // force
     }
 
-    private void visualize_selections() {
-        for (final var selection_owner : region_selections.keySet()) {
-            final var selection = region_selections.get(selection_owner);
+    private void visualizeSelections() {
+        for (final var selectionOwner : regionSelections.keySet()) {
+            final var selection = regionSelections.get(selectionOwner);
             if (selection == null) {
                 continue;
             }
 
             // Get player for selection
-            final var offline_player = getServer().getOfflinePlayer(selection_owner);
-            if (!offline_player.isOnline()) {
+            final var offlinePlayer = getServer().getOfflinePlayer(selectionOwner);
+            if (!offlinePlayer.isOnline()) {
                 continue;
             }
-            final var player = offline_player.getPlayer();
+            final var player = offlinePlayer.getPlayer();
 
             // Both blocks are set
             if (selection.primary == null || selection.secondary == null) {
@@ -370,7 +370,7 @@ public class Regions extends Module<Regions> {
             // Extent can be visualized. Prepare parameters.
             final var world = selection.primary.getWorld();
             // Check if selection is valid
-            final var valid = selection.is_valid(player);
+            final var valid = selection.isValid(player);
 
             final var lx = Math.min(selection.primary.getX(), selection.secondary.getX());
             final var ly = Math.min(selection.primary.getY(), selection.secondary.getY());
@@ -390,58 +390,58 @@ public class Regions extends Module<Regions> {
             final var H = new BlockPos(lx, hy, hz);
 
             // Visualize each edge
-            visualize_edge(world, A, B, valid);
-            visualize_edge(world, B, C, valid);
-            visualize_edge(world, C, D, valid);
-            visualize_edge(world, D, A, valid);
-            visualize_edge(world, E, F, valid);
-            visualize_edge(world, F, G, valid);
-            visualize_edge(world, G, H, valid);
-            visualize_edge(world, H, E, valid);
-            visualize_edge(world, A, E, valid);
-            visualize_edge(world, B, F, valid);
-            visualize_edge(world, C, G, valid);
-            visualize_edge(world, D, H, valid);
+            visualizeEdge(world, A, B, valid);
+            visualizeEdge(world, B, C, valid);
+            visualizeEdge(world, C, D, valid);
+            visualizeEdge(world, D, A, valid);
+            visualizeEdge(world, E, F, valid);
+            visualizeEdge(world, F, G, valid);
+            visualizeEdge(world, G, H, valid);
+            visualizeEdge(world, H, E, valid);
+            visualizeEdge(world, A, E, valid);
+            visualizeEdge(world, B, F, valid);
+            visualizeEdge(world, C, G, valid);
+            visualizeEdge(world, D, H, valid);
         }
     }
 
-    public void add_region_group(final RegionGroup group) {
-        storage_region_groups.put(group.id(), group);
-        mark_persistent_storage_dirty();
+    public void addRegionGroup(final RegionGroup group) {
+        storageRegionGroups.put(group.id(), group);
+        markPersistentStorageDirty();
     }
 
-    public boolean can_remove_region_group(final RegionGroup group) {
+    public boolean canRemoveRegionGroup(final RegionGroup group) {
         // Returns true if this region group is unused and can be removed.
 
         // If this region group is the fallback default group, it is permanent!
-        if (storage_default_region_group.containsValue(group.id())) {
+        if (storageDefaultRegionGroup.containsValue(group.id())) {
             return false;
         }
 
         // If any region uses this group, we can't remove it.
-        return regions.values().stream().noneMatch(r -> r.region_group_id().equals(group.id()));
+        return regions.values().stream().noneMatch(r -> r.regionGroupId().equals(group.id()));
     }
 
-    public void remove_region_group(final RegionGroup group) {
+    public void removeRegionGroup(final RegionGroup group) {
         // Assert that this region group is unused.
-        if (!can_remove_region_group(group)) {
+        if (!canRemoveRegionGroup(group)) {
             return;
         }
 
         // Remove a region group from storage
-        if (storage_region_groups.remove(group.id()) == null) {
+        if (storageRegionGroups.remove(group.id()) == null) {
             // Was already removed
             return;
         }
 
-        mark_persistent_storage_dirty();
+        markPersistentStorageDirty();
 
         // Close and taint all related open menus
-        get_module()
-            .core.menu_manager.for_each_open((player, menu) -> {
+        getModule()
+            .core.menuManager.forEachOpen((player, menu) -> {
                 if (
                     menu.tag() instanceof RegionGroupMenuTag &&
-                    Objects.equals(((RegionGroupMenuTag) menu.tag()).region_group_id(), group.id())
+                    Objects.equals(((RegionGroupMenuTag) menu.tag()).regionGroupId(), group.id())
                 ) {
                     menu.taint();
                     menu.close(player);
@@ -449,19 +449,19 @@ public class Regions extends Module<Regions> {
             });
     }
 
-    public RegionGroup get_region_group(final UUID region_group) {
-        return storage_region_groups.get(region_group);
+    public RegionGroup getRegionGroup(final UUID regionGroup) {
+        return storageRegionGroups.get(regionGroup);
     }
 
-    public boolean create_region_from_selection(final Player player, final String name) {
-        final var selection = get_region_selection(player);
-        if (!selection.is_valid(player)) {
+    public boolean createRegionFromSelection(final Player player, final String name) {
+        final var selection = getRegionSelection(player);
+        if (!selection.isValid(player)) {
             return false;
         }
 
         // Take currency items / withdraw economy
         final var price = selection.price();
-        if (config_economy_as_currency) {
+        if (configEconomyAsCurrency) {
             if (price > 0) {
                 final var transaction = economy.withdraw(player, price);
                 if (!transaction.transactionSuccess()) {
@@ -480,34 +480,34 @@ public class Regions extends Module<Regions> {
             }
         } else {
             final var map = new HashMap<ItemStack, Integer>();
-            map.put(new ItemStack(config_currency), (int) price);
-            if (price > 0 && !take_items(player, map)) {
+            map.put(new ItemStack(configCurrency), (int) price);
+            if (price > 0 && !takeItems(player, map)) {
                 return false;
             }
         }
 
-        final var def_region_group = get_or_create_default_region_group(player);
-        final var region = new Region(name, player.getUniqueId(), selection.extent(), def_region_group.id());
-        add_new_region(region);
-        cancel_region_selection(player);
+        final var defRegionGroup = getOrCreateDefaultRegionGroup(player);
+        final var region = new Region(name, player.getUniqueId(), selection.extent(), defRegionGroup.id());
+        addNewRegion(region);
+        cancelRegionSelection(player);
         return true;
     }
 
-    public String currency_string() {
-        if (config_economy_as_currency) {
-            return economy.currency_name_plural();
+    public String currencyString() {
+        if (configEconomyAsCurrency) {
+            return economy.currencyNamePlural();
         } else {
-            return String.valueOf(config_currency).toLowerCase();
+            return String.valueOf(configCurrency).toLowerCase();
         }
     }
 
-    public void add_new_region(final Region region) {
+    public void addNewRegion(final Region region) {
         region.invalidated = true;
         // Index region for fast lookup
-        index_region(region);
+        indexRegion(region);
     }
 
-    public void remove_region(final Region region) {
+    public void removeRegion(final Region region) {
         // Remove region from storage
         if (regions.remove(region.id()) == null) {
             // Was already removed
@@ -515,14 +515,14 @@ public class Regions extends Module<Regions> {
         }
 
         // Force update storage now, as a precaution.
-        update_persistent_data();
+        updatePersistentData();
 
         // Close and taint all related open menus
-        get_module()
-            .core.menu_manager.for_each_open((player, menu) -> {
+        getModule()
+            .core.menuManager.forEachOpen((player, menu) -> {
                 if (
                     menu.tag() instanceof RegionMenuTag &&
-                    Objects.equals(((RegionMenuTag) menu.tag()).region_id(), region.id())
+                    Objects.equals(((RegionMenuTag) menu.tag()).regionId(), region.id())
                 ) {
                     menu.taint();
                     menu.close(player);
@@ -530,90 +530,90 @@ public class Regions extends Module<Regions> {
             });
 
         // Remove a region from index
-        index_remove_region(region);
+        indexRemoveRegion(region);
 
         // Remove map marker
-        remove_marker(region.id());
+        removeMarker(region.id());
     }
 
-    public void update_marker(final Region region) {
-        dynmap_layer.update_marker(region);
-        blue_map_layer.update_marker(region);
+    public void updateMarker(final Region region) {
+        dynmapLayer.updateMarker(region);
+        blueMapLayer.updateMarker(region);
     }
 
-    public void remove_marker(final UUID region_id) {
-        dynmap_layer.remove_marker(region_id);
-        blue_map_layer.remove_marker(region_id);
+    public void removeMarker(final UUID regionId) {
+        dynmapLayer.removeMarker(regionId);
+        blueMapLayer.removeMarker(regionId);
     }
 
-    private void index_region(final Region region) {
+    private void indexRegion(final Region region) {
         regions.put(region.id(), region);
 
         // Adds the region to the lookup map at all intersecting chunks
         final var min = region.extent().min();
         final var max = region.extent().max();
 
-        final var world_id = min.getWorld().getUID();
-        var regions_in_chunk = regions_in_chunk_in_world.computeIfAbsent(world_id, k -> new HashMap<>());
+        final var worldId = min.getWorld().getUID();
+        var regionsInChunk = regionsInChunkInWorld.computeIfAbsent(worldId, k -> new HashMap<>());
 
-        final var min_chunk = min.getChunk();
-        final var max_chunk = max.getChunk();
+        final var minChunk = min.getChunk();
+        final var maxChunk = max.getChunk();
 
         // Iterate all the chunks which intersect the region
-        for (int cx = min_chunk.getX(); cx <= max_chunk.getX(); ++cx) {
-            for (int cz = min_chunk.getZ(); cz <= max_chunk.getZ(); ++cz) {
-                final var chunk_key = Chunk.getChunkKey(cx, cz);
-                var possible_regions = regions_in_chunk.computeIfAbsent(chunk_key, k -> new ArrayList<>());
-                possible_regions.add(region);
+        for (int cx = minChunk.getX(); cx <= maxChunk.getX(); ++cx) {
+            for (int cz = minChunk.getZ(); cz <= maxChunk.getZ(); ++cz) {
+                final var chunkKey = Chunk.getChunkKey(cx, cz);
+                var possibleRegions = regionsInChunk.computeIfAbsent(chunkKey, k -> new ArrayList<>());
+                possibleRegions.add(region);
             }
         }
 
         // Create map marker
-        update_marker(region);
+        updateMarker(region);
     }
 
-    private void index_remove_region(final Region region) {
+    private void indexRemoveRegion(final Region region) {
         // Removes the region from the lookup map at all intersecting chunks
         final var min = region.extent().min();
         final var max = region.extent().max();
 
-        final var world_id = min.getWorld().getUID();
-        final var regions_in_chunk = regions_in_chunk_in_world.get(world_id);
-        if (regions_in_chunk == null) {
+        final var worldId = min.getWorld().getUID();
+        final var regionsInChunk = regionsInChunkInWorld.get(worldId);
+        if (regionsInChunk == null) {
             return;
         }
 
-        final var min_chunk = min.getChunk();
-        final var max_chunk = max.getChunk();
+        final var minChunk = min.getChunk();
+        final var maxChunk = max.getChunk();
 
         // Iterate all the chunks which intersect the region
-        for (int cx = min_chunk.getX(); cx <= max_chunk.getX(); ++cx) {
-            for (int cz = min_chunk.getZ(); cz <= max_chunk.getZ(); ++cz) {
-                final var chunk_key = Chunk.getChunkKey(cx, cz);
-                final var possible_regions = regions_in_chunk.get(chunk_key);
-                if (possible_regions == null) {
+        for (int cx = minChunk.getX(); cx <= maxChunk.getX(); ++cx) {
+            for (int cz = minChunk.getZ(); cz <= maxChunk.getZ(); ++cz) {
+                final var chunkKey = Chunk.getChunkKey(cx, cz);
+                final var possibleRegions = regionsInChunk.get(chunkKey);
+                if (possibleRegions == null) {
                     continue;
                 }
-                possible_regions.remove(region);
+                possibleRegions.remove(region);
             }
         }
     }
 
-    public Region region_at(final Location loc) {
-        final var world_id = loc.getWorld().getUID();
-        final var regions_in_chunk = regions_in_chunk_in_world.get(world_id);
-        if (regions_in_chunk == null) {
+    public Region regionAt(final Location loc) {
+        final var worldId = loc.getWorld().getUID();
+        final var regionsInChunk = regionsInChunkInWorld.get(worldId);
+        if (regionsInChunk == null) {
             return null;
         }
 
-        final var chunk_key = loc.getChunk().getChunkKey();
-        final var possible_regions = regions_in_chunk.get(chunk_key);
-        if (possible_regions == null) {
+        final var chunkKey = loc.getChunk().getChunkKey();
+        final var possibleRegions = regionsInChunk.get(chunkKey);
+        if (possibleRegions == null) {
             return null;
         }
 
-        for (final var region : possible_regions) {
-            if (region.extent().is_inside(loc)) {
+        for (final var region : possibleRegions) {
+            if (region.extent().isInside(loc)) {
                 return region;
             }
         }
@@ -621,21 +621,21 @@ public class Regions extends Module<Regions> {
         return null;
     }
 
-    public Region region_at(final Block block) {
-        final var world_id = block.getWorld().getUID();
-        final var regions_in_chunk = regions_in_chunk_in_world.get(world_id);
-        if (regions_in_chunk == null) {
+    public Region regionAt(final Block block) {
+        final var worldId = block.getWorld().getUID();
+        final var regionsInChunk = regionsInChunkInWorld.get(worldId);
+        if (regionsInChunk == null) {
             return null;
         }
 
-        final var chunk_key = block.getChunk().getChunkKey();
-        final var possible_regions = regions_in_chunk.get(chunk_key);
-        if (possible_regions == null) {
+        final var chunkKey = block.getChunk().getChunkKey();
+        final var possibleRegions = regionsInChunk.get(chunkKey);
+        if (possibleRegions == null) {
             return null;
         }
 
-        for (final var region : possible_regions) {
-            if (region.extent().is_inside(block)) {
+        for (final var region : possibleRegions) {
+            if (region.extent().isInside(block)) {
                 return region;
             }
         }
@@ -643,128 +643,128 @@ public class Regions extends Module<Regions> {
         return null;
     }
 
-    public boolean may_administrate(final Player player, final RegionGroup group) {
+    public boolean mayAdministrate(final Player player, final RegionGroup group) {
         return (
             player.getUniqueId().equals(group.owner()) ||
-            (group != null && group.get_role(player.getUniqueId()).get_setting(RoleSetting.ADMIN))
+            (group != null && group.getRole(player.getUniqueId()).getSetting(RoleSetting.ADMIN))
         );
     }
 
-    public boolean may_administrate(final Player player, final Region region) {
-        return player.getUniqueId().equals(region.owner()) || player.hasPermission(admin_permission);
+    public boolean mayAdministrate(final Player player, final Region region) {
+        return player.getUniqueId().equals(region.owner()) || player.hasPermission(adminPermission);
     }
 
-    public RegionGroup get_or_create_default_region_group(final Player owner) {
-        final var owner_id = owner.getUniqueId();
-        final var region_group_id = storage_default_region_group.get(owner_id);
-        if (region_group_id != null) {
-            return get_region_group(region_group_id);
+    public RegionGroup getOrCreateDefaultRegionGroup(final Player owner) {
+        final var ownerId = owner.getUniqueId();
+        final var regionGroupId = storageDefaultRegionGroup.get(ownerId);
+        if (regionGroupId != null) {
+            return getRegionGroup(regionGroupId);
         }
 
         // Create and save owner's default group
-        final var region_group = new RegionGroup("[default] " + owner.getName(), owner_id);
-        add_region_group(region_group);
+        final var regionGroup = new RegionGroup("[default] " + owner.getName(), ownerId);
+        addRegionGroup(regionGroup);
 
         // Set group as the default
-        storage_default_region_group.put(owner_id, region_group.id());
-        mark_persistent_storage_dirty();
+        storageDefaultRegionGroup.put(ownerId, regionGroup.id());
+        markPersistentStorageDirty();
 
-        return region_group;
+        return regionGroup;
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on_player_quit(final PlayerQuitEvent event) {
+    public void onPlayerQuit(final PlayerQuitEvent event) {
         // Remove pending selection
-        cancel_region_selection(event.getPlayer());
+        cancelRegionSelection(event.getPlayer());
     }
 
     @EventHandler
-    public void on_save_world(final WorldSaveEvent event) {
-        update_persistent_data(event.getWorld());
+    public void onSaveWorld(final WorldSaveEvent event) {
+        updatePersistentData(event.getWorld());
     }
 
     @EventHandler
-    public void on_load_world(final WorldLoadEvent event) {
-        load_persistent_data(event.getWorld());
+    public void onLoadWorld(final WorldLoadEvent event) {
+        loadPersistentData(event.getWorld());
     }
 
     @EventHandler
-    public void on_unload_world(final WorldUnloadEvent event) {
+    public void onUnloadWorld(final WorldUnloadEvent event) {
         // Save data before unloading a world (not called on stop)
-        update_persistent_data(event.getWorld());
+        updatePersistentData(event.getWorld());
     }
 
-    public static final NamespacedKey STORAGE_REGIONS = StorageUtil.namespaced_key("vane_regions", "regions");
+    public static final NamespacedKey STORAGE_REGIONS = StorageUtil.namespacedKey("vane_regions", "regions");
 
-    public void load_persistent_data(final World world) {
+    public void loadPersistentData(final World world) {
         final var data = world.getPersistentDataContainer();
-        final var storage_region_prefix = STORAGE_REGIONS + ".";
+        final var storageRegionPrefix = STORAGE_REGIONS + ".";
 
         // Load all currently stored regions.
-        final var pdc_regions = data
+        final var pdcRegions = data
             .getKeys()
             .stream()
-            .filter(key -> key.toString().startsWith(storage_region_prefix))
-            .map(key -> key.toString().substring(storage_region_prefix.length()))
+            .filter(key -> key.toString().startsWith(storageRegionPrefix))
+            .map(key -> key.toString().substring(storageRegionPrefix.length()))
             .map(uuid -> UUID.fromString(uuid))
             .collect(Collectors.toSet());
 
-        for (final var region_id : pdc_regions) {
-            final var json_bytes = data.get(
-                NamespacedKey.fromString(storage_region_prefix + region_id.toString()),
+        for (final var regionId : pdcRegions) {
+            final var jsonBytes = data.get(
+                NamespacedKey.fromString(storageRegionPrefix + regionId.toString()),
                 PersistentDataType.BYTE_ARRAY
             );
             try {
-                final var region = PersistentSerializer.from_json(Region.class, new JSONObject(new String(json_bytes)));
-                index_region(region);
+                final var region = PersistentSerializer.fromJson(Region.class, new JSONObject(new String(jsonBytes)));
+                indexRegion(region);
             } catch (IOException e) {
                 log.log(Level.SEVERE, "error while serializing persistent data!", e);
             }
         }
         log.log(
             Level.INFO,
-            "Loaded " + pdc_regions.size() + " regions for world " + world.getName() + "(" + world.getUID() + ")"
+            "Loaded " + pdcRegions.size() + " regions for world " + world.getName() + "(" + world.getUID() + ")"
         );
 
         // Convert regions from legacy storage
-        final Set<UUID> remove_from_legacy_storage = new HashSet<>();
+        final Set<UUID> removeFromLegacyStorage = new HashSet<>();
         int converted = 0;
-        for (final var region : storage_regions.values()) {
+        for (final var region : storageRegions.values()) {
             if (!region.extent().world().equals(world.getUID())) {
                 continue;
             }
 
             if (regions.containsKey(region.id())) {
-                remove_from_legacy_storage.add(region.id());
+                removeFromLegacyStorage.add(region.id());
                 continue;
             }
 
-            index_region(region);
+            indexRegion(region);
             region.invalidated = true;
             converted += 1;
         }
 
         // Remove any region that was successfully loaded from the new storage.
-        remove_from_legacy_storage.forEach(storage_regions::remove);
-        if (remove_from_legacy_storage.size() > 0) {
-            mark_persistent_storage_dirty();
+        removeFromLegacyStorage.forEach(storageRegions::remove);
+        if (removeFromLegacyStorage.size() > 0) {
+            markPersistentStorageDirty();
         }
 
         // Save if we had any conversions
         if (converted > 0) {
-            update_persistent_data();
+            updatePersistentData();
         }
     }
 
-    public void update_persistent_data() {
+    public void updatePersistentData() {
         for (final var world : getServer().getWorlds()) {
-            update_persistent_data(world);
+            updatePersistentData(world);
         }
     }
 
-    public void update_persistent_data(final World world) {
+    public void updatePersistentData(final World world) {
         final var data = world.getPersistentDataContainer();
-        final var storage_region_prefix = STORAGE_REGIONS + ".";
+        final var storageRegionPrefix = STORAGE_REGIONS + ".";
 
         // Update invalidated regions
         regions
@@ -773,9 +773,9 @@ public class Regions extends Module<Regions> {
             .filter(x -> x.invalidated && x.extent().world().equals(world.getUID()))
             .forEach(region -> {
                 try {
-                    final var json = PersistentSerializer.to_json(Region.class, region);
+                    final var json = PersistentSerializer.toJson(Region.class, region);
                     data.set(
-                        NamespacedKey.fromString(storage_region_prefix + region.id().toString()),
+                        NamespacedKey.fromString(storageRegionPrefix + region.id().toString()),
                         PersistentDataType.BYTE_ARRAY,
                         json.toString().getBytes()
                     );
@@ -788,24 +788,24 @@ public class Regions extends Module<Regions> {
             });
 
         // Get all currently stored regions.
-        final var stored_regions = data
+        final var storedRegions = data
             .getKeys()
             .stream()
-            .filter(key -> key.toString().startsWith(storage_region_prefix))
-            .map(key -> key.toString().substring(storage_region_prefix.length()))
+            .filter(key -> key.toString().startsWith(storageRegionPrefix))
+            .map(key -> key.toString().substring(storageRegionPrefix.length()))
             .map(uuid -> UUID.fromString(uuid))
             .collect(Collectors.toSet());
 
         // Remove all regions that no longer exist
-        Sets.difference(stored_regions, regions.keySet()).forEach(id ->
-            data.remove(NamespacedKey.fromString(storage_region_prefix + id.toString()))
+        Sets.difference(storedRegions, regions.keySet()).forEach(id ->
+            data.remove(NamespacedKey.fromString(storageRegionPrefix + id.toString()))
         );
     }
 
     @Override
-    public void on_disable() {
+    public void onModuleDisable() {
         // Save data
-        update_persistent_data();
-        super.on_disable();
+        updatePersistentData();
+        super.onModuleDisable();
     }
 }

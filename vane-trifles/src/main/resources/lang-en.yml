@@ -12,127 +12,127 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 4
+Version: 4
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'en_us'
+ResourcePackLangCode: 'en_us'
 
-command_heads:
-  usage: "%1$s"
-  description: "Get heads from the head library."
-  help: "Execute to open the head library."
+CommandHeads:
+  Usage: "%1$s"
+  Description: "Get heads from the head library."
+  Help: "Execute to open the head library."
 
-command_finditem:
-  usage: "%1$s"
-  description: "Searches for the given material in nearby containers and entities."
-  help: "Searches for the given material in nearby containers and entities."
+CommandFinditem:
+  Usage: "%1$s"
+  Description: "Searches for the given material in nearby containers and entities."
+  Help: "Searches for the given material in nearby containers and entities."
 
-command_setspawn:
-  usage: "%1$s"
-  description: "Sets the global spawn location to your current position."
-  help: "Sets the global spawn location to your current position."
+CommandSetspawn:
+  Usage: "%1$s"
+  Description: "Sets the global spawn location to your current position."
+  Help: "Sets the global spawn location to your current position."
 
-storage:
-  open_stacked_item: "You need to unstack these items to open them."
-  item_pouch:
+Storage:
+  OpenStackedItem: "You need to unstack these items to open them."
+  ItemPouch:
     # The display name of this item variant.
-    name: "Pouch"
-  item_backpack:
+    Name: "Pouch"
+  ItemBackpack:
     # The display name of this item variant.
-    name: "Backpack"
+    Name: "Backpack"
 
-xp_bottles:
-  item_small_xp_bottle:
+XpBottles:
+  ItemSmallXpBottle:
     # The display name of this item variant.
-    name: "Small Experience Bottle"
-  item_medium_xp_bottle:
+    Name: "Small Experience Bottle"
+  ItemMediumXpBottle:
     # The display name of this item variant.
-    name: "Medium Experience Bottle"
-  item_large_xp_bottle:
+    Name: "Medium Experience Bottle"
+  ItemLargeXpBottle:
     # The display name of this item variant.
-    name: "Large Experience Bottle"
+    Name: "Large Experience Bottle"
 
-item_empty_xp_bottle:
+ItemEmptyXpBottle:
   # The display name of this item variant.
-  name: "Empty Experience Bottle"
+  Name: "Empty Experience Bottle"
 
-item_north_compass:
+ItemNorthCompass:
   # The display name of this item variant.
-  name: "North Compass"
+  Name: "North Compass"
 
-item_reinforced_elytra:
+ItemReinforcedElytra:
   # The display name of this item variant.
-  name: "Netherite Elytra"
+  Name: "Netherite Elytra"
 
-item_file:
+ItemFile:
   # The display name of this item variant.
-  name: "File"
+  Name: "File"
 
-item_slime_bucket:
+ItemSlimeBucket:
   # The display name of this item variant.
-  name: "Slime in a Bucket"
+  Name: "Slime in a Bucket"
 
-item_papyrus_scroll:
+ItemPapyrusScroll:
   # The display name of this item variant.
-  name: "Papyrus Scroll"
+  Name: "Papyrus Scroll"
 
-item_trowel:
+ItemTrowel:
   # The display name of this item variant.
-  name: "Trowel"
+  Name: "Trowel"
   # The lore of every trowel
   # %1$s: The current feed source
-  lore:
+  Lore:
     - "§7Right-click this item in your inventory to change the feed source."
     - "§7Current feed source: %1$s"
 
-sickles:
-  item_wooden_sickle:
+Sickles:
+  ItemWoodenSickle:
     # The display name of this item variant.
-    name: "Wooden Sickle"
-  item_stone_sickle:
+    Name: "Wooden Sickle"
+  ItemStoneSickle:
     # The display name of this item variant.
-    name: "Stone Sickle"
-  item_iron_sickle:
+    Name: "Stone Sickle"
+  ItemIronSickle:
     # The display name of this item variant.
-    name: "Iron Sickle"
-  item_golden_sickle:
+    Name: "Iron Sickle"
+  ItemGoldenSickle:
     # The display name of this item variant.
-    name: "Golden Sickle"
-  item_diamond_sickle:
+    Name: "Golden Sickle"
+  ItemDiamondSickle:
     # The display name of this item variant.
-    name: "Diamond Sickle"
-  item_netherite_sickle:
+    Name: "Diamond Sickle"
+  ItemNetheriteSickle:
     # The display name of this item variant.
-    name: "Netherite Sickle"
+    Name: "Netherite Sickle"
 
-scrolls:
-  item_home_scroll:
+Scrolls:
+  ItemHomeScroll:
     # The display name of this item variant.
-    name: "Portal Scroll (Home)"
-  item_unstable_scroll:
+    Name: "Portal Scroll (Home)"
+  ItemUnstableScroll:
     # The display name of this item variant.
-    name: "Portal Scroll (Unstable)"
+    Name: "Portal Scroll (Unstable)"
     # Shown when used but no scroll was used previously.
-    teleport_no_previous_teleport: "§cYou have never used another scroll before."
-  item_spawn_scroll:
+    TeleportNoPreviousTeleport: "§cYou have never used another scroll before."
+  ItemSpawnScroll:
     # The display name of this item variant.
-    name: "Portal Scroll (Spawn)"
-  item_lodestone_scroll:
+    Name: "Portal Scroll (Spawn)"
+  ItemLodestoneScroll:
     # The display name of this item variant.
-    name: "Portal Scroll (Lodestone)"
+    Name: "Portal Scroll (Lodestone)"
     # Shown when used but no lodestone was ever bound.
-    teleport_no_bound_lodestone: "§bFirst sneak and right-click a lodestone to (re-)bind this scroll."
+    TeleportNoBoundLodestone: "§bFirst sneak and right-click a lodestone to (re-)bind this scroll."
     # Shown when used but the bound lodestone doesn't exist anymore.
-    teleport_missing_lodestone: "§cThe scroll doesn't seem to do anything.. &6You fear the bound lodestone might be missing."
+    TeleportMissingLodestone: "§cThe scroll doesn't seem to do anything.. &6You fear the bound lodestone might be missing."
     # The lore of a bound scoll
     # %1$s: Bound lodestone's world name
     # %2$s: Bound lodestone's X position
     # %3$s: Bound lodestone's Y position
     # %4$s: Bound lodestone's Z position
-    bound_lore: "§7Bound to (%2$s§7, %3$s§7, %4$s§7) in %1$s"
-  item_death_scroll:
+    BoundLore: "§7Bound to (%2$s§7, %3$s§7, %4$s§7) in %1$s"
+  ItemDeathScroll:
     # The display name of this item variant.
-    name: "Portal Scroll (Death)"
+    Name: "Portal Scroll (Death)"
     # Sent when a death scroll is used but the user hasn't died recently or already used a scroll of this type.
-    teleport_no_recent_death: "§cYou have not died recently, or already used a Death Scroll!"
+    TeleportNoRecentDeath: "§cYou have not died recently, or already used a Death Scroll!"

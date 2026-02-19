@@ -1,9 +1,9 @@
 package org.oddlama.vane.util;
 
 import static net.kyori.adventure.text.event.HoverEvent.Action.SHOW_TEXT;
-import static org.oddlama.vane.util.Nms.creative_tab_id;
-import static org.oddlama.vane.util.Nms.item_handle;
-import static org.oddlama.vane.util.Nms.player_handle;
+import static org.oddlama.vane.util.Nms.creativeTabId;
+import static org.oddlama.vane.util.Nms.itemHandle;
+import static org.oddlama.vane.util.Nms.playerHandle;
 
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.mojang.brigadier.StringReader;
@@ -47,7 +47,7 @@ public class ItemUtil {
 
     private static final UUID SKULL_OWNER = UUID.fromString("00000000-0000-0000-0000-000000000000");
 
-    public static void damage_item(final Player player, final ItemStack item_stack, final int amount) {
+    public static void damageItem(final Player player, final ItemStack itemStack, final int amount) {
         if (player.getGameMode() == GameMode.CREATIVE) { // don't damage the tool if the player is in creative
             return;
         }
@@ -56,18 +56,18 @@ public class ItemUtil {
             return;
         }
 
-        final var handle = item_handle(item_stack);
+        final var handle = itemHandle(itemStack);
         if (handle == null) {
             return;
         }
 
-        handle.hurtAndBreak(amount, Nms.world_handle(player.getWorld()), player_handle(player), item -> {
+        handle.hurtAndBreak(amount, Nms.worldHandle(player.getWorld()), playerHandle(player), item -> {
             player.broadcastSlotBreak(EquipmentSlot.HAND);
-            item_stack.subtract();
+            itemStack.subtract();
         });
     }
 
-    public static String name_of(final ItemStack item) {
+    public static String nameOf(final ItemStack item) {
         if (item == null || !item.hasItemMeta()) {
             return "";
         }
@@ -79,16 +79,16 @@ public class ItemUtil {
         return PlainTextComponentSerializer.plainText().serialize(meta.displayName());
     }
 
-    public static ItemStack name_item(final ItemStack item, final Component name) {
-        return name_item(item, name, (List<Component>) null);
+    public static ItemStack nameItem(final ItemStack item, final Component name) {
+        return nameItem(item, name, (List<Component>) null);
     }
 
-    public static ItemStack name_item(final ItemStack item, final Component name, Component lore) {
+    public static ItemStack nameItem(final ItemStack item, final Component name, Component lore) {
         lore = lore.decoration(TextDecoration.ITALIC, false);
-        return name_item(item, name, List.of(lore));
+        return nameItem(item, name, List.of(lore));
     }
 
-    public static ItemStack set_lore(final ItemStack item, final List<Component> lore) {
+    public static ItemStack setLore(final ItemStack item, final List<Component> lore) {
         item.editMeta(meta -> {
             final var list = lore
                 .stream()
@@ -100,7 +100,7 @@ public class ItemUtil {
         return item;
     }
 
-    public static ItemStack name_item(final ItemStack item, Component name, final List<Component> lore) {
+    public static ItemStack nameItem(final ItemStack item, Component name, final List<Component> lore) {
         var meta = item.getItemMeta();
 		if (meta == null) {
 			// Cannot name item without meta (probably air)
@@ -122,43 +122,43 @@ public class ItemUtil {
         return item;
     }
 
-    public static int compare_enchantments(final ItemStack item_a, final ItemStack item_b) {
-        var ae = item_a.getEnchantments();
-        var be = item_b.getEnchantments();
+    public static int compareEnchantments(final ItemStack itemA, final ItemStack itemB) {
+        var aE = itemA.getEnchantments();
+        var bE = itemB.getEnchantments();
 
-        final var a_meta = item_a.getItemMeta();
-        if (a_meta instanceof EnchantmentStorageMeta) {
-            final var stored = ((EnchantmentStorageMeta) a_meta).getStoredEnchants();
+        final var aMeta = itemA.getItemMeta();
+        if (aMeta instanceof EnchantmentStorageMeta) {
+            final var stored = ((EnchantmentStorageMeta) aMeta).getStoredEnchants();
             if (stored.size() > 0) {
-                ae = stored;
+                aE = stored;
             }
         }
 
-        final var b_meta = item_b.getItemMeta();
-        if (b_meta instanceof EnchantmentStorageMeta) {
-            final var stored = ((EnchantmentStorageMeta) b_meta).getStoredEnchants();
+        final var bMeta = itemB.getItemMeta();
+        if (bMeta instanceof EnchantmentStorageMeta) {
+            final var stored = ((EnchantmentStorageMeta) bMeta).getStoredEnchants();
             if (stored.size() > 0) {
-                be = stored;
+                bE = stored;
             }
         }
 
         // Unenchanted first
-        final var a_count = ae.size();
-        final var b_count = be.size();
-        if (a_count == 0 && b_count == 0) {
+        final var aCount = aE.size();
+        final var bCount = bE.size();
+        if (aCount == 0 && bCount == 0) {
             return 0;
-        } else if (a_count == 0) {
+        } else if (aCount == 0) {
             return -1;
-        } else if (b_count == 0) {
+        } else if (bCount == 0) {
             return 1;
         }
 
         // More enchantments before fewer enchantments
-        if (a_count != b_count) {
-            return b_count - a_count;
+        if (aCount != bCount) {
+            return bCount - aCount;
         }
 
-        final var a_sorted = ae
+        final var aSorted = aE
             .entrySet()
             .stream()
             .sorted(
@@ -167,7 +167,7 @@ public class ItemUtil {
                 ).thenComparing(Map.Entry.comparingByValue())
             )
             .toList();
-        final var b_sorted = be
+        final var bSorted = bE
             .entrySet()
             .stream()
             .sorted(
@@ -178,23 +178,23 @@ public class ItemUtil {
             .toList();
 
         // Lastly, compare names and levels
-        final var ait = a_sorted.iterator();
-        final var bit = b_sorted.iterator();
+        final var aIt = aSorted.iterator();
+        final var bIt = bSorted.iterator();
 
-        while (ait.hasNext()) {
-            final var a_el = ait.next();
-            final var b_el = bit.next();
+        while (aIt.hasNext()) {
+            final var aEl = aIt.next();
+            final var bEl = bIt.next();
 
             // Lexicographic name comparison
-            final var name_diff = a_el.getKey().getKey().toString().compareTo(b_el.getKey().getKey().toString());
-            if (name_diff != 0) {
-                return name_diff;
+            final var nameDiff = aEl.getKey().getKey().toString().compareTo(bEl.getKey().getKey().toString());
+            if (nameDiff != 0) {
+                return nameDiff;
             }
 
             // Level
-            final int level_diff = b_el.getValue() - a_el.getValue();
-            if (level_diff != 0) {
-                return level_diff;
+            final int levelDiff = bEl.getValue() - aEl.getValue();
+            if (levelDiff != 0) {
+                return levelDiff;
             }
         }
 
@@ -213,68 +213,68 @@ public class ItemUtil {
                 return -1;
             }
 
-            final var na = item_handle(a);
-            final var nb = item_handle(b);
-            if (na.isEmpty()) {
-                return nb.isEmpty() ? 0 : 1;
-            } else if (nb.isEmpty()) {
+            final var nA = itemHandle(a);
+            final var nB = itemHandle(b);
+            if (nA.isEmpty()) {
+                return nB.isEmpty() ? 0 : 1;
+            } else if (nB.isEmpty()) {
                 return -1;
             }
 
             // By creative mode tab
-            final var creative_mode_tab_diff = creative_tab_id(na) - creative_tab_id(nb);
-            if (creative_mode_tab_diff != 0) {
-                return creative_mode_tab_diff;
+            final var creativeModeTabDiff = creativeTabId(nA) - creativeTabId(nB);
+            if (creativeModeTabDiff != 0) {
+                return creativeModeTabDiff;
             }
 
             // By id
-            final var id_diff = Item.getId(na.getItem()) - Item.getId(nb.getItem());
-            if (id_diff != 0) {
-                return id_diff;
+            final var idDiff = Item.getId(nA.getItem()) - Item.getId(nB.getItem());
+            if (idDiff != 0) {
+                return idDiff;
             }
 
             // By damage
-            final var damage_diff = na.getDamageValue() - nb.getDamageValue();
-            if (damage_diff != 0) {
-                return damage_diff;
+            final var damageDiff = nA.getDamageValue() - nB.getDamageValue();
+            if (damageDiff != 0) {
+                return damageDiff;
             }
 
             // By count
-            final var count_diff = nb.getCount() - na.getCount();
-            if (count_diff != 0) {
-                return count_diff;
+            final var countDiff = nB.getCount() - nA.getCount();
+            if (countDiff != 0) {
+                return countDiff;
             }
 
             // By enchantments
-            return compare_enchantments(a, b);
+            return compareEnchantments(a, b);
         }
     }
 
-    public static ItemStack skull_for_player(final OfflinePlayer player, final boolean is_for_menu) {
+    public static ItemStack skullForPlayer(final OfflinePlayer player, final boolean isForMenu) {
         final var item = new ItemStack(Material.PLAYER_HEAD);
-        if (!is_for_menu || Core.instance().config_player_heads_in_menus) {
+        if (!isForMenu || Core.instance().configPlayerHeadsInMenus) {
             item.editMeta(SkullMeta.class, meta -> meta.setOwningPlayer(player));
         }
         return item;
     }
 
-    public static ItemStack skull_with_texture(final String name, final String base64_texture) {
+    public static ItemStack skullWithTexture(final String name, final String base64Texture) {
         final var profile = Bukkit.createProfileExact(SKULL_OWNER, "-");
-        profile.setProperty(new ProfileProperty("textures", base64_texture));
+        profile.setProperty(new ProfileProperty("textures", base64Texture));
 
         final var item = new ItemStack(Material.PLAYER_HEAD);
         final var meta = (SkullMeta) item.getItemMeta();
-        final var name_component = Component.text(name)
+        final var nameComponent = Component.text(name)
             .decoration(TextDecoration.ITALIC, false)
             .color(NamedTextColor.YELLOW);
-        meta.displayName(name_component);
+        meta.displayName(nameComponent);
         meta.setPlayerProfile(profile);
         item.setItemMeta(meta);
         return item;
     }
 
     /** Returns true if the given component is guarded by the given sentinel. */
-    public static boolean has_sentinel(final Component component, final NamespacedKey sentiel) {
+    public static boolean hasSentinel(final Component component, final NamespacedKey sentiel) {
         if (component == null) {
             return false;
         }
@@ -284,14 +284,14 @@ public class ItemUtil {
             return false;
         }
 
-        if (hover.value() instanceof final TextComponent hover_text) {
-            return hover.action() == SHOW_TEXT && sentiel.toString().equals(hover_text.content());
+        if (hover.value() instanceof final TextComponent hoverText) {
+            return hover.action() == SHOW_TEXT && sentiel.toString().equals(hoverText.content());
         } else {
             return false;
         }
     }
 
-    public static Component add_sentinel(final Component component, final NamespacedKey sentinel) {
+    public static Component addSentinel(final Component component, final NamespacedKey sentinel) {
         return component.hoverEvent(HoverEvent.showText(Component.text(sentinel.toString())));
     }
 
@@ -300,9 +300,9 @@ public class ItemUtil {
      * "{<namespace:enchant>[*<level>][,<namespace:enchant>[*<level>]]...}". Throws
      * IllegalArgumentException if an enchantment cannot be found.
      */
-    private static ItemStack apply_enchants(final ItemStack item_stack, @Nullable String enchants) {
+    private static ItemStack applyEnchants(final ItemStack itemStack, @Nullable String enchants) {
         if (enchants == null) {
-            return item_stack;
+            return itemStack;
         }
 
         enchants = enchants.trim();
@@ -318,10 +318,10 @@ public class ItemUtil {
 
             String key = part;
             int level = 1;
-            final int level_delim = key.indexOf('*');
-            if (level_delim != -1) {
-                level = Integer.parseInt(key.substring(level_delim + 1));
-                key = key.substring(0, level_delim);
+            final int levelDelim = key.indexOf('*');
+            if (levelDelim != -1) {
+                level = Integer.parseInt(key.substring(levelDelim + 1));
+                key = key.substring(0, levelDelim);
             }
 
             final var ench = RegistryAccess.registryAccess()
@@ -329,26 +329,26 @@ public class ItemUtil {
                 .get(NamespacedKey.fromString(key));
             if (ench == null) {
                 throw new IllegalArgumentException(
-                    "Cannot apply unknown enchantment '" + key + "' to item '" + item_stack + "'"
+                    "Cannot apply unknown enchantment '" + key + "' to item '" + itemStack + "'"
                 );
             }
 
-            if (item_stack.getType() == Material.ENCHANTED_BOOK) {
+            if (itemStack.getType() == Material.ENCHANTED_BOOK) {
                 final var flevel = level;
-                item_stack.editMeta(EnchantmentStorageMeta.class, meta -> meta.addStoredEnchant(ench, flevel, false));
+                itemStack.editMeta(EnchantmentStorageMeta.class, meta -> meta.addStoredEnchant(ench, flevel, false));
             } else {
-                item_stack.addEnchantment(ench, level);
+                itemStack.addEnchantment(ench, level);
             }
         }
 
         if (parts.length > 0) {
-            Core.instance().enchantment_manager.update_enchanted_item(item_stack);
+            Core.instance().enchantmentManager.updateEnchantedItem(itemStack);
         }
-        return item_stack;
+        return itemStack;
     }
 
     /** Returns the itemstack and a boolean indicating whether it was just as simlpe material. */
-    public static @NotNull Pair<ItemStack, Boolean> itemstack_from_string(String definition) {
+    public static @NotNull Pair<ItemStack, Boolean> itemstackFromString(String definition) {
         // NOTE: Override to allow seamless migration from pre 1.21.9 to 1.21.9+
         if ("minecraft:chain".equalsIgnoreCase(definition)) {
             definition = "minecraft:iron_chain";
@@ -356,19 +356,19 @@ public class ItemUtil {
 
         // namespace:key[[components]][#enchants{}], where the key can reference a
         // material, head material or customitem.
-        final var enchants_delim = definition.indexOf("#enchants{");
+        final var enchantsDelim = definition.indexOf("#enchants{");
         String enchants = null;
-        if (enchants_delim != -1) {
-            enchants = definition.substring(enchants_delim + 9); // Let it start at '{'
-            definition = definition.substring(0, enchants_delim);
+        if (enchantsDelim != -1) {
+            enchants = definition.substring(enchantsDelim + 9); // Let it start at '{'
+            definition = definition.substring(0, enchantsDelim);
         }
 
-        final var nbt_delim = definition.indexOf('[');
+        final var nbtDelim = definition.indexOf('[');
         NamespacedKey key;
-        if (nbt_delim == -1) {
+        if (nbtDelim == -1) {
             key = NamespacedKey.fromString(definition);
         } else {
-            key = NamespacedKey.fromString(definition.substring(0, nbt_delim));
+            key = NamespacedKey.fromString(definition.substring(0, nbtDelim));
         }
 
         final var emat = ExtendedMaterial.from(key);
@@ -377,26 +377,26 @@ public class ItemUtil {
         }
 
         // First, create the itemstack as if we had no NBT information.
-        final var item_stack = emat.item();
+        final var itemStack = emat.item();
 
         // If there is no NBT information, we can return here.
-        if (nbt_delim == -1) {
-            return Pair.of(apply_enchants(item_stack, enchants), emat.is_simple_material() && enchants == null);
+        if (nbtDelim == -1) {
+            return Pair.of(applyEnchants(itemStack, enchants), emat.isSimpleMaterial() && enchants == null);
         }
 
         // Parse the NBT by using minecraft's internal parser with the base material
         // of whatever the extended material gave us.
-        final var vanilla_definition = item_stack.getType().key() + definition.substring(nbt_delim);
+        final var vanillaDefinition = itemStack.getType().key() + definition.substring(nbtDelim);
         try {
-            final var parsed_nbt = new ItemParser(Commands.createValidationContext(VanillaRegistries.createLookup()))
-                .parse(new StringReader(vanilla_definition))
+            final var parsedNbt = new ItemParser(Commands.createValidationContext(VanillaRegistries.createLookup()))
+                .parse(new StringReader(vanillaDefinition))
                 .components();
 
             // Now apply the NBT be parsed by minecraft's internal parser to the itemstack.
-            final var nms_item = item_handle(item_stack).copy();
-            nms_item.applyComponents(parsed_nbt);
+            final var nmsItem = itemHandle(itemStack).copy();
+            nmsItem.applyComponents(parsedNbt);
 
-            return Pair.of(apply_enchants(CraftItemStack.asCraftMirror(nms_item), enchants), false);
+            return Pair.of(applyEnchants(CraftItemStack.asCraftMirror(nmsItem), enchants), false);
         } catch (final CommandSyntaxException e) {
             throw new IllegalArgumentException("Could not parse NBT of item definition: " + definition, e);
         }

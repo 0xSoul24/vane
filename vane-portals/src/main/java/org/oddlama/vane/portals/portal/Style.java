@@ -1,7 +1,7 @@
 package org.oddlama.vane.portals.portal;
 
-import static org.oddlama.vane.core.persistent.PersistentSerializer.from_json;
-import static org.oddlama.vane.core.persistent.PersistentSerializer.to_json;
+import static org.oddlama.vane.core.persistent.PersistentSerializer.fromJson;
+import static org.oddlama.vane.core.persistent.PersistentSerializer.toJson;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
+import org.oddlama.vane.core.persistent.PersistentSerializer;
 import org.oddlama.vane.util.StorageUtil;
 
 public class Style {
@@ -17,15 +18,15 @@ public class Style {
     public static Object serialize(@NotNull final Object o) throws IOException {
         final var style = (Style) o;
         final var json = new JSONObject();
-        json.put("key", to_json(NamespacedKey.class, style.key));
+        json.put("key", PersistentSerializer.toJson(NamespacedKey.class, style.key));
         try {
             json.put(
-                "active_materials",
-                to_json(Style.class.getDeclaredField("active_materials"), style.active_materials)
+                "activeMaterials",
+                PersistentSerializer.toJson(Style.class.getDeclaredField("activeMaterials"), style.activeMaterials)
             );
             json.put(
-                "inactive_materials",
-                to_json(Style.class.getDeclaredField("inactive_materials"), style.inactive_materials)
+                "inactiveMaterials",
+                PersistentSerializer.toJson(Style.class.getDeclaredField("inactiveMaterials"), style.inactiveMaterials)
             );
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Invalid field. This is a bug.", e);
@@ -37,15 +38,15 @@ public class Style {
     public static Style deserialize(@NotNull final Object o) throws IOException {
         final var json = (JSONObject) o;
         final var style = new Style(null);
-        style.key = from_json(NamespacedKey.class, json.get("key"));
+        style.key = PersistentSerializer.fromJson(NamespacedKey.class, json.get("key"));
         try {
-            style.active_materials = (Map<PortalBlock.Type, Material>) from_json(
-                Style.class.getDeclaredField("active_materials"),
-                json.get("active_materials")
+            style.activeMaterials = (Map<PortalBlock.Type, Material>) PersistentSerializer.fromJson(
+                Style.class.getDeclaredField("activeMaterials"),
+                json.get("activeMaterials")
             );
-            style.inactive_materials = (Map<PortalBlock.Type, Material>) from_json(
-                Style.class.getDeclaredField("inactive_materials"),
-                json.get("inactive_materials")
+            style.inactiveMaterials = (Map<PortalBlock.Type, Material>) PersistentSerializer.fromJson(
+                Style.class.getDeclaredField("inactiveMaterials"),
+                json.get("inactiveMaterials")
             );
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Invalid field. This is a bug.", e);
@@ -54,8 +55,8 @@ public class Style {
     }
 
     private NamespacedKey key;
-    private Map<PortalBlock.Type, Material> active_materials = new HashMap<>();
-    private Map<PortalBlock.Type, Material> inactive_materials = new HashMap<>();
+    private Map<PortalBlock.Type, Material> activeMaterials = new HashMap<>();
+    private Map<PortalBlock.Type, Material> inactiveMaterials = new HashMap<>();
 
     public Style(final NamespacedKey key) {
         this.key = key;
@@ -67,26 +68,26 @@ public class Style {
 
     public Material material(boolean active, PortalBlock.Type type) {
         if (active) {
-            return active_materials.get(type);
+            return activeMaterials.get(type);
         } else {
-            return inactive_materials.get(type);
+            return inactiveMaterials.get(type);
         }
     }
 
-    public static NamespacedKey default_style_key() {
-        return StorageUtil.namespaced_key("vane_portals", "portal_style_default");
+    public static NamespacedKey defaultStyleKey() {
+        return StorageUtil.namespacedKey("vane_portals", "portal_style_default");
     }
 
-    public void set_material(boolean active, PortalBlock.Type type, Material material) {
-        set_material(active, type, material, false);
+    public void setMaterial(boolean active, PortalBlock.Type type, Material material) {
+        setMaterial(active, type, material, false);
     }
 
-    public void set_material(boolean active, PortalBlock.Type type, Material material, boolean overwrite) {
+    public void setMaterial(boolean active, PortalBlock.Type type, Material material, boolean overwrite) {
         final Map<PortalBlock.Type, Material> map;
         if (active) {
-            map = active_materials;
+            map = activeMaterials;
         } else {
-            map = inactive_materials;
+            map = inactiveMaterials;
         }
 
         if (!overwrite && map.containsKey(type)) {
@@ -97,15 +98,15 @@ public class Style {
         map.put(type, material);
     }
 
-    public void check_valid() {
+    public void checkValid() {
         // Checks if every key is set
         for (final var type : PortalBlock.Type.values()) {
-            if (!active_materials.containsKey(type)) {
+            if (!activeMaterials.containsKey(type)) {
                 throw new RuntimeException(
                     "Invalid style definition! Active state for PortalBlock.Type." + type + " was not specified!"
                 );
             }
-            if (!inactive_materials.containsKey(type)) {
+            if (!inactiveMaterials.containsKey(type)) {
                 throw new RuntimeException(
                     "Invalid style definition! Inactive state for PortalBlock.Type." + type + " was not specified!"
                 );
@@ -113,31 +114,31 @@ public class Style {
         }
     }
 
-    public static Style default_style() {
-        final var style = new Style(default_style_key());
-        style.set_material(true, PortalBlock.Type.BOUNDARY_1, Material.OBSIDIAN);
-        style.set_material(true, PortalBlock.Type.BOUNDARY_2, Material.CRYING_OBSIDIAN);
-        style.set_material(true, PortalBlock.Type.BOUNDARY_3, Material.GOLD_BLOCK);
-        style.set_material(true, PortalBlock.Type.BOUNDARY_4, Material.GILDED_BLACKSTONE);
-        style.set_material(true, PortalBlock.Type.BOUNDARY_5, Material.EMERALD_BLOCK);
-        style.set_material(true, PortalBlock.Type.CONSOLE, Material.ENCHANTING_TABLE);
-        style.set_material(true, PortalBlock.Type.ORIGIN, Material.OBSIDIAN);
-        style.set_material(true, PortalBlock.Type.PORTAL, Material.END_GATEWAY);
-        style.set_material(false, PortalBlock.Type.BOUNDARY_1, Material.OBSIDIAN);
-        style.set_material(false, PortalBlock.Type.BOUNDARY_2, Material.CRYING_OBSIDIAN);
-        style.set_material(false, PortalBlock.Type.BOUNDARY_3, Material.GOLD_BLOCK);
-        style.set_material(false, PortalBlock.Type.BOUNDARY_4, Material.GILDED_BLACKSTONE);
-        style.set_material(false, PortalBlock.Type.BOUNDARY_5, Material.EMERALD_BLOCK);
-        style.set_material(false, PortalBlock.Type.CONSOLE, Material.ENCHANTING_TABLE);
-        style.set_material(false, PortalBlock.Type.ORIGIN, Material.OBSIDIAN);
-        style.set_material(false, PortalBlock.Type.PORTAL, Material.AIR);
+    public static Style defaultStyle() {
+        final var style = new Style(defaultStyleKey());
+        style.setMaterial(true, PortalBlock.Type.BOUNDARY1, Material.OBSIDIAN);
+        style.setMaterial(true, PortalBlock.Type.BOUNDARY2, Material.CRYING_OBSIDIAN);
+        style.setMaterial(true, PortalBlock.Type.BOUNDARY3, Material.GOLD_BLOCK);
+        style.setMaterial(true, PortalBlock.Type.BOUNDARY4, Material.GILDED_BLACKSTONE);
+        style.setMaterial(true, PortalBlock.Type.BOUNDARY5, Material.EMERALD_BLOCK);
+        style.setMaterial(true, PortalBlock.Type.CONSOLE, Material.ENCHANTING_TABLE);
+        style.setMaterial(true, PortalBlock.Type.ORIGIN, Material.OBSIDIAN);
+        style.setMaterial(true, PortalBlock.Type.PORTAL, Material.END_GATEWAY);
+        style.setMaterial(false, PortalBlock.Type.BOUNDARY1, Material.OBSIDIAN);
+        style.setMaterial(false, PortalBlock.Type.BOUNDARY2, Material.CRYING_OBSIDIAN);
+        style.setMaterial(false, PortalBlock.Type.BOUNDARY3, Material.GOLD_BLOCK);
+        style.setMaterial(false, PortalBlock.Type.BOUNDARY4, Material.GILDED_BLACKSTONE);
+        style.setMaterial(false, PortalBlock.Type.BOUNDARY5, Material.EMERALD_BLOCK);
+        style.setMaterial(false, PortalBlock.Type.CONSOLE, Material.ENCHANTING_TABLE);
+        style.setMaterial(false, PortalBlock.Type.ORIGIN, Material.OBSIDIAN);
+        style.setMaterial(false, PortalBlock.Type.PORTAL, Material.AIR);
         return style;
     }
 
-    public Style copy(final NamespacedKey new_key) {
-        final var copy = new Style(new_key);
-        copy.active_materials = new HashMap<>(active_materials);
-        copy.inactive_materials = new HashMap<>(inactive_materials);
+    public Style copy(final NamespacedKey newKey) {
+        final var copy = new Style(newKey);
+        copy.activeMaterials = new HashMap<>(activeMaterials);
+        copy.inactiveMaterials = new HashMap<>(inactiveMaterials);
         return copy;
     }
 }

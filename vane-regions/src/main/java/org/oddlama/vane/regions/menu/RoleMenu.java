@@ -30,129 +30,129 @@ import org.oddlama.vane.util.StorageUtil;
 public class RoleMenu extends ModuleComponent<Regions> {
 
     @LangMessage
-    public TranslatedMessage lang_title;
+    public TranslatedMessage langTitle;
 
     @LangMessage
-    public TranslatedMessage lang_delete_confirm_title;
+    public TranslatedMessage langDeleteConfirmTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_assign_player_title;
+    public TranslatedMessage langSelectAssignPlayerTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_remove_player_title;
+    public TranslatedMessage langSelectRemovePlayerTitle;
 
     @LangMessage
-    public TranslatedMessage lang_filter_players_title;
+    public TranslatedMessage langFilterPlayersTitle;
 
-    public TranslatedItemStack<?> item_rename;
-    public TranslatedItemStack<?> item_delete;
-    public TranslatedItemStack<?> item_delete_confirm_accept;
-    public TranslatedItemStack<?> item_delete_confirm_cancel;
-    public TranslatedItemStack<?> item_assign_player;
-    public TranslatedItemStack<?> item_remove_player;
-    public TranslatedItemStack<?> item_select_player;
+    public TranslatedItemStack<?> itemRename;
+    public TranslatedItemStack<?> itemDelete;
+    public TranslatedItemStack<?> itemDeleteConfirmAccept;
+    public TranslatedItemStack<?> itemDeleteConfirmCancel;
+    public TranslatedItemStack<?> itemAssignPlayer;
+    public TranslatedItemStack<?> itemRemovePlayer;
+    public TranslatedItemStack<?> itemSelectPlayer;
 
-    public TranslatedItemStack<?> item_setting_toggle_on;
-    public TranslatedItemStack<?> item_setting_toggle_off;
-    public TranslatedItemStack<?> item_setting_info_admin;
-    public TranslatedItemStack<?> item_setting_info_build;
-    public TranslatedItemStack<?> item_setting_info_use;
-    public TranslatedItemStack<?> item_setting_info_container;
-    public TranslatedItemStack<?> item_setting_info_portal;
+    public TranslatedItemStack<?> itemSettingToggleOn;
+    public TranslatedItemStack<?> itemSettingToggleOff;
+    public TranslatedItemStack<?> itemSettingInfoAdmin;
+    public TranslatedItemStack<?> itemSettingInfoBuild;
+    public TranslatedItemStack<?> itemSettingInfoUse;
+    public TranslatedItemStack<?> itemSettingInfoContainer;
+    public TranslatedItemStack<?> itemSettingInfoPortal;
 
     public RoleMenu(Context<Regions> context) {
-        super(context.namespace("role"));
-        final var ctx = get_context();
-        item_rename = new TranslatedItemStack<>(ctx, "rename", Material.NAME_TAG, 1, "Used to rename the role.");
-        item_delete = new TranslatedItemStack<>(
+        super(context.namespace("Role"));
+        final var ctx = getContext();
+        itemRename = new TranslatedItemStack<>(ctx, "Rename", Material.NAME_TAG, 1, "Used to rename the role.");
+        itemDelete = new TranslatedItemStack<>(
             ctx,
-            "delete",
-            StorageUtil.namespaced_key("vane", "decoration_tnt_1"),
+            "Delete",
+            StorageUtil.namespacedKey("vane", "decoration_tnt_1"),
             1,
             "Used to delete this role."
         );
-        item_delete_confirm_accept = new TranslatedItemStack<>(
+        itemDeleteConfirmAccept = new TranslatedItemStack<>(
             ctx,
-            "delete_confirm_accept",
-            StorageUtil.namespaced_key("vane", "decoration_tnt_1"),
+            "DeleteConfirmAccept",
+            StorageUtil.namespacedKey("vane", "decoration_tnt_1"),
             1,
             "Used to confirm deleting the role."
         );
-        item_delete_confirm_cancel = new TranslatedItemStack<>(
+        itemDeleteConfirmCancel = new TranslatedItemStack<>(
             ctx,
-            "delete_confirm_cancel",
+            "DeleteConfirmCancel",
             Material.PRISMARINE_SHARD,
             1,
             "Used to cancel deleting the role."
         );
-        item_assign_player = new TranslatedItemStack<>(
+        itemAssignPlayer = new TranslatedItemStack<>(
             ctx,
-            "assign_player",
+            "AssignPlayer",
             Material.PLAYER_HEAD,
             1,
             "Used to assign players to this role."
         );
-        item_remove_player = new TranslatedItemStack<>(
+        itemRemovePlayer = new TranslatedItemStack<>(
             ctx,
-            "remove_player",
+            "RemovePlayer",
             Material.PLAYER_HEAD,
             1,
             "Used to remove players from this role."
         );
-        item_select_player = new TranslatedItemStack<>(
+        itemSelectPlayer = new TranslatedItemStack<>(
             ctx,
-            "select_player",
+            "SelectPlayer",
             Material.PLAYER_HEAD,
             1,
             "Used to represent a player in the role assignment/removal list."
         );
 
-        item_setting_toggle_on = new TranslatedItemStack<>(
+        itemSettingToggleOn = new TranslatedItemStack<>(
             ctx,
-            "setting_toggle_on",
+            "SettingToggleOn",
             Material.GREEN_TERRACOTTA,
             1,
             "Used to represent a toggle button with current state on."
         );
-        item_setting_toggle_off = new TranslatedItemStack<>(
+        itemSettingToggleOff = new TranslatedItemStack<>(
             ctx,
-            "setting_toggle_off",
+            "SettingToggleOff",
             Material.RED_TERRACOTTA,
             1,
             "Used to represent a toggle button with current state off."
         );
-        item_setting_info_admin = new TranslatedItemStack<>(
+        itemSettingInfoAdmin = new TranslatedItemStack<>(
             ctx,
-            "setting_info_admin",
+            "SettingInfoAdmin",
             Material.GOLDEN_APPLE,
             1,
             "Used to represent the info for the admin setting."
         );
-        item_setting_info_build = new TranslatedItemStack<>(
+        itemSettingInfoBuild = new TranslatedItemStack<>(
             ctx,
-            "setting_info_build",
+            "SettingInfoBuild",
             Material.IRON_PICKAXE,
             1,
             "Used to represent the info for the build setting."
         );
-        item_setting_info_use = new TranslatedItemStack<>(
+        itemSettingInfoUse = new TranslatedItemStack<>(
             ctx,
-            "setting_info_use",
+            "SettingInfoUse",
             Material.DARK_OAK_DOOR,
             1,
             "Used to represent the info for the use setting."
         );
-        item_setting_info_container = new TranslatedItemStack<>(
+        itemSettingInfoContainer = new TranslatedItemStack<>(
             ctx,
-            "setting_info_container",
+            "SettingInfoContainer",
             Material.CHEST,
             1,
             "Used to represent the info for the container setting."
         );
 
-        item_setting_info_portal = new TranslatedItemStack<>(
+        itemSettingInfoPortal = new TranslatedItemStack<>(
             ctx,
-            "setting_info_portal",
+            "SettingInfoPortal",
             Material.ENDER_PEARL,
             1,
             "Used to represent the info for the portal setting."
@@ -162,54 +162,54 @@ public class RoleMenu extends ModuleComponent<Regions> {
     public Menu create(final RegionGroup group, final Role role, final Player player) {
         final var columns = 9;
         final var rows = 3;
-        final var title = lang_title.str_component(role.color() + "§l" + role.name());
-        final var role_menu = new Menu(get_context(), Bukkit.createInventory(null, rows * columns, title));
+        final var title = langTitle.strComponent(role.color() + "§l" + role.name());
+        final var roleMenu = new Menu(getContext(), Bukkit.createInventory(null, rows * columns, title));
 
-        final var is_admin =
+        final var isAdmin =
             player.getUniqueId().equals(group.owner()) ||
-            group.get_role(player.getUniqueId()).get_setting(RoleSetting.ADMIN);
+            group.getRole(player.getUniqueId()).getSetting(RoleSetting.ADMIN);
 
-        if (is_admin && role.role_type() == Role.RoleType.NORMAL) {
-            role_menu.add(menu_item_rename(group, role));
-            role_menu.add(menu_item_delete(group, role));
+        if (isAdmin && role.roleType() == Role.RoleType.NORMAL) {
+            roleMenu.add(menuItemRename(group, role));
+            roleMenu.add(menuItemDelete(group, role));
         }
 
-        if (role.role_type() != Role.RoleType.OTHERS) {
-            role_menu.add(menu_item_assign_player(group, role));
-            role_menu.add(menu_item_remove_player(group, role));
+        if (role.roleType() != Role.RoleType.OTHERS) {
+            roleMenu.add(menuItemAssignPlayer(group, role));
+            roleMenu.add(menuItemRemovePlayer(group, role));
         }
 
-        add_menu_item_setting(role_menu, role, 0, item_setting_info_admin, RoleSetting.ADMIN);
-        add_menu_item_setting(role_menu, role, 2, item_setting_info_build, RoleSetting.BUILD);
-        add_menu_item_setting(role_menu, role, 4, item_setting_info_use, RoleSetting.USE);
-        add_menu_item_setting(role_menu, role, 5, item_setting_info_container, RoleSetting.CONTAINER);
+        addMenuItemSetting(roleMenu, role, 0, itemSettingInfoAdmin, RoleSetting.ADMIN);
+        addMenuItemSetting(roleMenu, role, 2, itemSettingInfoBuild, RoleSetting.BUILD);
+        addMenuItemSetting(roleMenu, role, 4, itemSettingInfoUse, RoleSetting.USE);
+        addMenuItemSetting(roleMenu, role, 5, itemSettingInfoContainer, RoleSetting.CONTAINER);
 
-        if (get_module().vane_portals_available) {
-            add_menu_item_setting(role_menu, role, 8, item_setting_info_portal, RoleSetting.PORTAL);
+        if (getModule().vanePortalsAvailable) {
+            addMenuItemSetting(roleMenu, role, 8, itemSettingInfoPortal, RoleSetting.PORTAL);
         }
 
-        role_menu.on_natural_close(player2 -> get_module().menus.region_group_menu.create(group, player2).open(player2)
+        roleMenu.onNaturalClose(player2 -> getModule().menus.regionGroupMenu.create(group, player2).open(player2)
         );
 
-        return role_menu;
+        return roleMenu;
     }
 
-    private MenuWidget menu_item_rename(final RegionGroup group, final Role role) {
-        return new MenuItem(0, item_rename.item(), (player, menu, self) -> {
+    private MenuWidget menuItemRename(final RegionGroup group, final Role role) {
+        return new MenuItem(0, itemRename.item(), (player, menu, self) -> {
             menu.close(player);
 
-            get_module()
-                .menus.enter_role_name_menu.create(player, role.name(), (player2, name) -> {
+            getModule()
+                .menus.enterRoleNameMenu.create(player, role.name(), (player2, name) -> {
                     role.name(name);
-                    mark_persistent_storage_dirty();
+                    markPersistentStorageDirty();
 
                     // Open new menu because of possibly changed title
-                    get_module().menus.role_menu.create(group, role, player2).open(player2);
+                    getModule().menus.roleMenu.create(group, role, player2).open(player2);
                     return ClickResult.SUCCESS;
                 })
-                .on_natural_close(player2 -> {
+                .onNaturalClose(player2 -> {
                     // Open new menu because of possibly changed title
-                    get_module().menus.role_menu.create(group, role, player2).open(player2);
+                    getModule().menus.roleMenu.create(group, role, player2).open(player2);
                 })
                 .open(player);
 
@@ -217,32 +217,32 @@ public class RoleMenu extends ModuleComponent<Regions> {
         });
     }
 
-    private MenuWidget menu_item_delete(final RegionGroup group, final Role role) {
-        return new MenuItem(1, item_delete.item(), (player, menu, self) -> {
+    private MenuWidget menuItemDelete(final RegionGroup group, final Role role) {
+        return new MenuItem(1, itemDelete.item(), (player, menu, self) -> {
             menu.close(player);
             MenuFactory.confirm(
-                get_context(),
-                lang_delete_confirm_title.str(),
-                item_delete_confirm_accept.item(),
+                getContext(),
+                langDeleteConfirmTitle.str(),
+                itemDeleteConfirmAccept.item(),
                 player2 -> {
-                    group.remove_role(role.id());
-                    mark_persistent_storage_dirty();
+                    group.removeRole(role.id());
+                    markPersistentStorageDirty();
                     return ClickResult.SUCCESS;
                 },
-                item_delete_confirm_cancel.item(),
+                itemDeleteConfirmCancel.item(),
                 player2 -> menu.open(player2)
             ).open(player);
             return ClickResult.SUCCESS;
         });
     }
 
-    private MenuWidget menu_item_assign_player(final RegionGroup group, final Role role) {
-        return new MenuItem(7, item_assign_player.item(), (player, menu, self) -> {
+    private MenuWidget menuItemAssignPlayer(final RegionGroup group, final Role role) {
+        return new MenuItem(7, itemAssignPlayer.item(), (player, menu, self) -> {
             menu.close(player);
-            final var all_players = get_module()
-                .get_offline_players_with_valid_name()
+            final var allPlayers = getModule()
+                .getOfflinePlayersWithValidName()
                 .stream()
-                .filter(p -> !role.id().equals(group.player_to_role().get(p.getUniqueId())))
+                .filter(p -> !role.id().equals(group.playerToRole().get(p.getUniqueId())))
                 .sorted((a, b) -> {
                     int c = Boolean.compare(b.isOnline(), a.isOnline());
                     if (c != 0) {
@@ -255,18 +255,18 @@ public class RoleMenu extends ModuleComponent<Regions> {
             final var filter = new Filter.StringFilter<OfflinePlayer>((p, str) ->
                 p.getName().toLowerCase().contains(str)
             );
-            MenuFactory.generic_selector(
-                get_context(),
+            MenuFactory.genericSelector(
+                getContext(),
                 player,
-                lang_select_assign_player_title.str(),
-                lang_filter_players_title.str(),
-                all_players,
-                p -> item_select_player.alternative(ItemUtil.skull_for_player(p, true), "§a§l" + p.getName()),
+                langSelectAssignPlayerTitle.str(),
+                langFilterPlayersTitle.str(),
+                allPlayers,
+                p -> itemSelectPlayer.alternative(ItemUtil.skullForPlayer(p, true), "§a§l" + p.getName()),
                 filter,
                 (player2, m, p) -> {
-                    all_players.remove(p);
+                    allPlayers.remove(p);
                     m.update();
-                    group.player_to_role().put(p.getUniqueId(), role.id());
+                    group.playerToRole().put(p.getUniqueId(), role.id());
                     return ClickResult.SUCCESS;
                 },
                 player2 -> menu.open(player2)
@@ -275,13 +275,13 @@ public class RoleMenu extends ModuleComponent<Regions> {
         });
     }
 
-    private MenuWidget menu_item_remove_player(final RegionGroup group, final Role role) {
-        return new MenuItem(8, item_remove_player.item(), (player, menu, self) -> {
+    private MenuWidget menuItemRemovePlayer(final RegionGroup group, final Role role) {
+        return new MenuItem(8, itemRemovePlayer.item(), (player, menu, self) -> {
             menu.close(player);
-            final var all_players = get_module()
-                .get_offline_players_with_valid_name()
+            final var allPlayers = getModule()
+                .getOfflinePlayersWithValidName()
                 .stream()
-                .filter(p -> role.id().equals(group.player_to_role().get(p.getUniqueId())))
+                .filter(p -> role.id().equals(group.playerToRole().get(p.getUniqueId())))
                 .sorted((a, b) -> {
                     int c = Boolean.compare(b.isOnline(), a.isOnline());
                     if (c != 0) {
@@ -294,18 +294,18 @@ public class RoleMenu extends ModuleComponent<Regions> {
             final var filter = new Filter.StringFilter<OfflinePlayer>((p, str) ->
                 p.getName().toLowerCase().contains(str)
             );
-            MenuFactory.generic_selector(
-                get_context(),
+            MenuFactory.genericSelector(
+                getContext(),
                 player,
-                lang_select_remove_player_title.str(),
-                lang_filter_players_title.str(),
-                all_players,
-                p -> item_select_player.alternative(ItemUtil.skull_for_player(p, true), "§a§l" + p.getName()),
+                langSelectRemovePlayerTitle.str(),
+                langFilterPlayersTitle.str(),
+                allPlayers,
+                p -> itemSelectPlayer.alternative(ItemUtil.skullForPlayer(p, true), "§a§l" + p.getName()),
                 filter,
                 (player2, m, p) -> {
-                    all_players.remove(p);
+                    allPlayers.remove(p);
                     m.update();
-                    group.player_to_role().remove(p.getUniqueId());
+                    group.playerToRole().remove(p.getUniqueId());
                     return ClickResult.SUCCESS;
                 },
                 player2 -> menu.open(player2)
@@ -314,19 +314,19 @@ public class RoleMenu extends ModuleComponent<Regions> {
         });
     }
 
-    private void add_menu_item_setting(
-        final Menu role_menu,
+    private void addMenuItemSetting(
+        final Menu roleMenu,
         final Role role,
         final int col,
-        final TranslatedItemStack<?> item_info,
+        final TranslatedItemStack<?> itemInfo,
         final RoleSetting setting
     ) {
-        role_menu.add(new MenuItem(9 + col, item_info.item(), (player, menu, self) -> ClickResult.IGNORE));
+        roleMenu.add(new MenuItem(9 + col, itemInfo.item(), (player, menu, self) -> ClickResult.IGNORE));
 
-        role_menu.add(
+        roleMenu.add(
             new MenuItem(2 * 9 + col, null, (player, menu, self) -> {
                 // Prevent toggling when the server forces the setting
-                if (setting.has_override()) {
+                if (setting.hasOverride()) {
                     return ClickResult.ERROR;
                 }
 
@@ -335,24 +335,24 @@ public class RoleMenu extends ModuleComponent<Regions> {
                     return ClickResult.ERROR;
                 }
 
-                role.settings().put(setting, !role.get_setting(setting));
-                mark_persistent_storage_dirty();
+                role.settings().put(setting, !role.getSetting(setting));
+                markPersistentStorageDirty();
                 menu.update();
                 return ClickResult.SUCCESS;
             }) {
                 @Override
                 public void item(final ItemStack item) {
-                    final Consumer<List<Component>> maybe_add_forced_hint = lore -> {
-                        if (setting.has_override()) {
+                    final Consumer<List<Component>> maybeAddForcedHint = lore -> {
+                        if (setting.hasOverride()) {
                             lore.add(Component.empty());
                             lore.add(Component.text("FORCED BY SERVER"));
                         }
                     };
 
-                    if (role.get_setting(setting)) {
-                        super.item(item_setting_toggle_on.item_transform_lore(maybe_add_forced_hint));
+                    if (role.getSetting(setting)) {
+                        super.item(itemSettingToggleOn.itemTransformLore(maybeAddForcedHint));
                     } else {
-                        super.item(item_setting_toggle_off.item_transform_lore(maybe_add_forced_hint));
+                        super.item(itemSettingToggleOff.itemTransformLore(maybeAddForcedHint));
                     }
                 }
             }
@@ -360,8 +360,8 @@ public class RoleMenu extends ModuleComponent<Regions> {
     }
 
     @Override
-    public void on_enable() {}
+    public void onEnable() {}
 
     @Override
-    public void on_disable() {}
+    public void onDisable() {}
 }

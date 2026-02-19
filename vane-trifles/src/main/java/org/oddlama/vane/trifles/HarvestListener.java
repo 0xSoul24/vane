@@ -1,8 +1,8 @@
 package org.oddlama.vane.trifles;
 
-import static org.oddlama.vane.util.MaterialUtil.is_seeded_plant;
-import static org.oddlama.vane.util.PlayerUtil.harvest_plant;
-import static org.oddlama.vane.util.PlayerUtil.swing_arm;
+import static org.oddlama.vane.util.MaterialUtil.isSeededPlant;
+import static org.oddlama.vane.util.PlayerUtil.harvestPlant;
+import static org.oddlama.vane.util.PlayerUtil.swingArm;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -17,14 +17,14 @@ public class HarvestListener extends Listener<Trifles> {
     public HarvestListener(Context<Trifles> context) {
         super(
             context.group(
-                "better_harvesting",
+                "BetterHarvesting",
                 "Enables better harvesting. Right clicking on grown crops with bare hands will then harvest the plant and also replant it."
             )
         );
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on_player_harvest(PlayerInteractEvent event) {
+    public void onPlayerHarvest(PlayerInteractEvent event) {
         if (
             !event.hasBlock() || event.getHand() != EquipmentSlot.HAND || event.getAction() != Action.RIGHT_CLICK_BLOCK
         ) {
@@ -33,13 +33,13 @@ public class HarvestListener extends Listener<Trifles> {
 
         // Only harvest when right-clicking some plant type
         final var type = event.getClickedBlock().getType();
-        if (!is_seeded_plant(type)) {
+        if (!isSeededPlant(type)) {
             return;
         }
 
         final var player = event.getPlayer();
-        if (harvest_plant(player, event.getClickedBlock())) {
-            swing_arm(player, event.getHand());
+        if (harvestPlant(player, event.getClickedBlock())) {
+            swingArm(player, event.getHand());
         }
     }
 }

@@ -15,14 +15,14 @@ import org.jetbrains.annotations.NotNull;
 
 public class PermissionGroupArgumentType implements CustomArgumentType.Converted<String, String> {
 
-    Map<String, Set<String>> permission_groups;
+    Map<String, Set<String>> permissionGroups;
 
-    public static @NotNull PermissionGroupArgumentType permissionGroup(Map<String, Set<String>> permission_groups) {
-        return new PermissionGroupArgumentType(permission_groups);
+    public static @NotNull PermissionGroupArgumentType permissionGroup(Map<String, Set<String>> permissionGroups) {
+        return new PermissionGroupArgumentType(permissionGroups);
     }
 
-    private PermissionGroupArgumentType(Map<String, Set<String>> permission_groups) {
-        this.permission_groups = permission_groups;
+    private PermissionGroupArgumentType(Map<String, Set<String>> permissionGroups) {
+        this.permissionGroups = permissionGroups;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class PermissionGroupArgumentType implements CustomArgumentType.Converted
         @NotNull CommandContext<S> context,
         @NotNull SuggestionsBuilder builder
     ) {
-        Stream<String> stream = permission_groups.keySet().stream();
+        Stream<String> stream = permissionGroups.keySet().stream();
         if (!builder.getRemaining().isBlank()) {
             stream = stream.filter(group -> group.contains(builder.getRemaining()));
         }

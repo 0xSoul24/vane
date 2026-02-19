@@ -12,94 +12,94 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 4
+Version: 4
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'de_de'
+ResourcePackLangCode: 'de_de'
 
-command_heads:
-  usage: "%1$s"
-  description: "Kaufe Köpfe zur Dekoration."
-  help: "Führe den Befehl aus um das Köpfe-Menü zu öffnen."
+CommandHeads:
+  Usage: "%1$s"
+  Description: "Kaufe Köpfe zur Dekoration."
+  Help: "Führe den Befehl aus um das Köpfe-Menü zu öffnen."
 
-command_finditem:
-  usage: "%1$s"
-  description: "Sucht nach dem gegebenen Material in Kisten und Entities in der Nähe."
-  help: "Sucht nach dem gegebenen Material in Kisten und Entities in der Nähe."
+CommandFinditem:
+  Usage: "%1$s"
+  Description: "Sucht nach dem gegebenen Material in Kisten und Entities in der Nähe."
+  Help: "Sucht nach dem gegebenen Material in Kisten und Entities in der Nähe."
 
-command_setspawn:
-  usage: "%1$s"
-  description: "Setzt den globalen Spawn auf deine aktuelle Position."
-  help: "Setzt den globalen Spawn auf deine aktuelle Position."
+CommandSetspawn:
+  Usage: "%1$s"
+  Description: "Setzt den globalen Spawn auf deine aktuelle Position."
+  Help: "Setzt den globalen Spawn auf deine aktuelle Position."
 
-storage:
-  open_stacked_item: "Nur ein einzelnes Item kann geöffnet werden."
-  item_pouch:
-    name: "Beutel"
-  item_backpack:
-    name: "Rucksack"
+Storage:
+  OpenStackedItem: "Nur ein einzelnes Item kann geöffnet werden."
+  ItemPouch:
+    Name: "Beutel"
+  ItemBackpack:
+    Name: "Rucksack"
 
-xp_bottles:
-  item_small_xp_bottle:
-    name: "Kleine Erfahrungsflasche"
-  item_medium_xp_bottle:
-    name: "Mittlere Erfahrungsflasche"
-  item_large_xp_bottle:
-    name: "Große Erfahrungsflasche"
+XpBottles:
+  ItemSmallXpBottle:
+    Name: "Kleine Erfahrungsflasche"
+  ItemMediumXpBottle:
+    Name: "Mittlere Erfahrungsflasche"
+  ItemLargeXpBottle:
+    Name: "Große Erfahrungsflasche"
 
-item_empty_xp_bottle:
-  name: "Leere Erfahrungsflasche"
+ItemEmptyXpBottle:
+  Name: "Leere Erfahrungsflasche"
 
-item_north_compass:
-  name: "Nordkompass"
+ItemNorthCompass:
+  Name: "Nordkompass"
 
-item_reinforced_elytra:
-  name: "Netherit Elytren"
+ItemReinforcedElytra:
+  Name: "Netherit Elytren"
 
-item_file:
-  name: "Feile"
+ItemFile:
+  Name: "Feile"
 
-item_slime_bucket:
-  name: "Schleim im Eimer"
+ItemSlimeBucket:
+  Name: "Schleim im Eimer"
 
-item_papyrus_scroll:
+ItemPapyrusScroll:
   # The display name of this item variant.
-  name: "Papyrusrolle"
+  Name: "Papyrusrolle"
 
-item_trowel:
-  name: "Kelle"
-  lore:
+ItemTrowel:
+  Name: "Kelle"
+  Lore:
     - "§7Rechtsklicke dieses Item im Inventar um die Blockzufuhr zu ändern."
     - "§7Aktuelle Blockzufuhr: %1$s"
 
-sickles:
-  item_wooden_sickle:
-    name: "Holzsichel"
-  item_stone_sickle:
-    name: "Steinsichel"
-  item_iron_sickle:
-    name: "Eisensichel"
-  item_golden_sickle:
-    name: "Goldsichel"
-  item_diamond_sickle:
-    name: "Diamantsichel"
-  item_netherite_sickle:
-    name: "Netheritsichel"
+Sickles:
+  ItemWoodenSickle:
+    Name: "Holzsichel"
+  ItemStoneSickle:
+    Name: "Steinsichel"
+  ItemIronSickle:
+    Name: "Eisensichel"
+  ItemGoldenSickle:
+    Name: "Goldsichel"
+  ItemDiamondSickle:
+    Name: "Diamantsichel"
+  ItemNetheriteSickle:
+    Name: "Netheritsichel"
 
-scrolls:
-  item_home_scroll:
-    name: "Portalschriftrolle (Heim)"
-  item_unstable_scroll:
-    name: "Portalschriftrolle (Instabil)"
-    teleport_no_previous_teleport: "§cDu hast zuvor keine andere Schriftrolle verwendet."
-  item_spawn_scroll:
-    name: "Portalschriftrolle (Spawn)"
-  item_lodestone_scroll:
-    name: "Portalschriftrolle (Leitstein)"
-    teleport_no_bound_lodestone: "§bVerbinde die Schriftrolle zuerst mit einem Leitstein durch Ducken und Rechtsklicken."
-    teleport_missing_lodestone: "§cDie Schriftrolle scheint nichts zu funktionieren.. &6Du schlussfolgerst, dass der Leitstein nicht mehr existiert."
-    bound_lore: "§7Verbunden mit (%2$s§7, %3$s§7, %4$s§7) in %1$s"
-  item_death_scroll:
-    name: "Portalschriftrolle (Tod)"
-    teleport_no_recent_death: "§cDu bist nicht kürzlich gestorben, oder hast bereits eine Todesschriftrolle verwendet!"
+Scrolls:
+  ItemHomeScroll:
+    Name: "Portalschriftrolle (Heim)"
+  ItemUnstableScroll:
+    Name: "Portalschriftrolle (Instabil)"
+    TeleportNoPreviousTeleport: "§cDu hast zuvor keine andere Schriftrolle verwendet."
+  ItemSpawnScroll:
+    Name: "Portalschriftrolle (Spawn)"
+  ItemLodestoneScroll:
+    Name: "Portalschriftrolle (Leitstein)"
+    TeleportNoBoundLodestone: "§bVerbinde die Schriftrolle zuerst mit einem Leitstein durch Ducken und Rechtsklicken."
+    TeleportMissingLodestone: "§cDie Schriftrolle scheint nichts zu funktionieren.. &6Du schlussfolgerst, dass der Leitstein nicht mehr existiert."
+    BoundLore: "§7Verbunden mit (%2$s§7, %3$s§7, %4$s§7) in %1$s"
+  ItemDeathScroll:
+    Name: "Portalschriftrolle (Tod)"
+    TeleportNoRecentDeath: "§cDu bist nicht kürzlich gestorben, oder hast bereits eine Todesschriftrolle verwendet!"

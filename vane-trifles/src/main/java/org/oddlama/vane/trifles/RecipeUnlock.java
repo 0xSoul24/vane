@@ -11,14 +11,14 @@ import org.oddlama.vane.util.Nms;
 public class RecipeUnlock extends Listener<Trifles> {
 
     public RecipeUnlock(Context<Trifles> context) {
-        super(context.group("recipe_unlock", "Unlocks all recipes when a player joins."));
+        super(context.group("RecipeUnlock", "Unlocks all recipes when a player joins."));
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_player_join(final PlayerJoinEvent event) {
-        final var count = Nms.unlock_all_recipes(event.getPlayer());
+    public void onPlayerJoin(final PlayerJoinEvent event) {
+        final var count = Nms.unlockAllRecipes(event.getPlayer());
         if (count > 0) {
-            get_module()
+            getModule()
                 .log.info(
                     "Given " +
                     count +

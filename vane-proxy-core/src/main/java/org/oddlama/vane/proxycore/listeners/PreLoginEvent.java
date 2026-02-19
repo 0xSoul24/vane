@@ -1,7 +1,7 @@
 package org.oddlama.vane.proxycore.listeners;
 
-import static org.oddlama.vane.proxycore.Util.add_uuid;
-import static org.oddlama.vane.proxycore.util.Resolve.resolve_uuid;
+import static org.oddlama.vane.proxycore.Util.addUuid;
+import static org.oddlama.vane.proxycore.util.Resolve.resolveUuid;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -31,79 +31,79 @@ public abstract class PreLoginEvent implements ProxyEvent, ProxyCancellableEvent
     }
 
     public void fire(PreLoginDestination destination) {
-        ProxyPendingConnection connection = get_connection();
+        ProxyPendingConnection connection = getConnection();
 
         // Multiplex authentication if the connection is to a multiplexing port
-        final var port = connection.get_port();
-        final var multiplexer = plugin.get_config().get_multiplexer_for_port(port);
+        final var port = connection.getPort();
+        final var multiplexer = plugin.getConfig().getMultiplexerForPort(port);
         if (multiplexer == null) return;
 
-        final var multiplexer_id = multiplexer.getKey();
+        final var multiplexerId = multiplexer.getKey();
 
         // This is pre-authentication, so we need to resolve the uuid ourselves.
-        String playerName = connection.get_name();
+        String playerName = connection.getName();
         UUID uuid;
 
         try {
-            uuid = resolve_uuid(playerName);
+            uuid = resolveUuid(playerName);
         } catch (IOException | URISyntaxException e) {
-            plugin.get_logger().log(Level.WARNING, "Failed to resolve UUID for player '" + playerName + "'", e);
+            plugin.getLogger().log(Level.WARNING, "Failed to resolve UUID for player '" + playerName + "'", e);
             return;
         }
 
-        if (!plugin.can_join_maintenance(uuid)) {
-            this.cancel(plugin.get_maintenance().format_message(Maintenance.MESSAGE_CONNECT));
+        if (!plugin.canJoinMaintenance(uuid)) {
+            this.cancel(plugin.getMaintenance().formatMessage(Maintenance.MESSAGE_CONNECT));
             return;
         }
 
-        if (!multiplexer.getValue().uuid_is_allowed(uuid)) {
+        if (!multiplexer.getValue().uuidIsAllowed(uuid)) {
             this.cancel(MESSAGE_MULTIPLEX_MOJANG_AUTH_NO_PERMISSION_KICK);
             return;
         }
 
-        final var name = connection.get_name();
-        final var new_uuid = add_uuid(uuid, multiplexer_id);
-        final var new_uuid_str = new_uuid.toString();
-        final var new_name = new_uuid_str.substring(new_uuid_str.length() - 16).replace("-", "_");
+        final var name = connection.getName();
+        final var newUuid = addUuid(uuid, multiplexerId);
+        final var newUuidStr = newUuid.toString();
+        final var newName = newUuidStr.substring(newUuidStr.length() - 16).replace("-", "_");
 
         plugin
-            .get_logger()
+            .getLogger()
             .log(
                 Level.INFO,
                 "auth multiplex request from player " +
                 name +
                 " connecting from " +
-                connection.get_socket_address().toString()
+                connection.getSocketAddress().toString()
             );
 
-        MultiplexedPlayer multiplexed_player = new MultiplexedPlayer(multiplexer_id, name, new_name, uuid, new_uuid);
-        if (!implementation_specific_auth(multiplexed_player)) {
+        MultiplexedPlayer multiplexedPlayer = new MultiplexedPlayer(multiplexerId, name, newName, uuid, newUuid);
+        if (!implementationSpecificAuth(multiplexedPlayer)) {
             return;
         }
 
         switch (destination) {
             case MULTIPLEXED_UUIDS -> plugin
-                .get_multiplexed_uuids()
-                .put(multiplexed_player.new_uuid, multiplexed_player.original_uuid);
-            case PENDING_MULTIPLEXED_LOGINS -> plugin.get_pending_multiplexer_logins().put(uuid, multiplexed_player);
+                .getMultiplexedUuids()
+                .put(multiplexedPlayer.newUuid, multiplexedPlayer.originalUuid);
+            case PENDING_MULTIPLEXED_LOGINS -> plugin.getPendingMultiplexerLogins().put(uuid, multiplexedPlayer);
         }
     }
 
-    public abstract boolean implementation_specific_auth(MultiplexedPlayer multiplexed_player);
+    public abstract boolean implementationSpecificAuth(MultiplexedPlayer multiplexedPlayer);
 
-    public static void register_auth_multiplex_player(
+    public static void registerAuthMultiplexPlayer(
         IVaneProxyServerInfo server,
-        PreLoginEvent.MultiplexedPlayer multiplexed_player
+        PreLoginEvent.MultiplexedPlayer multiplexedPlayer
     ) {
         final var stream = new ByteArrayOutputStream();
         final var out = new DataOutputStream(stream);
 
         try {
-            out.writeInt(multiplexed_player.multiplexer_id);
-            out.writeUTF(multiplexed_player.original_uuid.toString());
-            out.writeUTF(multiplexed_player.name);
-            out.writeUTF(multiplexed_player.new_uuid.toString());
-            out.writeUTF(multiplexed_player.new_name);
+            out.writeInt(multiplexedPlayer.multiplexerId);
+            out.writeUTF(multiplexedPlayer.originalUuid.toString());
+            out.writeUTF(multiplexedPlayer.name);
+            out.writeUTF(multiplexedPlayer.newUuid.toString());
+            out.writeUTF(multiplexedPlayer.newName);
         } catch (IOException e) {
             // This should not happen in a ByteArrayOutputStream, but log it for diagnostics
             java.util.logging.Logger.getLogger(PreLoginEvent.class.getName())
@@ -121,24 +121,24 @@ public abstract class PreLoginEvent implements ProxyEvent, ProxyCancellableEvent
 
     public static class MultiplexedPlayer {
 
-        public Integer multiplexer_id;
+        public Integer multiplexerId;
         public String name;
-        public String new_name;
-        public UUID original_uuid;
-        public UUID new_uuid;
+        public String newName;
+        public UUID originalUuid;
+        public UUID newUuid;
 
         public MultiplexedPlayer(
-            Integer multiplexer_id,
+            Integer multiplexerId,
             String name,
-            String new_name,
-            UUID original_uuid,
-            UUID new_uuid
+            String newName,
+            UUID originalUuid,
+            UUID newUuid
         ) {
-            this.multiplexer_id = multiplexer_id;
+            this.multiplexerId = multiplexerId;
             this.name = name;
-            this.new_name = new_name;
-            this.original_uuid = original_uuid;
-            this.new_uuid = new_uuid;
+            this.newName = newName;
+            this.originalUuid = originalUuid;
+            this.newUuid = newUuid;
         }
     }
 }

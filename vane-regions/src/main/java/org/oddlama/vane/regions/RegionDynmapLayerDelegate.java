@@ -15,149 +15,149 @@ public class RegionDynmapLayerDelegate {
 
     private final RegionDynmapLayer parent;
 
-    private DynmapCommonAPI dynmap_api = null;
-    private MarkerAPI marker_api = null;
-    private boolean dynmap_enabled = false;
+    private DynmapCommonAPI dynmapApi = null;
+    private MarkerAPI markerApi = null;
+    private boolean dynmapEnabled = false;
 
-    private MarkerSet marker_set = null;
+    private MarkerSet markerSet = null;
 
     public RegionDynmapLayerDelegate(final RegionDynmapLayer parent) {
         this.parent = parent;
     }
 
-    public Regions get_module() {
-        return parent.get_module();
+    public Regions getModule() {
+        return parent.getModule();
     }
 
-    public void on_enable(final Plugin plugin) {
+    public void onEnable(final Plugin plugin) {
         try {
             DynmapCommonAPIListener.register(
                 new DynmapCommonAPIListener() {
                     @Override
                     public void apiEnabled(DynmapCommonAPI api) {
-                        dynmap_api = api;
-                        marker_api = dynmap_api.getMarkerAPI();
+                        dynmapApi = api;
+                        markerApi = dynmapApi.getMarkerAPI();
                     }
                 }
             );
         } catch (Exception e) {
-            get_module().log.log(Level.WARNING, "Error while enabling dynmap integration!", e);
+            getModule().log.log(Level.WARNING, "Error while enabling dynmap integration!", e);
             return;
         }
 
-        if (marker_api == null) {
+        if (markerApi == null) {
             return;
         }
 
-        get_module().log.info("Enabling dynmap integration");
-        dynmap_enabled = true;
-        create_or_load_layer();
+        getModule().log.info("Enabling dynmap integration");
+        dynmapEnabled = true;
+        createOrLoadLayer();
     }
 
-    public void on_disable() {
-        if (!dynmap_enabled) {
+    public void onDisable() {
+        if (!dynmapEnabled) {
             return;
         }
 
-        get_module().log.info("Disabling dynmap integration");
-        dynmap_enabled = false;
-        dynmap_api = null;
-        marker_api = null;
+        getModule().log.info("Disabling dynmap integration");
+        dynmapEnabled = false;
+        dynmapApi = null;
+        markerApi = null;
     }
 
-    private void create_or_load_layer() {
+    private void createOrLoadLayer() {
         // Create or retrieve layer
-        marker_set = marker_api.getMarkerSet(RegionDynmapLayer.LAYER_ID);
-        if (marker_set == null) {
-            marker_set = marker_api.createMarkerSet(
+        markerSet = markerApi.getMarkerSet(RegionDynmapLayer.LAYER_ID);
+        if (markerSet == null) {
+            markerSet = markerApi.createMarkerSet(
                 RegionDynmapLayer.LAYER_ID,
-                parent.lang_layer_label.str(),
+                parent.langLayerLabel.str(),
                 null,
                 false
             );
         }
 
-        if (marker_set == null) {
-            get_module().log.severe("Failed to create dynmap region marker set!");
+        if (markerSet == null) {
+            getModule().log.severe("Failed to create dynmap region marker set!");
             return;
         }
 
         // Update attributes
-        marker_set.setMarkerSetLabel(parent.lang_layer_label.str());
-        marker_set.setLayerPriority(parent.config_layer_priority);
-        marker_set.setHideByDefault(parent.config_layer_hide);
+        markerSet.setMarkerSetLabel(parent.langLayerLabel.str());
+        markerSet.setLayerPriority(parent.configLayerPriority);
+        markerSet.setHideByDefault(parent.configLayerHide);
 
         // Initial update
-        update_all_markers();
+        updateAllMarkers();
     }
 
-    private String id_for(final UUID region_id) {
-        return region_id.toString();
+    private String idFor(final UUID regionId) {
+        return regionId.toString();
     }
 
-    private String id_for(final Region region) {
-        return id_for(region.id());
+    private String idFor(final Region region) {
+        return idFor(region.id());
     }
 
-    public void update_marker(final Region region) {
-        if (!dynmap_enabled) {
+    public void updateMarker(final Region region) {
+        if (!dynmapEnabled) {
             return;
         }
 
         // Area markers can't be updated.
-        remove_marker(region.id());
+        removeMarker(region.id());
 
         final var min = region.extent().min();
         final var max = region.extent().max();
-        final var world_name = min.getWorld().getName();
-        final var marker_id = id_for(region);
-        final var marker_label = parent.lang_marker_label.str(region.name());
+        final var worldName = min.getWorld().getName();
+        final var markerId = idFor(region);
+        final var markerLabel = parent.langMarkerLabel.str(region.name());
 
         final var xs = new double[] { min.getX(), max.getX() + 1 };
         final var zs = new double[] { min.getZ(), max.getZ() + 1 };
-        final var area = marker_set.createAreaMarker(marker_id, marker_label, false, world_name, xs, zs, false);
+        final var area = markerSet.createAreaMarker(markerId, markerLabel, false, worldName, xs, zs, false);
         area.setRangeY(max.getY() + 1, min.getY());
-        area.setLineStyle(parent.config_line_weight, parent.config_line_opacity, parent.config_line_color);
-        area.setFillStyle(parent.config_fill_opacity, parent.config_fill_color);
+        area.setLineStyle(parent.configLineWeight, parent.configLineOpacity, parent.configLineColor);
+        area.setFillStyle(parent.configFillOpacity, parent.configFillColor);
     }
 
-    public void remove_marker(final UUID region_id) {
-        remove_marker(id_for(region_id));
+    public void removeMarker(final UUID regionId) {
+        removeMarker(idFor(regionId));
     }
 
-    public void remove_marker(final String marker_id) {
-        if (!dynmap_enabled || marker_id == null) {
+    public void removeMarker(final String markerId) {
+        if (!dynmapEnabled || markerId == null) {
             return;
         }
 
-        remove_marker(marker_set.findMarker(marker_id));
+        removeMarker(markerSet.findMarker(markerId));
     }
 
-    public void remove_marker(final Marker marker) {
-        if (!dynmap_enabled || marker == null) {
+    public void removeMarker(final Marker marker) {
+        if (!dynmapEnabled || marker == null) {
             return;
         }
 
         marker.deleteMarker();
     }
 
-    public void update_all_markers() {
-        if (!dynmap_enabled) {
+    public void updateAllMarkers() {
+        if (!dynmapEnabled) {
             return;
         }
 
         // Update all existing
-        final var id_set = new HashSet<String>();
-        for (final var region : get_module().all_regions()) {
-            id_set.add(id_for(region));
-            update_marker(region);
+        final var idSet = new HashSet<String>();
+        for (final var region : getModule().allRegions()) {
+            idSet.add(idFor(region));
+            updateMarker(region);
         }
 
         // Remove orphaned
-        for (final var marker : marker_set.getMarkers()) {
+        for (final var marker : markerSet.getMarkers()) {
             final var id = marker.getMarkerID();
-            if (id != null && !id_set.contains(id)) {
-                remove_marker(marker);
+            if (id != null && !idSet.contains(id)) {
+                removeMarker(marker);
             }
         }
     }

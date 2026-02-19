@@ -16,11 +16,11 @@ public abstract class PingEvent implements ProxyEvent {
     }
 
     public void fire() {
-        ping.set_description(plugin.get_motd(server));
-        ping.set_favicon(plugin.get_favicon(server));
+        ping.setDescription(plugin.getMotd(server));
+        ping.setFavicon(plugin.getFavicon(server));
 
-        this.send_response();
+        this.sendResponse();
     }
 
-    public abstract void send_response();
+    public abstract void sendResponse();
 }

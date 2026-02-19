@@ -1,7 +1,5 @@
 package org.oddlama.vane.core.item;
 
-import java.io.IOException;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -17,32 +15,53 @@ import org.oddlama.vane.core.config.recipes.Recipes;
 import org.oddlama.vane.core.lang.TranslatedMessage;
 import org.oddlama.vane.core.module.Context;
 import org.oddlama.vane.core.module.Module;
-import org.oddlama.vane.core.resourcepack.ResourcePackGenerator;
 import org.oddlama.vane.util.StorageUtil;
 
 public class CustomItem<T extends Module<T>> extends Listener<T> implements org.oddlama.vane.core.item.api.CustomItem {
+
+	/**
+	 * Convert a snake_case string to PascalCase.
+	 * For example: "empty_xp_bottle" becomes "EmptyXpBottle"
+	 */
+	private static String snakeCaseToPascalCase(String snakeCase) {
+		StringBuilder result = new StringBuilder();
+		boolean capitalizeNext = true;
+
+		for (char c : snakeCase.toCharArray()) {
+			if (c == '_') {
+				capitalizeNext = true;
+			} else if (capitalizeNext) {
+				result.append(Character.toUpperCase(c));
+				capitalizeNext = false;
+			} else {
+				result.append(c);
+			}
+		}
+
+		return result.toString();
+	}
 
 	private VaneItem annotation;
 	public NamespacedKey key;
 
 	public Recipes<T> recipes;
-	public LootTables<T> loot_tables;
+	public LootTables<T> lootTables;
 
 	// Language
 	@LangMessage
-	public TranslatedMessage lang_name;
+	public TranslatedMessage langName;
 
 	@ConfigInt(def = 0, min = 0, desc = "The durability of this item. Set to 0 to use the durability properties of whatever base material the item is made of.")
-	private int config_durability;
+	private int configDurability;
 
-	private final String name_override;
-	private final Integer custom_model_data_override;
+	private final String nameOverride;
+	private final Integer customModelDataOverride;
 
 	public CustomItem(Context<T> context) {
 		this(context, null, null);
 	}
 
-	public CustomItem(Context<T> context, String name_override, Integer custom_model_data_override) {
+	public CustomItem(Context<T> context, String nameOverride, Integer customModelDataOverride) {
 		super(null);
 		Class<?> cls = getClass();
 		while (this.annotation == null && cls != null) {
@@ -53,19 +72,19 @@ public class CustomItem<T extends Module<T>> extends Listener<T> implements org.
 			throw new IllegalStateException("Could not find @VaneItem annotation on " + getClass());
 		}
 
-		this.name_override = name_override;
-		this.custom_model_data_override = custom_model_data_override;
+		this.nameOverride = nameOverride;
+		this.customModelDataOverride = customModelDataOverride;
 
 		// Set namespace delayed, as we need to access instance methods to do so.
-		context = context.group("item_" + name(), "Enable item " + name());
-		set_context(context);
+		context = context.group("Item" + snakeCaseToPascalCase(name()), "Enable item " + name());
+		setContext(context);
 
-		this.key = StorageUtil.namespaced_key(get_module().namespace(), name());
-		recipes = new Recipes<T>(get_context(), this.key, this::default_recipes);
-		loot_tables = new LootTables<T>(get_context(), this.key, this::default_loot_tables);
+		this.key = StorageUtil.namespacedKey(getModule().namespace(), name());
+		recipes = new Recipes<T>(getContext(), this.key, this::defaultRecipes);
+		lootTables = new LootTables<T>(getContext(), this.key, this::defaultLootTables);
 
 		// Register item
-		get_module().core.item_registry().register(this);
+		getModule().core.itemRegistry().register(this);
 	}
 
 	@Override
@@ -74,8 +93,8 @@ public class CustomItem<T extends Module<T>> extends Listener<T> implements org.
 	}
 
 	public String name() {
-		if (name_override != null) {
-			return name_override;
+		if (nameOverride != null) {
+			return nameOverride;
 		}
 		return annotation.name();
 	}
@@ -99,31 +118,31 @@ public class CustomItem<T extends Module<T>> extends Listener<T> implements org.
 
 	@Override
 	public int customModelData() {
-		if (custom_model_data_override != null) {
-			return custom_model_data_override;
+		if (customModelDataOverride != null) {
+			return customModelDataOverride;
 		}
-		return annotation.model_data();
+		return annotation.modelData();
 	}
 
 	@Override
 	public Component displayName() {
-		return lang_name.format().decoration(TextDecoration.ITALIC, false);
+		return langName.format().decoration(TextDecoration.ITALIC, false);
 	}
 
-	public int config_durability_def() {
+	public int configDurabilityDef() {
 		return annotation.durability();
 	}
 
 	@Override
 	public int durability() {
-		return config_durability;
+		return configDurability;
 	}
 
-	public RecipeList default_recipes() {
+	public RecipeList defaultRecipes() {
 		return RecipeList.of();
 	}
 
-	public LootTableList default_loot_tables() {
+	public LootTableList defaultLootTables() {
 		return LootTableList.of();
 	}
 }

@@ -12,79 +12,79 @@
 
 # ¡NO CAMBIAR! La versión de este archivo de idioma. Se utiliza para determinar
 # si el archivo debe actualizarse.
-version: 4
+Version: 4
 # El código de idioma correspondiente utilizado en paquetes de recursos. Utilizado para
 # generación de paquetes de recursos. Normalmente, esto es una combinación del
 # código de idioma (ISO 639) y el código de país (ISO 3166).
-resource_pack_lang_code: 'es_es'
+ResourcePackLangCode: 'es_es'
 
-item_ancient_tome:
+ItemAncientTome:
   # El nombre que se mostrará para esta variante de objeto.
-  name: "Tomo antiguo"
+  Name: "Tomo antiguo"
 
-item_enchanted_ancient_tome:
+ItemEnchantedAncientTome:
   # El nombre que se mostrará para esta variante de objeto.
-  name: "Tomo antiguo encantado"
+  Name: "Tomo antiguo encantado"
 
-item_ancient_tome_of_knowledge:
+ItemAncientTomeOfKnowledge:
   # El nombre que se mostrará para esta variante de objeto.
-  name: "Tomo antiguo del conocimiento"
+  Name: "Tomo antiguo del conocimiento"
 
-item_enchanted_ancient_tome_of_knowledge:
+ItemEnchantedAncientTomeOfKnowledge:
   # El nombre que se mostrará para esta variante de objeto.
-  name: "Tomo antiguo del conocimiento encantado"
+  Name: "Tomo antiguo del conocimiento encantado"
 
-item_ancient_tome_of_the_gods:
+ItemAncientTomeOfTheGods:
   # El nombre que se mostrará para esta variante de objeto.
-  name: "Tomo antiguo de los dioses"
+  Name: "Tomo antiguo de los dioses"
 
-item_enchanted_ancient_tome_of_the_gods:
+ItemEnchantedAncientTomeOfTheGods:
   # El nombre que se mostrará para esta variante de objeto.
-  name: "Tomo antiguo de los dioses encantado"
+  Name: "Tomo antiguo de los dioses encantado"
 
-enchantment_angel:
+EnchantmentAngel:
   # El nombre que se mostrará para este encantamiento. Se incluirá en un paquete de recursos.
-  name: "Ángel"
+  Name: "Ángel"
 
-enchantment_grappling_hook:
+EnchantmentGrapplingHook:
   # El nombre que se mostrará para este encantamiento. Se incluirá en un paquete de recursos.
-  name: "Gancho de agarre"
+  Name: "Gancho de agarre"
 
-enchantment_hell_bent:
+EnchantmentHellBent:
   # El nombre que se mostrará para este encantamiento. Se incluirá en un paquete de recursos.
-  name: "Cabeza dura"
+  Name: "Cabeza dura"
 
-enchantment_leafchopper:
+EnchantmentLeafchopper:
   # El nombre que se mostrará para este encantamiento. Se incluirá en un paquete de recursos.
-  name: "Talador de hojas"
+  Name: "Talador de hojas"
 
-enchantment_lightning:
+EnchantmentLightning:
   # El nombre que se mostrará para este encantamiento. Se incluirá en un paquete de recursos.
-  name: "Rayo"
+  Name: "Rayo"
   
-enchantment_rake:
+EnchantmentRake:
   # El nombre que se mostrará para este encantamiento. Se incluirá en un paquete de recursos.
-  name: "Rastrillo"
+  Name: "Rastrillo"
 
-enchantment_seeding:
+EnchantmentSeeding:
   # El nombre que se mostrará para este encantamiento. Se incluirá en un paquete de recursos.
-  name: "Siembra"
+  Name: "Siembra"
 
-enchantment_soulbound:
+EnchantmentSoulbound:
   # El nombre que se mostrará para este encantamiento. Se incluirá en un paquete de recursos.
-  name: "Vínculo de alma"
-  drop_lock_warning: "Los objetos con Vínculo de alma solo se pueden soltar usando el mouse"
-  drop_cooldown: "Suelta de nuevo para confirmar la eliminación"
-  dropped_notification: "Objeto con Vínculo de alma eliminado: %1$s"
+  Name: "Vínculo de alma"
+  DropLockWarning: "Los objetos con Vínculo de alma solo se pueden soltar usando el mouse"
+  DropCooldown: "Suelta de nuevo para confirmar la eliminación"
+  DroppedNotification: "Objeto con Vínculo de alma eliminado: %1$s"
 
-enchantment_take_off:
+EnchantmentTakeOff:
   # El nombre que se mostrará para este encantamiento. Se incluirá en un paquete de recursos.
-  name: "Despegue"
+  Name: "Despegue"
 
-enchantment_unbreakable:
+EnchantmentUnbreakable:
   # El nombre que se mostrará para este encantamiento. Se incluirá en un paquete de recursos.
-  name: "Inquebrantable"
+  Name: "Inquebrantable"
 
-enchantment_wings:
+EnchantmentWings:
   # El nombre que se mostrará para este encantamiento. Se incluirá en un paquete de recursos.
-  name: "Alas"
+  Name: "Alas"

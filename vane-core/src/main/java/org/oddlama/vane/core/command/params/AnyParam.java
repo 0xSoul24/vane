@@ -11,33 +11,33 @@ import org.oddlama.vane.core.functional.Function1;
 
 public class AnyParam<T> extends BaseParam {
 
-    private String argument_type;
-    private Function1<String, ? extends T> from_string;
+    private String argumentType;
+    private Function1<String, ? extends T> fromString;
 
-    public AnyParam(Command<?> command, String argument_type, Function1<String, ? extends T> from_string) {
+    public AnyParam(Command<?> command, String argumentType, Function1<String, ? extends T> fromString) {
         super(command);
-        this.argument_type = argument_type;
-        this.from_string = from_string;
+        this.argumentType = argumentType;
+        this.fromString = fromString;
     }
 
     @Override
-    public CheckResult check_parse(CommandSender sender, String[] args, int offset) {
+    public CheckResult checkParse(CommandSender sender, String[] args, int offset) {
         if (args.length <= offset) {
-            return new ErrorCheckResult(offset, "§6missing argument: §3" + argument_type + "§r");
+            return new ErrorCheckResult(offset, "§6missing argument: §3" + argumentType + "§r");
         }
         var parsed = parse(args[offset]);
         if (parsed == null) {
-            return new ErrorCheckResult(offset, "§6invalid §3" + argument_type + "§6: §b" + args[offset] + "§r");
+            return new ErrorCheckResult(offset, "§6invalid §3" + argumentType + "§6: §b" + args[offset] + "§r");
         }
-        return new ParseCheckResult(offset, argument_type, parsed, true);
+        return new ParseCheckResult(offset, argumentType, parsed, true);
     }
 
     @Override
-    public List<String> completions_for(CommandSender sender, String[] args, int offset) {
+    public List<String> completionsFor(CommandSender sender, String[] args, int offset) {
         return Collections.emptyList();
     }
 
     private T parse(String arg) {
-        return from_string.apply(arg);
+        return fromString.apply(arg);
     }
 }

@@ -10,14 +10,14 @@ public class ConfigDoubleField extends ConfigField<Double> {
 
     public ConfigDouble annotation;
 
-    public ConfigDoubleField(Object owner, Field field, Function<String, String> map_name, ConfigDouble annotation) {
-        super(owner, field, map_name, "double", annotation.desc());
+    public ConfigDoubleField(Object owner, Field field, Function<String, String> mapName, ConfigDouble annotation) {
+        super(owner, field, mapName, "double", annotation.desc());
         this.annotation = annotation;
     }
 
     @Override
     public Double def() {
-        final var override = overridden_def();
+        final var override = overriddenDef();
         if (override != null) {
             return override;
         } else {
@@ -27,7 +27,7 @@ public class ConfigDoubleField extends ConfigField<Double> {
 
     @Override
     public boolean metrics() {
-        final var override = overridden_metrics();
+        final var override = overriddenMetrics();
         if (override != null) {
             return override;
         } else {
@@ -36,44 +36,44 @@ public class ConfigDoubleField extends ConfigField<Double> {
     }
 
     @Override
-    public void generate_yaml(StringBuilder builder, String indent, YamlConfiguration existing_compatible_config) {
-        append_description(builder, indent);
-        append_value_range(builder, indent, annotation.min(), annotation.max(), Double.NaN, Double.NaN);
-        append_default_value(builder, indent, def());
-        final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
+    public void generateYaml(StringBuilder builder, String indent, YamlConfiguration existingCompatibleConfig) {
+        appendDescription(builder, indent);
+        appendValueRange(builder, indent, annotation.min(), annotation.max(), Double.NaN, Double.NaN);
+        appendDefaultValue(builder, indent, def());
+        final var def = existingCompatibleConfig != null && existingCompatibleConfig.contains(yamlPath())
+            ? loadFromYaml(existingCompatibleConfig)
             : def();
-        append_field_definition(builder, indent, def);
+        appendFieldDefinition(builder, indent, def);
     }
 
     @Override
-    public void check_loadable(YamlConfiguration yaml) throws YamlLoadException {
-        check_yaml_path(yaml);
+    public void checkLoadable(YamlConfiguration yaml) throws YamlLoadException {
+        checkYamlPath(yaml);
 
-        if (!yaml.isDouble(yaml_path())) {
-            throw new YamlLoadException("Invalid type for yaml path '" + yaml_path() + "', expected double");
+        if (!yaml.isDouble(yamlPath())) {
+            throw new YamlLoadException("Invalid type for yaml path '" + yamlPath() + "', expected double");
         }
 
-        var val = yaml.getDouble(yaml_path());
+        var val = yaml.getDouble(yamlPath());
         if (!Double.isNaN(annotation.min()) && val < annotation.min()) {
             throw new YamlLoadException(
-                "Configuration '" + yaml_path() + "' has an invalid value: Value must be >= " + annotation.min()
+                "Configuration '" + yamlPath() + "' has an invalid value: Value must be >= " + annotation.min()
             );
         }
         if (!Double.isNaN(annotation.max()) && val > annotation.max()) {
             throw new YamlLoadException(
-                "Configuration '" + yaml_path() + "' has an invalid value: Value must be <= " + annotation.max()
+                "Configuration '" + yamlPath() + "' has an invalid value: Value must be <= " + annotation.max()
             );
         }
     }
 
-    public double load_from_yaml(YamlConfiguration yaml) {
-        return yaml.getDouble(yaml_path());
+    public double loadFromYaml(YamlConfiguration yaml) {
+        return yaml.getDouble(yamlPath());
     }
 
     public void load(YamlConfiguration yaml) {
         try {
-            field.setDouble(owner, load_from_yaml(yaml));
+            field.setDouble(owner, loadFromYaml(yaml));
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Invalid field access on '" + field.getName() + "'. This is a bug.");
         }

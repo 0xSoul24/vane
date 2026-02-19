@@ -16,22 +16,22 @@ public class HeadFilter implements Filter<HeadMaterial> {
     public HeadFilter() {}
 
     @Override
-    public void open_filter_settings(
+    public void openFilterSettings(
         final Context<?> context,
         final Player player,
-        final String filter_title,
-        final Menu return_to
+        final String filterTitle,
+        final Menu returnTo
     ) {
-        MenuFactory.anvil_string_input(
+        MenuFactory.anvilStringInput(
             context,
             player,
-            filter_title,
+                filterTitle,
             new ItemStack(Material.PAPER),
             "?",
             (p, menu, s) -> {
                 menu.close(p);
                 str = s.toLowerCase();
-                return_to.open(p);
+                returnTo.open(p);
                 return ClickResult.SUCCESS;
             }
         ).open(player);
@@ -42,11 +42,11 @@ public class HeadFilter implements Filter<HeadMaterial> {
         str = null;
     }
 
-    private boolean filter_by_categories(final HeadMaterial material) {
+    private boolean filterByCategories(final HeadMaterial material) {
         return material.category().toLowerCase().contains(str);
     }
 
-    private boolean filter_by_tags(final HeadMaterial material) {
+    private boolean filterByTags(final HeadMaterial material) {
         for (final var tag : material.tags()) {
             if (tag.toLowerCase().contains(str)) {
                 return true;
@@ -56,7 +56,7 @@ public class HeadFilter implements Filter<HeadMaterial> {
         return false;
     }
 
-    private boolean filter_by_name(final HeadMaterial material) {
+    private boolean filterByName(final HeadMaterial material) {
         return material.name().toLowerCase().contains(str);
     }
 
@@ -68,7 +68,7 @@ public class HeadFilter implements Filter<HeadMaterial> {
 
         return things
             .stream()
-            .filter(t -> filter_by_categories(t) || filter_by_tags(t) || filter_by_name(t))
+            .filter(t -> filterByCategories(t) || filterByTags(t) || filterByName(t))
             .collect(Collectors.toList());
     }
 }

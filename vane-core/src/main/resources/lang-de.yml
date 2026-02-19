@@ -14,93 +14,93 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 5
+Version: 5
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'de_de'
+ResourcePackLangCode: 'de_de'
 
-command_not_a_player: "§cerror:§6 Befehl muss von einem Spieler ausgeführt werden!"
-command_permission_denied: "§cerror:§6 Fehlende Berechtigung!"
+CommandNotAPlayer: "§cerror:§6 Befehl muss von einem Spieler ausgeführt werden!"
+CommandPermissionDenied: "§cerror:§6 Fehlende Berechtigung!"
 
-invalid_time_format: "§cerror:§6 Ungültige Zeit: %1$s"
+InvalidTimeFormat: "§cerror:§6 Ungültige Zeit: %1$s"
 
-break_loot_block_prevented: "§6Dieser Block enthält Loot, welcher automatisch nach einiger Zeit nachgefüllt wird. Wenn du diesen Block wirklich zerstören möchtest, warte 5 Sekunden und baue diesen erneut ab."
+BreakLootBlockPrevented: "§6Dieser Block enthält Loot, welcher automatisch nach einiger Zeit nachgefüllt wird. Wenn du diesen Block wirklich zerstören möchtest, warte 5 Sekunden und baue diesen erneut ab."
 
-command_customitem:
-  usage: "%1$s §agive §7<§bitem§7>"
-  description: "Gibt dem Spieler ein spezifisches Custom-Item."
-  help: "§agive §7<§bitem§7>:§r Gibt dem Spieler ein spezifisches Custom-Item."
+CommandCustomitem:
+  Usage: "%1$s §agive §7<§bitem§7>"
+  Description: "Gibt dem Spieler ein spezifisches Custom-Item."
+  Help: "§agive §7<§bitem§7>:§r Gibt dem Spieler ein spezifisches Custom-Item."
 
-command_enchant:
-  level_too_low: "§cerror:§6 Level %1$s§6 ist zu niedrig, benötigt mindestens Level %2$s"
-  level_too_high: "§cerror:§6 Level %1$s§6 is zu hoch, benötigt maximal Level %2$s"
-  invalid_enchantment: "§cerror: %2$s§c kann nicht mit %1$s§6 verzaubert werden"
-  usage: "%1$s §benchantment §7[§blevel§7]"
-  description: "Verzaubert das Item in deiner Hand."
-  help: "Verzaubert das Item in deiner Hand."
+CommandEnchant:
+  LevelTooLow: "§cerror:§6 Level %1$s§6 ist zu niedrig, benötigt mindestens Level %2$s"
+  LevelTooHigh: "§cerror:§6 Level %1$s§6 is zu hoch, benötigt maximal Level %2$s"
+  InvalidEnchantment: "§cerror: %2$s§c kann nicht mit %1$s§6 verzaubert werden"
+  Usage: "%1$s §benchantment §7[§blevel§7]"
+  Description: "Verzaubert das Item in deiner Hand."
+  Help: "Verzaubert das Item in deiner Hand."
 
-command_vane:
-  reload_success: "%1$s§7: §areload erfolgreich"
-  reload_fail: "%1$s§7: §creload fehlgeschlagen"
-  resource_pack_generate_success: "§aResource Pack wurde erfolgreich erstellt: %1$s"
-  resource_pack_generate_fail: "§cBeim Erstellen des Resource Pack ist ein Fehler aufgetreten"
-  usage: "%1$s §7<§areload§7|§agenerate_resource_pack§7>"
-  description: "Verwaltet Vane plugins."
-  help: "§areload §7[§bmodule§7]:§r Läd alle oder das gegebene Vane-Modul erneut.\n\
+CommandVane:
+  ReloadSuccess: "%1$s§7: §areload erfolgreich"
+  ReloadFail: "%1$s§7: §creload fehlgeschlagen"
+  ResourcePackGenerateSuccess: "§aResource Pack wurde erfolgreich erstellt: %1$s"
+  ResourcePackGenerateFail: "§cBeim Erstellen des Resource Pack ist ein Fehler aufgetreten"
+  Usage: "%1$s §7<§areload§7|§agenerate_resource_pack§7>"
+  Description: "Verwaltet Vane plugins."
+  Help: "§areload §7[§bmodule§7]:§r Läd alle oder das gegebene Vane-Modul erneut.\n\
     §agenerate_resource_pack§7:§r Erstellt das Vane Resource Pack."
 
-resource_pack:
-  pack_required: "§eDieses erforderliche benutzerdefinierte Ressourcenpaket wird für die Lokalisierung und benutzerdefinierte Elementtexturen verwendet."
-  pack_suggested: "§eDieses optionale benutzerdefinierte Ressourcenpaket wird für die Lokalisierung und benutzerdefinierte Elementtexturen verwendet."
+ResourcePack:
+  PackRequired: "§eDieses erforderliche benutzerdefinierte Ressourcenpaket wird für die Lokalisierung und benutzerdefinierte Elementtexturen verwendet."
+  PackSuggested: "§eDieses optionale benutzerdefinierte Ressourcenpaket wird für die Lokalisierung und benutzerdefinierte Elementtexturen verwendet."
 
-menus:
-  head_selector:
-    title: "%1$s §8§lKöpfe"
-    filter_title: "§8§lFiltereinstellungen"
-    select_head:
-      name: "%1$s"
-      lore:
+Menus:
+  HeadSelector:
+    Title: "%1$s §8§lKöpfe"
+    FilterTitle: "§8§lFiltereinstellungen"
+    SelectHead:
+      Name: "%1$s"
+      Lore:
         - ""
         - "§7Kategorie: %2$s"
         - "§7Tags: %3$s"
 
-  item_selector:
-    accept:
-      name: "§a§lAkzeptieren"
-      lore: ["§bWähle§7 das aktuelle item."]
+  ItemSelector:
+    Accept:
+      Name: "§a§lAkzeptieren"
+      Lore: ["§bWähle§7 das aktuelle item."]
 
-    cancel:
-      name: "§c§lAbbrechen"
-      lore: ["§7Itemauswahl §6abbrechen§7."]
+    Cancel:
+      Name: "§c§lAbbrechen"
+      Lore: ["§7Itemauswahl §6abbrechen§7."]
 
-    selected:
-      name: "§d§lGewähltes Item"
-      lore:
+    Selected:
+      Name: "§d§lGewähltes Item"
+      Lore:
         - ""
         - "Klicke auf ein beliebiges Item im Inventar, um es auszuwählen."
         - ""
         - "§bLinks-klick§7 setzt Änderungen zurück."
         - "§bRechts-klick§7 entfert Auswahl (falls erlaubt)."
 
-  generic_selector:
-    page:
-      name: "§bSeite %1$s"
-      lore: []
+  GenericSelector:
+    Page:
+      Name: "§bSeite %1$s"
+      Lore: []
 
-    current_page:
-      name: "§aAktuelle Seite %1$s §7/ %2$s"
-      lore:
+    CurrentPage:
+      Name: "§aAktuelle Seite %1$s §7/ %2$s"
+      Lore:
         - ""
         - "§b#Gefilterte Items: %3$s"
 
-    filter:
-      name: "§d§lFilter"
-      lore:
+    Filter:
+      Name: "§d§lFilter"
+      Lore:
         - ""
         - "§bLinks-klick§7 öffnet das Filtermenü."
         - "§bRechts-klick§7 setzt den Filter zurück."
 
-    cancel:
-      name: "§c§lAbbrechen"
-      lore: ["§7Auswahl §6abbrechen§7."]
+    Cancel:
+      Name: "§c§lAbbrechen"
+      Lore: ["§7Auswahl §6abbrechen§7."]

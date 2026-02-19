@@ -18,22 +18,22 @@ public class AutostopListener extends Listener<Admin> {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on_player_join(PlayerJoinEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         autostop.abort();
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on_player_kick(PlayerKickEvent event) {
-        player_leave(event.getPlayer());
+    public void onPlayerKick(PlayerKickEvent event) {
+        playerLeave(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on_player_quit(PlayerQuitEvent event) {
-        player_leave(event.getPlayer());
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        playerLeave(event.getPlayer());
     }
 
-    private void player_leave(final Player player) {
-        var players = get_module().getServer().getOnlinePlayers();
+    private void playerLeave(final Player player) {
+        var players = getModule().getServer().getOnlinePlayers();
         if (players.isEmpty() || (players.size() == 1 && players.iterator().next() == player)) {
             autostop.schedule();
         }

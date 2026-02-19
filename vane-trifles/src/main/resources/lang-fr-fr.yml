@@ -12,93 +12,93 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 4
+Version: 4
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'fr_fr'
+ResourcePackLangCode: 'fr_fr'
 
-command_heads:
-  usage: "%1$s"
-  description: "Obtenir des Têtes depuis le répertoire de Têtes."
-  help: "Exécuter la commande pour ouvrir le répertoire de Têtes."
+CommandHeads:
+  Usage: "%1$s"
+  Description: "Obtenir des Têtes depuis le répertoire de Têtes."
+  Help: "Exécuter la commande pour ouvrir le répertoire de Têtes."
 
-command_finditem:
-  usage: "%1$s"
-  description: "Recherche un objet donné dans les conteneurs et entités alentours."
-  help: "Recherche un objet donné dans les conteneurs et entités alentours."
+CommandFinditem:
+  Usage: "%1$s"
+  Description: "Recherche un objet donné dans les conteneurs et entités alentours."
+  Help: "Recherche un objet donné dans les conteneurs et entités alentours."
 
-command_setspawn:
-  usage: "%1$s"
-  description: "Change la position du point d'apparition global vers votre position actuelle."
-  help: "Change la position du point d'apparition global vers votre position actuelle."
+CommandSetspawn:
+  Usage: "%1$s"
+  Description: "Change la position du point d'apparition global vers votre position actuelle."
+  Help: "Change la position du point d'apparition global vers votre position actuelle."
 
-storage:
-  open_stacked_item: "Vous devez désempiler ces objets pour pouvoir les ouvrir."
-  item_pouch:
-    name: "Bourse"
-  item_backpack:
-    name: "Sac à dos"
+Storage:
+  OpenStackedItem: "Vous devez désempiler ces objets pour pouvoir les ouvrir."
+  ItemPouch:
+    Name: "Bourse"
+  ItemBackpack:
+    Name: "Sac à dos"
 
-xp_bottles:
-  item_small_xp_bottle:
-    name: "Petite fiole d'Expérience"
-  item_medium_xp_bottle:
-    name: "Moyenne fiole d'Expérience"
-  item_large_xp_bottle:
-    name: "Grande fiole d'Expérience"
+XpBottles:
+  ItemSmallXpBottle:
+    Name: "Petite fiole d'Expérience"
+  ItemMediumXpBottle:
+    Name: "Moyenne fiole d'Expérience"
+  ItemLargeXpBottle:
+    Name: "Grande fiole d'Expérience"
 
-item_empty_xp_bottle:
-  name: "Fiole d'Expérience vide"
+ItemEmptyXpBottle:
+  Name: "Fiole d'Expérience vide"
 
-item_north_compass:
-  name: "Boussole du Nord"
+ItemNorthCompass:
+  Name: "Boussole du Nord"
 
-item_reinforced_elytra:
-  name: "Élytres en Netherite"
+ItemReinforcedElytra:
+  Name: "Élytres en Netherite"
 
-item_file:
-  name: "Lime"
+ItemFile:
+  Name: "Lime"
 
-item_slime_bucket:
-  name: "Slime dans un seau"
+ItemSlimeBucket:
+  Name: "Slime dans un seau"
 
-item_papyrus_scroll:
-  name: "Rouleau de papyrus"
+ItemPapyrusScroll:
+  Name: "Rouleau de papyrus"
 
-item_trowel:
-  name: "Truelle"
-  lore:
+ItemTrowel:
+  Name: "Truelle"
+  Lore:
     - "§7Clic droit sur cet objet dans votre inventaire pour en changer la source."
     - "§7Source actuelle : %1$s"
 
-sickles:
-  item_wooden_sickle:
-    name: "Faucille en bois"
-  item_stone_sickle:
-    name: "Faucille en pierre"
-  item_iron_sickle:
-    name: "Faucille en fer"
-  item_golden_sickle:
-    name: "Faucille en or"
-  item_diamond_sickle:
-    name: "Faucille en diamant"
-  item_netherite_sickle:
-    name: "Faucille en Netherite"
+Sickles:
+  ItemWoodenSickle:
+    Name: "Faucille en bois"
+  ItemStoneSickle:
+    Name: "Faucille en pierre"
+  ItemIronSickle:
+    Name: "Faucille en fer"
+  ItemGoldenSickle:
+    Name: "Faucille en or"
+  ItemDiamondSickle:
+    Name: "Faucille en diamant"
+  ItemNetheriteSickle:
+    Name: "Faucille en Netherite"
 
-scrolls:
-  item_home_scroll:
-    name: "Parchemin de Rappel (Foyer)"
-  item_unstable_scroll:
-    name: "Parchemin de Rappel (Instable)"
-    teleport_no_previous_teleport: "§cVous n'avez pas encore utilisé de parchemin."
-  item_spawn_scroll:
-    name: "Parchemin de Rappel (Point d'apparition)"
-  item_lodestone_scroll:
-    name: "Parchemin de Rappel (Magnétite)"
-    teleport_no_bound_lodestone: "§bAccroupissez-vous et cliquez droit sur une magnétite pour (ré)assigner ce parchemin."
-    teleport_missing_lodestone: "§cLe parchemin ne semble pas faire effet... §6Vous craignez que la magnétite liée ait disparu."
-    bound_lore: "§7Liée à (%2$s§7, %3$s§7, %4$s§7) dans %1$s"
-  item_death_scroll:
-    name: "Parchemin de Rappel (Mort)"
-    teleport_no_recent_death: "§cVous n'êtes pas mort·e récemment, ou avez déjà utilisé un Parchemin de Rappel de Mort !"
+Scrolls:
+  ItemHomeScroll:
+    Name: "Parchemin de Rappel (Foyer)"
+  ItemUnstableScroll:
+    Name: "Parchemin de Rappel (Instable)"
+    TeleportNoPreviousTeleport: "§cVous n'avez pas encore utilisé de parchemin."
+  ItemSpawnScroll:
+    Name: "Parchemin de Rappel (Point d'apparition)"
+  ItemLodestoneScroll:
+    Name: "Parchemin de Rappel (Magnétite)"
+    TeleportNoBoundLodestone: "§bAccroupissez-vous et cliquez droit sur une magnétite pour (ré)assigner ce parchemin."
+    TeleportMissingLodestone: "§cLe parchemin ne semble pas faire effet... §6Vous craignez que la magnétite liée ait disparu."
+    BoundLore: "§7Liée à (%2$s§7, %3$s§7, %4$s§7) dans %1$s"
+  ItemDeathScroll:
+    Name: "Parchemin de Rappel (Mort)"
+    TeleportNoRecentDeath: "§cVous n'êtes pas mort·e récemment, ou avez déjà utilisé un Parchemin de Rappel de Mort !"

@@ -1,15 +1,15 @@
 package org.oddlama.vane.trifles.items;
 
-import static org.oddlama.vane.util.BlockUtil.raytrace_dominant_face;
-import static org.oddlama.vane.util.BlockUtil.raytrace_oct;
-import static org.oddlama.vane.util.ItemUtil.damage_item;
-import static org.oddlama.vane.util.PlayerUtil.swing_arm;
+import static org.oddlama.vane.util.BlockUtil.raytraceDominantFace;
+import static org.oddlama.vane.util.BlockUtil.raytraceOct;
+import static org.oddlama.vane.util.ItemUtil.damageItem;
+import static org.oddlama.vane.util.PlayerUtil.swingArm;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
-import net.kyori.adventure.key.Key;
+
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -43,7 +43,7 @@ import org.oddlama.vane.util.BlockUtil;
     name = "file",
     base = Material.WARPED_FUNGUS_ON_A_STICK,
     durability = 4000,
-    model_data = 0x760003,
+    modelData = 0x760003,
     version = 1
 )
 public class File extends CustomItem<Trifles> {
@@ -53,12 +53,12 @@ public class File extends CustomItem<Trifles> {
     }
 
     @Override
-    public RecipeList default_recipes() {
+    public RecipeList defaultRecipes() {
         return RecipeList.of(
             new ShapedRecipeDefinition("generic")
-                .shape(" m", "s ")
-                .set_ingredient('m', Material.IRON_INGOT)
-                .set_ingredient('s', Material.STICK)
+                .shape(" M", "S ")
+                .setIngredient('M', Material.IRON_INGOT)
+                .setIngredient('S', Material.STICK)
                 .result(key().toString())
         );
     }
@@ -68,11 +68,11 @@ public class File extends CustomItem<Trifles> {
         return EnumSet.of(InhibitBehavior.USE_IN_VANILLA_RECIPE, InhibitBehavior.TEMPT, InhibitBehavior.USE_OFFHAND);
     }
 
-    private BlockFace next_facing(Set<BlockFace> allowed_faces, BlockFace face) {
-        if (allowed_faces.isEmpty()) {
+    private BlockFace nextFacing(Set<BlockFace> allowedFaces, BlockFace face) {
+        if (allowedFaces.isEmpty()) {
             return face;
         }
-        final var list = new ArrayList<BlockFace>(allowed_faces);
+        final var list = new ArrayList<BlockFace>(allowedFaces);
         Collections.sort(list, (a, b) -> a.ordinal() - b.ordinal());
         final var index = list.indexOf(face);
         if (index == -1) {
@@ -81,13 +81,13 @@ public class File extends CustomItem<Trifles> {
         return list.get((index + 1) % list.size());
     }
 
-    private Sound change_stair_half(final Stairs stairs) {
+    private Sound changeStairHalf(final Stairs stairs) {
         // Change half
         stairs.setHalf(stairs.getHalf() == Bisected.Half.BOTTOM ? Bisected.Half.TOP : Bisected.Half.BOTTOM);
         return Sound.UI_STONECUTTER_TAKE_RESULT;
     }
 
-    private BlockFace next_face_ccw(final BlockFace face) {
+    private BlockFace nextFaceCcw(final BlockFace face) {
         switch (face) {
             default:
                 return null;
@@ -102,31 +102,31 @@ public class File extends CustomItem<Trifles> {
         }
     }
 
-    private Sound change_stair_shape(
+    private Sound changeStairShape(
         final Player player,
         final Block block,
         final Stairs stairs,
-        final BlockFace clicked_face
+        final BlockFace clickedFace
     ) {
         // Check which eighth of the block was clicked
-        final var oct = raytrace_oct(player, block);
+        final var oct = raytraceOct(player, block);
         if (oct == null) {
             return null;
         }
 
         var corner = oct.corner();
-        final var is_stair_top = stairs.getHalf() == Bisected.Half.TOP;
+        final var isStairTop = stairs.getHalf() == Bisected.Half.TOP;
 
         // If we clicked on the base part, toggle the corner upstate,
         // as we always want to reason abount the corner to add/remove.
-        if (corner.up() == is_stair_top) {
+        if (corner.up() == isStairTop) {
             corner = corner.up(!corner.up());
         }
 
         // Rotate a corner so that we can interpret it from
         // the reference facing (north)
-        final var original_facing = stairs.getFacing();
-        corner = corner.rotate_to_north_reference(original_facing);
+        final var originalFacing = stairs.getFacing();
+        corner = corner.rotateToNorthReference(originalFacing);
 
         // Determine the resulting shape, face and wether the oct got added or removed
         Stairs.Shape shape = null;
@@ -134,7 +134,7 @@ public class File extends CustomItem<Trifles> {
         boolean added = false;
         switch (stairs.getShape()) {
             case STRAIGHT:
-                switch (corner.xz_face()) {
+                switch (corner.xzFace()) {
                     case SOUTH_WEST:
                         shape = Stairs.Shape.INNER_LEFT;
                         face = BlockFace.NORTH;
@@ -160,7 +160,7 @@ public class File extends CustomItem<Trifles> {
                 }
                 break;
             case INNER_LEFT:
-                switch (corner.xz_face()) {
+                switch (corner.xzFace()) {
                     case SOUTH_WEST:
                         shape = Stairs.Shape.STRAIGHT;
                         face = BlockFace.NORTH;
@@ -176,7 +176,7 @@ public class File extends CustomItem<Trifles> {
                 }
                 break;
             case INNER_RIGHT:
-                switch (corner.xz_face()) {
+                switch (corner.xzFace()) {
                     case NORTH_WEST:
                         shape = Stairs.Shape.STRAIGHT;
                         face = BlockFace.EAST;
@@ -192,7 +192,7 @@ public class File extends CustomItem<Trifles> {
                 }
                 break;
             case OUTER_LEFT:
-                switch (corner.xz_face()) {
+                switch (corner.xzFace()) {
                     case SOUTH_WEST:
                         shape = Stairs.Shape.STRAIGHT;
                         face = BlockFace.WEST;
@@ -208,7 +208,7 @@ public class File extends CustomItem<Trifles> {
                 }
                 break;
             case OUTER_RIGHT:
-                switch (corner.xz_face()) {
+                switch (corner.xzFace()) {
                     case NORTH_WEST:
                         shape = Stairs.Shape.STRAIGHT;
                         face = BlockFace.NORTH;
@@ -233,16 +233,16 @@ public class File extends CustomItem<Trifles> {
         // Undo reference rotation
         switch (face) {
             case NORTH:
-                face = original_facing;
+                face = originalFacing;
                 break;
             case EAST:
-                face = next_face_ccw(original_facing).getOppositeFace();
+                face = nextFaceCcw(originalFacing).getOppositeFace();
                 break;
             case SOUTH:
-                face = original_facing.getOppositeFace();
+                face = originalFacing.getOppositeFace();
                 break;
             case WEST:
-                face = next_face_ccw(original_facing);
+                face = nextFaceCcw(originalFacing);
                 break;
             default:
                 break;
@@ -254,122 +254,122 @@ public class File extends CustomItem<Trifles> {
         return added ? Sound.UI_STONECUTTER_TAKE_RESULT : Sound.BLOCK_GRINDSTONE_USE;
     }
 
-    private Sound change_multiple_facing(
+    private Sound changeMultipleFacing(
         final Player player,
         final Block block,
         final MultipleFacing mf,
-        BlockFace clicked_face
+        BlockFace clickedFace
     ) {
-        final int min_faces;
+        final int minFaces;
         if (mf instanceof Fence || mf instanceof GlassPane) {
             // Allow fences and glass panes to have 0 faces
-            min_faces = 0;
+            minFaces = 0;
 
             // Trace which side is the dominant side
-            final var result = raytrace_dominant_face(player, block);
+            final var result = raytraceDominantFace(player, block);
             if (result == null) {
                 return null;
             }
 
             // Only replace facing choice if we did hit a side,
             // or if the dominance was big enough.
-            if (result.dominance > .2 || (clicked_face != BlockFace.UP && clicked_face != BlockFace.DOWN)) {
-                clicked_face = result.face;
+            if (result.dominance > .2 || (clickedFace != BlockFace.UP && clickedFace != BlockFace.DOWN)) {
+                clickedFace = result.face;
             }
         } else if (mf instanceof Tripwire) {
-            min_faces = 0;
+            minFaces = 0;
         } else {
             return null;
         }
 
         // Check if the clicked face is allowed to change
-        if (!mf.getAllowedFaces().contains(clicked_face)) {
+        if (!mf.getAllowedFaces().contains(clickedFace)) {
             return null;
         }
 
-        boolean has_face = mf.hasFace(clicked_face);
-        if (has_face && min_faces >= mf.getFaces().size()) {
+        boolean hasFace = mf.hasFace(clickedFace);
+        if (hasFace && minFaces >= mf.getFaces().size()) {
             // Refuse to remove beyond minimum face count
             return null;
         }
 
         // Toggle clicked block face
-        mf.setFace(clicked_face, !has_face);
+        mf.setFace(clickedFace, !hasFace);
 
         // Choose sound
-        return has_face ? Sound.BLOCK_GRINDSTONE_USE : Sound.UI_STONECUTTER_TAKE_RESULT;
+        return hasFace ? Sound.BLOCK_GRINDSTONE_USE : Sound.UI_STONECUTTER_TAKE_RESULT;
     }
 
-    private Sound change_wall(final Player player, final Block block, final Wall wall, final BlockFace clicked_face) {
+    private Sound changeWall(final Player player, final Block block, final Wall wall, final BlockFace clickedFace) {
         // Trace which side is the dominant side
-        final var result = raytrace_dominant_face(player, block);
+        final var result = raytraceDominantFace(player, block);
         if (result == null) {
             return null;
         }
 
-        final BlockFace adjusted_clicked_face;
+        final BlockFace adjustedClickedFace;
         // Only replace facing choice if we did hit a side,
         // or if the dominance was big enough.
-        if (result.dominance > .2 || (clicked_face != BlockFace.UP && clicked_face != BlockFace.DOWN)) {
-            adjusted_clicked_face = result.face;
+        if (result.dominance > .2 || (clickedFace != BlockFace.UP && clickedFace != BlockFace.DOWN)) {
+            adjustedClickedFace = result.face;
         } else {
-            adjusted_clicked_face = clicked_face;
+            adjustedClickedFace = clickedFace;
         }
 
-        if (clicked_face == BlockFace.UP) {
-            final var was_up = wall.isUp();
-            if (adjusted_clicked_face == BlockFace.UP) {
+        if (clickedFace == BlockFace.UP) {
+            final var wasUp = wall.isUp();
+            if (adjustedClickedFace == BlockFace.UP) {
                 // click top in middle -> toggle up
-                wall.setUp(!was_up);
-            } else if (BlockUtil.XZ_FACES.contains(adjusted_clicked_face)) {
+                wall.setUp(!wasUp);
+            } else if (BlockUtil.XZ_FACES.contains(adjustedClickedFace)) {
                 // click top on side -> toggle height
-                final var height = wall.getHeight(adjusted_clicked_face);
+                final var height = wall.getHeight(adjustedClickedFace);
                 switch (height) {
                     case NONE:
                         return null;
                     case LOW:
-                        wall.setHeight(adjusted_clicked_face, Wall.Height.TALL);
+                        wall.setHeight(adjustedClickedFace, Wall.Height.TALL);
                         break;
                     case TALL:
-                        wall.setHeight(adjusted_clicked_face, Wall.Height.LOW);
+                        wall.setHeight(adjustedClickedFace, Wall.Height.LOW);
                         break;
                 }
             }
 
-            return was_up ? Sound.BLOCK_GRINDSTONE_USE : Sound.UI_STONECUTTER_TAKE_RESULT;
+            return wasUp ? Sound.BLOCK_GRINDSTONE_USE : Sound.UI_STONECUTTER_TAKE_RESULT;
         } else {
             // click side -> toggle side
-            final var has_face = wall.getHeight(adjusted_clicked_face) != Wall.Height.NONE;
+            final var hasFace = wall.getHeight(adjustedClickedFace) != Wall.Height.NONE;
 
             // Set height and choose sound
-            if (has_face) {
-                wall.setHeight(adjusted_clicked_face, Wall.Height.NONE);
+            if (hasFace) {
+                wall.setHeight(adjustedClickedFace, Wall.Height.NONE);
                 return Sound.BLOCK_GRINDSTONE_USE;
             } else {
                 // Use opposite face's height, or low if there is nothing.
-                var target_height = wall.getHeight(adjusted_clicked_face.getOppositeFace());
-                if (target_height == Wall.Height.NONE) {
-                    target_height = Wall.Height.LOW;
+                var targetHeight = wall.getHeight(adjustedClickedFace.getOppositeFace());
+                if (targetHeight == Wall.Height.NONE) {
+                    targetHeight = Wall.Height.LOW;
                 }
-                wall.setHeight(adjusted_clicked_face, target_height);
+                wall.setHeight(adjustedClickedFace, targetHeight);
                 return Sound.UI_STONECUTTER_TAKE_RESULT;
             }
         }
     }
 
-    private Sound change_directional_facing(
+    private Sound changeDirectionalFacing(
         final Player player,
         final Block block,
         final Directional directional,
-        final BlockFace clicked_face
+        final BlockFace clickedFace
     ) {
         // Toggle facing
-        directional.setFacing(next_facing(directional.getFaces(), directional.getFacing()));
+        directional.setFacing(nextFacing(directional.getFaces(), directional.getFacing()));
         return Sound.UI_STONECUTTER_TAKE_RESULT;
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void on_player_right_click(final PlayerInteractEvent event) {
+    public void onPlayerRightClick(final PlayerInteractEvent event) {
         if (!event.hasBlock() || event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
@@ -387,29 +387,29 @@ public class File extends CustomItem<Trifles> {
 
         // Create a block break event for block to transmute and check if it gets canceled
         final var block = event.getClickedBlock();
-        final var break_event = new BlockBreakEvent(block, player);
-        get_module().getServer().getPluginManager().callEvent(break_event);
-        if (break_event.isCancelled()) {
+        final var breakEvent = new BlockBreakEvent(block, player);
+        getModule().getServer().getPluginManager().callEvent(breakEvent);
+        if (breakEvent.isCancelled()) {
             return;
         }
 
         final var data = block.getBlockData();
-        final var clicked_face = event.getBlockFace();
+        final var clickedFace = event.getBlockFace();
 
         final Sound sound;
         if (player.isSneaking()) {
             if (data instanceof Stairs) {
-                sound = change_stair_half((Stairs) data);
+                sound = changeStairHalf((Stairs) data);
             } else {
                 return;
             }
         } else {
             if (data instanceof MultipleFacing) {
-                sound = change_multiple_facing(player, block, (MultipleFacing) data, clicked_face);
+                sound = changeMultipleFacing(player, block, (MultipleFacing) data, clickedFace);
             } else if (data instanceof Wall) {
-                sound = change_wall(player, block, (Wall) data, clicked_face);
+                sound = changeWall(player, block, (Wall) data, clickedFace);
             } else if (data instanceof Stairs) {
-                sound = change_stair_shape(player, block, (Stairs) data, clicked_face);
+                sound = changeStairShape(player, block, (Stairs) data, clickedFace);
             } else {
                 return;
             }
@@ -426,7 +426,7 @@ public class File extends CustomItem<Trifles> {
         block.getWorld().playSound(block.getLocation(), sound, SoundCategory.BLOCKS, 1.0f, 1.0f);
 
         // Damage item and swing arm
-        damage_item(player, item, 1);
-        swing_arm(player, event.getHand());
+        damageItem(player, item, 1);
+        swingArm(player, event.getHand());
     }
 }

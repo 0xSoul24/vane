@@ -13,26 +13,26 @@ public class PortalLinkConsoleEvent extends PortalEvent {
     private Player player;
     private Portal portal;
     private Block console;
-    private List<Block> portal_blocks;
-    private boolean check_only;
-    private boolean cancel_if_not_owner = true;
+    private List<Block> portalBlocks;
+    private boolean checkOnly;
+    private boolean cancelIfNotOwner = true;
 
     public PortalLinkConsoleEvent(
         final Player player,
         final Block console,
-        final List<Block> portal_blocks,
-        boolean check_only,
+        final List<Block> portalBlocks,
+        boolean checkOnly,
         @Nullable final Portal portal
     ) {
         this.player = player;
         this.console = console;
-        this.portal_blocks = portal_blocks;
-        this.check_only = check_only;
+        this.portalBlocks = portalBlocks;
+        this.checkOnly = checkOnly;
         this.portal = portal;
     }
 
-    public void setCancelIfNotOwner(boolean cancel_if_not_owner) {
-        this.cancel_if_not_owner = cancel_if_not_owner;
+    public void setCancelIfNotOwner(boolean cancelIfNotOwner) {
+        this.cancelIfNotOwner = cancelIfNotOwner;
     }
 
     public Player getPlayer() {
@@ -44,11 +44,11 @@ public class PortalLinkConsoleEvent extends PortalEvent {
     }
 
     public List<Block> getPortalBlocks() {
-        return portal_blocks;
+        return portalBlocks;
     }
 
     public boolean checkOnly() {
-        return check_only;
+        return checkOnly;
     }
 
     public @Nullable Portal getPortal() {
@@ -66,7 +66,7 @@ public class PortalLinkConsoleEvent extends PortalEvent {
     @Override
     public boolean isCancelled() {
         var cancelled = super.isCancelled();
-        if (cancel_if_not_owner && portal != null) {
+        if (cancelIfNotOwner && portal != null) {
             cancelled |= !player.getUniqueId().equals(portal.owner());
         }
         return cancelled;

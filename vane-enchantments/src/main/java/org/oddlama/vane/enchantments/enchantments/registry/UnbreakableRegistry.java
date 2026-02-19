@@ -12,7 +12,7 @@ public class UnbreakableRegistry extends CustomEnchantmentRegistry {
 
     public UnbreakableRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent) {
         super("unbreakable", ItemTypeTagKeys.ENCHANTABLE_DURABILITY, 1);
-        this.exclusive_with(List.of(EnchantmentKeys.UNBREAKING, EnchantmentKeys.MENDING));
+        this.exclusiveWith(List.of(EnchantmentKeys.UNBREAKING, EnchantmentKeys.MENDING));
         this.register(composeEvent);
     }
 }

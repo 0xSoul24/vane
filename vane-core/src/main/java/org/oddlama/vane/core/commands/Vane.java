@@ -24,41 +24,41 @@ import org.oddlama.vane.core.module.Module;
 public class Vane extends Command<Core> {
 
     @LangMessage
-    private TranslatedMessage lang_reload_success;
+    private TranslatedMessage langReloadSuccess;
 
     @LangMessage
-    private TranslatedMessage lang_reload_fail;
+    private TranslatedMessage langReloadFail;
 
     @LangMessage
-    private TranslatedMessage lang_resource_pack_generate_success;
+    private TranslatedMessage langResourcePackGenerateSuccess;
 
     @LangMessage
-    private TranslatedMessage lang_resource_pack_generate_fail;
+    private TranslatedMessage langResourcePackGenerateFail;
 
     public Vane(Context<Core> context) {
         super(context);
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
-        return super.get_command_base()
+    public LiteralArgumentBuilder<CommandSourceStack> getCommandBase() {
+        return super.getCommandBase()
             .then(help())
             .then(
                 literal("reload")
                     .executes(ctx -> {
-                        reload_all(ctx.getSource().getSender());
+                        reloadAll(ctx.getSource().getSender());
                         return SINGLE_SUCCESS;
                     })
                     .then(
-                        argument("module", ModuleArgumentType.module(get_module())).executes(ctx -> {
-                            reload_module(ctx.getSource().getSender(), ctx.getArgument("module", Module.class));
+                        argument("module", ModuleArgumentType.module(getModule())).executes(ctx -> {
+                            reloadModule(ctx.getSource().getSender(), ctx.getArgument("module", Module.class));
                             return SINGLE_SUCCESS;
                         })
                     )
             )
             .then(
                 literal("generate_resource_pack").executes(ctx -> {
-                    generate_resource_pack(ctx.getSource().getSender());
+                    generateResourcePack(ctx.getSource().getSender());
                     return SINGLE_SUCCESS;
                 })
             )
@@ -70,52 +70,52 @@ public class Vane extends Command<Core> {
             );
     }
 
-    private void reload_module(CommandSender sender, Module<?> module) {
-        if (module.reload_configuration()) {
-            lang_reload_success.send(sender, "§bvane-" + module.get_name());
+    private void reloadModule(CommandSender sender, Module<?> module) {
+        if (module.reloadConfiguration()) {
+            langReloadSuccess.send(sender, "§bvane-" + module.getAnnotationName());
         } else {
-            lang_reload_fail.send(sender, "§bvane-" + module.get_name());
+            langReloadFail.send(sender, "§bvane-" + module.getAnnotationName());
         }
     }
 
-    private void reload_all(CommandSender sender) {
-        for (var m : get_module().core.get_modules()) {
-            reload_module(sender, m);
+    private void reloadAll(CommandSender sender) {
+        for (var m : getModule().core.getModules()) {
+            reloadModule(sender, m);
         }
     }
 
-    private void generate_resource_pack(CommandSender sender) {
-        var file = get_module().generate_resource_pack();
+    private void generateResourcePack(CommandSender sender) {
+        var file = getModule().generateResourcePack();
         if (file != null) {
-            lang_resource_pack_generate_success.send(sender, file.getAbsolutePath());
+            langResourcePackGenerateSuccess.send(sender, file.getAbsolutePath());
         } else {
-            lang_resource_pack_generate_fail.send(sender);
+            langResourcePackGenerateFail.send(sender);
         }
         if (sender instanceof Player) {
-            var dist = get_module().resource_pack_distributor;
-            dist.update_sha1(file);
-            dist.send_resource_pack((Player) sender);
+            var dist = getModule().resourcePackDistributor;
+            dist.updateSha1(file);
+            dist.sendResourcePack((Player) sender);
         }
     }
 
-    private void test_tome_generation() {
-        final var loot_table = LootTables.ABANDONED_MINESHAFT.getLootTable();
-        final var inventory = get_module().getServer().createInventory(null, 3 * 9);
+    private void testTomeGeneration() {
+        final var lootTable = LootTables.ABANDONED_MINESHAFT.getLootTable();
+        final var inventory = getModule().getServer().createInventory(null, 3 * 9);
         final var context =
             (new LootContext.Builder(
-                    get_module().getServer().getWorlds().get(0).getBlockAt(0, 0, 0).getLocation()
+                    getModule().getServer().getWorlds().get(0).getBlockAt(0, 0, 0).getLocation()
                 )).build();
         final var random = new Random();
 
         int tomes = 0;
-        final var simulation_count = 10000;
-        final var gt_percentage = 0.2; // (0-2) (average 1) with 1/5 chance
+        final var simulationCount = 10000;
+        final var gtPercentage = 0.2; // (0-2) (average 1) with 1/5 chance
         final var tolerance = 0.7;
-        get_module().log.info("Testing ancient tome generation...");
+        getModule().log.info("Testing ancient tome generation...");
 
-        for (int i = 0; i < simulation_count; ++i) {
+        for (int i = 0; i < simulationCount; ++i) {
             inventory.clear();
-            loot_table.fillInventory(inventory, random, context);
+            lootTable.fillInventory(inventory, random, context);
             for (final var is : inventory.getStorageContents()) {
                 if (is != null && is.hasItemMeta()) {
                     final var modelData = is.getItemMeta().getCustomModelDataComponent().getFloats();
@@ -127,34 +127,34 @@ public class Vane extends Command<Core> {
         }
 
         if (tomes == 0) {
-            get_module().log.severe("0 tomes were generated in " + simulation_count + " chests.");
+            getModule().log.severe("0 tomes were generated in " + simulationCount + " chests.");
         } else if (
-            tomes > gt_percentage * simulation_count * tolerance &&
-            tomes < (gt_percentage * simulation_count) / tolerance
+            tomes > gtPercentage * simulationCount * tolerance &&
+            tomes < (gtPercentage * simulationCount) / tolerance
         ) { // 70% tolerance to lower bound
-            get_module()
+            getModule()
                 .log.warning(
                     tomes +
                     " tomes were generated in " +
-                    simulation_count +
+                    simulationCount +
                     " chests. This is " +
-                    ((100.0 * ((double) tomes / simulation_count)) / gt_percentage) +
+                    ((100.0 * ((double) tomes / simulationCount)) / gtPercentage) +
                     "% of the expected value."
                 );
         } else {
-            get_module()
+            getModule()
                 .log.info(
                     tomes +
                     " tomes were generated in " +
-                    simulation_count +
+                    simulationCount +
                     " chests. This is " +
-                    ((100.0 * ((double) tomes / simulation_count)) / gt_percentage) +
+                    ((100.0 * ((double) tomes / simulationCount)) / gtPercentage) +
                     "% of the expected value."
                 );
         }
     }
 
     private void test(CommandSender sender) {
-        test_tome_generation();
+        testTomeGeneration();
     }
 }

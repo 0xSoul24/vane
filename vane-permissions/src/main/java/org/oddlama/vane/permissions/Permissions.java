@@ -27,7 +27,7 @@ import org.oddlama.vane.annotation.config.ConfigStringListMapEntry;
 import org.oddlama.vane.annotation.persistent.Persistent;
 import org.oddlama.vane.core.module.Module;
 
-@VaneModule(name = "permissions", bstats = 8641, config_version = 1, lang_version = 1, storage_version = 1)
+@VaneModule(name = "permissions", bstats = 8641, configVersion = 1, langVersion = 1, storageVersion = 1)
 public class Permissions extends Module<Permissions> {
 
     // Configuration
@@ -35,13 +35,13 @@ public class Permissions extends Module<Permissions> {
         def = false,
         desc = "Remove all default permissions from ANY SOURCE (including other plugins and minecraft permissions) to start with a clean preset. This will allow you to exactly set which player have which permissions instead of having to resort to volatile stateful changes like negative permissions. This will result in OPed players to lose access to commands, if not explicitly added back via permissions. The wildcard permissions can be viewed using `perms list permissions`. The wildcard permissions `minecraft` and `craftbukkit` may be especially useful."
     )
-    public boolean config_remove_defaults;
+    public boolean configRemoveDefaults;
 
     @ConfigString(
         def = "default",
         desc = "The permission group that will be given to players that have no other permission group."
     )
-    public String config_default_group;
+    public String configDefaultGroup;
 
     @ConfigStringListMap(
         def = {
@@ -75,15 +75,15 @@ public class Permissions extends Module<Permissions> {
         },
         desc = "The permission groups. A player can have multiple permission groups assigned. Permission groups can inherit other permission groups by specifying vane.permissions.groups.<groupname> as a permission."
     )
-    public Map<String, List<String>> config_groups;
+    public Map<String, List<String>> configGroups;
 
     // Persistent storage
     @Persistent
-    public Map<UUID, Set<String>> storage_player_groups = new HashMap<>();
+    public Map<UUID, Set<String>> storagePlayerGroups = new HashMap<>();
 
     // Variables
-    public final Map<String, Set<String>> permission_groups = new HashMap<>();
-    private final Map<UUID, PermissionAttachment> player_attachments = new HashMap<>();
+    public final Map<String, Set<String>> permissionGroups = new HashMap<>();
+    private final Map<UUID, PermissionAttachment> playerAttachments = new HashMap<>();
 
     public Permissions() {
         new org.oddlama.vane.permissions.commands.Permission(this);
@@ -91,82 +91,82 @@ public class Permissions extends Module<Permissions> {
     }
 
     @Override
-    public void on_enable() {
-        schedule_next_tick(() -> {
-            if (config_remove_defaults) {
+    public void onModuleEnable() {
+        scheduleNextTick(() -> {
+            if (configRemoveDefaults) {
                 for (var perm : getServer().getPluginManager().getPermissions()) {
                     perm.setDefault(PermissionDefault.FALSE);
                     getServer().getPluginManager().recalculatePermissionDefaults(perm);
 
                     // But still allow the console to execute commands
-                    Permissions.this.add_console_permission(perm);
+                    Permissions.this.addConsolePermission(perm);
                 }
             }
         });
     }
 
     @Override
-    public void on_config_change() {
-        flatten_groups();
+    public void onConfigChange() {
+        flattenGroups();
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on_player_join(PlayerJoinEvent event) {
-        register_player(event.getPlayer());
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        registerPlayer(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on_player_kick(PlayerKickEvent event) {
-        unregister_player(event.getPlayer());
+    public void onPlayerKick(PlayerKickEvent event) {
+        unregisterPlayer(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on_player_quit(PlayerQuitEvent event) {
-        unregister_player(event.getPlayer());
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        unregisterPlayer(event.getPlayer());
     }
 
-    private final Map<CommandSender, PermissionAttachment> sender_attachments = new HashMap<>();
+    private final Map<CommandSender, PermissionAttachment> senderAttachments = new HashMap<>();
 
-    private void add_console_permissions(final CommandSender sender) {
+    private void addConsolePermissions(final CommandSender sender) {
         // Register attachment for sender if not done already
-        if (!sender_attachments.containsKey(sender)) {
+        if (!senderAttachments.containsKey(sender)) {
             final var attachment = sender.addAttachment(this);
-            sender_attachments.put(sender, attachment);
+            senderAttachments.put(sender, attachment);
 
-            final var attached_perms = console_attachment.getPermissions();
-            attached_perms.forEach((p, v) -> attachment.setPermission(p, v));
+            final var attachedPerms = consoleAttachment.getPermissions();
+            attachedPerms.forEach((p, v) -> attachment.setPermission(p, v));
         }
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void on_server_command_event(ServerCommandEvent event) {
+    public void onServerCommandEvent(ServerCommandEvent event) {
         final var sender = event.getSender();
         if (sender instanceof Player && sender.isOp()) {
             // Console command sender will always have the correct permission attachment
             // Command block shall be ignored for now (causes lag, see #178)
-            add_console_permissions(sender);
+            addConsolePermissions(sender);
         }
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void on_remote_server_command_event(RemoteServerCommandEvent event) {
+    public void onRemoteServerCommandEvent(RemoteServerCommandEvent event) {
         final var sender = event.getSender();
         if (sender.isOp()) {
-            add_console_permissions(sender);
+            addConsolePermissions(sender);
         }
     }
 
     /** Resolve references to other permission groups in the hierarchy. */
-    private void flatten_groups() {
-        permission_groups.clear();
-        config_groups.forEach((k, v) -> {
+    private void flattenGroups() {
+        permissionGroups.clear();
+        configGroups.forEach((k, v) -> {
             final var set = new HashSet<String>();
             for (var perm : v) {
                 if (perm.startsWith("vane.permissions.groups.")) {} else {
                     set.add(perm);
                 }
             }
-            permission_groups.put(k, set);
+            permissionGroups.put(k, set);
         });
 
         // Resolve group inheritance
@@ -175,13 +175,13 @@ public class Permissions extends Module<Permissions> {
         };
         do {
             modified.value = false;
-            config_groups.forEach((k, v) -> {
-                final var set = permission_groups.get(k);
+            configGroups.forEach((k, v) -> {
+                final var set = permissionGroups.get(k);
                 for (var perm : v) {
                     if (perm.startsWith("vane.permissions.groups.")) {
                         final var group = perm.substring("vane.permissions.groups.".length());
-                        final var group_perms = permission_groups.get(group);
-                        if (group_perms == null) {
+                        final var groupPerms = permissionGroups.get(group);
+                        if (groupPerms == null) {
                             log.severe(
                                 "Nonexistent permission group '" +
                                 group +
@@ -191,37 +191,37 @@ public class Permissions extends Module<Permissions> {
                             );
                             continue;
                         }
-                        modified.value |= set.addAll(group_perms);
+                        modified.value |= set.addAll(groupPerms);
                     }
                 }
             });
         } while (modified.value);
     }
 
-    private void register_player(final Player player) {
+    private void registerPlayer(final Player player) {
         // Register PermissionAttachment
         final var attachment = player.addAttachment(this);
-        player_attachments.put(player.getUniqueId(), attachment);
+        playerAttachments.put(player.getUniqueId(), attachment);
 
         // Attach permissions
-        recalculate_player_permissions(player);
+        recalculatePlayerPermissions(player);
     }
 
-    public void recalculate_player_permissions(final Player player) {
+    public void recalculatePlayerPermissions(final Player player) {
         // Clear attachment
-        final var attachment = player_attachments.get(player.getUniqueId());
-        final var attached_perms = attachment.getPermissions();
-        attached_perms.forEach((p, v) -> attachment.unsetPermission(p));
+        final var attachment = playerAttachments.get(player.getUniqueId());
+        final var attachedPerms = attachment.getPermissions();
+        attachedPerms.forEach((p, v) -> attachment.unsetPermission(p));
 
         // Add permissions again
-        var groups = storage_player_groups.get(player.getUniqueId());
+        var groups = storagePlayerGroups.get(player.getUniqueId());
         if (groups == null || groups.isEmpty()) {
             // Assign player to a default permission group
-            groups = Set.of(config_default_group);
+            groups = Set.of(configDefaultGroup);
         }
 
         for (var group : groups) {
-            for (var p : permission_groups.getOrDefault(group, Collections.emptySet())) {
+            for (var p : permissionGroups.getOrDefault(group, Collections.emptySet())) {
                 final var perm = getServer().getPluginManager().getPermission(p);
                 if (perm == null) {
                     log.warning("Use of unregistered permission '" + p + "' might have unintended effects.");
@@ -234,36 +234,36 @@ public class Permissions extends Module<Permissions> {
         player.updateCommands();
     }
 
-    private void unregister_player(final Player player) {
-        final var attachment = player_attachments.remove(player.getUniqueId());
+    private void unregisterPlayer(final Player player) {
+        final var attachment = playerAttachments.remove(player.getUniqueId());
         if (attachment != null) {
             player.removeAttachment(attachment);
         }
     }
 
-    public void save_and_recalculate(final OfflinePlayer player) {
-        mark_persistent_storage_dirty();
+    public void saveAndRecalculate(final OfflinePlayer player) {
+        markPersistentStorageDirty();
 
         // Recalculate permissions if player is currently online
         if (player.isOnline()) {
-            recalculate_player_permissions(player.getPlayer());
+            recalculatePlayerPermissions(player.getPlayer());
         }
     }
 
-    public boolean add_player_to_group(final OfflinePlayer player, final String group) {
-        var set = storage_player_groups.computeIfAbsent(player.getUniqueId(), k -> new HashSet<String>());
+    public boolean addPlayerToGroup(final OfflinePlayer player, final String group) {
+        var set = storagePlayerGroups.computeIfAbsent(player.getUniqueId(), k -> new HashSet<String>());
 
         final var added = set.add(group);
         if (added) {
             log.info("[audit] Group " + group + " assigned to " + player.getUniqueId() + " (" + player.getName() + ")");
-            save_and_recalculate(player);
+            saveAndRecalculate(player);
         }
 
         return added;
     }
 
-    public boolean remove_player_from_group(final OfflinePlayer player, final String group) {
-        var set = storage_player_groups.get(player.getUniqueId());
+    public boolean removePlayerFromGroup(final OfflinePlayer player, final String group) {
+        var set = storagePlayerGroups.get(player.getUniqueId());
         var removed = false;
         if (set != null) {
             removed = set.remove(group);
@@ -273,7 +273,7 @@ public class Permissions extends Module<Permissions> {
             log.info(
                 "[audit] Group " + group + " removed from " + player.getUniqueId() + " (" + player.getName() + ")"
             );
-            save_and_recalculate(player);
+            saveAndRecalculate(player);
         }
 
         return removed;

@@ -8,7 +8,7 @@ public class ErrorCheckResult implements CheckResult {
 
     private int depth;
     private String message;
-    private String arg_chain = "";
+    private String argChain = "";
 
     public ErrorCheckResult(int depth, String message) {
         this.depth = depth;
@@ -36,16 +36,16 @@ public class ErrorCheckResult implements CheckResult {
             str += "§cerror: ";
         }
         str += "§6";
-        str += arg_chain;
+        str += argChain;
         str += message;
         sender.sendMessage(str);
         return false;
     }
 
     @Override
-    public CheckResult prepend(String argument_type, Object parsed_arg, boolean include) {
+    public CheckResult prepend(String argumentType, Object parsedArg, boolean include) {
         // Save parsed arguments in an argument chain, and propagate error
-        arg_chain = "§3" + argument_type + "§6 → " + arg_chain;
+        argChain = "§3" + argumentType + "§6 → " + argChain;
         return this;
     }
 }

@@ -12,16 +12,16 @@ public class TranslatedMessageArray {
 
     private Module<?> module;
     private String key;
-    private List<String> default_translation;
+    private List<String> defaultTranslation;
 
-    public TranslatedMessageArray(final Module<?> module, final String key, final List<String> default_translation) {
+    public TranslatedMessageArray(final Module<?> module, final String key, final List<String> defaultTranslation) {
         this.module = module;
         this.key = key;
-        this.default_translation = default_translation;
+        this.defaultTranslation = defaultTranslation;
     }
 
     public int size() {
-        return default_translation.size();
+        return defaultTranslation.size();
     }
 
     public String key() {
@@ -30,12 +30,12 @@ public class TranslatedMessageArray {
 
     public List<String> str(Object... args) {
         try {
-            final var args_as_strings = new Object[args.length];
+            final var argsAsStrings = new Object[args.length];
             for (int i = 0; i < args.length; ++i) {
                 if (args[i] instanceof Component) {
-                    args_as_strings[i] = LegacyComponentSerializer.legacySection().serialize((Component) args[i]);
+                    argsAsStrings[i] = LegacyComponentSerializer.legacySection().serialize((Component) args[i]);
                 } else if (args[i] instanceof String) {
-                    args_as_strings[i] = args[i];
+                    argsAsStrings[i] = args[i];
                 } else {
                     throw new RuntimeException(
                         "Error while formatting message '" +
@@ -47,8 +47,8 @@ public class TranslatedMessageArray {
             }
 
             final var list = new ArrayList<String>();
-            for (final var s : default_translation) {
-                list.add(String.format(s, args_as_strings));
+            for (final var s : defaultTranslation) {
+                list.add(String.format(s, argsAsStrings));
             }
             return list;
         } catch (Exception e) {
@@ -57,7 +57,7 @@ public class TranslatedMessageArray {
     }
 
     public List<Component> format(Object... args) {
-        if (!module.core.config_client_side_translations) {
+        if (!module.core.configClientSideTranslations) {
             return str(args)
                 .stream()
                 .map(s -> LegacyComponentSerializer.legacySection().deserialize(s))
@@ -65,7 +65,7 @@ public class TranslatedMessageArray {
         }
 
         final var arr = new ArrayList<Component>();
-        for (int i = 0; i < default_translation.size(); ++i) {
+        for (int i = 0; i < defaultTranslation.size(); ++i) {
             final var list = new ArrayList<ComponentLike>();
             for (final var o : args) {
                 if (o instanceof ComponentLike) {

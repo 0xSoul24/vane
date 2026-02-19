@@ -13,11 +13,11 @@ import org.oddlama.vane.core.item.api.CustomModelDataRegistry;
 public class CustomItemRegistry implements org.oddlama.vane.core.item.api.CustomItemRegistry {
 
     private final HashMap<NamespacedKey, CustomItem> items = new HashMap<>();
-    private final HashSet<NamespacedKey> items_to_remove = new HashSet<>();
-    private CustomModelDataRegistry model_data_registry;
+    private final HashSet<NamespacedKey> itemsToRemove = new HashSet<>();
+    private CustomModelDataRegistry modelDataRegistry;
 
     public CustomItemRegistry() {
-        this.model_data_registry = Core.instance().model_data_registry();
+        this.modelDataRegistry = Core.instance().modelDataRegistry();
     }
 
     @Override
@@ -37,17 +37,17 @@ public class CustomItemRegistry implements org.oddlama.vane.core.item.api.Custom
 
     @Override
     public @Nullable CustomItem get(@Nullable final ItemStack itemStack) {
-        final var key_and_version = CustomItemHelper.customItemTagsFromItemStack(itemStack);
-        if (key_and_version == null) {
+        final var keyAndVersion = CustomItemHelper.customItemTagsFromItemStack(itemStack);
+        if (keyAndVersion == null) {
             return null;
         }
 
-        return get(key_and_version.getLeft());
+        return get(keyAndVersion.getLeft());
     }
 
     @Override
     public void register(final CustomItem customItem) {
-        model_data_registry.reserveSingle(customItem.key(), customItem.customModelData());
+        modelDataRegistry.reserveSingle(customItem.key(), customItem.customModelData());
         if (has(customItem.key())) {
             throw new IllegalArgumentException(
                 "A custom item with the same key '" + customItem.key() + "' has already been registered"
@@ -58,16 +58,16 @@ public class CustomItemRegistry implements org.oddlama.vane.core.item.api.Custom
 
     @Override
     public void removePermanently(final NamespacedKey key) {
-        items_to_remove.add(key);
+        itemsToRemove.add(key);
     }
 
     @Override
     public boolean shouldRemove(NamespacedKey key) {
-        return items_to_remove.contains(key);
+        return itemsToRemove.contains(key);
     }
 
     @Override
     public CustomModelDataRegistry dataRegistry() {
-        return model_data_registry;
+        return modelDataRegistry;
     }
 }

@@ -13,10 +13,10 @@ public class Resolve {
         public String signature;
     }
 
-    public static Skin resolve_skin(UUID id) throws IOException, JSONException, URISyntaxException {
+    public static Skin resolveSkin(UUID id) throws IOException, JSONException, URISyntaxException {
         final var url = "https://sessionserver.mojang.com/session/minecraft/profile/" + id + "?unsigned=false";
 
-        final var json = IOUtil.read_json_from_url(url);
+        final var json = IOUtil.readJsonFromUrl(url);
         final var skin = new Skin();
         final var obj = json.getJSONArray("properties").getJSONObject(0);
         skin.texture = obj.getString("value");
@@ -24,15 +24,15 @@ public class Resolve {
         return skin;
     }
 
-    public static UUID resolve_uuid(String name) throws IOException, JSONException, URISyntaxException {
+    public static UUID resolveUuid(String name) throws IOException, JSONException, URISyntaxException {
         final var url = "https://api.mojang.com/users/profiles/minecraft/" + name;
 
-        final var json = IOUtil.read_json_from_url(url);
-        final var id_str = json.getString("id");
-        final var uuid_str = id_str.replaceFirst(
+        final var json = IOUtil.readJsonFromUrl(url);
+        final var idStr = json.getString("id");
+        final var uuidStr = idStr.replaceFirst(
             "(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)",
             "$1-$2-$3-$4-$5"
         );
-        return UUID.fromString(uuid_str);
+        return UUID.fromString(uuidStr);
     }
 }

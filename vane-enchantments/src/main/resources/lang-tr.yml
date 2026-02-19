@@ -12,79 +12,79 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 4
+Version: 4
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'tr_tr'
+ResourcePackLangCode: 'tr_tr'
 
-item_ancient_tome:
+ItemAncientTome:
   # The display name of this item variant.
-  name: "Antik Cilt"
+  Name: "Antik Cilt"
 
-item_enchanted_ancient_tome:
+ItemEnchantedAncientTome:
   # The display name of this item variant.
-  name: "Antik Cilt"
+  Name: "Antik Cilt"
 
-item_ancient_tome_of_knowledge:
+ItemAncientTomeOfKnowledge:
   # The display name of this item variant.
-  name: "Antik Bilgi Kitabı"
+  Name: "Antik Bilgi Kitabı"
 
-item_enchanted_ancient_tome_of_knowledge:
+ItemEnchantedAncientTomeOfKnowledge:
   # The display name of this item variant.
-  name: "Antik Bilgi Kitabı"
+  Name: "Antik Bilgi Kitabı"
 
-item_ancient_tome_of_the_gods:
+ItemAncientTomeOfTheGods:
   # The display name of this item variant.
-  name: "Tanrıların Antik Kitabı"
+  Name: "Tanrıların Antik Kitabı"
 
-item_enchanted_ancient_tome_of_the_gods:
+ItemEnchantedAncientTomeOfTheGods:
   # The display name of this item variant.
-  name: "Tanrıların Antik Kitabı"
+  Name: "Tanrıların Antik Kitabı"
 
-enchantment_angel:
+EnchantmentAngel:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Melek"
+  Name: "Melek"
 
-enchantment_grappling_hook:
+EnchantmentGrapplingHook:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Kanca"
+  Name: "Kanca"
 
-enchantment_hell_bent:
+EnchantmentHellBent:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Cehennem Kemeri"
+  Name: "Cehennem Kemeri"
 
-enchantment_leafchopper:
+EnchantmentLeafchopper:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Yaprak Kıyıcı"
+  Name: "Yaprak Kıyıcı"
 
-enchantment_lightning:
+EnchantmentLightning:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Yıldırım"
+  Name: "Yıldırım"
   
-enchantment_rake:
+EnchantmentRake:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Tırmık"
+  Name: "Tırmık"
 
-enchantment_seeding:
+EnchantmentSeeding:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Tohumlama"
+  Name: "Tohumlama"
 
-enchantment_soulbound:
+EnchantmentSoulbound:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Ruh Bağlılığı"
-  drop_lock_warning: "Ruh Bağlılığı olan Öğeleri yalnızca fare kullanılarak düşürülebilir"
-  drop_cooldown: "Düşüşü onaylamak için tekrar bırakın"
-  dropped_notification: "Düşen Ruh Bağlılığı olan Öğe: %1$s"
+  Name: "Ruh Bağlılığı"
+  DropLockWarning: "Ruh Bağlılığı olan Öğeleri yalnızca fare kullanılarak düşürülebilir"
+  DropCooldown: "Düşüşü onaylamak için tekrar bırakın"
+  DroppedNotification: "Düşen Ruh Bağlılığı olan Öğe: %1$s"
 
-enchantment_take_off:
+EnchantmentTakeOff:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Kalkış"
+  Name: "Kalkış"
 
-enchantment_unbreakable:
+EnchantmentUnbreakable:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Kırılmaz"
+  Name: "Kırılmaz"
 
-enchantment_wings:
+EnchantmentWings:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Kanatlar"
+  Name: "Kanatlar"

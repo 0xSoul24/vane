@@ -17,16 +17,16 @@ import javax.tools.Diagnostic;
 public class VaneModuleProcessor extends AbstractProcessor {
 
     @Override
-    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment round_env) {
+    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         for (var annotation : annotations) {
-            round_env.getElementsAnnotatedWith(annotation).forEach(this::verify_is_class);
-            round_env.getElementsAnnotatedWith(annotation).forEach(this::verify_extends_module);
+            roundEnv.getElementsAnnotatedWith(annotation).forEach(this::verifyIsClass);
+            roundEnv.getElementsAnnotatedWith(annotation).forEach(this::verifyExtendsModule);
         }
 
         return true;
     }
 
-    private void verify_is_class(Element element) {
+    private void verifyIsClass(Element element) {
         if (element.getKind() != ElementKind.CLASS) {
             processingEnv
                 .getMessager()
@@ -37,7 +37,7 @@ public class VaneModuleProcessor extends AbstractProcessor {
         }
     }
 
-    private void verify_extends_module(Element element) {
+    private void verifyExtendsModule(Element element) {
         var t = (TypeElement) element;
         while (true) {
             if (t.asType().toString().startsWith("org.oddlama.vane.core.module.Module<")) {

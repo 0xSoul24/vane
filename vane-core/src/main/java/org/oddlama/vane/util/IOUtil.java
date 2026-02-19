@@ -12,7 +12,7 @@ import org.json.JSONObject;
 
 public class IOUtil {
 
-    private static String read_all(Reader rd) throws IOException {
+    private static String readAll(Reader rd) throws IOException {
         final var sb = new StringBuilder();
         int cp;
         while ((cp = rd.read()) != -1) {
@@ -21,13 +21,13 @@ public class IOUtil {
         return sb.toString();
     }
 
-    public static JSONObject read_json_from_url(String url) throws IOException, JSONException, URISyntaxException {
+    public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException, URISyntaxException {
         try (
             final var rd = new BufferedReader(
                 new InputStreamReader(new URI(url).toURL().openStream(), StandardCharsets.UTF_8)
             )
         ) {
-            return new JSONObject(read_all(rd));
+            return new JSONObject(readAll(rd));
         }
     }
 }

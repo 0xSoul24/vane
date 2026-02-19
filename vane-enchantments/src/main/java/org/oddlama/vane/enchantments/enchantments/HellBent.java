@@ -24,19 +24,19 @@ public class HellBent extends CustomEnchantment<Enchantments> {
     }
 
     @Override
-    public RecipeList default_recipes() {
+    public RecipeList defaultRecipes() {
         return RecipeList.of(
             new ShapedRecipeDefinition("generic")
-                .shape("m", "b", "t")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_knowledge")
-                .set_ingredient('t', Material.TURTLE_HELMET)
-                .set_ingredient('m', Material.MUSIC_DISC_PIGSTEP)
+                .shape("M", "B", "T")
+                .setIngredient('B', "vane_enchantments:ancient_tome_of_knowledge")
+                .setIngredient('T', Material.TURTLE_HELMET)
+                .setIngredient('M', Material.MUSIC_DISC_PIGSTEP)
                 .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
         );
     }
 
     @Override
-    public LootTableList default_loot_tables() {
+    public LootTableList defaultLootTables() {
         return LootTableList.of(
             new LootDefinition("generic")
                 .in(LootTables.BASTION_BRIDGE)
@@ -48,7 +48,7 @@ public class HellBent extends CustomEnchantment<Enchantments> {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void on_player_damage(final EntityDamageEvent event) {
+    public void onPlayerDamage(final EntityDamageEvent event) {
         final var entity = event.getEntity();
         if (!(entity instanceof Player) || event.getCause() != EntityDamageEvent.DamageCause.FLY_INTO_WALL) {
             return;

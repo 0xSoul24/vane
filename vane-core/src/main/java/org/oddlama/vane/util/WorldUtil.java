@@ -8,30 +8,30 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class WorldUtil {
 
-    private static final HashMap<UUID, BukkitTask> running_time_change_tasks = new HashMap<>();
+    private static final HashMap<UUID, BukkitTask> runningTimeChangeTasks = new HashMap<>();
 
-    public static boolean change_time_smoothly(
+    public static boolean changeTimeSmoothly(
         final World world,
         final Plugin plugin,
-        final long world_ticks,
-        final long interpolation_ticks
+        final long worldTicks,
+        final long interpolationTicks
     ) {
-        synchronized (running_time_change_tasks) {
-            if (running_time_change_tasks.containsKey(world.getUID())) {
+        synchronized (runningTimeChangeTasks) {
+            if (runningTimeChangeTasks.containsKey(world.getUID())) {
                 return false;
             }
 
             // Calculate relative time from and to
-            var rel_to = world_ticks;
-            var rel_from = world.getTime();
-            if (rel_to <= rel_from) {
-                rel_to += 24000;
+            var relTo = worldTicks;
+            var relFrom = world.getTime();
+            if (relTo <= relFrom) {
+                relTo += 24000;
             }
 
             // Calculate absolute values
-            final var delta_ticks = rel_to - rel_from;
-            final var absolute_from = world.getFullTime();
-            final var absolute_to = absolute_from - rel_from + rel_to;
+            final var deltaTicks = relTo - relFrom;
+            final var absoluteFrom = world.getFullTime();
+            final var absoluteTo = absoluteFrom - relFrom + relTo;
 
             // Task to advance time every tick
             BukkitTask task = plugin
@@ -45,18 +45,18 @@ public class WorldUtil {
                         @Override
                         public void run() {
                             // Remove a task if we finished interpolation
-                            if (elapsed > interpolation_ticks) {
-                                synchronized (running_time_change_tasks) {
-                                    running_time_change_tasks.remove(world.getUID()).cancel();
+                            if (elapsed > interpolationTicks) {
+                                synchronized (runningTimeChangeTasks) {
+                                    runningTimeChangeTasks.remove(world.getUID()).cancel();
                                 }
                             }
 
                             // Make the transition smooth by applying a cosine
-                            var lin_delta = (float) elapsed / interpolation_ticks;
-                            var delta = (1f - (float) Math.cos(Math.PI * lin_delta)) / 2f;
+                            var linDelta = (float) elapsed / interpolationTicks;
+                            var delta = (1f - (float) Math.cos(Math.PI * linDelta)) / 2f;
 
-                            var cur_ticks = absolute_from + (long) (delta_ticks * delta);
-                            world.setFullTime(cur_ticks);
+                            var curTicks = absoluteFrom + (long) (deltaTicks * delta);
+                            world.setFullTime(curTicks);
                             ++elapsed;
                         }
                     },
@@ -64,7 +64,7 @@ public class WorldUtil {
                     1
                 );
 
-            running_time_change_tasks.put(world.getUID(), task);
+            runningTimeChangeTasks.put(world.getUID(), task);
         }
 
         return true;

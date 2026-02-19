@@ -33,17 +33,17 @@ public class PersistentStorageManager {
         }
     }
 
-    private List<PersistentField> persistent_fields = new ArrayList<>();
+    private List<PersistentField> persistentFields = new ArrayList<>();
     private List<Migration> migrations = new ArrayList<>();
     Module<?> module;
-    boolean is_loaded = false;
+    boolean isLoaded = false;
 
     public PersistentStorageManager(Module<?> module) {
         this.module = module;
         compile(module, s -> s);
     }
 
-    private boolean has_persistent_annotation(Field field) {
+    private boolean hasPersistentAnnotation(Field field) {
         for (var a : field.getAnnotations()) {
             if (a.annotationType().getName().startsWith("org.oddlama.vane.annotation.persistent.Persistent")) {
                 return true;
@@ -52,14 +52,14 @@ public class PersistentStorageManager {
         return false;
     }
 
-    private void assert_field_prefix(Field field) {
-        if (!field.getName().startsWith("storage_")) {
-            throw new RuntimeException("Configuration fields must be prefixed storage_. This is a bug.");
+    private void assertFieldPrefix(Field field) {
+        if (!field.getName().startsWith("storage")) {
+            throw new RuntimeException("Configuration fields must be prefixed storage. This is a bug.");
         }
     }
 
-    private PersistentField compile_field(Object owner, Field field, Function<String, String> map_name) {
-        assert_field_prefix(field);
+    private PersistentField compileField(Object owner, Field field, Function<String, String> mapName) {
+        assertFieldPrefix(field);
 
         // Get the annotation
         Annotation annotation = null;
@@ -77,37 +77,37 @@ public class PersistentStorageManager {
 
         // Return a correct wrapper object
         if (atype.equals(Persistent.class)) {
-            return new PersistentField(owner, field, map_name);
+            return new PersistentField(owner, field, mapName);
         } else {
             throw new RuntimeException("Missing PersistentField handler for @" + atype.getName() + ". This is a bug.");
         }
     }
 
     @SuppressWarnings("unchecked")
-    public void compile(Object owner, Function<String, String> map_name) {
+    public void compile(Object owner, Function<String, String> mapName) {
         // Compile all annotated fields
-        persistent_fields.addAll(
+        persistentFields.addAll(
             getAllFields(owner.getClass())
                 .stream()
-                .filter(this::has_persistent_annotation)
-                .map(f -> compile_field(owner, f, map_name))
+                .filter(this::hasPersistentAnnotation)
+                .map(f -> compileField(owner, f, mapName))
                 .toList()
         );
     }
 
-    public void add_migration_to(long to, String name, Consumer<JSONObject> migrator) {
+    public void addMigrationTo(long to, String name, Consumer<JSONObject> migrator) {
         migrations.add(new Migration(to, name, migrator));
     }
 
     @SuppressWarnings("unchecked")
     public boolean load(File file) {
-        if (!file.exists() && is_loaded) {
+        if (!file.exists() && isLoaded) {
             module.log.severe("Cannot reload persistent storage from nonexistent file '" + file.getName() + "'");
             return false;
         }
 
         // Reset loaded status
-        is_loaded = false;
+        isLoaded = false;
 
         final JSONObject json;
         if (file.exists()) {
@@ -124,12 +124,12 @@ public class PersistentStorageManager {
         }
 
         // Check version and migrate if necessary
-        final var version_path = module.storage_path_of("storage_version");
-        final var version = Long.parseLong(json.optString(version_path, "0"));
-        final var needed_version = module.annotation.storage_version();
-        if (version != needed_version && migrations.size() > 0) {
+        final var versionPath = module.storagePathOf("storageVersion");
+        final var version = Long.parseLong(json.optString(versionPath, "0"));
+        final var neededVersion = module.annotation.storageVersion();
+        if (version != neededVersion && migrations.size() > 0) {
             module.log.info("Persistent storage is out of date.");
-            module.log.info("§dMigrating storage from version §b" + version + " → " + needed_version + "§d:");
+            module.log.info("§dMigrating storage from version §b" + version + " → " + neededVersion + "§d:");
 
             // Sort migrations by target version,
             // then apply new migrations in order.
@@ -144,10 +144,10 @@ public class PersistentStorageManager {
         }
 
         // Overwrite new version
-        json.put(version_path, String.valueOf(needed_version));
+        json.put(versionPath, String.valueOf(neededVersion));
 
         try {
-            for (final var f : persistent_fields) {
+            for (final var f : persistentFields) {
                 // If we have just initialized a new json object, we only load values that
                 // have defined keys (e.g., from initialization migrations)
                 if (version == 0 && !json.has(f.path())) {
@@ -161,25 +161,25 @@ public class PersistentStorageManager {
             return false;
         }
 
-        is_loaded = true;
+        isLoaded = true;
         return true;
     }
 
     public void save(File file) {
-        if (!is_loaded) {
+        if (!isLoaded) {
             // Don't save if never loaded or a previous load was faulty.
             return;
         }
 
-        // Create json with whole content
+        // Create JSON with whole content
         final var json = new JSONObject();
 
         // Save version
-        final var version_path = module.storage_path_of("storage_version");
-        json.put(version_path, String.valueOf(module.annotation.storage_version()));
+        final var versionPath = module.storagePathOf("storageVersion");
+        json.put(versionPath, String.valueOf(module.annotation.storageVersion()));
 
         // Save fields
-        for (final var f : persistent_fields) {
+        for (final var f : persistentFields) {
             try {
                 f.save(json);
             } catch (IOException e) {
@@ -188,9 +188,9 @@ public class PersistentStorageManager {
         }
 
         // Save to tmp file, then move atomically to prevent corruption.
-        final var tmp_file = new File(file.getAbsolutePath() + ".tmp");
+        final var tmpFile = new File(file.getAbsolutePath() + ".tmp");
         try {
-            Files.writeString(tmp_file.toPath(), json.toString());
+            Files.writeString(tmpFile.toPath(), json.toString());
         } catch (IOException e) {
             module.log.log(Level.SEVERE, "error while saving persistent data to temporary file!", e);
             return;
@@ -199,7 +199,7 @@ public class PersistentStorageManager {
         // Move atomically to prevent corruption.
         try {
             Files.move(
-                tmp_file.toPath(),
+                tmpFile.toPath(),
                 file.toPath(),
                 StandardCopyOption.REPLACE_EXISTING,
                 StandardCopyOption.ATOMIC_MOVE

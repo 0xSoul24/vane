@@ -6,27 +6,27 @@ import org.oddlama.vane.core.command.Command;
 public class ParseCheckResult implements CheckResult {
 
     private int depth;
-    private String argument_type;
+    private String argumentType;
     private Object parsed;
-    private boolean include_param;
+    private boolean includeParam;
 
-    public ParseCheckResult(int depth, String argument_type, Object parsed, boolean include_param) {
+    public ParseCheckResult(int depth, String argumentType, Object parsed, boolean includeParam) {
         this.depth = depth;
-        this.argument_type = argument_type;
+        this.argumentType = argumentType;
         this.parsed = parsed;
-        this.include_param = include_param;
+        this.includeParam = includeParam;
     }
 
-    public String argument_type() {
-        return argument_type;
+    public String argumentType() {
+        return argumentType;
     }
 
     public Object parsed() {
         return parsed;
     }
 
-    public boolean include_param() {
-        return include_param;
+    public boolean includeParam() {
+        return includeParam;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ParseCheckResult implements CheckResult {
     }
 
     @Override
-    public CheckResult prepend(String argument_type, Object parsed_arg, boolean include) {
+    public CheckResult prepend(String argumentType, Object parsedArg, boolean include) {
         throw new RuntimeException("Cannot prepend to ParseCheckResult! This is a bug.");
     }
 }

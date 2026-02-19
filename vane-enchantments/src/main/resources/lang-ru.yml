@@ -12,80 +12,80 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 4
+Version: 4
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'ru_ru'
+ResourcePackLangCode: 'ru_ru'
 
-item_ancient_tome:
+ItemAncientTome:
   # The display name of this item variant.
-  name: "Старинный фолиант"
+  Name: "Старинный фолиант"
 
-item_enchanted_ancient_tome:
+ItemEnchantedAncientTome:
   # The display name of this item variant.
-  name: "Старинный фолиант"
+  Name: "Старинный фолиант"
 
-item_ancient_tome_of_knowledge:
+ItemAncientTomeOfKnowledge:
   # The display name of this item variant.
-  name: "Старинный фолиант знаний"
+  Name: "Старинный фолиант знаний"
 
-item_enchanted_ancient_tome_of_knowledge:
+ItemEnchantedAncientTomeOfKnowledge:
   # The display name of this item variant.
-  name: "Старинный фолиант знаний"
+  Name: "Старинный фолиант знаний"
 
-item_ancient_tome_of_the_gods:
+ItemAncientTomeOfTheGods:
   # The display name of this item variant.
-  name: "Старинный фолиант богов"
+  Name: "Старинный фолиант богов"
 
-item_enchanted_ancient_tome_of_the_gods:
+ItemEnchantedAncientTomeOfTheGods:
   # The display name of this item variant.
-  name: "Старинный фолиант богов"
+  Name: "Старинный фолиант богов"
 
-enchantment_angel:
+EnchantmentAngel:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Ангел"
+  Name: "Ангел"
 
-enchantment_grappling_hook:
+EnchantmentGrapplingHook:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Абардажный крюк"
+  Name: "Абардажный крюк"
 
-enchantment_hell_bent:
+EnchantmentHellBent:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Крепкий орешек"
+  Name: "Крепкий орешек"
 
-enchantment_leafchopper:
+EnchantmentLeafchopper:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Листорез"
+  Name: "Листорез"
 
 # FIXME: translation missing
-enchantment_lightning:
+EnchantmentLightning:
   # The display name of this enchantment. Will be packed into a resource pack.  
-  name: "Lightning"
+  Name: "Lightning"
 
-enchantment_rake:
+EnchantmentRake:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Грабли"
+  Name: "Грабли"
 
-enchantment_seeding:
+EnchantmentSeeding:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Посев"
+  Name: "Посев"
 
-enchantment_soulbound:
+EnchantmentSoulbound:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Привязка души"
-  drop_lock_warning: "Предметы с привязкой души могут быть выброшены только мышью"
-  drop_cooldown: "Выбросите снова чтобы выбросить"
-  dropped_notification: "Выброшен предмет с привязкой души: %1$s"
+  Name: "Привязка души"
+  DropLockWarning: "Предметы с привязкой души могут быть выброшены только мышью"
+  DropCooldown: "Выбросите снова чтобы выбросить"
+  DroppedNotification: "Выброшен предмет с привязкой души: %1$s"
 
-enchantment_take_off:
+EnchantmentTakeOff:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Отрыв от земли"
+  Name: "Отрыв от земли"
 
-enchantment_unbreakable:
+EnchantmentUnbreakable:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Неразрушимый"
+  Name: "Неразрушимый"
 
-enchantment_wings:
+EnchantmentWings:
   # The display name of this enchantment. Will be packed into a resource pack.
-  name: "Крылья"
+  Name: "Крылья"

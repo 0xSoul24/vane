@@ -12,102 +12,102 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 5
+Version: 5
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'ru_ru'
+ResourcePackLangCode: 'ru_ru'
 
 # This message is sent when a command requires a player but is executed
 # by a non-player.
-command_not_a_player: "§cОшибка:§6 команда должна быть выполнена игроком!"
+CommandNotAPlayer: "§cОшибка:§6 команда должна быть выполнена игроком!"
 # This message is sent when the command sender is missing the required
 # permission.
-command_permission_denied: "§cОшибка:§6 доступ запрещён!"
+CommandPermissionDenied: "§cОшибка:§6 доступ запрещён!"
 
 # This message is sent when an invalid time format is encountered.
 # %1$s: format error message
-invalid_time_format: "§cОшибка:§6 неверное время: %1$s"
+InvalidTimeFormat: "§cОшибка:§6 неверное время: %1$s"
 
 # This message is sent when a block with a lootable is first attempted to be broken.
-break_loot_block_prevented: "§6Этот блок имеет loot table, его содержимое будет обновлено через некоторое время. Если вы действительно хотите его уничтожить подождите 5 секунд и сломайте его снова."
+BreakLootBlockPrevented: "§6Этот блок имеет loot table, его содержимое будет обновлено через некоторое время. Если вы действительно хотите его уничтожить подождите 5 секунд и сломайте его снова."
 
-command_customitem:
-  usage: "%1$s §agive §7<§bitem§7>"
-  description: "Выдаёт игроку указанный предмет."
-  help: "§agive §7<§bitem§7>:§r Выдаёт игроку указанный предмет."
+CommandCustomitem:
+  Usage: "%1$s §agive §7<§bitem§7>"
+  Description: "Выдаёт игроку указанный предмет."
+  Help: "§agive §7<§bitem§7>:§r Выдаёт игроку указанный предмет."
 
-command_enchant:
+CommandEnchant:
   # This message is sent when an enchantment level is given that is too low for the chosen enchantment.
   # %1$s: Given level
   # %2$s: Minimum level
-  level_too_low: "§cОшибка:§6 уровень %1$s§6 слишком низкий, должен быть как минимум %2$s"
+  LevelTooLow: "§cОшибка:§6 уровень %1$s§6 слишком низкий, должен быть как минимум %2$s"
   # This message is sent when an enchantment level is given that is too high for the chosen enchantment.
   # %1$s: Given level
   # %2$s: Maximum level
-  level_too_high: "§cОшибка:§6 уровень %1$s§6 слишком высокий, должен быть максимум %2$s"
+  LevelTooHigh: "§cОшибка:§6 уровень %1$s§6 слишком высокий, должен быть максимум %2$s"
   # This message is sent when the selected enchantment cannot be applied to the item in hand.
   # %1$s: Enchantment
   # %2$s: Item in hand
-  invalid_enchantment: "§cОшибка: %1$s§6 не может быть применён к %2$s"
-  usage: "%1$s §benchantment §7[§blevel§7]"
-  description: "Зачаровывает предмет в вашей руке."
-  help: "Зачаровывает предмет в вашей руке."
+  InvalidEnchantment: "§cОшибка: %1$s§6 не может быть применён к %2$s"
+  Usage: "%1$s §benchantment §7[§blevel§7]"
+  Description: "Зачаровывает предмет в вашей руке."
+  Help: "Зачаровывает предмет в вашей руке."
 
-command_vane:
+CommandVane:
   # This message is sent when a module has been successfully reloaded.
   # %1$s: module
-  reload_success: "%1$s§7: §aуспешно перезагружен"
+  ReloadSuccess: "%1$s§7: §aуспешно перезагружен"
   # This message is sent when a module failed to reload.
   # %1$s: module
-  reload_fail: "%1$s§7: §cперезагрузка завершилась неудачей"
+  ReloadFail: "%1$s§7: §cперезагрузка завершилась неудачей"
   # This message is sent when the resource_pack has been successfully generated.
-  resource_pack_generate_success: "§aРесурспак успешно сгенерирован: %1$s"
+  ResourcePackGenerateSuccess: "§aРесурспак успешно сгенерирован: %1$s"
   # This message is sent when the resource_pack could not be generated.
-  resource_pack_generate_fail: "§cПроизошла ошибка во время генерации ресурспака"
-  usage: "%1$s §7<§areload§7|§agenerate_resource_pack§7>"
-  description: "Управляет vane плагинами."
-  help: "§areload §7[§bmodule§7]:§r Перезагружает все или выбранный vane модуль.\n\
+  ResourcePackGenerateFail: "§cПроизошла ошибка во время генерации ресурспака"
+  Usage: "%1$s §7<§areload§7|§agenerate_resource_pack§7>"
+  Description: "Управляет vane плагинами."
+  Help: "§areload §7[§bmodule§7]:§r Перезагружает все или выбранный vane модуль.\n\
     §agenerate_resource_pack§7:§r генерирует vane ресурспак."
 
-resource_pack:
-  pack_required: "§eЭтот необходимый пользовательский пакет ресурсов используется для локализации и пользовательских текстур предметов."
-  pack_suggested: "§eЭтот дополнительный пользовательский пакет ресурсов используется для локализации и пользовательских текстур предметов."
+ResourcePack:
+  PackRequired: "§eЭтот необходимый пользовательский пакет ресурсов используется для локализации и пользовательских текстур предметов."
+  PackSuggested: "§eЭтот дополнительный пользовательский пакет ресурсов используется для локализации и пользовательских текстур предметов."
 
-menus:
-  head_selector:
+Menus:
+  HeadSelector:
     # The title for the head selection menu.
     # %1$s: Total heads in a library
-    title: "%1$s §8§lГоловы"
+    Title: "%1$s §8§lГоловы"
     # The title for the filter menu.
-    filter_title: "§8§lФильтр библиотеки голов"
+    FilterTitle: "§8§lФильтр библиотеки голов"
     # Represents a head in the library.
     # %1$s: Head name
     # %2$s: Head category
     # %3$s: Head tags
-    select_head:
-      name: "%1$s"
-      lore:
+    SelectHead:
+      Name: "%1$s"
+      Lore:
         - ""
         - "§7Категория: %2$s"
         - "§7Тэги: %3$s"
 
   # Item selection menu.
-  item_selector:
+  ItemSelector:
     # The item used to accept the selection.
-    accept:
-      name: "§a§lПринять"
-      lore: ["§bВыбрать§7 выделенный предмет."]
+    Accept:
+      Name: "§a§lПринять"
+      Lore: ["§bВыбрать§7 выделенный предмет."]
 
     # The item used to cancel the selection.
-    cancel:
-      name: "§c§lОтклонить"
-      lore: ["§6Отменяет§7 выбор предмета."]
+    Cancel:
+      Name: "§c§lОтклонить"
+      Lore: ["§6Отменяет§7 выбор предмета."]
 
     # The item used to represent the currently selected item.
-    selected:
-      name: "§d§lВыбранный предмет"
-      lore:
+    Selected:
+      Name: "§d§lВыбранный предмет"
+      Lore:
         - ""
         - "Кликните на любой предмет в вашем инвентаре чтобы выбрать его."
         - ""
@@ -115,34 +115,34 @@ menus:
         - "§bПКМ§7 для отчистки (если разрешено)."
 
   # Generic thing selection menu.
-  generic_selector:
+  GenericSelector:
     # The item selecting the n'th page
     # %1$s: Page number
-    page:
-      name: "§bСтраница %1$s"
-      lore: []
+    Page:
+      Name: "§bСтраница %1$s"
+      Lore: []
 
     # The item showing the current page
     # %1$s: Page number
     # %2$s: Total amount of pages
     # %3$s: Total number of items (filtered)
     # %4$s: Total number of items (unfiltered)
-    current_page:
-      name: "§aТекущая страница %1$s §7/ %2$s"
-      lore:
+    CurrentPage:
+      Name: "§aТекущая страница %1$s §7/ %2$s"
+      Lore:
         - ""
         - "§b#Отсортированных предметов: %3$s"
 
     # The item used to open the filter menu.
     # Right-clicking resets the filter.
-    filter:
-      name: "§d§lФильтр"
-      lore:
+    Filter:
+      Name: "§d§lФильтр"
+      Lore:
         - ""
         - "§bЛКМ§7 чтобы открыть меню фильтра."
         - "§bПКМ§7 чтобы сбросить фильтр."
 
     # The item used to cancel the selection.
-    cancel:
-      name: "§c§lОтмена"
-      lore: ["§6Отменяет§7 выбор."]
+    Cancel:
+      Name: "§c§lОтмена"
+      Lore: ["§6Отменяет§7 выбор."]

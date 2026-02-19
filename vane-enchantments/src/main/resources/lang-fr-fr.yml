@@ -12,62 +12,62 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 5
+Version: 5
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'fr_fr'
+ResourcePackLangCode: 'fr_fr'
 
-item_ancient_tome:
-  name: "Grimoire antique"
+ItemAncientTome:
+  Name: "Grimoire antique"
 
-item_enchanted_ancient_tome:
-  name: "Grimoire antique"
+ItemEnchantedAncientTome:
+  Name: "Grimoire antique"
 
-item_ancient_tome_of_knowledge:
-  name: "Grimoire antique de Connaissance"
+ItemAncientTomeOfKnowledge:
+  Name: "Grimoire antique de Connaissance"
 
-item_enchanted_ancient_tome_of_knowledge:
-  name: "Grimoire antique de Connaissance"
+ItemEnchantedAncientTomeOfKnowledge:
+  Name: "Grimoire antique de Connaissance"
 
-item_ancient_tome_of_the_gods:
-  name: "Grimoire antique des Dieux"
+ItemAncientTomeOfTheGods:
+  Name: "Grimoire antique des Dieux"
 
-item_enchanted_ancient_tome_of_the_gods:
-  name: "Grimoire antique des Dieux"
+ItemEnchantedAncientTomeOfTheGods:
+  Name: "Grimoire antique des Dieux"
 
-enchantment_angel:
-  name: "Ange"
+EnchantmentAngel:
+  Name: "Ange"
 
-enchantment_grappling_hook:
-  name: "Grappin"
+EnchantmentGrapplingHook:
+  Name: "Grappin"
 
-enchantment_hell_bent:
-  name: "Tête dure"
+EnchantmentHellBent:
+  Name: "Tête dure"
 
-enchantment_leafchopper:
-  name: "Taille-feuille"
+EnchantmentLeafchopper:
+  Name: "Taille-feuille"
 
-enchantment_lightning:
-  name: "Foudre"
+EnchantmentLightning:
+  Name: "Foudre"
 
-enchantment_rake:
-  name: "Râteau"
+EnchantmentRake:
+  Name: "Râteau"
 
-enchantment_seeding:
-  name: "Semences"
+EnchantmentSeeding:
+  Name: "Semences"
 
-enchantment_soulbound:
-  name: "Lié à l'âme"
-  drop_lock_warning: "Les objets liés à l'âme ne peuvent être jetés qu'avec la souris"
-  drop_cooldown: "Jetez encore pour confirmer"
-  dropped_notification: "Objet lié à l'âme jeté : %1$s"
+EnchantmentSoulbound:
+  Name: "Lié à l'âme"
+  DropLockWarning: "Les objets liés à l'âme ne peuvent être jetés qu'avec la souris"
+  DropCooldown: "Jetez encore pour confirmer"
+  DroppedNotification: "Objet lié à l'âme jeté : %1$s"
 
-enchantment_take_off:
-  name: "Décollage"
+EnchantmentTakeOff:
+  Name: "Décollage"
 
-enchantment_unbreakable:
-  name: "Indestructible"
+EnchantmentUnbreakable:
+  Name: "Indestructible"
 
-enchantment_wings:
-  name: "Ailes"
+EnchantmentWings:
+  Name: "Ailes"

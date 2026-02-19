@@ -9,7 +9,7 @@ public class ExecutorCheckResult implements CheckResult {
 
     private int depth;
     private Executor executor;
-    private ArrayList<Object> parsed_args = new ArrayList<>();
+    private ArrayList<Object> parsedArgs = new ArrayList<>();
 
     public ExecutorCheckResult(int depth, Executor executor) {
         this.depth = depth;
@@ -27,13 +27,13 @@ public class ExecutorCheckResult implements CheckResult {
     }
 
     public boolean apply(Command<?> command, CommandSender sender) {
-        return executor.execute(command, sender, parsed_args);
+        return executor.execute(command, sender, parsedArgs);
     }
 
     @Override
-    public CheckResult prepend(String argument_type, Object parsed_arg, boolean include) {
+    public CheckResult prepend(String argumentType, Object parsedArg, boolean include) {
         if (include) {
-            parsed_args.add(0, parsed_arg);
+            parsedArgs.add(0, parsedArg);
         }
         return this;
     }

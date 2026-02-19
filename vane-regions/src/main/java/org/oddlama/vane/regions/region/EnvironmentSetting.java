@@ -22,15 +22,15 @@ public enum EnvironmentSetting {
         this.def = def;
     }
 
-    public boolean default_value() {
+    public boolean defaultValue() {
         return def;
     }
 
-    public boolean has_override() {
-        return get_override() != 0;
+    public boolean hasOverride() {
+        return getOverride() != 0;
     }
 
-    public int get_override() {
-        return Regions.environment_overrides.get_override(this);
+    public int getOverride() {
+        return Regions.environmentOverrides.getOverride(this);
     }
 }

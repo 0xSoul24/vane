@@ -14,7 +14,7 @@ public class AngelRegistry extends CustomEnchantmentRegistry {
 
     public AngelRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent) {
         super("angel", List.of(ItemTypeKeys.ELYTRA), 5);
-        this.exclusive_with(List.of(TypedKey.create(RegistryKey.ENCHANTMENT, Key.key(NAMESPACE, "wings")))).register(
+        this.exclusiveWith(List.of(TypedKey.create(RegistryKey.ENCHANTMENT, Key.key(NAMESPACE, "wings")))).register(
                 composeEvent
             );
     }

@@ -12,107 +12,107 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 5
+Version: 5
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'en_us'
+ResourcePackLangCode: 'en_us'
 
 # This message is sent when a command requires a player but is executed
 # by a non-player.
-command_not_a_player: "§cerror:§6 command must be executed by a player!"
+CommandNotAPlayer: "§cerror:§6 command must be executed by a player!"
 # This message is sent when the command sender is missing the required
 # permission.
-command_permission_denied: "§cerror:§6 permission denied!"
+CommandPermissionDenied: "§cerror:§6 permission denied!"
 
 # This message is sent when an invalid time format is encountered.
 # %1$s: format error message
-invalid_time_format: "§cerror:§6 invalid time: %1$s"
+InvalidTimeFormat: "§cerror:§6 invalid time: %1$s"
 
 # This message is sent when a block with a lootable is first attempted to be broken.
-break_loot_block_prevented: "§6This block has a loot table, and will automatically be refilled after some time. If you really want to destroy this block, wait 5 seconds and break it again."
+BreakLootBlockPrevented: "§6This block has a loot table, and will automatically be refilled after some time. If you really want to destroy this block, wait 5 seconds and break it again."
 
-command_customitem:
-  usage: "%1$s §agive §7<§bitem§7>"
-  description: "Gives a specific custom item to the player."
-  help: "§agive §7<§bitem§7>:§r Gives a specific custom item to the player."
+CommandCustomitem:
+  Usage: "%1$s §agive §7<§bitem§7>"
+  Description: "Gives a specific custom item to the player."
+  Help: "§agive §7<§bitem§7>:§r Gives a specific custom item to the player."
 
-command_enchant:
+CommandEnchant:
   # This message is sent when an enchantment level is given that is too low for the chosen enchantment.
   # %1$s: Given level
   # %2$s: Minimum level
-  level_too_low: "§cerror:§6 level %1$s§6 is too low, must be at least %2$s"
+  LevelTooLow: "§cerror:§6 level %1$s§6 is too low, must be at least %2$s"
   # This message is sent when an enchantment level is given that is too high for the chosen enchantment.
   # %1$s: Given level
   # %2$s: Maximum level
-  level_too_high: "§cerror:§6 level %1$s§6 is too high, must be at most %2$s"
+  LevelTooHigh: "§cerror:§6 level %1$s§6 is too high, must be at most %2$s"
   # This message is sent when the selected enchantment cannot be applied to the item in hand.
   # %1$s: Enchantment
   # %2$s: Item in hand
-  invalid_enchantment: "§cerror: %1$s§6 cannot be applied to %2$s"
-  usage: "%1$s §benchantment §7[§blevel§7]"
-  description: "Enchants the item in your hand."
-  help: "Enchants the item in your hand."
+  InvalidEnchantment: "§cerror: %1$s§6 cannot be applied to %2$s"
+  Usage: "%1$s §benchantment §7[§blevel§7]"
+  Description: "Enchants the item in your hand."
+  Help: "Enchants the item in your hand."
 
-command_vane:
+CommandVane:
   # This message is sent when a module has been successfully reloaded.
   # %1$s: module
-  reload_success: "%1$s§7: §areload successful"
+  ReloadSuccess: "%1$s§7: §areload successful"
   # This message is sent when a module failed to reload.
   # %1$s: module
-  reload_fail: "%1$s§7: §creload failed"
+  ReloadFail: "%1$s§7: §creload failed"
   # This message is sent when the resource_pack has been successfully generated.
   # %1$s: path to the resource pack file
-  resource_pack_generate_success: "§aResource pack generated successfully: %1$s"
+  ResourcePackGenerateSuccess: "§aResource pack generated successfully: %1$s"
   # This message is sent when the resource_pack could not be generated.
-  resource_pack_generate_fail: "§cAn error has occurred while generating the resource pack"
-  usage: "%1$s §7<§areload§7|§agenerate_resource_pack§7>"
-  description: "Manages vane plugins."
-  help: "§areload §7[§bmodule§7]:§r Reloads all or the given vane module.\n\
+  ResourcePackGenerateFail: "§cAn error has occurred while generating the resource pack"
+  Usage: "%1$s §7<§areload§7|§agenerate_resource_pack§7>"
+  Description: "Manages vane plugins."
+  Help: "§areload §7[§bmodule§7]:§r Reloads all or the given vane module.\n\
     §agenerate_resource_pack§7:§r generates the vane resource pack."
 
-resource_pack:
+ResourcePack:
   # This message is used when the player is asked to accept or decline the resource pack and
   # resource_pack.force in config.yml is set to true, leave blank for no message
-  pack_required: "§eThis required custom resource pack is used for localization and custom item textures."
+  PackRequired: "§eThis required custom resource pack is used for localization and custom item textures."
   # This message is used when the player is asked to accept or decline the resource pack and
   # resource_pack.force in config.yml is set to false, leave blank for no message
-  pack_suggested: "§eThis optional custom resource pack is used for localization and custom item textures."
+  PackSuggested: "§eThis optional custom resource pack is used for localization and custom item textures."
 
-menus:
-  head_selector:
+Menus:
+  HeadSelector:
     # The title for the head selection menu.
     # %1$s: Total heads in a library
-    title: "%1$s §8§lHeads"
+    Title: "%1$s §8§lHeads"
     # The title for the filter menu.
-    filter_title: "§8§lFilter Head Library"
+    FilterTitle: "§8§lFilter Head Library"
     # Represents a head in the library.
     # %1$s: Head name
     # %2$s: Head category
     # %3$s: Head tags
-    select_head:
-      name: "%1$s"
-      lore:
+    SelectHead:
+      Name: "%1$s"
+      Lore:
         - ""
         - "§7Category: %2$s"
         - "§7Tags: %3$s"
 
   # Item selection menu.
-  item_selector:
+  ItemSelector:
     # The item used to accept the selection.
-    accept:
-      name: "§a§lAccept"
-      lore: ["§bChoose§7 the currently selected item."]
+    Accept:
+      Name: "§a§lAccept"
+      Lore: ["§bChoose§7 the currently selected item."]
 
     # The item used to cancel the selection.
-    cancel:
-      name: "§c§lCancel"
-      lore: ["§6Abort§7 item selection."]
+    Cancel:
+      Name: "§c§lCancel"
+      Lore: ["§6Abort§7 item selection."]
 
     # The item used to represent the currently selected item.
-    selected:
-      name: "§d§lSelected Item"
-      lore:
+    Selected:
+      Name: "§d§lSelected Item"
+      Lore:
         - ""
         - "Click any item in your inventory to select it."
         - ""
@@ -120,34 +120,34 @@ menus:
         - "§bRight-click§7 to clear (if allowed)."
 
   # Generic thing selection menu.
-  generic_selector:
+  GenericSelector:
     # The item selecting the n'th page
     # %1$s: Page number
-    page:
-      name: "§bPage %1$s"
-      lore: []
+    Page:
+      Name: "§bPage %1$s"
+      Lore: []
 
     # The item showing the current page
     # %1$s: Page number
     # %2$s: Total amount of pages
     # %3$s: Total number of items (filtered)
     # %4$s: Total number of items (unfiltered)
-    current_page:
-      name: "§aCurrent Page %1$s §7/ %2$s"
-      lore:
+    CurrentPage:
+      Name: "§aCurrent Page %1$s §7/ %2$s"
+      Lore:
         - ""
         - "§b#Filtered Items: %3$s"
 
     # The item used to open the filter menu.
     # Right-clicking resets the filter.
-    filter:
-      name: "§d§lFilter"
-      lore:
+    Filter:
+      Name: "§d§lFilter"
+      Lore:
         - ""
         - "§bLeft-click§7 to open the filter menu."
         - "§bRight-click§7 to reset filter."
 
     # The item used to cancel the selection.
-    cancel:
-      name: "§c§lCancel"
-      lore: ["§6Abort§7 selection."]
+    Cancel:
+      Name: "§c§lCancel"
+      Lore: ["§6Abort§7 selection."]

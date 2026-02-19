@@ -1,7 +1,7 @@
 package org.oddlama.vane.regions.region;
 
-import static org.oddlama.vane.core.persistent.PersistentSerializer.from_json;
-import static org.oddlama.vane.core.persistent.PersistentSerializer.to_json;
+import static org.oddlama.vane.core.persistent.PersistentSerializer.fromJson;
+import static org.oddlama.vane.core.persistent.PersistentSerializer.toJson;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -10,32 +10,33 @@ import java.util.Map;
 import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
+import org.oddlama.vane.core.persistent.PersistentSerializer;
 import org.oddlama.vane.regions.Regions;
 
 public class RegionGroup {
 
     public static Object serialize(@NotNull final Object o) throws IOException {
-        final var region_group = (RegionGroup) o;
+        final var regionGroup = (RegionGroup) o;
         final var json = new JSONObject();
-        json.put("id", to_json(UUID.class, region_group.id));
-        json.put("name", to_json(String.class, region_group.name));
-        json.put("owner", to_json(UUID.class, region_group.owner));
+        json.put("id", PersistentSerializer.toJson(UUID.class, regionGroup.id));
+        json.put("name", PersistentSerializer.toJson(String.class, regionGroup.name));
+        json.put("owner", PersistentSerializer.toJson(UUID.class, regionGroup.owner));
         try {
-            json.put("roles", to_json(RegionGroup.class.getDeclaredField("roles"), region_group.roles));
+            json.put("roles", PersistentSerializer.toJson(RegionGroup.class.getDeclaredField("roles"), regionGroup.roles));
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Invalid field. This is a bug.", e);
         }
         try {
             json.put(
-                "player_to_role",
-                to_json(RegionGroup.class.getDeclaredField("player_to_role"), region_group.player_to_role)
+                "playerToRole",
+                PersistentSerializer.toJson(RegionGroup.class.getDeclaredField("playerToRole"), regionGroup.playerToRole)
             );
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Invalid field. This is a bug.", e);
         }
-        json.put("role_others", to_json(UUID.class, region_group.role_others));
+        json.put("roleOthers", PersistentSerializer.toJson(UUID.class, regionGroup.roleOthers));
         try {
-            json.put("settings", to_json(RegionGroup.class.getDeclaredField("settings"), region_group.settings));
+            json.put("settings", PersistentSerializer.toJson(RegionGroup.class.getDeclaredField("settings"), regionGroup.settings));
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Invalid field. This is a bug.", e);
         }
@@ -46,12 +47,12 @@ public class RegionGroup {
     @SuppressWarnings("unchecked")
     public static RegionGroup deserialize(@NotNull final Object o) throws IOException {
         final var json = (JSONObject) o;
-        final var region_group = new RegionGroup();
-        region_group.id = from_json(UUID.class, json.get("id"));
-        region_group.name = from_json(String.class, json.get("name"));
-        region_group.owner = from_json(UUID.class, json.get("owner"));
+        final var regionGroup = new RegionGroup();
+        regionGroup.id = PersistentSerializer.fromJson(UUID.class, json.get("id"));
+        regionGroup.name = PersistentSerializer.fromJson(String.class, json.get("name"));
+        regionGroup.owner = PersistentSerializer.fromJson(UUID.class, json.get("owner"));
         try {
-            region_group.roles = (Map<UUID, Role>) from_json(
+            regionGroup.roles = (Map<UUID, Role>) PersistentSerializer.fromJson(
                 RegionGroup.class.getDeclaredField("roles"),
                 json.get("roles")
             );
@@ -59,23 +60,23 @@ public class RegionGroup {
             throw new RuntimeException("Invalid field. This is a bug.", e);
         }
         try {
-            region_group.player_to_role = (Map<UUID, UUID>) from_json(
-                RegionGroup.class.getDeclaredField("player_to_role"),
-                json.get("player_to_role")
+            regionGroup.playerToRole = (Map<UUID, UUID>) PersistentSerializer.fromJson(
+                RegionGroup.class.getDeclaredField("playerToRole"),
+                json.get("playerToRole")
             );
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Invalid field. This is a bug.", e);
         }
-        region_group.role_others = from_json(UUID.class, json.get("role_others"));
+        regionGroup.roleOthers = PersistentSerializer.fromJson(UUID.class, json.get("roleOthers"));
         try {
-            region_group.settings = (Map<EnvironmentSetting, Boolean>) from_json(
+            regionGroup.settings = (Map<EnvironmentSetting, Boolean>) PersistentSerializer.fromJson(
                 RegionGroup.class.getDeclaredField("settings"),
                 json.get("settings")
             );
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Invalid field. This is a bug.", e);
         }
-        return region_group;
+        return regionGroup;
     }
 
     private UUID id;
@@ -83,8 +84,8 @@ public class RegionGroup {
     private UUID owner;
 
     private Map<UUID, Role> roles = new HashMap<>();
-    private Map<UUID, UUID> player_to_role = new HashMap<>();
-    private UUID role_others;
+    private Map<UUID, UUID> playerToRole = new HashMap<>();
+    private UUID roleOthers;
 
     private Map<EnvironmentSetting, Boolean> settings = new HashMap<>();
 
@@ -97,12 +98,12 @@ public class RegionGroup {
 
         // Add admins role
         final var admins = new Role("[Admins]", Role.RoleType.ADMINS);
-        this.add_role(admins);
+        this.addRole(admins);
 
         // Add another role
         final var others = new Role("[Others]", Role.RoleType.OTHERS);
-        this.add_role(others);
-        this.role_others = others.id();
+        this.addRole(others);
+        this.roleOthers = others.id();
 
         // Add "friends" role
         final var friends = new Role("Friends", Role.RoleType.NORMAL);
@@ -110,14 +111,14 @@ public class RegionGroup {
         friends.settings().put(RoleSetting.USE, true);
         friends.settings().put(RoleSetting.CONTAINER, true);
         friends.settings().put(RoleSetting.PORTAL, true);
-        this.add_role(friends);
+        this.addRole(friends);
 
         // Add "owner" to admins
-        this.player_to_role.put(owner, admins.id());
+        this.playerToRole.put(owner, admins.id());
 
         // Set setting defaults
         for (var es : EnvironmentSetting.values()) {
-            this.settings.put(es, es.default_value());
+            this.settings.put(es, es.defaultValue());
         }
     }
 
@@ -141,35 +142,35 @@ public class RegionGroup {
         return settings;
     }
 
-    public boolean get_setting(final EnvironmentSetting setting) {
-        if (setting.has_override()) {
-            return setting.get_override() == 1;
+    public boolean getSetting(final EnvironmentSetting setting) {
+        if (setting.hasOverride()) {
+            return setting.getOverride() == 1;
         }
-        return settings.getOrDefault(setting, setting.default_value());
+        return settings.getOrDefault(setting, setting.defaultValue());
     }
 
-    public void add_role(final Role role) {
+    public void addRole(final Role role) {
         this.roles.put(role.id(), role);
     }
 
-    public Map<UUID, UUID> player_to_role() {
-        return player_to_role;
+    public Map<UUID, UUID> playerToRole() {
+        return playerToRole;
     }
 
-    public Role get_role(final UUID player) {
-        return roles.get(player_to_role.getOrDefault(player, role_others));
+    public Role getRole(final UUID player) {
+        return roles.get(playerToRole.getOrDefault(player, roleOthers));
     }
 
-    public void remove_role(final UUID role_id) {
-        player_to_role.values().removeIf(r -> role_id.equals(r));
-        roles.remove(role_id);
+    public void removeRole(final UUID roleId) {
+        playerToRole.values().removeIf(r -> roleId.equals(r));
+        roles.remove(roleId);
     }
 
     public Collection<Role> roles() {
         return roles.values();
     }
 
-    public boolean is_orphan(final Regions regions) {
-        return !regions.all_regions().stream().anyMatch(r -> id.equals(r.region_group_id()));
+    public boolean isOrphan(final Regions regions) {
+        return !regions.allRegions().stream().anyMatch(r -> id.equals(r.regionGroupId()));
     }
 }

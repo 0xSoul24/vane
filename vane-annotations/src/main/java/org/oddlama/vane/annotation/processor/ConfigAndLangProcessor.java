@@ -40,15 +40,15 @@ import javax.tools.Diagnostic;
 public class ConfigAndLangProcessor extends AbstractProcessor {
 
     @Override
-    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment round_env) {
+    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         for (var annotation : annotations) {
-            round_env.getElementsAnnotatedWith(annotation).forEach(e -> verify_type(annotation, e));
+            roundEnv.getElementsAnnotatedWith(annotation).forEach(e -> verifyType(annotation, e));
         }
 
         return true;
     }
 
-    private static final Map<String, String> field_type_mapping;
+    private static final Map<String, String> fieldTypeMapping;
 
     static {
         Map<String, String> map = new HashMap<>();
@@ -83,13 +83,13 @@ public class ConfigAndLangProcessor extends AbstractProcessor {
             "org.oddlama.vane.core.lang.TranslatedMessageArray"
         );
         map.put("org.oddlama.vane.annotation.lang.LangVersion", "long");
-        field_type_mapping = Collections.unmodifiableMap(map);
+        fieldTypeMapping = Collections.unmodifiableMap(map);
     }
 
-    private void verify_type(TypeElement annotation, Element element) {
+    private void verifyType(TypeElement annotation, Element element) {
         var type = element.asType().toString();
-        var required_type = field_type_mapping.get(annotation.asType().toString());
-        if (required_type == null) {
+        var requiredType = fieldTypeMapping.get(annotation.asType().toString());
+        if (requiredType == null) {
             processingEnv
                 .getMessager()
                 .printMessage(
@@ -97,10 +97,10 @@ public class ConfigAndLangProcessor extends AbstractProcessor {
                     element.asType().toString() +
                     ": @" +
                     annotation.getSimpleName() +
-                    " has no required_type mapping! This is a bug."
+                    " has no requiredType mapping! This is a bug."
                 );
         } else {
-            if (!required_type.equals("<any>") && !required_type.equals(type)) {
+            if (!requiredType.equals("<any>") && !requiredType.equals(type)) {
                 processingEnv
                     .getMessager()
                     .printMessage(
@@ -109,7 +109,7 @@ public class ConfigAndLangProcessor extends AbstractProcessor {
                         ": @" +
                         annotation.getSimpleName() +
                         " requires a field of type " +
-                        required_type +
+                        requiredType +
                         " but got " +
                         type
                     );

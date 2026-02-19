@@ -1,6 +1,6 @@
 package org.oddlama.vane.util;
 
-import static org.oddlama.vane.util.BlockUtil.drop_naturally;
+import static org.oddlama.vane.util.BlockUtil.dropNaturally;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +22,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class PlayerUtil {
 
-    public static void apply_elytra_boost(final Player player, double factor) {
+    public static void applyElytraBoost(final Player player, double factor) {
         final var v = player.getLocation().getDirection();
         v.normalize();
         v.multiply(factor);
@@ -34,7 +34,7 @@ public class PlayerUtil {
             .playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.4f, 2.0f);
     }
 
-    public static void remove_one_item_from_hand(final Player player, final EquipmentSlot hand) {
+    public static void removeOneItemFromHand(final Player player, final EquipmentSlot hand) {
         final var item = player.getEquipment().getItem(hand);
         if (item.getAmount() == 1) {
             player.getInventory().setItem(hand, null);
@@ -46,7 +46,7 @@ public class PlayerUtil {
 
     // ItemStack amounts are discarded, only the mapped value counts.
     // CAUTION: There must not be duplicate item keys that could stack.
-    public static boolean has_items(final Player player, final Map<ItemStack, Integer> items) {
+    public static boolean hasItems(final Player player, final Map<ItemStack, Integer> items) {
         if (player.getGameMode() == GameMode.CREATIVE) {
             return true;
         }
@@ -64,25 +64,25 @@ public class PlayerUtil {
         return true;
     }
 
-    public static boolean take_items(final Player player, final ItemStack item) {
+    public static boolean takeItems(final Player player, final ItemStack item) {
         final var map = new HashMap<ItemStack, Integer>();
         map.put(item, item.getAmount());
-        return take_items(player, map);
+        return takeItems(player, map);
     }
 
-    public static boolean take_items(final Player player, final Map<ItemStack, Integer> items) {
+    public static boolean takeItems(final Player player, final Map<ItemStack, Integer> items) {
         if (player.getGameMode() == GameMode.CREATIVE) {
             return true;
         }
 
-        if (!has_items(player, items)) {
+        if (!hasItems(player, items)) {
             return false;
         }
 
         final var inventory = player.getInventory();
         final var stacks = new ArrayList<ItemStack>();
         for (final var e : items.entrySet()) {
-            stacks.addAll(Arrays.asList(create_lawful_stacks(e.getKey(), e.getValue())));
+            stacks.addAll(Arrays.asList(createLawfulStacks(e.getKey(), e.getValue())));
         }
 
         final var leftovers = inventory.removeItem(stacks.toArray(new ItemStack[0]));
@@ -101,12 +101,12 @@ public class PlayerUtil {
         return true;
     }
 
-    public static void give_item(final Player player, final ItemStack item) {
-        give_items(player, new ItemStack[] { item });
+    public static void giveItem(final Player player, final ItemStack item) {
+        giveItems(player, new ItemStack[] { item });
     }
 
     // Ignores item.getAmount().
-    public static ItemStack[] create_lawful_stacks(final ItemStack item, int amount) {
+    public static ItemStack[] createLawfulStacks(final ItemStack item, int amount) {
         final var stacks = (item.getMaxStackSize() - 1 + amount) / item.getMaxStackSize();
         final var leftover = amount % item.getMaxStackSize();
         if (stacks < 1) {
@@ -125,22 +125,22 @@ public class PlayerUtil {
         return items;
     }
 
-    public static void give_items(final Player player, final ItemStack item, int amount) {
-        give_items(player, create_lawful_stacks(item, amount));
+    public static void giveItems(final Player player, final ItemStack item, int amount) {
+        giveItems(player, createLawfulStacks(item, amount));
     }
 
-    public static void give_items(final Player player, final ItemStack[] items) {
+    public static void giveItems(final Player player, final ItemStack[] items) {
         final var leftovers = player.getInventory().addItem(items);
         for (final var item : leftovers.values()) {
             player.getLocation().getWorld().dropItem(player.getLocation(), item).setPickupDelay(0);
         }
     }
 
-    public static boolean till_block(final Player player, final Block block) {
+    public static boolean tillBlock(final Player player, final Block block) {
         // Create block break event for block to till and check if it gets canceled
-        final var break_event = new BlockBreakEvent(block, player);
-        Bukkit.getPluginManager().callEvent(break_event);
-        if (break_event.isCancelled()) {
+        final var breakEvent = new BlockBreakEvent(block, player);
+        Bukkit.getPluginManager().callEvent(breakEvent);
+        if (breakEvent.isCancelled()) {
             return false;
         }
 
@@ -152,32 +152,32 @@ public class PlayerUtil {
         return true;
     }
 
-    public static boolean seed_block(
+    public static boolean seedBlock(
         final Player player,
-        final ItemStack used_item,
+        final ItemStack usedItem,
         final Block block,
-        final Material plant_type,
-        final Material seed_type
+        final Material plantType,
+        final Material seedType
     ) {
         // Create block place event for seed to place and check if it gets canceled
         final var below = block.getRelative(BlockFace.DOWN);
-        final var place_event = new BlockPlaceEvent(
+        final var placeEvent = new BlockPlaceEvent(
             block,
             below.getState(),
             below,
-            used_item,
+            usedItem,
             player,
             true,
             EquipmentSlot.HAND
         );
-        Bukkit.getPluginManager().callEvent(place_event);
-        if (place_event.isCancelled()) {
+        Bukkit.getPluginManager().callEvent(placeEvent);
+        if (placeEvent.isCancelled()) {
             return false;
         }
 
         // Remove one seed from inventory if not in creative mode
         if (player.getGameMode() != GameMode.CREATIVE) {
-            final var seedstack = new ItemStack(seed_type, 1);
+            final var seedstack = new ItemStack(seedType, 1);
             if (!player.getInventory().containsAtLeast(seedstack, 1)) {
                 return false;
             }
@@ -186,7 +186,7 @@ public class PlayerUtil {
         }
 
         // Set block seeded
-        block.setType(plant_type);
+        block.setType(plantType);
         final var ageable = (Ageable) block.getBlockData();
         ageable.setAge(0);
         block.setBlockData(ageable);
@@ -196,7 +196,7 @@ public class PlayerUtil {
             .getWorld()
             .playSound(
                 player.getLocation(),
-                seed_type == Material.NETHER_WART ? Sound.ITEM_NETHER_WART_PLANT : Sound.ITEM_CROP_PLANT,
+                seedType == Material.NETHER_WART ? Sound.ITEM_NETHER_WART_PLANT : Sound.ITEM_CROP_PLANT,
                 SoundCategory.BLOCKS,
                 1.0f,
                 1.0f
@@ -204,7 +204,7 @@ public class PlayerUtil {
         return true;
     }
 
-    public static boolean harvest_plant(final Player player, final Block block) {
+    public static boolean harvestPlant(final Player player, final Block block) {
         ItemStack[] drops;
         switch (block.getType()) {
             default:
@@ -237,9 +237,9 @@ public class PlayerUtil {
         }
 
         // Create a block break event for block to harvest and check if it gets canceled
-        final var break_event = new BlockBreakEvent(block, player);
-        Bukkit.getPluginManager().callEvent(break_event);
-        if (break_event.isCancelled()) {
+        final var breakEvent = new BlockBreakEvent(block, player);
+        Bukkit.getPluginManager().callEvent(breakEvent);
+        if (breakEvent.isCancelled()) {
             return false;
         }
 
@@ -249,13 +249,13 @@ public class PlayerUtil {
 
         // Drop items
         for (ItemStack drop : drops) {
-            drop_naturally(block, drop);
+            BlockUtil.dropNaturally(block, drop);
         }
 
         return true;
     }
 
-    public static void swing_arm(final Player player, final EquipmentSlot hand) {
+    public static void swingArm(final Player player, final EquipmentSlot hand) {
         switch (hand) {
             case HAND:
                 player.swingMainHand();

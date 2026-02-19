@@ -10,7 +10,7 @@ import org.oddlama.vane.core.item.api.InhibitBehavior;
 import org.oddlama.vane.core.module.Context;
 import org.oddlama.vane.trifles.Trifles;
 
-@VaneItem(name = "papyrus_scroll", base = Material.PAPER, model_data = 0x76000f, version = 1)
+@VaneItem(name = "papyrus_scroll", base = Material.PAPER, modelData = 0x76000f, version = 1)
 public class PapyrusScroll extends CustomItem<Trifles> {
 
     public PapyrusScroll(Context<Trifles> context) {
@@ -18,14 +18,14 @@ public class PapyrusScroll extends CustomItem<Trifles> {
     }
 
     @Override
-    public RecipeList default_recipes() {
+    public RecipeList defaultRecipes() {
         return RecipeList.of(
             new ShapedRecipeDefinition("generic")
-                .shape("rpp", "pep", "ppg")
-                .set_ingredient('p', Material.PAPER)
-                .set_ingredient('r', Material.RABBIT_HIDE)
-                .set_ingredient('e', Material.ECHO_SHARD)
-                .set_ingredient('g', Material.GOLD_NUGGET)
+                .shape("RPP", "PEP", "PPG")
+                .setIngredient('P', Material.PAPER)
+                .setIngredient('R', Material.RABBIT_HIDE)
+                .setIngredient('E', Material.ECHO_SHARD)
+                .setIngredient('G', Material.GOLD_NUGGET)
                 .result(key().toString())
         );
     }

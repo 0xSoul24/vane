@@ -1,7 +1,7 @@
 package org.oddlama.vane.core.config;
 
-import static org.oddlama.vane.util.MaterialUtil.material_from;
-import static org.oddlama.vane.util.StorageUtil.namespaced_key;
+import static org.oddlama.vane.util.MaterialUtil.materialFrom;
+import static org.oddlama.vane.util.StorageUtil.namespacedKey;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -24,20 +24,20 @@ public class ConfigMaterialMapMapMapField extends ConfigField<Map<String, Map<St
     public ConfigMaterialMapMapMapField(
         Object owner,
         Field field,
-        Function<String, String> map_name,
+        Function<String, String> mapName,
         ConfigMaterialMapMapMap annotation
     ) {
         super(
             owner,
             field,
-            map_name,
+            mapName,
             "map of string to (map of string to (map of string to material))",
             annotation.desc()
         );
         this.annotation = annotation;
     }
 
-    private void append_map_definition(
+    private void appendMapDefinition(
         StringBuilder builder,
         String indent,
         String prefix,
@@ -51,7 +51,7 @@ public class ConfigMaterialMapMapMapField extends ConfigField<Map<String, Map<St
                 builder.append(indent);
                 builder.append(prefix);
                 builder.append("  ");
-                builder.append(escape_yaml(e1.getKey()));
+                builder.append(escapeYaml(e1.getKey()));
                 builder.append(":\n");
 
                 e1
@@ -63,7 +63,7 @@ public class ConfigMaterialMapMapMapField extends ConfigField<Map<String, Map<St
                         builder.append(indent);
                         builder.append(prefix);
                         builder.append("    ");
-                        builder.append(escape_yaml(e2.getKey()));
+                        builder.append(escapeYaml(e2.getKey()));
                         builder.append(":\n");
 
                         e2
@@ -75,11 +75,11 @@ public class ConfigMaterialMapMapMapField extends ConfigField<Map<String, Map<St
                                 builder.append(indent);
                                 builder.append(prefix);
                                 builder.append("      ");
-                                builder.append(escape_yaml(e3.getKey()));
+                                builder.append(escapeYaml(e3.getKey()));
                                 builder.append(": \"");
-                                builder.append(escape_yaml(e3.getValue().getKey().getNamespace()));
+                                builder.append(escapeYaml(e3.getValue().getKey().getNamespace()));
                                 builder.append(":");
-                                builder.append(escape_yaml(e3.getValue().getKey().getKey()));
+                                builder.append(escapeYaml(e3.getValue().getKey().getKey()));
                                 builder.append("\"\n");
                             });
                     });
@@ -88,7 +88,7 @@ public class ConfigMaterialMapMapMapField extends ConfigField<Map<String, Map<St
 
     @Override
     public Map<String, Map<String, Map<String, Material>>> def() {
-        final var override = overridden_def();
+        final var override = overriddenDef();
         if (override != null) {
             return override;
         } else {
@@ -108,7 +108,7 @@ public class ConfigMaterialMapMapMapField extends ConfigField<Map<String, Map<St
 
     @Override
     public boolean metrics() {
-        final var override = overridden_metrics();
+        final var override = overriddenMetrics();
         if (override != null) {
             return override;
         } else {
@@ -117,66 +117,66 @@ public class ConfigMaterialMapMapMapField extends ConfigField<Map<String, Map<St
     }
 
     @Override
-    public void generate_yaml(StringBuilder builder, String indent, YamlConfiguration existing_compatible_config) {
-        append_description(builder, indent);
+    public void generateYaml(StringBuilder builder, String indent, YamlConfiguration existingCompatibleConfig) {
+        appendDescription(builder, indent);
 
         // Default
         builder.append(indent);
         builder.append("# Default:\n");
-        append_map_definition(builder, indent, "# ", def());
+        appendMapDefinition(builder, indent, "# ", def());
 
         // Definition
         builder.append(indent);
         builder.append(basename());
         builder.append(":\n");
-        final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
+        final var def = existingCompatibleConfig != null && existingCompatibleConfig.contains(yamlPath())
+            ? loadFromYaml(existingCompatibleConfig)
             : def();
-        append_map_definition(builder, indent, "", def);
+        appendMapDefinition(builder, indent, "", def);
     }
 
     @Override
-    public void check_loadable(YamlConfiguration yaml) throws YamlLoadException {
-        check_yaml_path(yaml);
+    public void checkLoadable(YamlConfiguration yaml) throws YamlLoadException {
+        checkYamlPath(yaml);
 
-        if (!yaml.isConfigurationSection(yaml_path())) {
-            throw new YamlLoadException("Invalid type for yaml path '" + yaml_path() + "', expected group");
+        if (!yaml.isConfigurationSection(yamlPath())) {
+            throw new YamlLoadException("Invalid type for yaml path '" + yamlPath() + "', expected group");
         }
 
-        for (var key1 : yaml.getConfigurationSection(yaml_path()).getKeys(false)) {
-            final var key1_path = yaml_path() + "." + key1;
-            if (!yaml.isConfigurationSection(key1_path)) {
-                throw new YamlLoadException("Invalid type for yaml path '" + key1_path + "', expected group");
+        for (var key1 : yaml.getConfigurationSection(yamlPath()).getKeys(false)) {
+            final var key1Path = yamlPath() + "." + key1;
+            if (!yaml.isConfigurationSection(key1Path)) {
+                throw new YamlLoadException("Invalid type for yaml path '" + key1Path + "', expected group");
             }
 
-            for (var key2 : yaml.getConfigurationSection(key1_path).getKeys(false)) {
-                final var key2_path = key1_path + "." + key2;
-                if (!yaml.isConfigurationSection(key2_path)) {
-                    throw new YamlLoadException("Invalid type for yaml path '" + key2_path + "', expected group");
+            for (var key2 : yaml.getConfigurationSection(key1Path).getKeys(false)) {
+                final var key2Path = key1Path + "." + key2;
+                if (!yaml.isConfigurationSection(key2Path)) {
+                    throw new YamlLoadException("Invalid type for yaml path '" + key2Path + "', expected group");
                 }
 
-                for (var key3 : yaml.getConfigurationSection(key2_path).getKeys(false)) {
-                    final var key3_path = key2_path + "." + key3;
-                    if (!yaml.isString(key3_path)) {
-                        throw new YamlLoadException("Invalid type for yaml path '" + key3_path + "', expected string");
+                for (var key3 : yaml.getConfigurationSection(key2Path).getKeys(false)) {
+                    final var key3Path = key2Path + "." + key3;
+                    if (!yaml.isString(key3Path)) {
+                        throw new YamlLoadException("Invalid type for yaml path '" + key3Path + "', expected string");
                     }
 
-                    final var str = yaml.getString(key3_path);
+                    final var str = yaml.getString(key3Path);
                     final var split = str.split(":");
                     if (split.length != 2) {
                         throw new YamlLoadException(
                             "Invalid material entry in list '" +
-                            key3_path +
+                            key3Path +
                             "': '" +
                             str +
                             "' is not a valid namespaced key"
                         );
                     }
 
-                    final var mat = material_from(namespaced_key(split[0], split[1]));
+                    final var mat = materialFrom(namespacedKey(split[0], split[1]));
                     if (mat == null) {
                         throw new YamlLoadException(
-                            "Invalid material entry in list '" + key3_path + "': '" + str + "' does not exist"
+                            "Invalid material entry in list '" + key3Path + "': '" + str + "' does not exist"
                         );
                     }
                 }
@@ -184,20 +184,20 @@ public class ConfigMaterialMapMapMapField extends ConfigField<Map<String, Map<St
         }
     }
 
-    public Map<String, Map<String, Map<String, Material>>> load_from_yaml(YamlConfiguration yaml) {
+    public Map<String, Map<String, Map<String, Material>>> loadFromYaml(YamlConfiguration yaml) {
         final var map1 = new HashMap<String, Map<String, Map<String, Material>>>();
-        for (final var key1 : yaml.getConfigurationSection(yaml_path()).getKeys(false)) {
-            final var key1_path = yaml_path() + "." + key1;
+        for (final var key1 : yaml.getConfigurationSection(yamlPath()).getKeys(false)) {
+            final var key1Path = yamlPath() + "." + key1;
             final var map2 = new HashMap<String, Map<String, Material>>();
             map1.put(key1, map2);
-            for (final var key2 : yaml.getConfigurationSection(key1_path).getKeys(false)) {
-                final var key2_path = key1_path + "." + key2;
+            for (final var key2 : yaml.getConfigurationSection(key1Path).getKeys(false)) {
+                final var key2Path = key1Path + "." + key2;
                 final var map3 = new HashMap<String, Material>();
                 map2.put(key2, map3);
-                for (final var key3 : yaml.getConfigurationSection(key2_path).getKeys(false)) {
-                    final var key3_path = key2_path + "." + key3;
-                    final var split = yaml.getString(key3_path).split(":");
-                    map3.put(key3, material_from(namespaced_key(split[0], split[1])));
+                for (final var key3 : yaml.getConfigurationSection(key2Path).getKeys(false)) {
+                    final var key3Path = key2Path + "." + key3;
+                    final var split = yaml.getString(key3Path).split(":");
+                    map3.put(key3, materialFrom(namespacedKey(split[0], split[1])));
                 }
             }
         }
@@ -206,7 +206,7 @@ public class ConfigMaterialMapMapMapField extends ConfigField<Map<String, Map<St
 
     public void load(YamlConfiguration yaml) {
         try {
-            field.set(owner, load_from_yaml(yaml));
+            field.set(owner, loadFromYaml(yaml));
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Invalid field access on '" + field.getName() + "'. This is a bug.");
         }

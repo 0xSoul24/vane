@@ -6,15 +6,15 @@ import java.util.stream.Collectors;
 public class AuthMultiplex {
 
     public Integer port;
-    private final List<UUID> allowed_uuids;
+    private final List<UUID> allowedUuids;
 
-    public AuthMultiplex(Integer port, List<String> allowed_uuids) {
+    public AuthMultiplex(Integer port, List<String> allowedUuids) {
         this.port = port;
 
-        if (allowed_uuids == null || allowed_uuids.isEmpty()) {
-            this.allowed_uuids = List.of();
+        if (allowedUuids == null || allowedUuids.isEmpty()) {
+            this.allowedUuids = List.of();
         } else {
-            this.allowed_uuids = allowed_uuids
+            this.allowedUuids = allowedUuids
                 .stream()
                 .filter(s -> !s.isEmpty())
                 .map(UUID::fromString)
@@ -22,7 +22,7 @@ public class AuthMultiplex {
         }
     }
 
-    public boolean uuid_is_allowed(UUID uuid) {
-        return allowed_uuids.isEmpty() || allowed_uuids.contains(uuid);
+    public boolean uuidIsAllowed(UUID uuid) {
+        return allowedUuids.isEmpty() || allowedUuids.contains(uuid);
     }
 }

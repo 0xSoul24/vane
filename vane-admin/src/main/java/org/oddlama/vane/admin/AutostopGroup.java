@@ -1,7 +1,7 @@
 package org.oddlama.vane.admin;
 
-import static org.oddlama.vane.util.Conversions.ms_to_ticks;
-import static org.oddlama.vane.util.TimeUtil.format_time;
+import static org.oddlama.vane.util.Conversions.msToTicks;
+import static org.oddlama.vane.util.TimeUtil.formatTime;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitTask;
@@ -14,38 +14,38 @@ import org.oddlama.vane.core.module.ModuleGroup;
 public class AutostopGroup extends ModuleGroup<Admin> {
 
     @ConfigLong(def = 20 * 60, min = 0, desc = "Delay in seconds after which to stop the server.")
-    public long config_delay;
+    public long configDelay;
 
     @LangMessage
-    public TranslatedMessage lang_aborted;
+    public TranslatedMessage langAborted;
 
     @LangMessage
-    public TranslatedMessage lang_scheduled;
+    public TranslatedMessage langScheduled;
 
     @LangMessage
-    public TranslatedMessage lang_status;
+    public TranslatedMessage langStatus;
 
     @LangMessage
-    public TranslatedMessage lang_status_not_scheduled;
+    public TranslatedMessage langStatusNotScheduled;
 
     @LangMessage
-    public TranslatedMessage lang_shutdown;
+    public TranslatedMessage langShutdown;
 
     // Variables
     public BukkitTask task = null;
-    public long start_time = -1;
-    public long stop_time = -1;
+    public long startTime = -1;
+    public long stopTime = -1;
 
     public AutostopGroup(Context<Admin> context) {
-        super(context, "autostop", "Enable automatic server stop after certain time without online players.");
+        super(context, "Autostop", "Enable automatic server stop after certain time without online players.");
     }
 
     public long remaining() {
-        if (start_time == -1) {
+        if (startTime == -1) {
             return -1;
         }
 
-        return stop_time - System.currentTimeMillis();
+        return stopTime - System.currentTimeMillis();
     }
 
     public void abort() {
@@ -54,16 +54,16 @@ public class AutostopGroup extends ModuleGroup<Admin> {
 
     public void abort(CommandSender sender) {
         if (task == null) {
-            lang_status_not_scheduled.send(sender);
+            langStatusNotScheduled.send(sender);
             return;
         }
 
         task.cancel();
         task = null;
-        start_time = -1;
-        stop_time = -1;
+        startTime = -1;
+        stopTime = -1;
 
-        lang_aborted.send_and_log(sender);
+        langAborted.sendAndLog(sender);
     }
 
     public void schedule() {
@@ -71,7 +71,7 @@ public class AutostopGroup extends ModuleGroup<Admin> {
     }
 
     public void schedule(CommandSender sender) {
-        schedule(sender, config_delay * 1000);
+        schedule(sender, configDelay * 1000);
     }
 
     public void schedule(CommandSender sender, long delay) {
@@ -79,31 +79,31 @@ public class AutostopGroup extends ModuleGroup<Admin> {
             abort(sender);
         }
 
-        start_time = System.currentTimeMillis();
-        stop_time = start_time + delay;
-        task = schedule_task(
+        startTime = System.currentTimeMillis();
+        stopTime = startTime + delay;
+        task = scheduleTask(
             () -> {
-                lang_shutdown.send_and_log(null);
-                get_module().getServer().shutdown();
+                langShutdown.sendAndLog(null);
+                getModule().getServer().shutdown();
             },
-            ms_to_ticks(delay)
+            msToTicks(delay)
         );
 
-        lang_scheduled.send_and_log(sender, "§b" + format_time(delay));
+        langScheduled.sendAndLog(sender, "§b" + formatTime(delay));
     }
 
     public void status(CommandSender sender) {
         if (task == null) {
-            lang_status_not_scheduled.send(sender);
+            langStatusNotScheduled.send(sender);
             return;
         }
 
-        lang_status.send(sender, "§b" + format_time(remaining()));
+        langStatus.send(sender, "§b" + formatTime(remaining()));
     }
 
     @Override
-    public void on_enable() {
-        if (get_module().getServer().getOnlinePlayers().isEmpty()) {
+    public void onModuleEnable() {
+        if (getModule().getServer().getOnlinePlayers().isEmpty()) {
             schedule();
         }
     }

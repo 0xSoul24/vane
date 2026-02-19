@@ -16,39 +16,39 @@ public class LangMessageField extends LangField<TranslatedMessage> {
         Module<?> module,
         Object owner,
         Field field,
-        Function<String, String> map_name,
+        Function<String, String> mapName,
         LangMessage annotation
     ) {
-        super(module, owner, field, map_name);
+        super(module, owner, field, mapName);
         this.annotation = annotation;
     }
 
     @Override
-    public void check_loadable(final YamlConfiguration yaml) throws YamlLoadException {
-        check_yaml_path(yaml);
+    public void checkLoadable(final YamlConfiguration yaml) throws YamlLoadException {
+        checkYamlPath(yaml);
 
-        if (!yaml.isString(yaml_path())) {
-            throw new YamlLoadException.Lang("Invalid type for yaml path '" + yaml_path() + "', expected string", this);
+        if (!yaml.isString(yamlPath())) {
+            throw new YamlLoadException.Lang("Invalid type for yaml path '" + yamlPath() + "', expected string", this);
         }
     }
 
-    private String from_yaml(final YamlConfiguration yaml) {
-        return yaml.getString(yaml_path());
+    private String fromYaml(final YamlConfiguration yaml) {
+        return yaml.getString(yamlPath());
     }
 
     @Override
     public void load(final String namespace, final YamlConfiguration yaml) {
         try {
-            field.set(owner, new TranslatedMessage(module(), key(), from_yaml(yaml)));
+            field.set(owner, new TranslatedMessage(module(), key(), fromYaml(yaml)));
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Invalid field access on '" + field.getName() + "'. This is a bug.");
         }
     }
 
     @Override
-    public void add_translations(final ResourcePackGenerator pack, final YamlConfiguration yaml, String lang_code)
+    public void addTranslations(final ResourcePackGenerator pack, final YamlConfiguration yaml, String langCode)
         throws YamlLoadException {
-        check_loadable(yaml);
-        pack.translations(namespace(), lang_code).put(key(), from_yaml(yaml));
+        checkLoadable(yaml);
+        pack.translations(namespace(), langCode).put(key(), fromYaml(yaml));
     }
 }

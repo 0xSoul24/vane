@@ -16,31 +16,31 @@ import org.oddlama.vane.core.module.Context;
 public class SlimeChunk extends Command<Admin> {
 
     @LangMessage
-    private TranslatedMessage lang_slime_chunk_yes;
+    private TranslatedMessage langSlimeChunkYes;
 
     @LangMessage
-    private TranslatedMessage lang_slime_chunk_no;
+    private TranslatedMessage langSlimeChunkNo;
 
     public SlimeChunk(Context<Admin> context) {
         super(context);
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
-        return super.get_command_base()
+    public LiteralArgumentBuilder<CommandSourceStack> getCommandBase() {
+        return super.getCommandBase()
             .requires(stack -> stack.getSender() instanceof Player)
             .then(help())
             .executes(ctx -> {
-                is_slimechunk((Player) ctx.getSource().getSender());
+                isSlimechunk((Player) ctx.getSource().getSender());
                 return SINGLE_SUCCESS;
             });
     }
 
-    private void is_slimechunk(final Player player) {
+    private void isSlimechunk(final Player player) {
         if (player.getLocation().getChunk().isSlimeChunk()) {
-            lang_slime_chunk_yes.send(player);
+            langSlimeChunkYes.send(player);
         } else {
-            lang_slime_chunk_no.send(player);
+            langSlimeChunkNo.send(player);
         }
     }
 }

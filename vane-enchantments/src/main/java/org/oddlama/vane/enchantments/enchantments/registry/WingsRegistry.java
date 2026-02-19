@@ -11,7 +11,7 @@ public class WingsRegistry extends CustomEnchantmentRegistry {
 
     public WingsRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent) {
         super("wings", List.of(ItemTypeKeys.ELYTRA), 4);
-        this.exclusive_with(List.of(typedKey("wings")));
+        this.exclusiveWith(List.of(typedKey("wings")));
         this.register(composeEvent);
     }
 }

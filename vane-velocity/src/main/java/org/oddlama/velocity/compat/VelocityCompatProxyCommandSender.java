@@ -13,7 +13,7 @@ public class VelocityCompatProxyCommandSender implements ProxyCommandSender {
     }
 
     @Override
-    public void send_message(String message) {
+    public void sendMessage(String message) {
         sender.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
     }
 }

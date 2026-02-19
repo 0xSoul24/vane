@@ -21,52 +21,52 @@ import org.oddlama.vane.util.StorageUtil;
     name = "unstable_scroll",
     base = Material.WARPED_FUNGUS_ON_A_STICK,
     durability = 25,
-    model_data = 0x760001,
+    modelData = 0x760001,
     version = 1
 )
 public class UnstableScroll extends Scroll {
 
-    public static final NamespacedKey LAST_SCROLL_TELEPORT_LOCATION = StorageUtil.namespaced_key(
+    public static final NamespacedKey LAST_SCROLL_TELEPORT_LOCATION = StorageUtil.namespacedKey(
         "vane",
         "last_scroll_teleport_location"
     );
 
     @LangMessage
-    public TranslatedMessage lang_teleport_no_previous_teleport;
+    public TranslatedMessage langTeleportNoPreviousTeleport;
 
     public UnstableScroll(Context<Trifles> context) {
         super(context, 6000);
     }
 
     @Override
-    public RecipeList default_recipes() {
+    public RecipeList defaultRecipes() {
         return RecipeList.of(
             new ShapedRecipeDefinition("generic")
-                .shape("aba", "epe")
-                .set_ingredient('p', "vane_trifles:papyrus_scroll")
-                .set_ingredient('e', Material.CHORUS_FRUIT)
-                .set_ingredient('a', Material.AMETHYST_SHARD)
-                .set_ingredient('b', Material.COMPASS)
+                .shape("ABA", "EPE")
+                .setIngredient('P', "vane_trifles:papyrus_scroll")
+                .setIngredient('E', Material.CHORUS_FRUIT)
+                .setIngredient('A', Material.AMETHYST_SHARD)
+                .setIngredient('B', Material.COMPASS)
                 .result(key().toString())
         );
     }
 
     @Override
-    public Location teleport_location(final ItemStack scroll, Player player, boolean imminent_teleport) {
-        final var loc = StorageUtil.storage_get_location(
+    public Location teleportLocation(final ItemStack scroll, Player player, boolean imminentTeleport) {
+        final var loc = StorageUtil.storageGetLocation(
             player.getPersistentDataContainer(),
             LAST_SCROLL_TELEPORT_LOCATION,
             null
         );
-        if (imminent_teleport && loc == null) {
-            lang_teleport_no_previous_teleport.send_action_bar(player);
+        if (imminentTeleport && loc == null) {
+            langTeleportNoPreviousTeleport.sendActionBar(player);
         }
         return loc;
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on_player_teleport_scroll(final PlayerTeleportScrollEvent event) {
-        StorageUtil.storage_set_location(
+    public void onPlayerTeleportScroll(final PlayerTeleportScrollEvent event) {
+        StorageUtil.storageSetLocation(
             event.getPlayer().getPersistentDataContainer(),
             LAST_SCROLL_TELEPORT_LOCATION,
             event.getFrom()

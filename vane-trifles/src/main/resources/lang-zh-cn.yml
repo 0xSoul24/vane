@@ -12,93 +12,93 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 4
+Version: 4
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'zh_cn'
+ResourcePackLangCode: 'zh_cn'
 
-command_heads:
-  usage: "%1$s"
-  description: "从头颅仓库中取得头颅。"
-  help: "打开头颅仓库。"
+CommandHeads:
+  Usage: "%1$s"
+  Description: "从头颅仓库中取得头颅。"
+  Help: "打开头颅仓库。"
 
-command_finditem:
-  usage: "%1$s"
-  description: "在附近的容器和实体中搜寻指定的物品。"
-  help: "在附近的容器和实体中搜寻指定的物品。"
+CommandFinditem:
+  Usage: "%1$s"
+  Description: "在附近的容器和实体中搜寻指定的物品。"
+  Help: "在附近的容器和实体中搜寻指定的物品。"
 
-command_setspawn:
-  usage: "%1$s"
-  description: "将全局重生点设定为您当前位置。"
-  help: "将全局重生点设定为您当前位置。"
+CommandSetspawn:
+  Usage: "%1$s"
+  Description: "将全局重生点设定为您当前位置。"
+  Help: "将全局重生点设定为您当前位置。"
 
-storage:
-  open_stacked_item: "你需要将这些物品拆开才能打开它们。"
-  item_pouch:
-    name: "小袋子"
-  item_backpack:
-    name: "背包"
+Storage:
+  OpenStackedItem: "你需要将这些物品拆开才能打开它们。"
+  ItemPouch:
+    Name: "小袋子"
+  ItemBackpack:
+    Name: "背包"
 
-xp_bottles:
-  item_small_xp_bottle:
-    name: "小型经验之瓶"
-  item_medium_xp_bottle:
-    name: "中型经验之瓶"
-  item_large_xp_bottle:
-    name: "大型经验之瓶"
+XpBottles:
+  ItemSmallXpBottle:
+    Name: "小型经验之瓶"
+  ItemMediumXpBottle:
+    Name: "中型经验之瓶"
+  ItemLargeXpBottle:
+    Name: "大型经验之瓶"
 
-item_empty_xp_bottle:
-  name: "空的经验之瓶"
+ItemEmptyXpBottle:
+  Name: "空的经验之瓶"
 
-item_north_compass:
-  name: "指北针"
+ItemNorthCompass:
+  Name: "指北针"
 
-item_reinforced_elytra:
-  name: "下界合金鞘翅"
+ItemReinforcedElytra:
+  Name: "下界合金鞘翅"
 
-item_file:
-  name: "锉刀"
+ItemFile:
+  Name: "锉刀"
 
-item_slime_bucket:
-  name: "史莱姆桶"
+ItemSlimeBucket:
+  Name: "史莱姆桶"
 
-item_papyrus_scroll:
-  name: "莎草纸卷轴"
+ItemPapyrusScroll:
+  Name: "莎草纸卷轴"
 
-item_trowel:
-  name: "抹刀"
-  lore:
+ItemTrowel:
+  Name: "抹刀"
+  Lore:
     - "§7右键点击你的物品栏以更改建筑材料。"
     - "§7目前建筑材料：%1$s"
 
-sickles:
-  item_wooden_sickle:
-    name: "木镰刀"
-  item_stone_sickle:
-    name: "石镰刀"
-  item_iron_sickle:
-    name: "铁镰刀"
-  item_golden_sickle:
-    name: "金镰刀"
-  item_diamond_sickle:
-    name: "钻石镰刀"
-  item_netherite_sickle:
-    name: "下界合金镰刀"
+Sickles:
+  ItemWoodenSickle:
+    Name: "木镰刀"
+  ItemStoneSickle:
+    Name: "石镰刀"
+  ItemIronSickle:
+    Name: "铁镰刀"
+  ItemGoldenSickle:
+    Name: "金镰刀"
+  ItemDiamondSickle:
+    Name: "钻石镰刀"
+  ItemNetheriteSickle:
+    Name: "下界合金镰刀"
 
-scrolls:
-  item_home_scroll:
-    name: "传送卷轴（家）"
-  item_unstable_scroll:
-    name: "传送卷轴（不稳定）"
-    teleport_no_previous_teleport: "§c你之前从未使用过其他卷轴。"
-  item_spawn_scroll:
-    name: "传送卷轴（出生点）"
-  item_lodestone_scroll:
-    name: "传送卷轴（磁石）"
-    teleport_no_bound_lodestone: "§b先潜行右键点击磁石来（重新）绑定这个卷轴。"
-    teleport_missing_lodestone: "§c卷轴似乎没有作用... &6你担心绑定的磁石可能已经不存在了。"
-    bound_lore: "§7绑定到 %1$s 的 (%2$s§7, %3$s§7, %4$s§7)"
-  item_death_scroll:
-    name: "传送卷轴（死亡点）"
-    teleport_no_recent_death: "§c你最近没有死亡，或已经使用过死亡卷轴！"
+Scrolls:
+  ItemHomeScroll:
+    Name: "传送卷轴（家）"
+  ItemUnstableScroll:
+    Name: "传送卷轴（不稳定）"
+    TeleportNoPreviousTeleport: "§c你之前从未使用过其他卷轴。"
+  ItemSpawnScroll:
+    Name: "传送卷轴（出生点）"
+  ItemLodestoneScroll:
+    Name: "传送卷轴（磁石）"
+    TeleportNoBoundLodestone: "§b先潜行右键点击磁石来（重新）绑定这个卷轴。"
+    TeleportMissingLodestone: "§c卷轴似乎没有作用... &6你担心绑定的磁石可能已经不存在了。"
+    BoundLore: "§7绑定到 %1$s 的 (%2$s§7, %3$s§7, %4$s§7)"
+  ItemDeathScroll:
+    Name: "传送卷轴（死亡点）"
+    TeleportNoRecentDeath: "§c你最近没有死亡，或已经使用过死亡卷轴！"

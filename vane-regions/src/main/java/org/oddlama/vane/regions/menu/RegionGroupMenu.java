@@ -28,147 +28,147 @@ import org.oddlama.vane.util.StorageUtil;
 public class RegionGroupMenu extends ModuleComponent<Regions> {
 
     @LangMessage
-    public TranslatedMessage lang_title;
+    public TranslatedMessage langTitle;
 
     @LangMessage
-    public TranslatedMessage lang_delete_confirm_title;
+    public TranslatedMessage langDeleteConfirmTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_role_title;
+    public TranslatedMessage langSelectRoleTitle;
 
     @LangMessage
-    public TranslatedMessage lang_filter_roles_title;
+    public TranslatedMessage langFilterRolesTitle;
 
-    public TranslatedItemStack<?> item_rename;
-    public TranslatedItemStack<?> item_delete;
-    public TranslatedItemStack<?> item_delete_confirm_accept;
-    public TranslatedItemStack<?> item_delete_confirm_cancel;
-    public TranslatedItemStack<?> item_create_role;
-    public TranslatedItemStack<?> item_list_roles;
-    public TranslatedItemStack<?> item_select_role;
+    public TranslatedItemStack<?> itemRename;
+    public TranslatedItemStack<?> itemDelete;
+    public TranslatedItemStack<?> itemDeleteConfirmAccept;
+    public TranslatedItemStack<?> itemDeleteConfirmCancel;
+    public TranslatedItemStack<?> itemCreateRole;
+    public TranslatedItemStack<?> itemListRoles;
+    public TranslatedItemStack<?> itemSelectRole;
 
-    public TranslatedItemStack<?> item_setting_toggle_on;
-    public TranslatedItemStack<?> item_setting_toggle_off;
-    public TranslatedItemStack<?> item_setting_info_animals;
-    public TranslatedItemStack<?> item_setting_info_monsters;
-    public TranslatedItemStack<?> item_setting_info_explosions;
-    public TranslatedItemStack<?> item_setting_info_fire;
-    public TranslatedItemStack<?> item_setting_info_pvp;
-    public TranslatedItemStack<?> item_setting_info_trample;
-    public TranslatedItemStack<?> item_setting_info_vine_growth;
+    public TranslatedItemStack<?> itemSettingToggleOn;
+    public TranslatedItemStack<?> itemSettingToggleOff;
+    public TranslatedItemStack<?> itemSettingInfoAnimals;
+    public TranslatedItemStack<?> itemSettingInfoMonsters;
+    public TranslatedItemStack<?> itemSettingInfoExplosions;
+    public TranslatedItemStack<?> itemSettingInfoFire;
+    public TranslatedItemStack<?> itemSettingInfoPvp;
+    public TranslatedItemStack<?> itemSettingInfoTrample;
+    public TranslatedItemStack<?> itemSettingInfoVineGrowth;
 
     public RegionGroupMenu(Context<Regions> context) {
-        super(context.namespace("region_group"));
-        final var ctx = get_context();
-        item_rename = new TranslatedItemStack<>(
+        super(context.namespace("RegionGroup"));
+        final var ctx = getContext();
+        itemRename = new TranslatedItemStack<>(
             ctx,
-            "rename",
+            "Rename",
             Material.NAME_TAG,
             1,
             "Used to rename the region group."
         );
-        item_delete = new TranslatedItemStack<>(
+        itemDelete = new TranslatedItemStack<>(
             ctx,
-            "delete",
-            StorageUtil.namespaced_key("vane", "decoration_tnt_1"),
+            "Delete",
+            StorageUtil.namespacedKey("vane", "decoration_tnt_1"),
             1,
             "Used to delete this region group."
         );
-        item_delete_confirm_accept = new TranslatedItemStack<>(
+        itemDeleteConfirmAccept = new TranslatedItemStack<>(
             ctx,
-            "delete_confirm_accept",
-            StorageUtil.namespaced_key("vane", "decoration_tnt_1"),
+            "DeleteConfirmAccept",
+            StorageUtil.namespacedKey("vane", "decoration_tnt_1"),
             1,
             "Used to confirm deleting the region group."
         );
-        item_delete_confirm_cancel = new TranslatedItemStack<>(
+        itemDeleteConfirmCancel = new TranslatedItemStack<>(
             ctx,
-            "delete_confirm_cancel",
+            "DeleteConfirmCancel",
             Material.PRISMARINE_SHARD,
             1,
             "Used to cancel deleting the region group."
         );
-        item_create_role = new TranslatedItemStack<>(
+        itemCreateRole = new TranslatedItemStack<>(
             ctx,
-            "create_role",
+            "CreateRole",
             Material.WRITABLE_BOOK,
             1,
             "Used to create a new role."
         );
-        item_list_roles = new TranslatedItemStack<>(
+        itemListRoles = new TranslatedItemStack<>(
             ctx,
-            "list_roles",
+            "ListRoles",
             Material.GLOBE_BANNER_PATTERN,
             1,
             "Used to list all defined roles."
         );
-        item_select_role = new TranslatedItemStack<>(
+        itemSelectRole = new TranslatedItemStack<>(
             ctx,
-            "select_role",
+            "SelectRole",
             Material.GLOBE_BANNER_PATTERN,
             1,
             "Used to represent a role in the role selection list."
         );
 
-        item_setting_toggle_on = new TranslatedItemStack<>(
+        itemSettingToggleOn = new TranslatedItemStack<>(
             ctx,
-            "setting_toggle_on",
+            "SettingToggleOn",
             Material.GREEN_TERRACOTTA,
             1,
             "Used to represent a toggle button with current state on."
         );
-        item_setting_toggle_off = new TranslatedItemStack<>(
+        itemSettingToggleOff = new TranslatedItemStack<>(
             ctx,
-            "setting_toggle_off",
+            "SettingToggleOff",
             Material.RED_TERRACOTTA,
             1,
             "Used to represent a toggle button with current state off."
         );
-        item_setting_info_animals = new TranslatedItemStack<>(
+        itemSettingInfoAnimals = new TranslatedItemStack<>(
             ctx,
-            "setting_info_animals",
-            StorageUtil.namespaced_key("vane", "animals_baby_pig_2"),
+            "SettingInfoAnimals",
+            StorageUtil.namespacedKey("vane", "animals_baby_pig_2"),
             1,
             "Used to represent the info for the animals setting."
         );
-        item_setting_info_monsters = new TranslatedItemStack<>(
+        itemSettingInfoMonsters = new TranslatedItemStack<>(
             ctx,
-            "setting_info_monsters",
+            "SettingInfoMonsters",
             Material.ZOMBIE_HEAD,
             1,
             "Used to represent the info for the monsters setting."
         );
-        item_setting_info_explosions = new TranslatedItemStack<>(
+        itemSettingInfoExplosions = new TranslatedItemStack<>(
             ctx,
-            "setting_info_explosions",
-            StorageUtil.namespaced_key("vane", "monsters_creeper_with_tnt_2"),
+            "SettingInfoExplosions",
+            StorageUtil.namespacedKey("vane", "monsters_creeper_with_tnt_2"),
             1,
             "Used to represent the info for the explosions setting."
         );
-        item_setting_info_fire = new TranslatedItemStack<>(
+        itemSettingInfoFire = new TranslatedItemStack<>(
             ctx,
-            "setting_info_fire",
+            "SettingInfoFire",
             Material.CAMPFIRE,
             1,
             "Used to represent the info for the fire setting."
         );
-        item_setting_info_pvp = new TranslatedItemStack<>(
+        itemSettingInfoPvp = new TranslatedItemStack<>(
             ctx,
-            "setting_info_pvp",
+            "SettingInfoPvP",
             Material.IRON_SWORD,
             1,
             "Used to represent the info for the pvp setting."
         );
-        item_setting_info_trample = new TranslatedItemStack<>(
+        itemSettingInfoTrample = new TranslatedItemStack<>(
             ctx,
-            "setting_info_trample",
+            "SettingInfoTrample",
             Material.FARMLAND,
             1,
             "Used to represent the info for the trample setting."
         );
-        item_setting_info_vine_growth = new TranslatedItemStack<>(
+        itemSettingInfoVineGrowth = new TranslatedItemStack<>(
             ctx,
-            "setting_info_vine_growth",
+            "SettingInfoVineGrowth",
             Material.VINE,
             1,
             "Used to represent the info for the vine growth setting."
@@ -178,57 +178,57 @@ public class RegionGroupMenu extends ModuleComponent<Regions> {
     public Menu create(final RegionGroup group, final Player player) {
         final var columns = 9;
         final var rows = 3;
-        final var title = lang_title.str_component("§5§l" + group.name());
-        final var region_group_menu = new Menu(get_context(), Bukkit.createInventory(null, rows * columns, title));
-        region_group_menu.tag(new RegionGroupMenuTag(group.id()));
+        final var title = langTitle.strComponent("§5§l" + group.name());
+        final var regionGroupMenu = new Menu(getContext(), Bukkit.createInventory(null, rows * columns, title));
+        regionGroupMenu.tag(new RegionGroupMenuTag(group.id()));
 
-        final var is_owner = player.getUniqueId().equals(group.owner());
-        if (is_owner) {
-            region_group_menu.add(menu_item_rename(group));
+        final var isOwner = player.getUniqueId().equals(group.owner());
+        if (isOwner) {
+            regionGroupMenu.add(menuItemRename(group));
             // Delete it only if this isn't the default group
-            if (!get_module().get_or_create_default_region_group(player).id().equals(group.id())) {
-                region_group_menu.add(menu_item_delete(group));
+            if (!getModule().getOrCreateDefaultRegionGroup(player).id().equals(group.id())) {
+                regionGroupMenu.add(menuItemDelete(group));
             }
         }
 
-        region_group_menu.add(menu_item_create_role(group));
-        region_group_menu.add(menu_item_list_roles(group));
+        regionGroupMenu.add(menuItemCreateRole(group));
+        regionGroupMenu.add(menuItemListRoles(group));
 
-        add_menu_item_setting(region_group_menu, group, 0, item_setting_info_animals, EnvironmentSetting.ANIMALS);
-        add_menu_item_setting(region_group_menu, group, 1, item_setting_info_monsters, EnvironmentSetting.MONSTERS);
-        add_menu_item_setting(region_group_menu, group, 3, item_setting_info_explosions, EnvironmentSetting.EXPLOSIONS);
-        add_menu_item_setting(region_group_menu, group, 4, item_setting_info_fire, EnvironmentSetting.FIRE);
-        add_menu_item_setting(region_group_menu, group, 5, item_setting_info_pvp, EnvironmentSetting.PVP);
-        add_menu_item_setting(region_group_menu, group, 7, item_setting_info_trample, EnvironmentSetting.TRAMPLE);
-        add_menu_item_setting(
-            region_group_menu,
+        addMenuItemSetting(regionGroupMenu, group, 0, itemSettingInfoAnimals, EnvironmentSetting.ANIMALS);
+        addMenuItemSetting(regionGroupMenu, group, 1, itemSettingInfoMonsters, EnvironmentSetting.MONSTERS);
+        addMenuItemSetting(regionGroupMenu, group, 3, itemSettingInfoExplosions, EnvironmentSetting.EXPLOSIONS);
+        addMenuItemSetting(regionGroupMenu, group, 4, itemSettingInfoFire, EnvironmentSetting.FIRE);
+        addMenuItemSetting(regionGroupMenu, group, 5, itemSettingInfoPvp, EnvironmentSetting.PVP);
+        addMenuItemSetting(regionGroupMenu, group, 7, itemSettingInfoTrample, EnvironmentSetting.TRAMPLE);
+        addMenuItemSetting(
+            regionGroupMenu,
             group,
             8,
-            item_setting_info_vine_growth,
+                itemSettingInfoVineGrowth,
             EnvironmentSetting.VINE_GROWTH
         );
 
-        region_group_menu.on_natural_close(player2 -> get_module().menus.main_menu.create(player2).open(player2));
+        regionGroupMenu.onNaturalClose(player2 -> getModule().menus.mainMenu.create(player2).open(player2));
 
-        return region_group_menu;
+        return regionGroupMenu;
     }
 
-    private MenuWidget menu_item_rename(final RegionGroup group) {
-        return new MenuItem(0, item_rename.item(), (player, menu, self) -> {
+    private MenuWidget menuItemRename(final RegionGroup group) {
+        return new MenuItem(0, itemRename.item(), (player, menu, self) -> {
             menu.close(player);
 
-            get_module()
-                .menus.enter_region_group_name_menu.create(player, group.name(), (player2, name) -> {
+            getModule()
+                .menus.enterRegionGroupNameMenu.create(player, group.name(), (player2, name) -> {
                     group.name(name);
-                    mark_persistent_storage_dirty();
+                    markPersistentStorageDirty();
 
                     // Open new menu because of possibly changed title
-                    get_module().menus.region_group_menu.create(group, player2).open(player2);
+                    getModule().menus.regionGroupMenu.create(group, player2).open(player2);
                     return ClickResult.SUCCESS;
                 })
-                .on_natural_close(player2 -> {
+                .onNaturalClose(player2 -> {
                     // Open new menu because of possibly changed title
-                    get_module().menus.region_group_menu.create(group, player2).open(player2);
+                    getModule().menus.regionGroupMenu.create(group, player2).open(player2);
                 })
                 .open(player);
 
@@ -236,32 +236,32 @@ public class RegionGroupMenu extends ModuleComponent<Regions> {
         });
     }
 
-    private MenuWidget menu_item_delete(final RegionGroup group) {
-        final var orphan_checkbox = group.is_orphan(get_module()) ? "§a✓" : "§c✕";
-        return new MenuItem(1, item_delete.item(orphan_checkbox), (player, menu, self) -> {
-            if (!group.is_orphan(get_module())) {
+    private MenuWidget menuItemDelete(final RegionGroup group) {
+        final var orphanCheckbox = group.isOrphan(getModule()) ? "§a✓" : "§c✕";
+        return new MenuItem(1, itemDelete.item(orphanCheckbox), (player, menu, self) -> {
+            if (!group.isOrphan(getModule())) {
                 return ClickResult.ERROR;
             }
 
             menu.close(player);
             MenuFactory.confirm(
-                get_context(),
-                lang_delete_confirm_title.str(),
-                item_delete_confirm_accept.item(),
+                getContext(),
+                langDeleteConfirmTitle.str(),
+                itemDeleteConfirmAccept.item(),
                 player2 -> {
                     if (!player2.getUniqueId().equals(group.owner())) {
                         return ClickResult.ERROR;
                     }
 
                     // Assert that this isn't the default group
-                    if (get_module().get_or_create_default_region_group(player2).id().equals(group.id())) {
+                    if (getModule().getOrCreateDefaultRegionGroup(player2).id().equals(group.id())) {
                         return ClickResult.ERROR;
                     }
 
-                    get_module().remove_region_group(group);
+                    getModule().removeRegionGroup(group);
                     return ClickResult.SUCCESS;
                 },
-                item_delete_confirm_cancel.item(),
+                itemDeleteConfirmCancel.item(),
                 player2 -> menu.open(player2)
             )
                 .tag(new RegionGroupMenuTag(group.id()))
@@ -270,45 +270,45 @@ public class RegionGroupMenu extends ModuleComponent<Regions> {
         });
     }
 
-    private MenuWidget menu_item_create_role(final RegionGroup group) {
-        return new MenuItem(7, item_create_role.item(), (player, menu, self) -> {
+    private MenuWidget menuItemCreateRole(final RegionGroup group) {
+        return new MenuItem(7, itemCreateRole.item(), (player, menu, self) -> {
             menu.close(player);
-            get_module()
-                .menus.enter_role_name_menu.create(player, (player2, name) -> {
+            getModule()
+                .menus.enterRoleNameMenu.create(player, (player2, name) -> {
                     final var role = new Role(name, Role.RoleType.NORMAL);
-                    group.add_role(role);
-                    mark_persistent_storage_dirty();
-                    get_module().menus.role_menu.create(group, role, player).open(player);
+                    group.addRole(role);
+                    markPersistentStorageDirty();
+                    getModule().menus.roleMenu.create(group, role, player).open(player);
                     return ClickResult.SUCCESS;
                 })
-                .on_natural_close(player2 -> menu.open(player2))
+                .onNaturalClose(player2 -> menu.open(player2))
                 .open(player);
 
             return ClickResult.SUCCESS;
         });
     }
 
-    private MenuWidget menu_item_list_roles(final RegionGroup group) {
-        return new MenuItem(8, item_list_roles.item(), (player, menu, self) -> {
+    private MenuWidget menuItemListRoles(final RegionGroup group) {
+        return new MenuItem(8, itemListRoles.item(), (player, menu, self) -> {
             menu.close(player);
-            final var all_roles = group
+            final var allRoles = group
                 .roles()
                 .stream()
                 .sorted((a, b) -> a.name().compareToIgnoreCase(b.name()))
                 .collect(Collectors.toList());
 
             final var filter = new Filter.StringFilter<Role>((r, str) -> r.name().toLowerCase().contains(str));
-            MenuFactory.generic_selector(
-                get_context(),
+            MenuFactory.genericSelector(
+                getContext(),
                 player,
-                lang_select_role_title.str(),
-                lang_filter_roles_title.str(),
-                all_roles,
-                r -> item_select_role.item(r.color() + "§l" + r.name()),
+                langSelectRoleTitle.str(),
+                langFilterRolesTitle.str(),
+                allRoles,
+                r -> itemSelectRole.item(r.color() + "§l" + r.name()),
                 filter,
                 (player2, m, role) -> {
                     m.close(player2);
-                    get_module().menus.role_menu.create(group, role, player2).open(player2);
+                    getModule().menus.roleMenu.create(group, role, player2).open(player2);
                     return ClickResult.SUCCESS;
                 },
                 player2 -> menu.open(player2)
@@ -317,40 +317,40 @@ public class RegionGroupMenu extends ModuleComponent<Regions> {
         });
     }
 
-    private void add_menu_item_setting(
-        final Menu region_group_menu,
+    private void addMenuItemSetting(
+        final Menu regionGroupMenu,
         final RegionGroup group,
         final int col,
-        final TranslatedItemStack<?> item_info,
+        final TranslatedItemStack<?> itemInfo,
         final EnvironmentSetting setting
     ) {
-        region_group_menu.add(new MenuItem(9 + col, item_info.item(), (player, menu, self) -> ClickResult.IGNORE));
+        regionGroupMenu.add(new MenuItem(9 + col, itemInfo.item(), (player, menu, self) -> ClickResult.IGNORE));
 
-        region_group_menu.add(
+        regionGroupMenu.add(
             new MenuItem(2 * 9 + col, null, (player, menu, self) -> {
                 // Prevent toggling when the server forces the setting
-                if (setting.has_override()) {
+                if (setting.hasOverride()) {
                     return ClickResult.ERROR;
                 }
 
-                group.settings().put(setting, !group.get_setting(setting));
-                mark_persistent_storage_dirty();
+                group.settings().put(setting, !group.getSetting(setting));
+                markPersistentStorageDirty();
                 menu.update();
                 return ClickResult.SUCCESS;
             }) {
                 @Override
                 public void item(final ItemStack item) {
-                    final Consumer<List<Component>> maybe_add_forced_hint = lore -> {
-                        if (setting.has_override()) {
+                    final Consumer<List<Component>> maybeAddForcedHint = lore -> {
+                        if (setting.hasOverride()) {
                             lore.add(Component.empty());
                             lore.add(Component.text("FORCED BY SERVER"));
                         }
                     };
 
-                    if (group.get_setting(setting)) {
-                        super.item(item_setting_toggle_on.item_transform_lore(maybe_add_forced_hint));
+                    if (group.getSetting(setting)) {
+                        super.item(itemSettingToggleOn.itemTransformLore(maybeAddForcedHint));
                     } else {
-                        super.item(item_setting_toggle_off.item_transform_lore(maybe_add_forced_hint));
+                        super.item(itemSettingToggleOff.itemTransformLore(maybeAddForcedHint));
                     }
                 }
             }
@@ -358,8 +358,8 @@ public class RegionGroupMenu extends ModuleComponent<Regions> {
     }
 
     @Override
-    public void on_enable() {}
+    public void onEnable() {}
 
     @Override
-    public void on_disable() {}
+    public void onDisable() {}
 }

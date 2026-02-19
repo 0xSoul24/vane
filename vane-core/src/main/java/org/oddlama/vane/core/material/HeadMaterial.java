@@ -1,7 +1,7 @@
 package org.oddlama.vane.core.material;
 
-import static org.oddlama.vane.util.ItemUtil.skull_with_texture;
-import static org.oddlama.vane.util.StorageUtil.namespaced_key;
+import static org.oddlama.vane.util.ItemUtil.skullWithTexture;
+import static org.oddlama.vane.util.StorageUtil.namespacedKey;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,20 +17,20 @@ public class HeadMaterial {
     private String name;
     private String category;
     private Set<String> tags;
-    private String base64_texture;
+    private String base64Texture;
 
     public HeadMaterial(
         final NamespacedKey key,
         final String name,
         final String category,
         final List<String> tags,
-        final String base64_texture
+        final String base64Texture
     ) {
         this.key = key;
         this.name = name;
         this.category = category;
         this.tags = new HashSet<>(tags);
-        this.base64_texture = base64_texture;
+        this.base64Texture = base64Texture;
     }
 
     public NamespacedKey key() {
@@ -50,11 +50,11 @@ public class HeadMaterial {
     }
 
     public String texture() {
-        return base64_texture;
+        return base64Texture;
     }
 
     public ItemStack item() {
-        return skull_with_texture(name, base64_texture);
+        return skullWithTexture(name, base64Texture);
     }
 
     public static HeadMaterial from(final JSONObject json) {
@@ -64,12 +64,12 @@ public class HeadMaterial {
         final var texture = json.getString("texture");
 
         final var tags = new ArrayList<String>();
-        final var tags_arr = json.getJSONArray("tags");
-        for (int i = 0; i < tags_arr.length(); ++i) {
-            tags.add(tags_arr.getString(i));
+        final var tagsArr = json.getJSONArray("tags");
+        for (int i = 0; i < tagsArr.length(); ++i) {
+            tags.add(tagsArr.getString(i));
         }
 
-        final var key = namespaced_key("vane", category + "_" + id);
+        final var key = namespacedKey("vane", category + "_" + id);
         return new HeadMaterial(key, name, category, tags, texture);
     }
 }

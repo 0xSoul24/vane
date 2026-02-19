@@ -18,34 +18,34 @@ public class LangMessageArrayField extends LangField<TranslatedMessageArray> {
         Module<?> module,
         Object owner,
         Field field,
-        Function<String, String> map_name,
+        Function<String, String> mapName,
         LangMessageArray annotation
     ) {
-        super(module, owner, field, map_name);
+        super(module, owner, field, mapName);
         this.annotation = annotation;
     }
 
     @Override
-    public void check_loadable(final YamlConfiguration yaml) throws YamlLoadException {
-        check_yaml_path(yaml);
+    public void checkLoadable(final YamlConfiguration yaml) throws YamlLoadException {
+        checkYamlPath(yaml);
 
-        if (!yaml.isList(yaml_path())) {
-            throw new YamlLoadException.Lang("Invalid type for yaml path '" + yaml_path() + "', expected list", this);
+        if (!yaml.isList(yamlPath())) {
+            throw new YamlLoadException.Lang("Invalid type for yaml path '" + yamlPath() + "', expected list", this);
         }
 
-        for (final var obj : yaml.getList(yaml_path())) {
+        for (final var obj : yaml.getList(yamlPath())) {
             if (!(obj instanceof String)) {
                 throw new YamlLoadException.Lang(
-                    "Invalid type for yaml path '" + yaml_path() + "', expected string",
+                    "Invalid type for yaml path '" + yamlPath() + "', expected string",
                     this
                 );
             }
         }
     }
 
-    private List<String> from_yaml(final YamlConfiguration yaml) {
+    private List<String> fromYaml(final YamlConfiguration yaml) {
         final var list = new ArrayList<String>();
-        for (final var obj : yaml.getList(yaml_path())) {
+        for (final var obj : yaml.getList(yamlPath())) {
             list.add((String) obj);
         }
         return list;
@@ -54,29 +54,29 @@ public class LangMessageArrayField extends LangField<TranslatedMessageArray> {
     @Override
     public void load(final String namespace, final YamlConfiguration yaml) {
         try {
-            field.set(owner, new TranslatedMessageArray(module(), key(), from_yaml(yaml)));
+            field.set(owner, new TranslatedMessageArray(module(), key(), fromYaml(yaml)));
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Invalid field access on '" + field.getName() + "'. This is a bug.");
         }
     }
 
     @Override
-    public void add_translations(final ResourcePackGenerator pack, final YamlConfiguration yaml, String lang_code)
+    public void addTranslations(final ResourcePackGenerator pack, final YamlConfiguration yaml, String langCode)
         throws YamlLoadException {
-        check_loadable(yaml);
-        final var list = from_yaml(yaml);
-        final var loaded_size = get().size();
-        if (list.size() != loaded_size) {
+        checkLoadable(yaml);
+        final var list = fromYaml(yaml);
+        final var loadedSize = get().size();
+        if (list.size() != loadedSize) {
             throw new YamlLoadException.Lang(
                 "All translation lists for message arrays must have the exact same size. The loaded language file has " +
-                loaded_size +
+                loadedSize +
                 " entries, while the currently processed file has " +
                 list.size(),
                 this
             );
         }
         for (int i = 0; i < list.size(); ++i) {
-            pack.translations(namespace(), lang_code).put(key() + "." + i, list.get(i));
+            pack.translations(namespace(), langCode).put(key() + "." + i, list.get(i));
         }
     }
 }

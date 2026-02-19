@@ -1,6 +1,6 @@
 package org.oddlama.vane.bedtime;
 
-import static org.oddlama.vane.util.WorldUtil.change_time_smoothly;
+import static org.oddlama.vane.util.WorldUtil.changeTimeSmoothly;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,11 +21,11 @@ import org.oddlama.vane.core.lang.TranslatedMessage;
 import org.oddlama.vane.core.module.Module;
 import org.oddlama.vane.util.Nms;
 
-@VaneModule(name = "bedtime", bstats = 8639, config_version = 3, lang_version = 5, storage_version = 1)
+@VaneModule(name = "bedtime", bstats = 8639, configVersion = 3, langVersion = 5, storageVersion = 1)
 public class Bedtime extends Module<Bedtime> {
 
     // One set of sleeping players per world, to keep track
-    private HashMap<UUID, HashSet<UUID>> world_sleepers = new HashMap<>();
+    private HashMap<UUID, HashSet<UUID>> worldSleepers = new HashMap<>();
 
     // Configuration
     @ConfigDouble(
@@ -34,7 +34,7 @@ public class Bedtime extends Module<Bedtime> {
         max = 1.0,
         desc = "The percentage of sleeping players required to advance time."
     )
-    double config_sleep_threshold;
+    double configSleepThreshold;
 
     @ConfigLong(
         def = 1000,
@@ -42,31 +42,31 @@ public class Bedtime extends Module<Bedtime> {
         max = 12000,
         desc = "The target time in ticks to advance to. 1000 is just after sunrise."
     )
-    long config_target_time;
+    long configTargetTime;
 
     @ConfigLong(def = 100, min = 0, max = 1200, desc = "The interpolation time in ticks for a smooth change of time.")
-    long config_interpolation_ticks;
+    long configInterpolationTicks;
 
     // Language
     @LangMessage
-    private TranslatedMessage lang_player_bed_enter;
+    private TranslatedMessage langPlayerBedEnter;
 
     @LangMessage
-    private TranslatedMessage lang_player_bed_leave;
+    private TranslatedMessage langPlayerBedLeave;
 
-    public BedtimeDynmapLayer dynmap_layer;
-    public BedtimeBlueMapLayer blue_map_layer;
+    public BedtimeDynmapLayer dynmapLayer;
+    public BedtimeBlueMapLayer blueMapLayer;
 
     public Bedtime() {
-        dynmap_layer = new BedtimeDynmapLayer(this);
-        blue_map_layer = new BedtimeBlueMapLayer(this);
+        dynmapLayer = new BedtimeDynmapLayer(this);
+        blueMapLayer = new BedtimeBlueMapLayer(this);
     }
 
-    public void start_check_world_task(final World world) {
-        if (enough_players_sleeping(world)) {
-            schedule_task(
+    public void startCheckWorldTask(final World world) {
+        if (enoughPlayersSleeping(world)) {
+            scheduleTask(
                 () -> {
-                    check_world_now(world);
+                    checkWorldNow(world);
                     // Subtract two ticks so this runs one tick before minecraft would
                     // advance time (if all players are asleep), which would effectively cancel
                     // the task.
@@ -76,19 +76,19 @@ public class Bedtime extends Module<Bedtime> {
         }
     }
 
-    public void check_world_now(final World world) {
+    public void checkWorldNow(final World world) {
         // Abort task if condition changed
-        if (!enough_players_sleeping(world)) {
+        if (!enoughPlayersSleeping(world)) {
             return;
         }
 
         // Let the sun rise, and set weather
-        change_time_smoothly(world, this, config_target_time, config_interpolation_ticks);
+        changeTimeSmoothly(world, this, configTargetTime, configInterpolationTicks);
         world.setStorm(false);
         world.setThundering(false);
 
         // Clear sleepers
-        reset_sleepers(world);
+        resetSleepers(world);
 
         // Wakeup players as if they were actually sleeping through the night
         world
@@ -98,100 +98,100 @@ public class Bedtime extends Module<Bedtime> {
             .forEach(p -> {
                 // skipSleepTimer = false (-> set sleepCounter to 100)
                 // updateSleepingPlayers = false
-                Nms.get_player(p).stopSleepInBed(false, false);
+                Nms.getPlayer(p).stopSleepInBed(false, false);
             });
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on_player_bed_enter(PlayerBedEnterEvent event) {
+    public void onPlayerBedEnter(PlayerBedEnterEvent event) {
         final var player = event.getPlayer();
         final var world = player.getWorld();
 
         // Update marker
-        dynmap_layer.update_marker(player);
-        blue_map_layer.update_marker(player);
+        dynmapLayer.updateMarker(player);
+        blueMapLayer.updateMarker(player);
 
-        schedule_next_tick(() -> {
+        scheduleNextTick(() -> {
             // Register the new player as sleeping
-            add_sleeping(world, player);
+            addSleeping(world, player);
             // Start a sleep check task
-            start_check_world_task(world);
+            startCheckWorldTask(world);
         });
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on_player_bed_leave(PlayerBedLeaveEvent event) {
-        remove_sleeping(event.getPlayer());
+    public void onPlayerBedLeave(PlayerBedLeaveEvent event) {
+        removeSleeping(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on_player_quit(PlayerQuitEvent event) {
+    public void onPlayerQuit(PlayerQuitEvent event) {
         // Start a sleep check task
-        start_check_world_task(event.getPlayer().getWorld());
+        startCheckWorldTask(event.getPlayer().getWorld());
     }
 
-    private static String percentage_str(double percentage) {
+    private static String percentageStr(double percentage) {
         return String.format("§6%.2f", 100.0 * percentage) + "%";
     }
 
-    private long get_amount_sleeping(final World world) {
+    private long getAmountSleeping(final World world) {
         // return world.getPlayers().stream()
         //	.filter(p -> p.getGameMode() != GameMode.SPECTATOR)
         //	.filter(p -> p.isSleeping())
         //	.count();
 
-        final var world_id = world.getUID();
-        var sleepers = world_sleepers.get(world_id);
+        final var worldId = world.getUID();
+        var sleepers = worldSleepers.get(worldId);
         if (sleepers == null) {
             return 0;
         }
         return sleepers.size();
     }
 
-    private long get_potential_sleepers_in_world(final World world) {
+    private long getPotentialSleepersInWorld(final World world) {
         return world.getPlayers().stream().filter(p -> p.getGameMode() != GameMode.SPECTATOR).count();
     }
 
-    private double get_percentage_sleeping(final World world) {
-        final var count_sleeping = get_amount_sleeping(world);
-        if (count_sleeping == 0) {
+    private double getPercentageSleeping(final World world) {
+        final var countSleeping = getAmountSleeping(world);
+        if (countSleeping == 0) {
             return 0.0;
         }
 
-        return (double) count_sleeping / get_potential_sleepers_in_world(world);
+        return (double) countSleeping / getPotentialSleepersInWorld(world);
     }
 
-    private boolean enough_players_sleeping(final World world) {
-        return get_percentage_sleeping(world) >= config_sleep_threshold;
+    private boolean enoughPlayersSleeping(final World world) {
+        return getPercentageSleeping(world) >= configSleepThreshold;
     }
 
-    private void add_sleeping(final World world, final Player player) {
+    private void addSleeping(final World world, final Player player) {
         // Add player to sleepers
-        final var world_id = world.getUID();
-        var sleepers = world_sleepers.computeIfAbsent(world_id, k -> new HashSet<>());
+        final var worldId = world.getUID();
+        var sleepers = worldSleepers.computeIfAbsent(worldId, k -> new HashSet<>());
 
         sleepers.add(player.getUniqueId());
 
         // Broadcast a sleeping message
-        var percent = get_percentage_sleeping(world);
-        var count_sleeping = get_amount_sleeping(world);
-        var count_required = (int) Math.ceil(get_potential_sleepers_in_world(world) * config_sleep_threshold);
-        lang_player_bed_enter.broadcast_world_action_bar(
+        var percent = getPercentageSleeping(world);
+        var amountSleeping = getAmountSleeping(world);
+        var countRequired = (int) Math.ceil(getPotentialSleepersInWorld(world) * configSleepThreshold);
+        langPlayerBedEnter.broadcastWorldActionBar(
             world,
             "§6" + player.getName(),
-            "§6" + percentage_str(percent),
-            String.valueOf(count_sleeping),
-            String.valueOf(count_required),
+            "§6" + percentageStr(percent),
+            String.valueOf(amountSleeping),
+            String.valueOf(countRequired),
             "§6" + world.getName()
         );
     }
 
-    private void remove_sleeping(Player player) {
+    private void removeSleeping(Player player) {
         final var world = player.getWorld();
-        final var world_id = world.getUID();
+        final var worldId = world.getUID();
 
         // Remove player from sleepers
-        final var sleepers = world_sleepers.get(world_id);
+        final var sleepers = worldSleepers.get(worldId);
         if (sleepers == null) {
             // No sleepers in this world. Abort.
             return;
@@ -199,23 +199,23 @@ public class Bedtime extends Module<Bedtime> {
 
         if (sleepers.remove(player.getUniqueId())) {
             // Broadcast a sleeping message
-            var percent = get_percentage_sleeping(world);
-            var count_sleeping = get_amount_sleeping(world);
-            var count_required = (int) Math.ceil(get_potential_sleepers_in_world(world) * config_sleep_threshold);
-            lang_player_bed_leave.broadcast_world_action_bar(
+            var percent = getPercentageSleeping(world);
+            var countSleeping = getAmountSleeping(world);
+            var countRequired = (int) Math.ceil(getPotentialSleepersInWorld(world) * configSleepThreshold);
+            langPlayerBedLeave.broadcastWorldActionBar(
                 world,
                 "§6" + player.getName(),
-                "§6" + percentage_str(percent),
-                String.valueOf(count_sleeping),
-                String.valueOf(count_required),
+                "§6" + percentageStr(percent),
+                String.valueOf(countSleeping),
+                String.valueOf(countRequired),
                 "§6" + world.getName()
             );
         }
     }
 
-    private void reset_sleepers(World world) {
-        final var world_id = world.getUID();
-        final var sleepers = world_sleepers.get(world_id);
+    private void resetSleepers(World world) {
+        final var worldId = world.getUID();
+        final var sleepers = worldSleepers.get(worldId);
         if (sleepers == null) {
             return;
         }

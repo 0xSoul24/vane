@@ -12,11 +12,11 @@
 
 # ¡NO CAMBIAR! Versión de este archivo de idioma. Se utiliza para determinar
 # si el archivo necesita actualizarse.
-version: 5
+Version: 5
 # Código de idioma correspondiente utilizado en paquetes de recursos. Utilizado para
 # generación de paquetes de recursos. Normalmente es una combinación de
 # código de idioma (ISO 639) y código de país (ISO 3166).
-resource_pack_lang_code: 'es_es'
+ResourcePackLangCode: 'es_es'
 
 # Este mensaje se envía en el mundo cuando un jugador entra en la cama.
 # %1$s: nombre del jugador
@@ -24,7 +24,7 @@ resource_pack_lang_code: 'es_es'
 # %3$s: cantidad actual de jugadores durmiendo en el mundo relevante
 # %4$s: cantidad requerida de jugadores durmiendo para avanzar el tiempo
 # %5$s: nombre del mundo
-player_bed_enter: "%1$s está durmiendo %3$s/%4$s"
+PlayerBedEnter: "%1$s está durmiendo %3$s/%4$s"
 
 # Este mensaje se envía en el mundo cuando un jugador sale de la cama temprano,
 # antes de que se avance el tiempo.
@@ -33,19 +33,19 @@ player_bed_enter: "%1$s está durmiendo %3$s/%4$s"
 # %3$s: cantidad actual de jugadores durmiendo en el mundo relevante
 # %4$s: cantidad requerida de jugadores durmiendo para avanzar el tiempo
 # %5$s: nombre del mundo
-player_bed_leave: "%1$s se siente descansado %3$s/%4$s"
+PlayerBedLeave: "%1$s se siente descansado %3$s/%4$s"
 
-dynmap:
+Dynmap:
   # La etiqueta para la capa de Dynmap
-  layer_label: "Camas"
+  LayerLabel: "Camas"
   # La etiqueta para los marcadores de Dynmap
   # %1$s: nombre del jugador
-  marker_label: "%1$s"
+  MarkerLabel: "%1$s"
 
-blue_map:
+BlueMap:
   # La etiqueta para el conjunto de marcadores de BlueMap
-  layer_label: "Camas"
+  LayerLabel: "Camas"
   # La etiqueta para los marcadores de cama de BlueMap. Admite HTML. Los argumentos se escaparán correctamente.
   # %1$s: nombre del jugador
-  marker_label: "<span style=\"color: white\">🏠 %1$s</span>"
+  MarkerLabel: "<span style=\"color: white\">🏠 %1$s</span>"
 

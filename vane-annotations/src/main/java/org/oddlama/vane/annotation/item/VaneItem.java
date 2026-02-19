@@ -13,7 +13,7 @@ public @interface VaneItem {
 
     Material base();
 
-    int model_data();
+    int modelData();
 
     int version();
 

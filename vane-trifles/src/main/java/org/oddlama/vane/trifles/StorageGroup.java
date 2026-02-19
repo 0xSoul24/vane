@@ -38,30 +38,30 @@ import java.util.UUID;
 
 public class StorageGroup extends Listener<Trifles> {
 
-    public static final NamespacedKey STORAGE_IS_OPEN = StorageUtil.namespaced_key("vane_trifles", "currently_opened_storage");
+    public static final NamespacedKey STORAGE_IS_OPEN = StorageUtil.namespacedKey("vane_trifles", "currently_opened_storage");
 
-    private Map<Inventory, Pair<UUID, ItemStack>> open_block_state_inventories = Collections.synchronizedMap(
+    private Map<Inventory, Pair<UUID, ItemStack>> openBlockStateInventories = Collections.synchronizedMap(
         new HashMap<Inventory, Pair<UUID, ItemStack>>()
     );
 
     @LangMessage
-    public TranslatedMessage lang_open_stacked_item;
+    public TranslatedMessage langOpenStackedItem;
 
     public StorageGroup(Context<Trifles> context) {
-        super(context.group("storage", "Extensions to storage related stuff will be grouped under here."));
+        super(context.group("Storage", "Extensions to storage related stuff will be grouped under here."));
     }
 
     @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void on_place_item_in_storage_inventory(InventoryClickEvent event) {
+    public void onPlaceItemInStorageInventory(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) {
             return;
         }
 
         // Only if no block state inventory is open, else we could delete items by
         // accident
-        final var owner_and_item = open_block_state_inventories.get(event.getInventory());
-        if (owner_and_item != null) {
+        final var ownerAndItem = openBlockStateInventories.get(event.getInventory());
+        if (ownerAndItem != null) {
             return;
         }
 
@@ -69,27 +69,27 @@ public class StorageGroup extends Listener<Trifles> {
         if (
             event.getClick() == ClickType.RIGHT &&
             event.getAction() == InventoryAction.SWAP_WITH_CURSOR &&
-            is_storage_item(event.getCurrentItem()) &&
+            isStorageItem(event.getCurrentItem()) &&
             event.getCurrentItem().getAmount() == 1
         ) {
             // Allow putting in any items that are not a storage item.
-            if (!is_storage_item(event.getCursor())) {
-                final var custom_item = get_module().core.item_registry().get(event.getCurrentItem());
+            if (!isStorageItem(event.getCursor())) {
+                final var customItem = getModule().core.itemRegistry().get(event.getCurrentItem());
 
                 // Only if the clicked storage item is a custom item
-                if (custom_item != null) {
+                if (customItem != null) {
                     event
                         .getCurrentItem()
                         .editMeta(BlockStateMeta.class, meta -> {
-                            final var block_state = meta.getBlockState();
-                            if (block_state instanceof Container container) {
+                            final var blockState = meta.getBlockState();
+                            if (blockState instanceof Container container) {
                                 final var leftovers = container.getInventory().addItem(event.getCursor());
                                 if (leftovers.size() == 0) {
                                     event.setCursor(null);
                                 } else {
                                     event.setCursor(leftovers.get(0));
                                 }
-                                meta.setBlockState(block_state);
+                                meta.setBlockState(blockState);
                             }
                         });
                 }
@@ -102,19 +102,19 @@ public class StorageGroup extends Listener<Trifles> {
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void on_inventory_click(InventoryClickEvent event) {
+    public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) {
             return;
         }
 
-        final var owner_and_item = open_block_state_inventories.get(event.getInventory());
-        if (owner_and_item == null || !owner_and_item.getLeft().equals(player.getUniqueId())) {
+        final var ownerAndItem = openBlockStateInventories.get(event.getInventory());
+        if (ownerAndItem == null || !ownerAndItem.getLeft().equals(player.getUniqueId())) {
             return;
         }
 
-        var clicked_item_is_storage = is_storage_item(event.getCurrentItem());
-        var cursor_item_is_storage = is_storage_item(event.getCursor());
-        var clicked_inventory_is_player_inventory = event.getClickedInventory() == player.getInventory();
+        var clickedItemIsStorage = isStorageItem(event.getCurrentItem());
+        var cursorItemIsStorage = isStorageItem(event.getCursor());
+        var clickedInventoryIsPlayerInventory = event.getClickedInventory() == player.getInventory();
 
         var cancel = false;
         switch (event.getAction()) {
@@ -130,11 +130,11 @@ public class StorageGroup extends Listener<Trifles> {
             case PLACE_SOME:
             case SWAP_WITH_CURSOR:
                 // Only deny placing storage items in storage inventory
-                cancel = cursor_item_is_storage && !clicked_inventory_is_player_inventory;
+                cancel = cursorItemIsStorage && !clickedInventoryIsPlayerInventory;
                 break;
             case MOVE_TO_OTHER_INVENTORY:
                 // Only deny moving storage item from player inventory to storage inventory
-                cancel = clicked_item_is_storage && clicked_inventory_is_player_inventory;
+                cancel = clickedItemIsStorage && clickedInventoryIsPlayerInventory;
                 break;
             case PICKUP_ALL:
             case PICKUP_HALF:
@@ -145,15 +145,15 @@ public class StorageGroup extends Listener<Trifles> {
                 break;
             default:
                 // Restrictive default prevents moving of any storage items
-                cancel = clicked_item_is_storage || cursor_item_is_storage;
+                cancel = clickedItemIsStorage || cursorItemIsStorage;
                 break;
         }
 
         switch (event.getClick()) {
             case NUMBER_KEY:
                 // Deny swapping storage items with number keys into storage inventory, but allow in player inventory
-                var swapped_item_is_storage = is_storage_item(player.getInventory().getItem(event.getHotbarButton()));
-                cancel = (swapped_item_is_storage || clicked_item_is_storage) && !clicked_inventory_is_player_inventory;
+                var swappedItemIsStorage = isStorageItem(player.getInventory().getItem(event.getHotbarButton()));
+                cancel = (swappedItemIsStorage || clickedItemIsStorage) && !clickedInventoryIsPlayerInventory;
                 break;
         }
 
@@ -163,16 +163,16 @@ public class StorageGroup extends Listener<Trifles> {
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void on_drop_item(PlayerDropItemEvent event) {
-        if (!is_storage_item(event.getItemDrop().getItemStack())) {
+    public void onDropItem(PlayerDropItemEvent event) {
+        if (!isStorageItem(event.getItemDrop().getItemStack())) {
             return;
         }
 
         // Close the inventory if the player drops the currently open storage item
-        var storage_item_is_open_state = is_currently_open(event.getItemDrop().getItemStack());
-        if (storage_item_is_open_state) {
-            var is_known_custom_inventory = open_block_state_inventories.containsKey(event.getPlayer().getOpenInventory().getTopInventory());
-            if (is_known_custom_inventory) {
+        var storageItemIsOpenState = isCurrentlyOpen(event.getItemDrop().getItemStack());
+        if (storageItemIsOpenState) {
+            var isKnownCustomInventory = openBlockStateInventories.containsKey(event.getPlayer().getOpenInventory().getTopInventory());
+            if (isKnownCustomInventory) {
                 event.getPlayer().closeInventory(InventoryCloseEvent.Reason.CANT_USE);
             } else {
                 // Item shouldn't be tagged as open if a custom inventory is not open, fix open tag
@@ -184,12 +184,12 @@ public class StorageGroup extends Listener<Trifles> {
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void on_pickup_item(EntityPickupItemEvent event) {
+    public void onPickupItem(EntityPickupItemEvent event) {
         if (!(event.getEntity() instanceof Player player)) {
             return;
         }
 
-        if (!is_storage_item(event.getItem().getItemStack())) {
+        if (!isStorageItem(event.getItem().getItemStack())) {
             return;
         }
 
@@ -200,19 +200,19 @@ public class StorageGroup extends Listener<Trifles> {
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void on_inventory_drag(InventoryDragEvent event) {
+    public void onInventoryDrag(InventoryDragEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) {
             return;
         }
 
-        final var owner_and_item = open_block_state_inventories.get(event.getInventory());
-        if (owner_and_item == null || !owner_and_item.getLeft().equals(player.getUniqueId())) {
+        final var ownerAndItem = openBlockStateInventories.get(event.getInventory());
+        if (ownerAndItem == null || !ownerAndItem.getLeft().equals(player.getUniqueId())) {
             return;
         }
 
         // Prevent putting storage items in other storage items
-        for (final var item_stack : event.getNewItems().values()) {
-            if (is_storage_item(item_stack)) {
+        for (final var itemStack : event.getNewItems().values()) {
+            if (isStorageItem(itemStack)) {
                 event.setCancelled(true);
                 return;
             }
@@ -220,55 +220,55 @@ public class StorageGroup extends Listener<Trifles> {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void save_after_click(InventoryClickEvent event) {
+    public void saveAfterClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) {
             return;
         }
 
-        final var owner_and_item = open_block_state_inventories.get(event.getInventory());
-        if (owner_and_item == null || !owner_and_item.getLeft().equals(player.getUniqueId())) {
+        final var ownerAndItem = openBlockStateInventories.get(event.getInventory());
+        if (ownerAndItem == null || !ownerAndItem.getLeft().equals(player.getUniqueId())) {
             return;
         }
 
-        update_storage_item(owner_and_item.getRight(), event.getInventory());
+        updateStorageItem(ownerAndItem.getRight(), event.getInventory());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void save_after_drag(InventoryDragEvent event) {
+    public void saveAfterDrag(InventoryDragEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) {
             return;
         }
 
-        final var owner_and_item = open_block_state_inventories.get(event.getInventory());
-        if (owner_and_item == null || !owner_and_item.getLeft().equals(player.getUniqueId())) {
+        final var ownerAndItem = openBlockStateInventories.get(event.getInventory());
+        if (ownerAndItem == null || !ownerAndItem.getLeft().equals(player.getUniqueId())) {
             return;
         }
 
-        update_storage_item(owner_and_item.getRight(), event.getInventory());
+        updateStorageItem(ownerAndItem.getRight(), event.getInventory());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void save_after_close(InventoryCloseEvent event) {
-        final var owner_and_item = open_block_state_inventories.get(event.getInventory());
-        if (owner_and_item == null || !owner_and_item.getLeft().equals(event.getPlayer().getUniqueId())) {
+    public void saveAfterClose(InventoryCloseEvent event) {
+        final var ownerAndItem = openBlockStateInventories.get(event.getInventory());
+        if (ownerAndItem == null || !ownerAndItem.getLeft().equals(event.getPlayer().getUniqueId())) {
             return;
         }
 
         // Set the storage item to closed
-        owner_and_item.getRight().editMeta(meta -> {
+        ownerAndItem.getRight().editMeta(meta -> {
             meta.getPersistentDataContainer().set(STORAGE_IS_OPEN, PersistentDataType.BOOLEAN, false);
         });
-        update_storage_item(owner_and_item.getRight(), event.getInventory());
-        open_block_state_inventories.remove(event.getInventory());
+        updateStorageItem(ownerAndItem.getRight(), event.getInventory());
+        openBlockStateInventories.remove(event.getInventory());
     }
 
-    private boolean is_storage_item(@Nullable ItemStack item) {
+    private boolean isStorageItem(@Nullable ItemStack item) {
         if (item == null) {
             return false;
         }
 
-        var custom_item = get_module().core.item_registry().get(item);
-        if (custom_item != null && (custom_item instanceof Backpack || custom_item instanceof Pouch)) {
+        var customItem = getModule().core.itemRegistry().get(item);
+        if (customItem != null && (customItem instanceof Backpack || customItem instanceof Pouch)) {
             return true;
         }
 
@@ -277,44 +277,44 @@ public class StorageGroup extends Listener<Trifles> {
         return item.getItemMeta() instanceof BlockStateMeta meta && meta.getBlockState() instanceof ShulkerBox;
     }
 
-    private boolean is_currently_open(@Nullable ItemStack item) {
+    private boolean isCurrentlyOpen(@Nullable ItemStack item) {
         if (item == null || !item.hasItemMeta()) {
             return false;
         }
             return Boolean.TRUE.equals(item.getPersistentDataContainer().get(STORAGE_IS_OPEN, PersistentDataType.BOOLEAN));
     }
 
-    private void update_storage_item(@NotNull ItemStack item, @NotNull Inventory inventory) {
+    private void updateStorageItem(@NotNull ItemStack item, @NotNull Inventory inventory) {
         // Find the correct storage item if it was moved from inventory slot and is no longer valid
         if (item.getType().isAir() && inventory.getHolder() instanceof Player player) {
             // Check cursor item first
-            var cursor_item = player.getOpenInventory().getCursor();
-            if (cursor_item.hasItemMeta() && is_currently_open(cursor_item)) {
-                item = cursor_item; // Found the storage item that is currently open
-                open_block_state_inventories.put(inventory, Pair.of(player.getUniqueId(), item)); // Update Map
+            var cursorItem = player.getOpenInventory().getCursor();
+            if (cursorItem.hasItemMeta() && isCurrentlyOpen(cursorItem)) {
+                item = cursorItem; // Found the storage item that is currently open
+                openBlockStateInventories.put(inventory, Pair.of(player.getUniqueId(), item)); // Update Map
             } else { // else check inventory slots
-                for (ItemStack checked_item : player.getInventory().getContents()) {
-                    if (checked_item == null || !checked_item.hasItemMeta()) {
+                for (ItemStack checkedItem : player.getInventory().getContents()) {
+                    if (checkedItem == null || !checkedItem.hasItemMeta()) {
                         continue;
                     }
-                    if (is_currently_open(checked_item)) {
-                        item = checked_item; // Found the storage item that is currently open
-                        open_block_state_inventories.put(inventory, Pair.of(player.getUniqueId(), item)); // Update Map
+                    if (isCurrentlyOpen(checkedItem)) {
+                        item = checkedItem; // Found the storage item that is currently open
+                        openBlockStateInventories.put(inventory, Pair.of(player.getUniqueId(), item)); // Update Map
                         break;
                     }
                 }
             }
         }
         item.editMeta(BlockStateMeta.class, meta -> {
-            final var block_state = meta.getBlockState();
-            if (block_state instanceof Container container) {
+            final var blockState = meta.getBlockState();
+            if (blockState instanceof Container container) {
                 container.getInventory().setContents(inventory.getContents());
-                meta.setBlockState(block_state);
+                meta.setBlockState(blockState);
             }
         });
     }
 
-    public boolean open_block_state_inventory(@NotNull final Player player, @NotNull ItemStack item) {
+    public boolean openBlockStateInventory(@NotNull final Player player, @NotNull ItemStack item) {
         // Require correct block state meta
         if (
             !(item.getItemMeta() instanceof BlockStateMeta meta) ||
@@ -325,7 +325,7 @@ public class StorageGroup extends Listener<Trifles> {
 
         // Only if the stack size is 1.
         if (item.getAmount() != 1) {
-            get_module().storage_group.lang_open_stacked_item.send_action_bar(player);
+            getModule().storageGroup.langOpenStackedItem.sendActionBar(player);
             return false;
         }
 
@@ -337,21 +337,21 @@ public class StorageGroup extends Listener<Trifles> {
             // if the item has neither custom name nor item name (an old item with custom
             // name reset), get the name from registry if possible
             if (name == null) {
-                CustomItem custom_item = get_module().core.item_registry().get(item);
-                name = custom_item != null ? custom_item.displayName() : Component.text("");
+                CustomItem customItem = getModule().core.itemRegistry().get(item);
+                name = customItem != null ? customItem.displayName() : Component.text("");
             }
             nameable.customName(name);
         }
 
         // Create transient inventory
-        final var transient_inventory = get_module()
+        final var transientInventory = getModule()
             .getServer()
             .createInventory(player, container.getInventory().getType(), name);
-        transient_inventory.setContents(container.getInventory().getContents());
+        transientInventory.setContents(container.getInventory().getContents());
 
         // Open inventory
-        open_block_state_inventories.put(transient_inventory, Pair.of(player.getUniqueId(), item));
-        player.openInventory(transient_inventory);
+        openBlockStateInventories.put(transientInventory, Pair.of(player.getUniqueId(), item));
+        player.openInventory(transientInventory);
         return true;
     }
 }

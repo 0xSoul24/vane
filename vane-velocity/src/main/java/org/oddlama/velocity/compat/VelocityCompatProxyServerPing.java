@@ -14,12 +14,12 @@ public class VelocityCompatProxyServerPing implements ProxyServerPing {
     }
 
     @Override
-    public void set_description(String description) {
+    public void setDescription(String description) {
         ping.description(Component.text(description));
     }
 
     @Override
-    public void set_favicon(String encoded_favicon) {
-        if (encoded_favicon != null) ping.favicon(new Favicon(encoded_favicon));
+    public void setFavicon(String encodedFavicon) {
+        if (encodedFavicon != null) ping.favicon(new Favicon(encodedFavicon));
     }
 }

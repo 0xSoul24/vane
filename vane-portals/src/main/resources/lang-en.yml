@@ -12,393 +12,393 @@
 
 # DO NOT CHANGE! The version of this language file. Used to determine
 # if the file needs to be updated.
-version: 6
+Version: 6
 # The corresponding language code used in resource packs. Used for
 # resource pack generation. Typically, this is a combination of the
 # language code (ISO 639) and the country code (ISO 3166).
-resource_pack_lang_code: 'en_us'
+ResourcePackLangCode: 'en_us'
 
 # This message is sent when a new portal console has been selected
 # and the player may now select a boundary block to construct a portal.
-select_boundary_now: "§6Right-click the portal boundary now"
+SelectBoundaryNow: "§6Right-click the portal boundary now"
 # This message is sent when the selected console block is not of the correct
 # type anymore. This can happen when a player replaces the console block
 # while it is selected as a pending console.
-console_invalid_type: "§cThe console block has an invalid block type!"
+ConsoleInvalidType: "§cThe console block has an invalid block type!"
 # This message is sent when the selected console is in another world than the portal boundary.
-console_different_world: "§cThe console must be in the same world as the portal"
+ConsoleDifferentWorld: "§cThe console must be in the same world as the portal"
 # This message is sent when the selected portal console is too far away from
 # the portal boundary.
-console_too_far_away: "§cThe console is too far away from the portal"
+ConsoleTooFarAway: "§cThe console is too far away from the portal"
 # This message is sent when a console has successfully been linked.
-console_linked: "§aConsole linked"
+ConsoleLinked: "§aConsole linked"
 
 # This message is sent when no boundary was found at the given location
-no_boundary_found: "§cNo portal boundary was found!"
+NoBoundaryFound: "§cNo portal boundary was found!"
 # This message is sent when the selected boundary doesn't contain an origin block
-no_origin: "§cThe portal has no origin block!"
+NoOrigin: "§cThe portal has no origin block!"
 # This message is sent when the selected boundary has multiple origin blocks
-multiple_origins: "§cThe portal cannot have multiple origin blocks!"
+MultipleOrigins: "§cThe portal cannot have multiple origin blocks!"
 # This message is sent when the selected vertical portal boundary has no portal area above the origin block
-no_portal_block_above_origin: "§cThe origin block needs portal area above!"
+NoPortalBlockAboveOrigin: "§cThe origin block needs portal area above!"
 # This message is sent when the selected vertical portal boundary has not enough portal areas above the origin block
-not_enough_portal_blocks_above_origin: "§cThe origin block needs at least 3 portal area blocks above!"
+NotEnoughPortalBlocksAboveOrigin: "§cThe origin block needs at least 3 portal area blocks above!"
 # This message is sent when the selected portal boundary is too large in a given direction.
 # %1$s: The direction (x,y,z)
-too_large: "§cThe portal is too large in %1$s§c direction!"
+TooLarge: "§cThe portal is too large in %1$s§c direction!"
 # This message is sent when the selected portal boundary is too small in a given direction.
 # %1$s: The direction (x,y,z)
-too_small_spawn: "§cThe spawn area is too small in %1$s§c direction!"
+TooSmallSpawn: "§cThe spawn area is too small in %1$s§c direction!"
 # This message is sent when the selected portal boundary contains too many portal area blocks.
 # %1$s: Current amount of blocks
 # %2$s: Maximum allowed number of blocks
-too_many_portal_area_blocks: "§cThe portal area is too large! %1$s§6/%2$s§c blocks"
+TooManyPortalAreaBlocks: "§cThe portal area is too large! %1$s§6/%2$s§c blocks"
 # This message is sent when a portal boundary is selected, but
 # a part of the area is obstructed.
-portal_area_obstructed: "§cThe portal area is obstructed!"
+PortalAreaObstructed: "§cThe portal area is obstructed!"
 # This message is sent when the selected boundary intersects an existing portal.
-intersects_existing_portal: "§cThe portal intersects another portal!"
+IntersectsExistingPortal: "§cThe portal intersects another portal!"
 
 # This message is sent when a player has no permission to build a portal in the area.
-build_restricted: "§cYou have no permission to build a portal here!"
+BuildRestricted: "§cYou have no permission to build a portal here!"
 # This message is sent when a player has no permission to link a console to a portal.
-link_restricted: "§cYou have no permission to link a console to this portal!"
+LinkRestricted: "§cYou have no permission to link a console to this portal!"
 
 # This message is sent when a portal is activated, but the target is already connected to another portal.
-target_already_connected: "§6The target portal is already connected to another portal!"
+TargetAlreadyConnected: "§6The target portal is already connected to another portal!"
 # This message is sent when a portal is activated, but the player has no permission to use it.
-source_use_restricted: "§cYou have no permission to use this portal!"
+SourceUseRestricted: "§cYou have no permission to use this portal!"
 # This message is sent when a portal is activated, but the player has no permission to use the target portal.
-target_use_restricted: "§cYou have no permission to use the target portal!"
+TargetUseRestricted: "§cYou have no permission to use the target portal!"
 
 # This is the displayed on a floating item over all portal consoles of activated portals to indicate the connected portal.
 # HINT: The trailing §r's are important, otherwise the label will have empty space to the right
 # %1$s: Target portal name
-console_display_active: "§6§l>§r %1$s §6§l<§r"
+ConsoleDisplayActive: "§6§l>§r %1$s §6§l<§r"
 # This is the displayed on a floating item over all portal consoles of inactive portals to indicate the selected target portal.
 # HINT: The trailing §r's are important, otherwise the label will have empty space to the right
 # %1$s: Target portal name
-console_display_inactive: "§8§l>§r %1$s §8§l<§r"
+ConsoleDisplayInactive: "§8§l>§r %1$s §8§l<§r"
 # This is the name substitution used for portals without a selected target portal.
-console_no_target: "§k?"
+ConsoleNoTarget: "§k?"
 
 # This message is sent when a player tries to unlink a console for which they have no permission.
-unlink_restricted: "§cYou have no permission to unlink a console from this portal!"
+UnlinkRestricted: "§cYou have no permission to unlink a console from this portal!"
 # This message is sent when a player tries to destroy a console for which they have no permission.
-destroy_restricted: "§cYou have no permission to destroy this portal!"
+DestroyRestricted: "§cYou have no permission to destroy this portal!"
 # This message is sent when a player tries to change a portal setting for which they have no permission.
-settings_restricted: "§cYou have no permission to change the settings of this portal!"
+SettingsRestricted: "§cYou have no permission to change the settings of this portal!"
 # This message is sent when a player tries to change the target selection of a portal for which they have no permission.
-select_target_restricted: "§cYou have no permission to select a target for this portal!"
+SelectTargetRestricted: "§cYou have no permission to select a target for this portal!"
 
-dynmap:
+Dynmap:
   # The label for the dynmap layer
-  layer_label: "Portals"
+  LayerLabel: "Portals"
   # The label for the dynmap markers
   # %1$s: Portal name
-  marker_label: "%1$s"
+  MarkerLabel: "%1$s"
 
-blue_map:
+BlueMap:
   # The label for the BlueMap marker set
-  layer_label: "Portals"
+  LayerLabel: "Portals"
   # The label for the BlueMap portal markers. Supports HTML. Arguments will be escaped properly.
   # %1$s: Portal name
-  marker_label: "<span style=\"color: white\">🌌 %1$s</span>"
+  MarkerLabel: "<span style=\"color: white\">🌌 %1$s</span>"
 
-menus:
+Menus:
   # Settings for the portal naming menu.
-  enter_name:
+  EnterName:
     # The title for the naming menu.
-    title: "§8§lEnter Portal Name"
+    Title: "§8§lEnter Portal Name"
 
   # Settings for the portal settings menu.
-  settings:
+  Settings:
     # The title for the settings menu.
     # %1$s: Portal name
-    title: "§8§lSettings: %1$s"
+    Title: "§8§lSettings: %1$s"
     # The title for the icon selection menu.
-    select_icon_title: "§8§lSelect Icon"
+    SelectIconTitle: "§8§lSelect Icon"
 
     # This item is used to rename the portal.
-    rename:
-      name: "§b§lRename"
-      lore: []
+    Rename:
+      Name: "§b§lRename"
+      Lore: []
 
     # This item is used to select the portal's icon.
-    select_icon:
-      name: "§b§lSelect Icon"
-      lore: []
+    SelectIcon:
+      Name: "§b§lSelect Icon"
+      Lore: []
 
     # This item is used to change the portal's style.
-    select_style:
-      name: "§b§lSelect Style"
-      lore: []
+    SelectStyle:
+      Name: "§b§lSelect Style"
+      Lore: []
 
     # This item is used to change and indicate enabled exit orientation lock.
-    exit_orientation_lock_on:
-      name: "§b§lToggle Exit Orientation Lock"
-      lore: ["", "§bCurrent: §e§lLocked (always exit front)§r"]
+    ExitOrientationLockOn:
+      Name: "§b§lToggle Exit Orientation Lock"
+      Lore: ["", "§bCurrent: §e§lLocked (always exit front)§r"]
 
     # This item is used to change and indicate disabled exit orientation lock.
-    exit_orientation_lock_off:
-      name: "§b§lToggle Exit Orientation Lock"
-      lore: ["", "§bCurrent: §a§lUnlocked (exit same side as entered)§r"]
+    ExitOrientationLockOff:
+      Name: "§b§lToggle Exit Orientation Lock"
+      Lore: ["", "§bCurrent: §a§lUnlocked (exit same side as entered)§r"]
 
     # This item is used to cycle visibility and indicate public visibility.
-    visibility_public:
-      name: "§b§lToggle Visibility"
-      lore: ["", "§bCurrent: §a§lPublic§r"]
+    VisibilityPublic:
+      Name: "§b§lToggle Visibility"
+      Lore: ["", "§bCurrent: §a§lPublic§r"]
 
     # This item is used to cycle visibility and indicate group visibility.
-    visibility_group:
-      name: "§b§lToggle Visibility"
-      lore: ["", "§bCurrent: §e§lRegion Group (members)§r"]
+    VisibilityGroup:
+      Name: "§b§lToggle Visibility"
+      Lore: ["", "§bCurrent: §e§lRegion Group (members)§r"]
 
     # This item is used to cycle visibility and indicate group visibility.
-    visibility_group_internal:
-      name: "§b§lToggle Visibility"
-      lore: ["", "§bCurrent: §e§lRegion Group (only visible internally)§r"]
+    VisibilityGroupInternal:
+      Name: "§b§lToggle Visibility"
+      Lore: ["", "§bCurrent: §e§lRegion Group (only visible internally)§r"]
 
     # This item is used to cycle visibility and indicate private visibility.
-    visibility_private:
-      name: "§b§lToggle Visibility"
-      lore: ["", "§bCurrent: §c§lPrivate§r"]
+    VisibilityPrivate:
+      Name: "§b§lToggle Visibility"
+      Lore: ["", "§bCurrent: §c§lPrivate§r"]
 
     # This item is used to change and indicate enabled target lock.
-    target_lock_on:
-      name: "§b§lToggle Target Lock"
-      lore: ["", "§bCurrent: §c§lLocked§r"]
+    TargetLockOn:
+      Name: "§b§lToggle Target Lock"
+      Lore: ["", "§bCurrent: §c§lLocked§r"]
 
     # This item is used to change and indicate disabled target lock.
-    target_lock_off:
-      name: "§b§lToggle Target Lock"
-      lore: ["", "§bCurrent: §a§lUnlocked§r"]
+    TargetLockOff:
+      Name: "§b§lToggle Target Lock"
+      Lore: ["", "§bCurrent: §a§lUnlocked§r"]
 
     # This item is used to return to the previous menu.
-    back:
-      name: "§6↩ §lBack"
-      lore: []
+    Back:
+      Name: "§6↩ §lBack"
+      Lore: []
 
   # Settings for the portal style menu.
-  style:
+  Style:
     # The title for the style menu.
     # %1$s: Portal name
-    title: "§8§lStyle for: %1$s"
+    Title: "§8§lStyle for: %1$s"
     # The title for the block selector for the active console block.
-    select_block_console_active_title:       "Select active console block."
+    SelectBlockConsoleActiveTitle:       "Select active console block."
     # The title for the block selector for the active origin block.
-    select_block_origin_active_title:        "Select active origin block."
+    SelectBlockOriginActiveTitle:        "Select active origin block."
     # The title for the block selector for the active portal block.
-    select_block_portal_active_title:        "Select active portal area block."
+    SelectBlockPortalActiveTitle:        "Select active portal area block."
     # The title for the block selector for the active boundary variant 1 block.
-    select_block_boundary_1_active_title:   "Select active boundary variant 1 block."
+    SelectBlockBoundary1ActiveTitle:   "Select active boundary variant 1 block."
     # The title for the block selector for the active boundary variant 2 block.
-    select_block_boundary_2_active_title:   "Select active boundary variant 2 block."
+    SelectBlockBoundary2ActiveTitle:   "Select active boundary variant 2 block."
     # The title for the block selector for the active boundary variant 3 block.
-    select_block_boundary_3_active_title:   "Select active boundary variant 3 block."
+    SelectBlockBoundary3ActiveTitle:   "Select active boundary variant 3 block."
     # The title for the block selector for the active boundary variant 4 block.
-    select_block_boundary_4_active_title:   "Select active boundary variant 4 block."
+    SelectBlockBoundary4ActiveTitle:   "Select active boundary variant 4 block."
     # The title for the block selector for the active boundary variant 5 block.
-    select_block_boundary_5_active_title:   "Select active boundary variant 5 block."
+    SelectBlockBoundary5ActiveTitle:   "Select active boundary variant 5 block."
     # The title for the block selector for the inactive console block.
-    select_block_console_inactive_title:     "Select inactive console block."
+    SelectBlockConsoleInactiveTitle:     "Select inactive console block."
     # The title for the block selector for the inactive origin block.
-    select_block_origin_inactive_title:      "Select inactive origin block."
+    SelectBlockOriginInactiveTitle:      "Select inactive origin block."
     # The title for the block selector for the inactive portal block.
-    select_block_portal_inactive_title:      "Select inactive portal area block."
+    SelectBlockPortalInactiveTitle:      "Select inactive portal area block."
     # The title for the block selector for the inactive boundary variant 1 block.
-    select_block_boundary_1_inactive_title: "Select inactive boundary variant 1 block."
+    SelectBlockBoundary1InactiveTitle: "Select inactive boundary variant 1 block."
     # The title for the block selector for the inactive boundary variant 2 block.
-    select_block_boundary_2_inactive_title: "Select inactive boundary variant 2 block."
+    SelectBlockBoundary2InactiveTitle: "Select inactive boundary variant 2 block."
     # The title for the block selector for the inactive boundary variant 3 block.
-    select_block_boundary_3_inactive_title: "Select inactive boundary variant 3 block."
+    SelectBlockBoundary3InactiveTitle: "Select inactive boundary variant 3 block."
     # The title for the block selector for the inactive boundary variant 4 block.
-    select_block_boundary_4_inactive_title: "Select inactive boundary variant 4 block."
+    SelectBlockBoundary4InactiveTitle: "Select inactive boundary variant 4 block."
     # The title for the block selector for the inactive boundary variant 5 block.
-    select_block_boundary_5_inactive_title: "Select inactive boundary variant 5 block."
+    SelectBlockBoundary5InactiveTitle: "Select inactive boundary variant 5 block."
 
     # The item used to represent the selected active console block.
     # %1$s: Building material
-    block_console_active:
-      name: "§b§lConsole §a(active)"
-      lore: []
+    BlockConsoleActive:
+      Name: "§b§lConsole §a(active)"
+      Lore: []
     # The item used to represent the selected active origin block.
     # %1$s: Building material
-    block_origin_active:
-      name: "§b§lOrigin §a(active)"
-      lore: []
+    BlockOriginActive:
+      Name: "§b§lOrigin §a(active)"
+      Lore: []
     # The item used to represent the selected active portal block.
     # %1$s: Building material
-    block_portal_active:
-      name: "§b§lPortal area §a(active)"
-      lore: []
+    BlockPortalActive:
+      Name: "§b§lPortal area §a(active)"
+      Lore: []
     # The item used to represent the selected active boundary variant 1 block.
     # %1$s: Building material
-    block_boundary_1_active:
-      name: "§b§lBoundary §a(active)"
-      lore: ["", "§aVariant 1", "§7Building material: %1$s"]
+    BlockBoundary1Active:
+      Name: "§b§lBoundary §a(active)"
+      Lore: ["", "§aVariant 1", "§7Building material: %1$s"]
     # The item used to represent the selected active boundary variant 2 block.
     # %1$s: Building material
-    block_boundary_2_active:
-      name: "§b§lBoundary §a(active)"
-      lore: ["", "§aVariant 2", "§7Building material: %1$s"]
+    BlockBoundary2Active:
+      Name: "§b§lBoundary §a(active)"
+      Lore: ["", "§aVariant 2", "§7Building material: %1$s"]
     # The item used to represent the selected active boundary variant 3 block.
     # %1$s: Building material
-    block_boundary_3_active:
-      name: "§b§lBoundary §a(active)"
-      lore: ["", "§aVariant 3", "§7Building material: %1$s"]
+    BlockBoundary3Active:
+      Name: "§b§lBoundary §a(active)"
+      Lore: ["", "§aVariant 3", "§7Building material: %1$s"]
     # The item used to represent the selected active boundary variant 4 block.
     # %1$s: Building material
-    block_boundary_4_active:
-      name: "§b§lBoundary §a(active)"
-      lore: ["", "§aVariant 4", "§7Building material: %1$s"]
+    BlockBoundary4Active:
+      Name: "§b§lBoundary §a(active)"
+      Lore: ["", "§aVariant 4", "§7Building material: %1$s"]
     # The item used to represent the selected active boundary variant 5 block.
     # %1$s: Building material
-    block_boundary_5_active:
-      name: "§b§lBoundary §a(active)"
-      lore: ["", "§aVariant 5", "§7Building material: %1$s"]
+    BlockBoundary5Active:
+      Name: "§b§lBoundary §a(active)"
+      Lore: ["", "§aVariant 5", "§7Building material: %1$s"]
     # The item used to represent the selected inactive console block.
     # %1$s: Building material
-    block_console_inactive:
-      name: "§b§lConsole §e(inactive)"
-      lore: []
+    BlockConsoleInactive:
+      Name: "§b§lConsole §e(inactive)"
+      Lore: []
     # The item used to represent the selected inactive origin block.
     # %1$s: Building material
-    block_origin_inactive:
-      name: "§b§lOrigin §e(inactive)"
-      lore: []
+    BlockOriginInactive:
+      Name: "§b§lOrigin §e(inactive)"
+      Lore: []
     # The item used to represent the selected inactive portal block.
     # %1$s: Building material
-    block_portal_inactive:
-      name: "§b§lPortal area §e(inactive)"
-      lore: []
+    BlockPortalInactive:
+      Name: "§b§lPortal area §e(inactive)"
+      Lore: []
     # The item used to represent the selected inactive boundary variant 1 block.
     # %1$s: Building material
-    block_boundary_1_inactive:
-      name: "§b§lBoundary §e(inactive)"
-      lore: ["", "§aVariant 1", "§7Building material: %1$s"]
+    BlockBoundary1Inactive:
+      Name: "§b§lBoundary §e(inactive)"
+      Lore: ["", "§aVariant 1", "§7Building material: %1$s"]
     # The item used to represent the selected inactive boundary variant 2 block.
     # %1$s: Building material
-    block_boundary_2_inactive:
-      name: "§b§lBoundary §e(inactive)"
-      lore: ["", "§aVariant 2", "§7Building material: %1$s"]
+    BlockBoundary2Inactive:
+      Name: "§b§lBoundary §e(inactive)"
+      Lore: ["", "§aVariant 2", "§7Building material: %1$s"]
     # The item used to represent the selected inactive boundary variant 3 block.
     # %1$s: Building material
-    block_boundary_3_inactive:
-      name: "§b§lBoundary §e(inactive)"
-      lore: ["", "§aVariant 3", "§7Building material: %1$s"]
+    BlockBoundary3Inactive:
+      Name: "§b§lBoundary §e(inactive)"
+      Lore: ["", "§aVariant 3", "§7Building material: %1$s"]
     # The item used to represent the selected inactive boundary variant 4 block.
     # %1$s: Building material
-    block_boundary_4_inactive:
-      name: "§b§lBoundary §e(inactive)"
-      lore: ["", "§aVariant 4", "§7Building material: %1$s"]
+    BlockBoundary4Inactive:
+      Name: "§b§lBoundary §e(inactive)"
+      Lore: ["", "§aVariant 4", "§7Building material: %1$s"]
     # The item used to represent the selected inactive boundary variant 5 block.
     # %1$s: Building material
-    block_boundary_5_inactive:
-      name: "§b§lBoundary §e(inactive)"
-      lore: ["", "§aVariant 5", "§7Building material: %1$s"]
+    BlockBoundary5Inactive:
+      Name: "§b§lBoundary §e(inactive)"
+      Lore: ["", "§aVariant 5", "§7Building material: %1$s"]
 
     # The item used to apply the style to the portal.
-    accept:
-      name: "§a§lApply Style"
-      lore: []
+    Accept:
+      Name: "§a§lApply Style"
+      Lore: []
 
     # The item used to reset all changes made in this menu.
-    reset:
-      name: "§6§lReset Changes"
-      lore: []
+    Reset:
+      Name: "§6§lReset Changes"
+      Lore: []
 
     # The title for the predefined style selector.
-    select_style_title: "§8§lSelect Style"
+    SelectStyleTitle: "§8§lSelect Style"
     # The filter title for the predefined style selector.
-    filter_styles_title: "§8§lFilter Styles"
+    FilterStylesTitle: "§8§lFilter Styles"
     # The item used to open the style selector for predefined styles.
-    select_defined:
-      name: "§b§lSelect Defined Style"
-      lore: []
+    SelectDefined:
+      Name: "§b§lSelect Defined Style"
+      Lore: []
     # The item used to represent a predefined style.
     # %1$s: Name of the style
-    select_style:
-      name: "%1$s"
-      lore: []
+    SelectStyle:
+      Name: "%1$s"
+      Lore: []
 
     # The item used to discard any changes and return to the previous menu.
-    cancel:
-      name: "§6↩ §lDiscard Changes"
-      lore: []
+    Cancel:
+      Name: "§6↩ §lDiscard Changes"
+      Lore: []
 
   # Settings for the portal console menu.
-  console:
+  Console:
     # The title for the console menu.
     # %1$s: Portal name
-    title: "§8§lPortal: %1$s"
+    Title: "§8§lPortal: %1$s"
 
     # The item used to open the portal's settings.
-    settings:
-      name: "§b§lSettings"
-      lore: []
+    Settings:
+      Name: "§b§lSettings"
+      Lore: []
 
     # The item used to open the portal's target selector.
     # %1$s: The currently selected target
-    select_target:
-      name: "§d§lSelect Target"
-      lore:
+    SelectTarget:
+      Name: "§d§lSelect Target"
+      Lore:
         - ""
         - "§7Current: %1$s"
     # The item used to show the current target when the target is locked.
     # %1$s: The currently selected target
-    select_target_locked:
-      name: "§d§lSelect Target"
-      lore:
+    SelectTargetLocked:
+      Name: "§d§lSelect Target"
+      Lore:
         - ""
         - "§7Current: %1$s"
         - "§8Target selection is currently §6§lLOCKED§r§8!"
 
-    select_target_title: "§8§lSelect Target Portal"
-    filter_portals_title: "§8§lFilter Portals"
+    SelectTargetTitle: "§8§lSelect Target Portal"
+    FilterPortalsTitle: "§8§lFilter Portals"
     # The item used to represent a target portal.
     # %1$s: Portal name
     # %2$s: Portal distance
     # %3$s: Portal world
     # %4$s: Portal visibility (defined below, public, private, ...)
-    select_target_portal:
-      name: "%1$s"
-      lore:
+    SelectTargetPortal:
+      Name: "%1$s"
+      Lore:
         - ""
         - "§7Distance: %2$s§6m"
         - "§7World: %3$s"
         - "§7%4$s"
-    select_target_portal_visibility_public: "§aPublic"
-    select_target_portal_visibility_group: "§eRegion Group (members)"
-    select_target_portal_visibility_group_internal: "§eRegion Group (only visible internally)"
-    select_target_portal_visibility_private: "§cPrivate"
+    SelectTargetPortalVisibilityPublic: "§aPublic"
+    SelectTargetPortalVisibilityGroup: "§eRegion Group (members)"
+    SelectTargetPortalVisibilityGroupInternal: "§eRegion Group (only visible internally)"
+    SelectTargetPortalVisibilityPrivate: "§cPrivate"
 
     # The item used to unlink the current console.
-    unlink_console:
-      name: "§c§lUnlink Console"
-      lore: []
+    UnlinkConsole:
+      Name: "§c§lUnlink Console"
+      Lore: []
     # The title for the unlinking confirmation dialog.
-    unlink_console_confirm_title: "§c§lUnlink console?"
+    UnlinkConsoleConfirmTitle: "§c§lUnlink console?"
     # The item to accept unlinking.
-    unlink_console_confirm_accept:
-      name: "§c§lUNLINK CONSOLE"
-      lore: []
+    UnlinkConsoleConfirmAccept:
+      Name: "§c§lUNLINK CONSOLE"
+      Lore: []
     # The item to cancel unlinking.
-    unlink_console_confirm_cancel:
-      name: "§a§lCancel"
-      lore: []
+    UnlinkConsoleConfirmCancel:
+      Name: "§a§lCancel"
+      Lore: []
 
     # The item used to destroy the portal.
-    destroy_portal:
-      name: "§c§lDestroy Portal"
-      lore: []
+    DestroyPortal:
+      Name: "§c§lDestroy Portal"
+      Lore: []
     # The title for the destroy portal confirmation dialog.
-    destroy_portal_confirm_title: "§c§lDestroy portal?"
+    DestroyPortalConfirmTitle: "§c§lDestroy portal?"
     # The item to accept destroying.
-    destroy_portal_confirm_accept:
-      name: "§c§lDESTROY PORTAL"
-      lore: []
+    DestroyPortalConfirmAccept:
+      Name: "§c§lDESTROY PORTAL"
+      Lore: []
     # The item to cancel destroying.
-    destroy_portal_confirm_cancel:
-      name: "§a§lCancel"
-      lore: []
+    DestroyPortalConfirmCancel:
+      Name: "§a§lCancel"
+      Lore: []

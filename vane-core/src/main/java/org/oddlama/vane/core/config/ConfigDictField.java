@@ -17,12 +17,12 @@ public class ConfigDictField extends ConfigField<ConfigDictSerializable> {
     private class EmptyDict implements ConfigDictSerializable {
 
         @Override
-        public Map<String, Object> to_dict() {
+        public Map<String, Object> toDict() {
             return new HashMap<>();
         }
 
         @Override
-        public void from_dict(final Map<String, Object> dict) {
+        public void fromDict(final Map<String, Object> dict) {
             // no-op
         }
     }
@@ -32,16 +32,16 @@ public class ConfigDictField extends ConfigField<ConfigDictSerializable> {
     public ConfigDictField(
         final Object owner,
         final Field field,
-        final Function<String, String> map_name,
+        final Function<String, String> mapName,
         final ConfigDict annotation
     ) {
-        super(owner, field, map_name, "dict", annotation.desc());
+        super(owner, field, mapName, "dict", annotation.desc());
         this.annotation = annotation;
     }
 
     @Override
     public ConfigDictSerializable def() {
-        final var override = overridden_def();
+        final var override = overriddenDef();
         if (override != null) {
             return override;
         } else {
@@ -51,7 +51,7 @@ public class ConfigDictField extends ConfigField<ConfigDictSerializable> {
 
     @Override
     public boolean metrics() {
-        final var override = overridden_metrics();
+        final var override = overriddenMetrics();
         if (override != null) {
             return override;
         } else {
@@ -60,14 +60,14 @@ public class ConfigDictField extends ConfigField<ConfigDictSerializable> {
     }
 
     @SuppressWarnings("unchecked")
-    private void append_list(
+    private void appendList(
         final StringBuilder builder,
         final String indent,
-        final String list_key,
+        final String listKey,
         final List<Object> list
     ) {
         builder.append(indent);
-        builder.append(list_key);
+        builder.append(listKey);
         if (list.isEmpty()) {
             builder.append(": []\n");
         } else {
@@ -76,7 +76,7 @@ public class ConfigDictField extends ConfigField<ConfigDictSerializable> {
                 if (entry instanceof String) {
                     builder.append(indent);
                     builder.append("  - ");
-                    builder.append("\"" + escape_yaml(entry.toString()) + "\"");
+                    builder.append("\"" + escapeYaml(entry.toString()) + "\"");
                     builder.append("\n");
                 } else if (
                     entry instanceof Integer ||
@@ -90,7 +90,7 @@ public class ConfigDictField extends ConfigField<ConfigDictSerializable> {
                     builder.append(entry);
                     builder.append("\n");
                 } else if (entry instanceof Map<?, ?>) {
-                    append_dict(builder, indent + "  ", null, (Map<String, Object>) entry, true);
+                    appendDict(builder, indent + "  ", null, (Map<String, Object>) entry, true);
                 } else {
                     throw new RuntimeException(
                         "Invalid value '" +
@@ -105,18 +105,18 @@ public class ConfigDictField extends ConfigField<ConfigDictSerializable> {
     }
 
     @SuppressWarnings("unchecked")
-    private void append_dict(
+    private void appendDict(
         final StringBuilder builder,
         final String indent,
-        final String dict_key,
+        final String dictKey,
         final Map<String, Object> dict,
-        final boolean is_list_entry
+        final boolean isListEntry
     ) {
         builder.append(indent);
-        if (is_list_entry) {
+        if (isListEntry) {
             builder.append("-");
         } else {
-            builder.append(dict_key);
+            builder.append(dictKey);
             builder.append(":");
         }
         if (dict.isEmpty()) {
@@ -132,7 +132,7 @@ public class ConfigDictField extends ConfigField<ConfigDictSerializable> {
                         builder.append(indent + "  ");
                         builder.append(entry.getKey());
                         builder.append(": ");
-                        builder.append("\"" + escape_yaml(entry.getValue().toString()) + "\"");
+                        builder.append("\"" + escapeYaml(entry.getValue().toString()) + "\"");
                         builder.append("\n");
                     } else if (
                         entry.getValue() instanceof Integer ||
@@ -147,7 +147,7 @@ public class ConfigDictField extends ConfigField<ConfigDictSerializable> {
                         builder.append(entry.getValue().toString());
                         builder.append("\n");
                     } else if (entry.getValue() instanceof Map<?, ?>) {
-                        append_dict(
+                        appendDict(
                             builder,
                             indent + "  ",
                             entry.getKey(),
@@ -155,7 +155,7 @@ public class ConfigDictField extends ConfigField<ConfigDictSerializable> {
                             false
                         );
                     } else if (entry.getValue() instanceof List<?>) {
-                        append_list(builder, indent + "  ", entry.getKey(), (List<Object>) entry.getValue());
+                        appendList(builder, indent + "  ", entry.getKey(), (List<Object>) entry.getValue());
                     } else {
                         throw new RuntimeException(
                             "Invalid value '" +
@@ -169,49 +169,49 @@ public class ConfigDictField extends ConfigField<ConfigDictSerializable> {
         }
     }
 
-    private void append_dict(
+    private void appendDict(
         final StringBuilder builder,
         final String indent,
-        final boolean default_definition,
+        final boolean defaultDefinition,
         final ConfigDictSerializable ser
     ) {
-        if (default_definition) {
-            append_dict(builder, indent + "# ", "Default", ser.to_dict(), false);
+        if (defaultDefinition) {
+            appendDict(builder, indent + "# ", "Default", ser.toDict(), false);
         } else {
-            append_dict(builder, indent, basename(), ser.to_dict(), false);
+            appendDict(builder, indent, basename(), ser.toDict(), false);
         }
     }
 
     @Override
-    public void generate_yaml(
+    public void generateYaml(
         final StringBuilder builder,
         final String indent,
-        final YamlConfiguration existing_compatible_config
+        final YamlConfiguration existingCompatibleConfig
     ) {
-        append_description(builder, indent);
-        append_dict(builder, indent, true, def());
-        final var def = existing_compatible_config != null && existing_compatible_config.contains(yaml_path())
-            ? load_from_yaml(existing_compatible_config)
+        appendDescription(builder, indent);
+        appendDict(builder, indent, true, def());
+        final var def = existingCompatibleConfig != null && existingCompatibleConfig.contains(yamlPath())
+            ? loadFromYaml(existingCompatibleConfig)
             : def();
-        append_dict(builder, indent, false, def);
+        appendDict(builder, indent, false, def);
     }
 
     @Override
-    public void check_loadable(final YamlConfiguration yaml) throws YamlLoadException {
-        check_yaml_path(yaml);
+    public void checkLoadable(final YamlConfiguration yaml) throws YamlLoadException {
+        checkYamlPath(yaml);
 
-        if (!yaml.isConfigurationSection(yaml_path())) {
+        if (!yaml.isConfigurationSection(yamlPath())) {
             throw new YamlLoadException(
-                "Invalid type for yaml path '" + yaml_path() + "', expected configuration section"
+                "Invalid type for yaml path '" + yamlPath() + "', expected configuration section"
             );
         }
     }
 
-    public ArrayList<Object> load_list_from_yaml(final List<?> raw_list) {
+    public ArrayList<Object> loadListFromYaml(final List<?> rawList) {
         final var list = new ArrayList<Object>();
-        for (var e : raw_list) {
+        for (var e : rawList) {
             if (e instanceof ConfigurationSection section) {
-                list.add(load_dict_from_yaml(section));
+                list.add(loadDictFromYaml(section));
             } else {
                 list.add(e);
             }
@@ -219,13 +219,13 @@ public class ConfigDictField extends ConfigField<ConfigDictSerializable> {
         return list;
     }
 
-    public HashMap<String, Object> load_dict_from_yaml(final ConfigurationSection section) {
+    public HashMap<String, Object> loadDictFromYaml(final ConfigurationSection section) {
         final var dict = new HashMap<String, Object>();
         for (var subkey : section.getKeys(false)) {
             if (section.isConfigurationSection(subkey)) {
-                dict.put(subkey, load_dict_from_yaml(section.getConfigurationSection(subkey)));
+                dict.put(subkey, loadDictFromYaml(section.getConfigurationSection(subkey)));
             } else if (section.isList(subkey)) {
-                dict.put(subkey, load_list_from_yaml(section.getList(subkey)));
+                dict.put(subkey, loadListFromYaml(section.getList(subkey)));
             } else if (section.isString(subkey)) {
                 dict.put(subkey, section.getString(subkey));
             } else if (section.isInt(subkey)) {
@@ -238,17 +238,17 @@ public class ConfigDictField extends ConfigField<ConfigDictSerializable> {
                 dict.put(subkey, section.getLong(subkey));
             } else {
                 throw new IllegalStateException(
-                    "Cannot load dict entry '" + yaml_path() + "." + subkey + "': unknown type"
+                    "Cannot load dict entry '" + yamlPath() + "." + subkey + "': unknown type"
                 );
             }
         }
         return dict;
     }
 
-    public ConfigDictSerializable load_from_yaml(final YamlConfiguration yaml) {
+    public ConfigDictSerializable loadFromYaml(final YamlConfiguration yaml) {
         try {
             final var dict = ((ConfigDictSerializable) annotation.cls().getDeclaredConstructor().newInstance());
-            dict.from_dict(load_dict_from_yaml(yaml.getConfigurationSection(yaml_path())));
+            dict.fromDict(loadDictFromYaml(yaml.getConfigurationSection(yamlPath())));
             return dict;
         } catch (
             InstantiationException
@@ -264,7 +264,7 @@ public class ConfigDictField extends ConfigField<ConfigDictSerializable> {
 
     public void load(final YamlConfiguration yaml) {
         try {
-            field.set(owner, load_from_yaml(yaml));
+            field.set(owner, loadFromYaml(yaml));
         } catch (final IllegalAccessException e) {
             throw new RuntimeException("Invalid field access on '" + field.getName() + "'. This is a bug.");
         }

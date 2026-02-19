@@ -18,7 +18,7 @@ public class VelocityCompatProxyServer implements ProxyServer {
     }
 
     @Override
-    public ProxyTaskScheduler get_scheduler() {
+    public ProxyTaskScheduler getScheduler() {
         return new VelocityCompatProxyTaskScheduler(proxy.getScheduler());
     }
 
@@ -33,7 +33,7 @@ public class VelocityCompatProxyServer implements ProxyServer {
     }
 
     @Override
-    public boolean has_permission(UUID uuid, String... permission) {
+    public boolean hasPermission(UUID uuid, String... permission) {
         final var player = proxy.getPlayer(uuid);
         if (player.isEmpty()) return false;
 

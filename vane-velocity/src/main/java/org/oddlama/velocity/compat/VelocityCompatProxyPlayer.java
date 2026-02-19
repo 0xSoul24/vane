@@ -19,17 +19,17 @@ public class VelocityCompatProxyPlayer implements ProxyPlayer {
     }
 
     @Override
-    public UUID get_unique_id() {
+    public UUID getUniqueId() {
         return player.getUniqueId();
     }
 
     @Override
-    public long get_ping() {
+    public long getPing() {
         return player.getPing();
     }
 
     @Override
-    public void send_message(String message) {
+    public void sendMessage(String message) {
         player.sendMessage(Component.text(message));
     }
 }

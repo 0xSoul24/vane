@@ -3,7 +3,7 @@ package org.oddlama.vane.admin;
 import org.oddlama.vane.annotation.VaneModule;
 import org.oddlama.vane.core.module.Module;
 
-@VaneModule(name = "admin", bstats = 8638, config_version = 2, lang_version = 2, storage_version = 1)
+@VaneModule(name = "admin", bstats = 8638, configVersion = 2, langVersion = 2, storageVersion = 1)
 public class Admin extends Module<Admin> {
 
     public Admin() {
@@ -13,9 +13,9 @@ public class Admin extends Module<Admin> {
         new org.oddlama.vane.admin.commands.Time(this);
         new org.oddlama.vane.admin.commands.Weather(this);
 
-        var autostop_group = new AutostopGroup(this);
-        new AutostopListener(autostop_group);
-        new org.oddlama.vane.admin.commands.Autostop(autostop_group);
+        var autostopGroup = new AutostopGroup(this);
+        new AutostopListener(autostopGroup);
+        new org.oddlama.vane.admin.commands.Autostop(autostopGroup);
 
         new SpawnProtection(this);
         new WorldProtection(this);

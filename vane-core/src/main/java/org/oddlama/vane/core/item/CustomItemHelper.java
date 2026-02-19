@@ -14,13 +14,13 @@ import java.util.List;
 public class CustomItemHelper {
 
     /** Used in persistent item storage to identify custom items. */
-    public static final NamespacedKey CUSTOM_ITEM_IDENTIFIER = StorageUtil.namespaced_key(
+    public static final NamespacedKey CUSTOM_ITEM_IDENTIFIER = StorageUtil.namespacedKey(
         "vane",
         "custom_item_identifier"
     );
 
     /** Used in persistent item storage to store a custom item version. */
-    public static final NamespacedKey CUSTOM_ITEM_VERSION = StorageUtil.namespaced_key("vane", "custom_item_version");
+    public static final NamespacedKey CUSTOM_ITEM_VERSION = StorageUtil.namespacedKey("vane", "custom_item_version");
 
     /**
      * Internal function. Acts as a dispatcher that updates internal metadata on the provided
@@ -39,7 +39,7 @@ public class CustomItemHelper {
             meta.setCustomModelDataComponent(customModelDataComponent);
         });
 
-        DurabilityManager.initialize_or_update_max(customItem, itemStack);
+        DurabilityManager.initializeOrUpdateMax(customItem, itemStack);
         return customItem.updateItemStack(itemStack);
     }
 
@@ -63,18 +63,18 @@ public class CustomItemHelper {
         if (parts.length != 2) {
             throw new IllegalStateException("Invalid namespaced key '" + key + "'");
         }
-        return Pair.of(StorageUtil.namespaced_key(parts[0], parts[1]), version);
+        return Pair.of(StorageUtil.namespacedKey(parts[0], parts[1]), version);
     }
 
     /** Creates a new item stack with a single item of this custom item. */
-    public static ItemStack newStack(final String custom_item_key) {
-        return CustomItemHelper.newStack(custom_item_key, 1);
+    public static ItemStack newStack(final String customItemKey) {
+        return CustomItemHelper.newStack(customItemKey, 1);
     }
 
     /** Creates a new item stack with the given number of items of this custom item. */
-    public static ItemStack newStack(final String custom_item_key, final int amount) {
+    public static ItemStack newStack(final String customItemKey, final int amount) {
         return CustomItemHelper.newStack(
-            Core.instance().item_registry().get(NamespacedKey.fromString(custom_item_key)),
+            Core.instance().itemRegistry().get(NamespacedKey.fromString(customItemKey)),
             amount
         );
     }

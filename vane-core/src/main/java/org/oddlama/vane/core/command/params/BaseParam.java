@@ -15,12 +15,12 @@ public abstract class BaseParam implements Param {
     }
 
     @Override
-    public List<Param> get_params() {
+    public List<Param> getParams() {
         return params;
     }
 
     @Override
-    public Command<?> get_command() {
+    public Command<?> getCommand() {
         return command;
     }
 }

@@ -19,14 +19,14 @@ public class ExistingItemConverter extends Listener<Core> {
         super(context.namespace("existing_item_converter"));
     }
 
-    private CustomItem from_old_item(final ItemStack item_stack) {
-        final var modelDataList = item_stack.getItemMeta().getCustomModelDataComponent().getFloats();
+    private CustomItem fromOldItem(final ItemStack itemStack) {
+        final var modelDataList = itemStack.getItemMeta().getCustomModelDataComponent().getFloats();
         if (modelDataList.isEmpty() || modelDataList.getFirst() == null) {
             return null;
         }
 
         // If lookups fail, we return null and nothing will be done.
-        String new_item_key = switch (modelDataList.getFirst().intValue()) {
+        String newItemKey = switch (modelDataList.getFirst().intValue()) {
             case 7758190 -> "vane_trifles:wooden_sickle";
             case 7758191 -> "vane_trifles:stone_sickle";
             case 7758192 -> "vane_trifles:iron_sickle";
@@ -50,13 +50,13 @@ public class ExistingItemConverter extends Listener<Core> {
             default -> null;
         };
 
-        if (new_item_key == null) {
+        if (newItemKey == null) {
             return null;
         }
-        return get_module().item_registry().get(NamespacedKey.fromString(new_item_key));
+        return getModule().itemRegistry().get(NamespacedKey.fromString(newItemKey));
     }
 
-    private void process_inventory(@NotNull Inventory inventory) {
+    private void processInventory(@NotNull Inventory inventory) {
         final var contents = inventory.getContents();
         int changed = 0;
 
@@ -66,33 +66,33 @@ public class ExistingItemConverter extends Listener<Core> {
                 continue;
             }
 
-            final var custom_item = get_module().item_registry().get(is);
-            if (custom_item == null) {
+            final var customItem = getModule().itemRegistry().get(is);
+            if (customItem == null) {
                 // Determine if the item stack should be converted to a custom item from a legacy
                 // definition
-                final var convert_to_custom_item = from_old_item(is);
-                if (convert_to_custom_item == null) {
+                final var convertToCustomItem = fromOldItem(is);
+                if (convertToCustomItem == null) {
                     continue;
                 }
 
-                contents[i] = convert_to_custom_item.convertExistingStack(is);
-                contents[i].editMeta(meta -> meta.itemName(convert_to_custom_item.displayName()));
-                get_module().enchantment_manager.update_enchanted_item(contents[i]);
-                get_module().log.info("Converted legacy item to " + convert_to_custom_item.key());
+                contents[i] = convertToCustomItem.convertExistingStack(is);
+                contents[i].editMeta(meta -> meta.itemName(convertToCustomItem.displayName()));
+                getModule().enchantmentManager.updateEnchantedItem(contents[i]);
+                getModule().log.info("Converted legacy item to " + convertToCustomItem.key());
                 ++changed;
                 continue;
             }
 
             // Remove obsolete custom items
-            if (get_module().item_registry().shouldRemove(custom_item.key())) {
+            if (getModule().itemRegistry().shouldRemove(customItem.key())) {
                 contents[i] = null;
-                get_module().log.info("Removed obsolete item " + custom_item.key());
+                getModule().log.info("Removed obsolete item " + customItem.key());
                 ++changed;
                 continue;
             }
 
             // Update custom items to a new version, or if another detectable property changed.
-            final var key_and_version = CustomItemHelper.customItemTagsFromItemStack(is);
+            final var keyAndVersion = CustomItemHelper.customItemTagsFromItemStack(is);
             final var meta = is.getItemMeta();
             final var modelDataList = meta.getCustomModelDataComponent().getFloats();
             final Integer modelDataInt = (!modelDataList.isEmpty() && modelDataList.getFirst() != null)
@@ -101,29 +101,29 @@ public class ExistingItemConverter extends Listener<Core> {
 
             if (
                 modelDataInt == null ||
-                modelDataInt != custom_item.customModelData() ||
-                is.getType() != custom_item.baseMaterial() ||
-                key_and_version.getRight() != custom_item.version()) {
+                modelDataInt != customItem.customModelData() ||
+                is.getType() != customItem.baseMaterial() ||
+                keyAndVersion.getRight() != customItem.version()) {
                 // Also includes durability max update.
-                contents[i] = custom_item.convertExistingStack(is);
-                get_module().log.info("Updated item " + custom_item.key());
+                contents[i] = customItem.convertExistingStack(is);
+                getModule().log.info("Updated item " + customItem.key());
                 ++changed;
                 continue;
             }
 
             // Update maximum durability on existing items if changed.
             Damageable damageableMeta = (Damageable) contents[i].getItemMeta();
-            int max_damage = damageableMeta.hasMaxDamage()
+            int maxDamage = damageableMeta.hasMaxDamage()
                 ? damageableMeta.getMaxDamage()
                 : contents[i].getType().getMaxDurability();
-            int correct_max_damage = custom_item.durability() == 0
+            int correctMaxDamage = customItem.durability() == 0
                 ? contents[i].getType().getMaxDurability()
-                : custom_item.durability();
+                : customItem.durability();
             if (
-                max_damage != correct_max_damage ||
+                maxDamage != correctMaxDamage ||
                 meta.getPersistentDataContainer().has(DurabilityManager.ITEM_DURABILITY_DAMAGE)) {
-                get_module().log.info("Updated item durability " + custom_item.key());
-                DurabilityManager.update_damage(custom_item, contents[i]);
+                getModule().log.info("Updated item durability " + customItem.key());
+                DurabilityManager.updateDamage(customItem, contents[i]);
                 ++changed;
                 continue;
             }
@@ -135,13 +135,13 @@ public class ExistingItemConverter extends Listener<Core> {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on_player_join(final PlayerJoinEvent event) {
-        process_inventory(event.getPlayer().getInventory());
+    public void onPlayerJoin(final PlayerJoinEvent event) {
+        processInventory(event.getPlayer().getInventory());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on_inventory_open(final InventoryOpenEvent event) {
+    public void onInventoryOpen(final InventoryOpenEvent event) {
         // Catches enderchests, and inventories by other plugins
-        process_inventory(event.getInventory());
+        processInventory(event.getInventory());
     }
 }

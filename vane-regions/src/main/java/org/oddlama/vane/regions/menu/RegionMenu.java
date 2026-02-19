@@ -1,6 +1,6 @@
 package org.oddlama.vane.regions.menu;
 
-import static org.oddlama.vane.util.PlayerUtil.give_items;
+import static org.oddlama.vane.util.PlayerUtil.giveItems;
 
 import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
@@ -27,59 +27,59 @@ import org.oddlama.vane.util.StorageUtil;
 public class RegionMenu extends ModuleComponent<Regions> {
 
     @LangMessage
-    public TranslatedMessage lang_title;
+    public TranslatedMessage langTitle;
 
     @LangMessage
-    public TranslatedMessage lang_delete_confirm_title;
+    public TranslatedMessage langDeleteConfirmTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_region_group_title;
+    public TranslatedMessage langSelectRegionGroupTitle;
 
     @LangMessage
-    public TranslatedMessage lang_filter_region_groups_title;
+    public TranslatedMessage langFilterRegionGroupsTitle;
 
-    public TranslatedItemStack<?> item_rename;
-    public TranslatedItemStack<?> item_delete;
-    public TranslatedItemStack<?> item_delete_confirm_accept;
-    public TranslatedItemStack<?> item_delete_confirm_cancel;
-    public TranslatedItemStack<?> item_assign_region_group;
-    public TranslatedItemStack<?> item_select_region_group;
+    public TranslatedItemStack<?> itemRename;
+    public TranslatedItemStack<?> itemDelete;
+    public TranslatedItemStack<?> itemDeleteConfirmAccept;
+    public TranslatedItemStack<?> itemDeleteConfirmCancel;
+    public TranslatedItemStack<?> itemAssignRegionGroup;
+    public TranslatedItemStack<?> itemSelectRegionGroup;
 
     public RegionMenu(Context<Regions> context) {
-        super(context.namespace("region"));
-        final var ctx = get_context();
-        item_rename = new TranslatedItemStack<>(ctx, "rename", Material.NAME_TAG, 1, "Used to rename the region.");
-        item_delete = new TranslatedItemStack<>(
+        super(context.namespace("Region"));
+        final var ctx = getContext();
+        itemRename = new TranslatedItemStack<>(ctx, "Rename", Material.NAME_TAG, 1, "Used to rename the region.");
+        itemDelete = new TranslatedItemStack<>(
             ctx,
-            "delete",
-            StorageUtil.namespaced_key("vane", "decoration_tnt_1"),
+            "Delete",
+            StorageUtil.namespacedKey("vane", "decoration_tnt_1"),
             1,
             "Used to delete this region."
         );
-        item_delete_confirm_accept = new TranslatedItemStack<>(
+        itemDeleteConfirmAccept = new TranslatedItemStack<>(
             ctx,
-            "delete_confirm_accept",
-            StorageUtil.namespaced_key("vane", "decoration_tnt_1"),
+            "DeleteConfirmAccept",
+            StorageUtil.namespacedKey("vane", "decoration_tnt_1"),
             1,
             "Used to confirm deleting the region."
         );
-        item_delete_confirm_cancel = new TranslatedItemStack<>(
+        itemDeleteConfirmCancel = new TranslatedItemStack<>(
             ctx,
-            "delete_confirm_cancel",
+            "DeleteConfirmCancel",
             Material.PRISMARINE_SHARD,
             1,
             "Used to cancel deleting the region."
         );
-        item_assign_region_group = new TranslatedItemStack<>(
+        itemAssignRegionGroup = new TranslatedItemStack<>(
             ctx,
-            "assign_region_group",
+            "AssignRegionGroup",
             Material.GLOBE_BANNER_PATTERN,
             1,
             "Used to assign a region group."
         );
-        item_select_region_group = new TranslatedItemStack<>(
+        itemSelectRegionGroup = new TranslatedItemStack<>(
             ctx,
-            "select_region_group",
+            "SelectRegionGroup",
             Material.GLOBE_BANNER_PATTERN,
             1,
             "Used to represent a region group in the region group assignment list."
@@ -88,42 +88,42 @@ public class RegionMenu extends ModuleComponent<Regions> {
 
     public Menu create(final Region region, final Player player) {
         final var columns = 9;
-        final var title = lang_title.str_component("§5§l" + region.name());
-        final var region_menu = new Menu(get_context(), Bukkit.createInventory(null, columns, title));
-        region_menu.tag(new RegionMenuTag(region.id()));
+        final var title = langTitle.strComponent("§5§l" + region.name());
+        final var regionMenu = new Menu(getContext(), Bukkit.createInventory(null, columns, title));
+        regionMenu.tag(new RegionMenuTag(region.id()));
 
-        if (get_module().may_administrate(player, region)) {
-            region_menu.add(menu_item_rename(region));
-            region_menu.add(menu_item_delete(region));
-            region_menu.add(menu_item_assign_region_group(region));
+        if (getModule().mayAdministrate(player, region)) {
+            regionMenu.add(menuItemRename(region));
+            regionMenu.add(menuItemDelete(region));
+            regionMenu.add(menuItemAssignRegionGroup(region));
         }
 
-        region_menu.on_natural_close(player2 -> get_module().menus.main_menu.create(player2).open(player2));
+        regionMenu.onNaturalClose(player2 -> getModule().menus.mainMenu.create(player2).open(player2));
 
-        return region_menu;
+        return regionMenu;
     }
 
-    private MenuWidget menu_item_rename(final Region region) {
-        return new MenuItem(0, item_rename.item(), (player, menu, self) -> {
+    private MenuWidget menuItemRename(final Region region) {
+        return new MenuItem(0, itemRename.item(), (player, menu, self) -> {
             menu.close(player);
-            if (!get_module().may_administrate(player, region)) {
+            if (!getModule().mayAdministrate(player, region)) {
                 return ClickResult.ERROR;
             }
 
-            get_module()
-                .menus.enter_region_name_menu.create(player, region.name(), (player2, name) -> {
+            getModule()
+                .menus.enterRegionNameMenu.create(player, region.name(), (player2, name) -> {
                     region.name(name);
 
                     // Update map marker
-                    get_module().update_marker(region);
+                    getModule().updateMarker(region);
 
                     // Open new menu because of possibly changed title
-                    get_module().menus.region_menu.create(region, player2).open(player2);
+                    getModule().menus.regionMenu.create(region, player2).open(player2);
                     return ClickResult.SUCCESS;
                 })
-                .on_natural_close(player2 -> {
+                .onNaturalClose(player2 -> {
                     // Open new menu because of possibly changed title
-                    get_module().menus.region_menu.create(region, player2).open(player2);
+                    getModule().menus.regionMenu.create(region, player2).open(player2);
                 })
                 .open(player);
 
@@ -131,30 +131,30 @@ public class RegionMenu extends ModuleComponent<Regions> {
         });
     }
 
-    private MenuWidget menu_item_delete(final Region region) {
-        return new MenuItem(1, item_delete.item(), (player, menu, self) -> {
+    private MenuWidget menuItemDelete(final Region region) {
+        return new MenuItem(1, itemDelete.item(), (player, menu, self) -> {
             menu.close(player);
             MenuFactory.confirm(
-                get_context(),
-                lang_delete_confirm_title.str(),
-                item_delete_confirm_accept.item(),
+                getContext(),
+                langDeleteConfirmTitle.str(),
+                itemDeleteConfirmAccept.item(),
                 player2 -> {
-                    if (!get_module().may_administrate(player2, region)) {
+                    if (!getModule().mayAdministrate(player2, region)) {
                         return ClickResult.ERROR;
                     }
 
-                    get_module().remove_region(region);
+                    getModule().removeRegion(region);
 
                     // Give back money
-                    final var temp_sel = new RegionSelection(get_module());
-                    temp_sel.primary = region.extent().min();
-                    temp_sel.secondary = region.extent().max();
+                    final var tempSel = new RegionSelection(getModule());
+                    tempSel.primary = region.extent().min();
+                    tempSel.secondary = region.extent().max();
 
-                    final var price = temp_sel.price();
-                    if (get_module().config_economy_as_currency) {
-                        final var transaction = get_module().economy.deposit(player2, price);
+                    final var price = tempSel.price();
+                    if (getModule().configEconomyAsCurrency) {
+                        final var transaction = getModule().economy.deposit(player2, price);
                         if (!transaction.transactionSuccess()) {
-                            get_module()
+                            getModule()
                                 .log.severe(
                                     "Player " +
                                     player2 +
@@ -164,14 +164,14 @@ public class RegionMenu extends ModuleComponent<Regions> {
                                     price +
                                     ") but the economy plugin failed to deposit:"
                                 );
-                            get_module().log.severe("Error message: " + transaction.errorMessage);
+                            getModule().log.severe("Error message: " + transaction.errorMessage);
                         }
                     } else {
-                        give_items(player2, new ItemStack(get_module().config_currency), (int) price);
+                        giveItems(player2, new ItemStack(getModule().configCurrency), (int) price);
                     }
                     return ClickResult.SUCCESS;
                 },
-                item_delete_confirm_cancel.item(),
+                itemDeleteConfirmCancel.item(),
                 player2 -> menu.open(player2)
             )
                 .tag(new RegionMenuTag(region.id()))
@@ -180,33 +180,33 @@ public class RegionMenu extends ModuleComponent<Regions> {
         });
     }
 
-    private MenuWidget menu_item_assign_region_group(final Region region) {
-        return new MenuItem(2, item_assign_region_group.item(), (player, menu, self) -> {
+    private MenuWidget menuItemAssignRegionGroup(final Region region) {
+        return new MenuItem(2, itemAssignRegionGroup.item(), (player, menu, self) -> {
             menu.close(player);
-            final var all_region_groups = get_module()
-                .all_region_groups()
+            final var allRegionGroups = getModule()
+                .allRegionGroups()
                 .stream()
-                .filter(g -> get_module().may_administrate(player, g))
+                .filter(g -> getModule().mayAdministrate(player, g))
                 .sorted((a, b) -> a.name().compareToIgnoreCase(b.name()))
                 .collect(Collectors.toList());
 
             final var filter = new Filter.StringFilter<RegionGroup>((r, str) -> r.name().toLowerCase().contains(str));
-            MenuFactory.generic_selector(
-                get_context(),
+            MenuFactory.genericSelector(
+                getContext(),
                 player,
-                lang_select_region_group_title.str(),
-                lang_filter_region_groups_title.str(),
-                all_region_groups,
-                r -> item_select_region_group.item("§a§l" + r.name()),
+                langSelectRegionGroupTitle.str(),
+                langFilterRegionGroupsTitle.str(),
+                allRegionGroups,
+                r -> itemSelectRegionGroup.item("§a§l" + r.name()),
                 filter,
                 (player2, m, group) -> {
-                    if (!get_module().may_administrate(player2, region)) {
+                    if (!getModule().mayAdministrate(player2, region)) {
                         return ClickResult.ERROR;
                     }
 
                     m.close(player2);
-                    region.region_group_id(group.id());
-                    mark_persistent_storage_dirty();
+                    region.regionGroupId(group.id());
+                    markPersistentStorageDirty();
                     menu.open(player2);
                     return ClickResult.SUCCESS;
                 },
@@ -217,8 +217,8 @@ public class RegionMenu extends ModuleComponent<Regions> {
     }
 
     @Override
-    public void on_enable() {}
+    public void onEnable() {}
 
     @Override
-    public void on_disable() {}
+    public void onDisable() {}
 }

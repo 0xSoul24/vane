@@ -1,6 +1,6 @@
 package org.oddlama.vane.core.item;
 
-import static org.oddlama.vane.util.MaterialUtil.is_tillable;
+import static org.oddlama.vane.util.MaterialUtil.isTillable;
 
 import org.bukkit.Keyed;
 import org.bukkit.Material;
@@ -36,21 +36,21 @@ public class VanillaFunctionalityInhibitor extends Listener<Core> {
         super(context);
     }
 
-    private boolean inhibit(CustomItem custom_item, InhibitBehavior behavior) {
-        return custom_item != null && custom_item.enabled() && custom_item.inhibitedBehaviors().contains(behavior);
+    private boolean inhibit(CustomItem customItem, InhibitBehavior behavior) {
+        return customItem != null && customItem.enabled() && customItem.inhibitedBehaviors().contains(behavior);
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void on_pathfind(final EntityTargetEvent event) {
+    public void onPathfind(final EntityTargetEvent event) {
         if (event.getReason() != EntityTargetEvent.TargetReason.TEMPT) {
             return;
         }
 
         if (event.getTarget() instanceof Player player) {
-            final var custom_item_main = get_module().item_registry().get(player.getInventory().getItemInMainHand());
-            final var custom_item_off = get_module().item_registry().get(player.getInventory().getItemInOffHand());
+            final var customItemMain = getModule().itemRegistry().get(player.getInventory().getItemInMainHand());
+            final var customItemOff = getModule().itemRegistry().get(player.getInventory().getItemInOffHand());
 
-            if (inhibit(custom_item_main, InhibitBehavior.TEMPT) || inhibit(custom_item_off, InhibitBehavior.TEMPT)) {
+            if (inhibit(customItemMain, InhibitBehavior.TEMPT) || inhibit(customItemOff, InhibitBehavior.TEMPT)) {
                 event.setCancelled(true);
             }
         }
@@ -58,25 +58,25 @@ public class VanillaFunctionalityInhibitor extends Listener<Core> {
 
     // Prevent custom hoe items from tilling blocks
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_player_hoe_right_click_block(final PlayerInteractEvent event) {
+    public void onPlayerHoeRightClickBlock(final PlayerInteractEvent event) {
         if (!event.hasBlock() || event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
 
         // Only when clicking a tillable block
-        if (!is_tillable(event.getClickedBlock().getType())) {
+        if (!isTillable(event.getClickedBlock().getType())) {
             return;
         }
 
         final var player = event.getPlayer();
         final var item = player.getEquipment().getItem(event.getHand());
-        if (inhibit(get_module().item_registry().get(item), InhibitBehavior.HOE_TILL)) {
+        if (inhibit(getModule().itemRegistry().get(item), InhibitBehavior.HOE_TILL)) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_prepare_item_craft(final PrepareItemCraftEvent event) {
+    public void onPrepareItemCraft(final PrepareItemCraftEvent event) {
         final var recipe = event.getRecipe();
         if (!(recipe instanceof Keyed keyed)) {
             return;
@@ -88,7 +88,7 @@ public class VanillaFunctionalityInhibitor extends Listener<Core> {
         }
 
         for (final var item : event.getInventory().getMatrix()) {
-            if (inhibit(get_module().item_registry().get(item), InhibitBehavior.USE_IN_VANILLA_RECIPE)) {
+            if (inhibit(getModule().itemRegistry().get(item), InhibitBehavior.USE_IN_VANILLA_RECIPE)) {
                 event.getInventory().setResult(null);
                 return;
             }
@@ -98,49 +98,49 @@ public class VanillaFunctionalityInhibitor extends Listener<Core> {
     // Prevent custom items from being used in smithing by default. They have to override this event
     // to allow it.
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_prepare_smithing(final PrepareSmithingEvent event) {
+    public void onPrepareSmithing(final PrepareSmithingEvent event) {
         final var item = event.getInventory().getInputEquipment();
         final var recipe = event.getInventory().getRecipe();
         if (!(recipe instanceof Keyed keyed)) {
             return;
         }
 
-        // Only consider canceling minecraft's recipes
+        // Only consider canceling Minecraft's recipes
         if (!keyed.getKey().getNamespace().equals("minecraft")) {
             return;
         }
 
-        if (inhibit(get_module().item_registry().get(item), InhibitBehavior.USE_IN_VANILLA_RECIPE)) {
+        if (inhibit(getModule().itemRegistry().get(item), InhibitBehavior.USE_IN_VANILLA_RECIPE)) {
             event.getInventory().setResult(null);
         }
     }
 
     // If the result of a smithing recipe is a custom item, copy and merge input NBT data.
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void on_prepare_smithing_copy_nbt(final PrepareSmithingEvent event) {
+    public void onPrepareSmithingCopyNbt(final PrepareSmithingEvent event) {
         var result = event.getResult();
         final var recipe = event.getInventory().getRecipe();
-        if (result == null || !(recipe instanceof SmithingRecipe smithing_recipe) || !smithing_recipe.willCopyNbt()) {
+        if (result == null || !(recipe instanceof SmithingRecipe smithingRecipe) || !smithingRecipe.willCopyNbt()) {
             return;
         }
 
         // Actually use a recipe result, as copynbt has already modified the result
         result = recipe.getResult();
-        final var custom_item_result = get_module().item_registry().get(result);
-        if (custom_item_result == null) {
+        final var customItemResult = getModule().itemRegistry().get(result);
+        if (customItemResult == null) {
             return;
         }
 
         final var input = event.getInventory().getInputEquipment();
-        final var input_components = CraftItemStack.asNMSCopy(input).getComponents();
-        final var nms_result = CraftItemStack.asNMSCopy(result);
-        nms_result.applyComponents(input_components);
+        final var inputComponents = CraftItemStack.asNMSCopy(input).getComponents();
+        final var nmsResult = CraftItemStack.asNMSCopy(result);
+        nmsResult.applyComponents(inputComponents);
 
-        event.setResult(custom_item_result.convertExistingStack(CraftItemStack.asCraftMirror(nms_result)));
+        event.setResult(customItemResult.convertExistingStack(CraftItemStack.asCraftMirror(nmsResult)));
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_prepare_anvil(final PrepareAnvilEvent event) {
+    public void onPrepareAnvil(final PrepareAnvilEvent event) {
         final var a = event.getInventory().getFirstItem();
         final var b = event.getInventory().getSecondItem();
 
@@ -149,9 +149,9 @@ public class VanillaFunctionalityInhibitor extends Listener<Core> {
         // TODO: what about inventory based item repair?
         if (a != null && b != null && a.getType() == b.getType()) {
             // Disable the result unless a and b are instances of the same custom item.
-            final var custom_item_a = get_module().item_registry().get(a);
-            final var custom_item_b = get_module().item_registry().get(b);
-            if (custom_item_a != null && custom_item_a != custom_item_b) {
+            final var customItemA = getModule().itemRegistry().get(a);
+            final var customItemB = getModule().itemRegistry().get(b);
+            if (customItemA != null && customItemA != customItemB) {
                 event.setResult(null);
                 return;
             }
@@ -159,44 +159,44 @@ public class VanillaFunctionalityInhibitor extends Listener<Core> {
 
         final var r = event.getInventory().getResult();
         if (r != null) {
-            final var custom_item_r = get_module().item_registry().get(r);
-            final boolean[] did_edit = new boolean[] { true };
+            final var customItemR = getModule().itemRegistry().get(r);
+            final boolean[] didEdit = new boolean[] { true };
             r.editMeta(meta -> {
-                if (a != null && inhibit(custom_item_r, InhibitBehavior.NEW_ENCHANTS)) {
+                if (a != null && inhibit(customItemR, InhibitBehavior.NEW_ENCHANTS)) {
                     for (final var ench : r.getEnchantments().keySet()) {
                         if (!a.getEnchantments().containsKey(ench)) {
                             meta.removeEnchant(ench);
-                            did_edit[0] = true;
+                            didEdit[0] = true;
                         }
                     }
                 }
 
-                if (inhibit(custom_item_r, InhibitBehavior.MEND)) {
+                if (inhibit(customItemR, InhibitBehavior.MEND)) {
                     meta.removeEnchant(Enchantment.MENDING);
-                    did_edit[0] = true;
+                    didEdit[0] = true;
                 }
             });
 
-            if (did_edit[0]) {
+            if (didEdit[0]) {
                 event.setResult(r);
             }
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_item_mend(final PlayerItemMendEvent event) {
+    public void onItemMend(final PlayerItemMendEvent event) {
         final var item = event.getItem();
-        final var custom_item = get_module().item_registry().get(item);
+        final var customItem = getModule().itemRegistry().get(item);
 
         // No repairing for mending inhibited items.
-        if (inhibit(custom_item, InhibitBehavior.MEND)) {
+        if (inhibit(customItem, InhibitBehavior.MEND)) {
             event.setCancelled(true);
         }
     }
 
     // Prevent netherite items from burning, as they are made of netherite
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void on_item_burn(final EntityDamageEvent event) {
+    public void onItemBurn(final EntityDamageEvent event) {
         // Only burn damage on dropped items
         if (event.getEntity().getType() != EntityType.ITEM) {
             return;
@@ -217,34 +217,34 @@ public class VanillaFunctionalityInhibitor extends Listener<Core> {
         }
 
         final var item = ((Item) entity).getItemStack();
-        if (inhibit(get_module().item_registry().get(item), InhibitBehavior.ITEM_BURN)) {
+        if (inhibit(getModule().itemRegistry().get(item), InhibitBehavior.ITEM_BURN)) {
             event.setCancelled(true);
         }
     }
 
     // Deny off-hand usage if the main hand is a custom item that inhibits off-hand usage.
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_player_right_click(final PlayerInteractEvent event) {
+    public void onPlayerRightClick(final PlayerInteractEvent event) {
         if (event.getHand() != EquipmentSlot.OFF_HAND) {
             return;
         }
 
         final var player = event.getPlayer();
-        final var main_item = player.getEquipment().getItem(EquipmentSlot.HAND);
-        final var main_custom_item = get_module().item_registry().get(main_item);
-        if (inhibit(main_custom_item, InhibitBehavior.USE_OFFHAND)) {
+        final var mainItem = player.getEquipment().getItem(EquipmentSlot.HAND);
+        final var mainCustomItem = getModule().itemRegistry().get(mainItem);
+        if (inhibit(mainCustomItem, InhibitBehavior.USE_OFFHAND)) {
             event.setUseItemInHand(Event.Result.DENY);
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void on_dispense(BlockDispenseEvent event) {
+    public void onDispense(BlockDispenseEvent event) {
         if (event.getBlock().getType() != Material.DISPENSER) {
             return;
         }
 
-        final var custom_item = get_module().item_registry().get(event.getItem());
-        if (inhibit(custom_item, InhibitBehavior.DISPENSE)) {
+        final var customItem = getModule().itemRegistry().get(event.getItem());
+        if (inhibit(customItem, InhibitBehavior.DISPENSE)) {
             event.setCancelled(true);
         }
     }

@@ -25,18 +25,18 @@ public class Weather extends Command<Admin> {
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
-        return super.get_command_base()
+    public LiteralArgumentBuilder<CommandSourceStack> getCommandBase() {
+        return super.getCommandBase()
             .then(help())
             .then(
                 argument("weather", WeatherArgumentType.weather())
                     .executes(ctx -> {
-                        set_weather_current_world((Player) ctx.getSource().getSender(), weather(ctx));
+                        setWeatherCurrentWorld((Player) ctx.getSource().getSender(), weather(ctx));
                         return SINGLE_SUCCESS;
                     })
                     .then(
                         argument("world", ArgumentTypes.world()).executes(ctx -> {
-                            set_weather(
+                            setWeather(
                                 ctx.getSource().getSender(),
                                 weather(ctx),
                                 ctx.getArgument("world", World.class)
@@ -51,11 +51,11 @@ public class Weather extends Command<Admin> {
         return ctx.getArgument("weather", WeatherValue.class);
     }
 
-    private void set_weather_current_world(Player player, WeatherValue w) {
-        set_weather(player, w, player.getWorld());
+    private void setWeatherCurrentWorld(Player player, WeatherValue w) {
+        setWeather(player, w, player.getWorld());
     }
 
-    private void set_weather(CommandSender sender, WeatherValue w, World world) {
+    private void setWeather(CommandSender sender, WeatherValue w, World world) {
         world.setStorm(w.storm());
         world.setThundering(w.thunder());
     }

@@ -24,32 +24,32 @@ import org.oddlama.vane.core.module.Context;
 public class Enchant extends Command<Core> {
 
     @LangMessage
-    private TranslatedMessage lang_level_too_low;
+    private TranslatedMessage langLevelTooLow;
 
     @LangMessage
-    private TranslatedMessage lang_level_too_high;
+    private TranslatedMessage langLevelTooHigh;
 
     @LangMessage
-    private TranslatedMessage lang_invalid_enchantment;
+    private TranslatedMessage langInvalidEnchantment;
 
     public Enchant(Context<Core> context) {
         super(context);
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSourceStack> get_command_base() {
-        return super.get_command_base()
+    public LiteralArgumentBuilder<CommandSourceStack> getCommandBase() {
+        return super.getCommandBase()
             .requires(ctx -> ctx.getSender() instanceof Player)
             .then(help())
             .then(
                 argument("enchantment", EnchantmentFilterArgumentType.enchantmentFilter())
                     .executes(ctx -> {
-                        enchant_current_item_level_1((Player) ctx.getSource().getSender(), enchantment(ctx));
+                        enchantCurrentItemLevel1((Player) ctx.getSource().getSender(), enchantment(ctx));
                         return SINGLE_SUCCESS;
                     })
                     .then(
                         argument("level", IntegerArgumentType.integer(1)).executes(ctx -> {
-                            enchant_current_item(
+                            enchantCurrentItem(
                                 (Player) ctx.getSource().getSender(),
                                 enchantment(ctx),
                                 ctx.getArgument("level", Integer.class)
@@ -64,59 +64,59 @@ public class Enchant extends Command<Core> {
         return ctx.getArgument("enchantment", Enchantment.class);
     }
 
-    private boolean filter_by_held_item(CommandSender sender, Enchantment e) {
+    private boolean filterByHeldItem(CommandSender sender, Enchantment e) {
         if (!(sender instanceof Player)) {
             return false;
         }
 
         final var player = (Player) sender;
-        final var item_stack = player.getEquipment().getItemInMainHand();
-        boolean is_book = item_stack.getType() == Material.BOOK || item_stack.getType() == Material.ENCHANTED_BOOK;
-        return is_book || e.canEnchantItem(item_stack);
+        final var itemStack = player.getEquipment().getItemInMainHand();
+        boolean isBook = itemStack.getType() == Material.BOOK || itemStack.getType() == Material.ENCHANTED_BOOK;
+        return isBook || e.canEnchantItem(itemStack);
     }
 
-    private void enchant_current_item_level_1(Player player, Enchantment enchantment) {
-        enchant_current_item(player, enchantment, 1);
+    private void enchantCurrentItemLevel1(Player player, Enchantment enchantment) {
+        enchantCurrentItem(player, enchantment, 1);
     }
 
-    private void enchant_current_item(Player player, Enchantment enchantment, Integer level) {
+    private void enchantCurrentItem(Player player, Enchantment enchantment, Integer level) {
         if (level < enchantment.getStartLevel()) {
-            lang_level_too_low.send(player, "§b" + level, "§a" + enchantment.getStartLevel());
+            langLevelTooLow.send(player, "§b" + level, "§a" + enchantment.getStartLevel());
             return;
         } else if (level > enchantment.getMaxLevel()) {
-            lang_level_too_high.send(player, "§b" + level, "§a" + enchantment.getMaxLevel());
+            langLevelTooHigh.send(player, "§b" + level, "§a" + enchantment.getMaxLevel());
             return;
         }
 
-        var item_stack = player.getEquipment().getItemInMainHand();
-        if (item_stack.getType() == Material.AIR) {
-            lang_invalid_enchantment.send(player, "§b" + enchantment.getKey(), "§a" + item_stack.getType().getKey());
+        var itemStack = player.getEquipment().getItemInMainHand();
+        if (itemStack.getType() == Material.AIR) {
+            langInvalidEnchantment.send(player, "§b" + enchantment.getKey(), "§a" + itemStack.getType().getKey());
             return;
         }
 
         try {
             // Convert a book if necessary
-            if (item_stack.getType() == Material.BOOK) {
+            if (itemStack.getType() == Material.BOOK) {
                 // FIXME this technically yields wrong items when this was a tome,
                 // as just changing the base item is not equivalent to custom item conversion.
                 // The custom model data and item tag will still be those of a book.
                 // The fix is not straightforward without hardcoding tome identifiers,
                 // so for now we leave it as is.
-                item_stack = item_stack.withType(Material.ENCHANTED_BOOK);
+                itemStack = itemStack.withType(Material.ENCHANTED_BOOK);
                 /* fallthrough */
             }
 
-            if (item_stack.getType() == Material.ENCHANTED_BOOK) {
-                final var meta = (EnchantmentStorageMeta) item_stack.getItemMeta();
+            if (itemStack.getType() == Material.ENCHANTED_BOOK) {
+                final var meta = (EnchantmentStorageMeta) itemStack.getItemMeta();
                 meta.addStoredEnchant(enchantment, level, false);
-                item_stack.setItemMeta(meta);
+                itemStack.setItemMeta(meta);
             } else {
-                item_stack.addEnchantment(enchantment, level);
+                itemStack.addEnchantment(enchantment, level);
             }
 
-            get_module().enchantment_manager.update_enchanted_item(item_stack);
+            getModule().enchantmentManager.updateEnchantedItem(itemStack);
         } catch (Exception e) {
-            lang_invalid_enchantment.send(player, "§b" + enchantment.getKey(), "§a" + item_stack.getType().getKey());
+            langInvalidEnchantment.send(player, "§b" + enchantment.getKey(), "§a" + itemStack.getType().getKey());
         }
     }
 }

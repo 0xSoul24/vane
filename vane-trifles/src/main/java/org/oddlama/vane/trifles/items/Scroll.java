@@ -14,31 +14,31 @@ import org.oddlama.vane.trifles.Trifles;
 public abstract class Scroll extends CustomItem<Trifles> {
 
     @ConfigInt(def = 0, min = 0, desc = "Cooldown in milliseconds until another scroll can be used.")
-    public int config_cooldown;
+    public int configCooldown;
 
     @ConfigBoolean(def = false, desc = "Allow this scroll to be repaired via the mending enchantment.")
-    private boolean config_allow_mending;
+    private boolean configAllowMending;
 
-    private int default_cooldown;
+    private int defaultCooldown;
 
-    public Scroll(Context<Trifles> context, int default_cooldown) {
+    public Scroll(Context<Trifles> context, int defaultCooldown) {
         super(context);
-        this.default_cooldown = default_cooldown;
+        this.defaultCooldown = defaultCooldown;
     }
 
-    public int config_cooldown_def() {
-        return default_cooldown;
+    public int configCooldownDef() {
+        return defaultCooldown;
     }
 
     /**
      * Get the teleport location for the given player. Return null to prevent teleporting. Cooldown
      * is already handled by the base class, you only need to assert that a valid location is
      * available. For example, home scrolls may prevent teleport because of a missing bed or respawn
-     * point here and notify the player about that. If imminent_teleport is true, the player will be
+     * point here and notify the player about that. If imminentTeleport is true, the player will be
      * teleported if this function returns a valid location. The player should only be notified of
      * errors if this is set.
      */
-    public abstract Location teleport_location(final ItemStack scroll, final Player player, boolean imminent_teleport);
+    public abstract Location teleportLocation(final ItemStack scroll, final Player player, boolean imminentTeleport);
 
     @Override
     public EnumSet<InhibitBehavior> inhibitedBehaviors() {
@@ -47,7 +47,7 @@ public abstract class Scroll extends CustomItem<Trifles> {
             InhibitBehavior.TEMPT,
             InhibitBehavior.USE_OFFHAND
         );
-        if (!config_allow_mending) {
+        if (!configAllowMending) {
             set.add(InhibitBehavior.MEND);
         }
         return set;

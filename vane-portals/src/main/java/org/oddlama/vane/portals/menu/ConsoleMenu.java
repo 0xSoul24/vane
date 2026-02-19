@@ -30,112 +30,112 @@ import org.oddlama.vane.util.StorageUtil;
 public class ConsoleMenu extends ModuleComponent<Portals> {
 
     @LangMessage
-    public TranslatedMessage lang_title;
+    public TranslatedMessage langTitle;
 
     @LangMessage
-    public TranslatedMessage lang_unlink_console_confirm_title;
+    public TranslatedMessage langUnlinkConsoleConfirmTitle;
 
     @LangMessage
-    public TranslatedMessage lang_destroy_portal_confirm_title;
+    public TranslatedMessage langDestroyPortalConfirmTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_target_title;
+    public TranslatedMessage langSelectTargetTitle;
 
     @LangMessage
-    public TranslatedMessage lang_filter_portals_title;
+    public TranslatedMessage langFilterPortalsTitle;
 
     @LangMessage
-    public TranslatedMessage lang_select_target_portal_visibility_public;
+    public TranslatedMessage langSelectTargetPortalVisibilityPublic;
 
     @LangMessage
-    public TranslatedMessage lang_select_target_portal_visibility_private;
+    public TranslatedMessage langSelectTargetPortalVisibilityPrivate;
 
     @LangMessage
-    public TranslatedMessage lang_select_target_portal_visibility_group;
+    public TranslatedMessage langSelectTargetPortalVisibilityGroup;
 
     @LangMessage
-    public TranslatedMessage lang_select_target_portal_visibility_group_internal;
+    public TranslatedMessage langSelectTargetPortalVisibilityGroupInternal;
 
-    public TranslatedItemStack<?> item_settings;
-    public TranslatedItemStack<?> item_select_target;
-    public TranslatedItemStack<?> item_select_target_portal;
-    public TranslatedItemStack<?> item_select_target_locked;
-    public TranslatedItemStack<?> item_unlink_console;
-    public TranslatedItemStack<?> item_unlink_console_confirm_accept;
-    public TranslatedItemStack<?> item_unlink_console_confirm_cancel;
-    public TranslatedItemStack<?> item_destroy_portal;
-    public TranslatedItemStack<?> item_destroy_portal_confirm_accept;
-    public TranslatedItemStack<?> item_destroy_portal_confirm_cancel;
+    public TranslatedItemStack<?> itemSettings;
+    public TranslatedItemStack<?> itemSelectTarget;
+    public TranslatedItemStack<?> itemSelectTargetPortal;
+    public TranslatedItemStack<?> itemSelectTargetLocked;
+    public TranslatedItemStack<?> itemUnlinkConsole;
+    public TranslatedItemStack<?> itemUnlinkConsoleConfirmAccept;
+    public TranslatedItemStack<?> itemUnlinkConsoleConfirmCancel;
+    public TranslatedItemStack<?> itemDestroyPortal;
+    public TranslatedItemStack<?> itemDestroyPortalConfirmAccept;
+    public TranslatedItemStack<?> itemDestroyPortalConfirmCancel;
 
     public ConsoleMenu(Context<Portals> context) {
-        super(context.namespace("console"));
-        final var ctx = get_context();
-        item_settings = new TranslatedItemStack<>(
+        super(context.namespace("Console"));
+        final var ctx = getContext();
+        itemSettings = new TranslatedItemStack<>(
             ctx,
-            "settings",
+            "Settings",
             Material.WRITABLE_BOOK,
             1,
             "Used to enter portal settings."
         );
-        item_select_target = new TranslatedItemStack<>(
+        itemSelectTarget = new TranslatedItemStack<>(
             ctx,
-            "select_target",
+            "SelectTarget",
             Material.COMPASS,
             1,
             "Used to enter portal target selection."
         );
-        item_select_target_portal = new TranslatedItemStack<>(
+        itemSelectTargetPortal = new TranslatedItemStack<>(
             ctx,
-            "select_target_portal",
+            "SelectTargetPortal",
             Material.COMPASS,
             1,
             "Used to represent a portal in the target selection menu."
         );
-        item_select_target_locked = new TranslatedItemStack<>(
+        itemSelectTargetLocked = new TranslatedItemStack<>(
             ctx,
-            "select_target_locked",
+            "SelectTargetLocked",
             Material.FIREWORK_STAR,
             1,
             "Used to show portal target selection when the target is locked."
         );
-        item_unlink_console = new TranslatedItemStack<>(
+        itemUnlinkConsole = new TranslatedItemStack<>(
             ctx,
-            "unlink_console",
-            StorageUtil.namespaced_key("vane", "decoration_tnt_1"),
+            "UnlinkConsole",
+            StorageUtil.namespacedKey("vane", "decoration_tnt_1"),
             1,
             "Used to unlink the current console."
         );
-        item_unlink_console_confirm_accept = new TranslatedItemStack<>(
+        itemUnlinkConsoleConfirmAccept = new TranslatedItemStack<>(
             ctx,
-            "unlink_console_confirm_accept",
-            StorageUtil.namespaced_key("vane", "decoration_tnt_1"),
+            "UnlinkConsoleConfirmAccept",
+            StorageUtil.namespacedKey("vane", "decoration_tnt_1"),
             1,
             "Used to confirm unlinking the current console."
         );
-        item_unlink_console_confirm_cancel = new TranslatedItemStack<>(
+        itemUnlinkConsoleConfirmCancel = new TranslatedItemStack<>(
             ctx,
-            "unlink_console_confirm_cancel",
+            "UnlinkConsoleConfirmCancel",
             Material.PRISMARINE_SHARD,
             1,
             "Used to cancel unlinking the current console."
         );
-        item_destroy_portal = new TranslatedItemStack<>(
+        itemDestroyPortal = new TranslatedItemStack<>(
             ctx,
-            "destroy_portal",
+            "DestroyPortal",
             Material.TNT,
             1,
             "Used to destroy the portal."
         );
-        item_destroy_portal_confirm_accept = new TranslatedItemStack<>(
+        itemDestroyPortalConfirmAccept = new TranslatedItemStack<>(
             ctx,
-            "destroy_portal_confirm_accept",
+            "DestroyPortalConfirmAccept",
             Material.TNT,
             1,
             "Used to confirm destroying the portal."
         );
-        item_destroy_portal_confirm_cancel = new TranslatedItemStack<>(
+        itemDestroyPortalConfirmCancel = new TranslatedItemStack<>(
             ctx,
-            "destroy_portal_confirm_cancel",
+            "DestroyPortalConfirmCancel",
             Material.PRISMARINE_SHARD,
             1,
             "Used to cancel destroying the portal."
@@ -144,84 +144,84 @@ public class ConsoleMenu extends ModuleComponent<Portals> {
 
     public Menu create(final Portal portal, final Player player, final Block console) {
         final var columns = 9;
-        final var title = lang_title.str_component("§5§l" + portal.name());
-        final var console_menu = new Menu(get_context(), Bukkit.createInventory(null, columns, title));
-        console_menu.tag(new PortalMenuTag(portal.id()));
+        final var title = langTitle.strComponent("§5§l" + portal.name());
+        final var consoleMenu = new Menu(getContext(), Bukkit.createInventory(null, columns, title));
+        consoleMenu.tag(new PortalMenuTag(portal.id()));
 
         // Check if target selection would be allowed
-        final var select_target_event = new PortalSelectTargetEvent(player, portal, null, true);
-        get_module().getServer().getPluginManager().callEvent(select_target_event);
-        if (!select_target_event.isCancelled() || player.hasPermission(get_module().admin_permission)) {
-            console_menu.add(menu_item_select_target(portal));
+        final var selectTargetEvent = new PortalSelectTargetEvent(player, portal, null, true);
+        getModule().getServer().getPluginManager().callEvent(selectTargetEvent);
+        if (!selectTargetEvent.isCancelled() || player.hasPermission(getModule().adminPermission)) {
+            consoleMenu.add(menuItemSelectTarget(portal));
         }
 
         // Check if settings would be allowed
-        final var settings_event = new PortalChangeSettingsEvent(player, portal, true);
-        get_module().getServer().getPluginManager().callEvent(settings_event);
-        if (!settings_event.isCancelled() || player.hasPermission(get_module().admin_permission)) {
-            console_menu.add(menu_item_settings(portal, console));
+        final var settingsEvent = new PortalChangeSettingsEvent(player, portal, true);
+        getModule().getServer().getPluginManager().callEvent(settingsEvent);
+        if (!settingsEvent.isCancelled() || player.hasPermission(getModule().adminPermission)) {
+            consoleMenu.add(menuItemSettings(portal, console));
         }
 
         // Check if unlink would be allowed
-        final var unlink_event = new PortalUnlinkConsoleEvent(player, console, portal, true);
-        get_module().getServer().getPluginManager().callEvent(unlink_event);
-        if (!unlink_event.isCancelled() || player.hasPermission(get_module().admin_permission)) {
-            console_menu.add(menu_item_unlink_console(portal, console));
+        final var unlinkEvent = new PortalUnlinkConsoleEvent(player, console, portal, true);
+        getModule().getServer().getPluginManager().callEvent(unlinkEvent);
+        if (!unlinkEvent.isCancelled() || player.hasPermission(getModule().adminPermission)) {
+            consoleMenu.add(menuItemUnlinkConsole(portal, console));
         }
 
         // Check if destroy would be allowed
-        final var destroy_event = new PortalDestroyEvent(player, portal, true);
-        get_module().getServer().getPluginManager().callEvent(destroy_event);
-        if (!destroy_event.isCancelled() || player.hasPermission(get_module().admin_permission)) {
-            console_menu.add(menu_item_destroy_portal(portal));
+        final var destroyEvent = new PortalDestroyEvent(player, portal, true);
+        getModule().getServer().getPluginManager().callEvent(destroyEvent);
+        if (!destroyEvent.isCancelled() || player.hasPermission(getModule().adminPermission)) {
+            consoleMenu.add(menuItemDestroyPortal(portal));
         }
 
-        return console_menu;
+        return consoleMenu;
     }
 
-    private MenuWidget menu_item_settings(final Portal portal, final Block console) {
-        return new MenuItem(0, item_settings.item(), (player, menu, self) -> {
-            final var settings_event = new PortalChangeSettingsEvent(player, portal, false);
-            get_module().getServer().getPluginManager().callEvent(settings_event);
-            if (settings_event.isCancelled() && !player.hasPermission(get_module().admin_permission)) {
-                get_module().lang_settings_restricted.send(player);
+    private MenuWidget menuItemSettings(final Portal portal, final Block console) {
+        return new MenuItem(0, itemSettings.item(), (player, menu, self) -> {
+            final var settingsEvent = new PortalChangeSettingsEvent(player, portal, false);
+            getModule().getServer().getPluginManager().callEvent(settingsEvent);
+            if (settingsEvent.isCancelled() && !player.hasPermission(getModule().adminPermission)) {
+                getModule().langSettingsRestricted.send(player);
                 return ClickResult.ERROR;
             }
 
             menu.close(player);
-            get_module().menus.settings_menu.create(portal, player, console).open(player);
+            getModule().menus.settingsMenu.create(portal, player, console).open(player);
             return ClickResult.SUCCESS;
         });
     }
 
-    private Component portal_visibility(Portal.Visibility visibility) {
+    private Component portalVisibility(Portal.Visibility visibility) {
         return (
             switch (visibility) {
-                case PUBLIC -> lang_select_target_portal_visibility_public;
-                case GROUP -> lang_select_target_portal_visibility_group;
-                case GROUP_INTERNAL -> lang_select_target_portal_visibility_group_internal;
-                case PRIVATE -> lang_select_target_portal_visibility_private;
+                case PUBLIC -> langSelectTargetPortalVisibilityPublic;
+                case GROUP -> langSelectTargetPortalVisibilityGroup;
+                case GROUP_INTERNAL -> langSelectTargetPortalVisibilityGroupInternal;
+                case PRIVATE -> langSelectTargetPortalVisibilityPrivate;
             }
         ).format();
     }
 
-    private MenuWidget menu_item_select_target(final Portal portal) {
+    private MenuWidget menuItemSelectTarget(final Portal portal) {
         return new MenuItem(4, null, (player, menu, self) -> {
-            if (portal.target_locked()) {
+            if (portal.targetLocked()) {
                 return ClickResult.ERROR;
             } else {
                 menu.close(player);
-                final var all_portals = get_module()
-                    .all_available_portals()
+                final var allPortals = getModule()
+                    .allAvailablePortals()
                     .stream()
                     .filter(p -> {
                         switch (p.visibility()) {
                             case PUBLIC:
                                 return true;
                             case GROUP:
-                                return get_module().player_can_use_portals_in_region_group_of(player, p);
+                                return getModule().playerCanUsePortalsInRegionGroupOf(player, p);
                             case GROUP_INTERNAL:
-                                return get_module().is_in_same_region_group(portal, p);
+                                return getModule().isInSameRegionGroup(portal, p);
                             case PRIVATE:
                                 return player.getUniqueId().equals(p.owner());
                         }
@@ -232,43 +232,43 @@ public class ConsoleMenu extends ModuleComponent<Portals> {
                     .collect(Collectors.toList());
 
                 final var filter = new Filter.StringFilter<Portal>((p, str) -> p.name().toLowerCase().contains(str));
-                MenuFactory.generic_selector(
-                    get_context(),
+                MenuFactory.genericSelector(
+                    getContext(),
                     player,
-                    lang_select_target_title.str(),
-                    lang_filter_portals_title.str(),
-                    all_portals,
+                    langSelectTargetTitle.str(),
+                    langFilterPortalsTitle.str(),
+                    allPortals,
                     p -> {
                         final var dist = p
                             .spawn()
                             .toVector()
                             .setY(0.0)
                             .distance(player.getLocation().toVector().setY(0.0));
-                        return item_select_target_portal.alternative(
-                            get_module().icon_for(p),
+                        return itemSelectTargetPortal.alternative(
+                            getModule().iconFor(p),
                             "§a§l" + p.name(),
                             "§6" + String.format("%.1f", dist),
                             "§b" + p.spawn().getWorld().getName(),
-                            portal_visibility(p.visibility())
+                            portalVisibility(p.visibility())
                         );
                     },
                     filter,
                     (player2, m, t) -> {
                         m.close(player2);
 
-                        final var select_target_event = new PortalSelectTargetEvent(player2, portal, t, false);
-                        get_module().getServer().getPluginManager().callEvent(select_target_event);
+                        final var selectTargetEvent = new PortalSelectTargetEvent(player2, portal, t, false);
+                        getModule().getServer().getPluginManager().callEvent(selectTargetEvent);
                         if (
-                            select_target_event.isCancelled() && !player2.hasPermission(get_module().admin_permission)
+                            selectTargetEvent.isCancelled() && !player2.hasPermission(getModule().adminPermission)
                         ) {
-                            get_module().lang_select_target_restricted.send(player2);
+                            getModule().langSelectTargetRestricted.send(player2);
                             return ClickResult.ERROR;
                         }
 
-                        portal.target_id(t.id());
+                        portal.targetId(t.id());
 
                         // Update portal block to reflect new target on consoles
-                        portal.update_blocks(get_module());
+                        portal.updateBlocks(getModule());
                         return ClickResult.SUCCESS;
                     },
                     player2 -> menu.open(player2)
@@ -280,44 +280,44 @@ public class ConsoleMenu extends ModuleComponent<Portals> {
         }) {
             @Override
             public void item(final ItemStack item) {
-                final var target = portal.target(get_module());
-                final var target_name = "§a" + (target == null ? "None" : target.name());
-                if (portal.target_locked()) {
-                    super.item(item_select_target_locked.item(target_name));
+                final var target = portal.target(getModule());
+                final var targetName = "§a" + (target == null ? "None" : target.name());
+                if (portal.targetLocked()) {
+                    super.item(itemSelectTargetLocked.item(targetName));
                 } else {
-                    super.item(item_select_target.item(target_name));
+                    super.item(itemSelectTarget.item(targetName));
                 }
             }
         };
     }
 
-    private MenuWidget menu_item_unlink_console(final Portal portal, final Block console) {
-        return new MenuItem(7, item_unlink_console.item(), (player, menu, self) -> {
+    private MenuWidget menuItemUnlinkConsole(final Portal portal, final Block console) {
+        return new MenuItem(7, itemUnlinkConsole.item(), (player, menu, self) -> {
             menu.close(player);
             MenuFactory.confirm(
-                get_context(),
-                lang_unlink_console_confirm_title.str(),
-                item_unlink_console_confirm_accept.item(),
+                getContext(),
+                langUnlinkConsoleConfirmTitle.str(),
+                itemUnlinkConsoleConfirmAccept.item(),
                 player2 -> {
                     // Call event
                     final var event = new PortalUnlinkConsoleEvent(player2, console, portal, false);
-                    get_module().getServer().getPluginManager().callEvent(event);
-                    if (event.isCancelled() && !player2.hasPermission(get_module().admin_permission)) {
-                        get_module().lang_unlink_restricted.send(player2);
+                    getModule().getServer().getPluginManager().callEvent(event);
+                    if (event.isCancelled() && !player2.hasPermission(getModule().adminPermission)) {
+                        getModule().langUnlinkRestricted.send(player2);
                         return ClickResult.ERROR;
                     }
 
-                    final var portal_block = portal.portal_block_for(console);
-                    if (portal_block == null) {
+                    final var portalBlock = portal.portalBlockFor(console);
+                    if (portalBlock == null) {
                         // The Console was likely already removed by another
                         // player
                         return ClickResult.ERROR;
                     }
 
-                    get_module().remove_portal_block(portal, portal_block);
+                    getModule().removePortalBlock(portal, portalBlock);
                     return ClickResult.SUCCESS;
                 },
-                item_unlink_console_confirm_cancel.item(),
+                itemUnlinkConsoleConfirmCancel.item(),
                 player2 -> menu.open(player2)
             )
                 .tag(new PortalMenuTag(portal.id()))
@@ -326,26 +326,26 @@ public class ConsoleMenu extends ModuleComponent<Portals> {
         });
     }
 
-    private MenuWidget menu_item_destroy_portal(final Portal portal) {
-        return new MenuItem(8, item_destroy_portal.item(), (player, menu, self) -> {
+    private MenuWidget menuItemDestroyPortal(final Portal portal) {
+        return new MenuItem(8, itemDestroyPortal.item(), (player, menu, self) -> {
             menu.close(player);
             MenuFactory.confirm(
-                get_context(),
-                lang_destroy_portal_confirm_title.str(),
-                item_destroy_portal_confirm_accept.item(),
+                getContext(),
+                langDestroyPortalConfirmTitle.str(),
+                itemDestroyPortalConfirmAccept.item(),
                 player2 -> {
                     // Call event
                     final var event = new PortalDestroyEvent(player2, portal, false);
-                    get_module().getServer().getPluginManager().callEvent(event);
-                    if (event.isCancelled() && !player2.hasPermission(get_module().admin_permission)) {
-                        get_module().lang_destroy_restricted.send(player2);
+                    getModule().getServer().getPluginManager().callEvent(event);
+                    if (event.isCancelled() && !player2.hasPermission(getModule().adminPermission)) {
+                        getModule().langDestroyRestricted.send(player2);
                         return ClickResult.ERROR;
                     }
 
-                    get_module().remove_portal(portal);
+                    getModule().removePortal(portal);
                     return ClickResult.SUCCESS;
                 },
-                item_destroy_portal_confirm_cancel.item(),
+                itemDestroyPortalConfirmCancel.item(),
                 player2 -> menu.open(player2)
             )
                 .tag(new PortalMenuTag(portal.id()))
@@ -355,8 +355,8 @@ public class ConsoleMenu extends ModuleComponent<Portals> {
     }
 
     @Override
-    public void on_enable() {}
+    public void onEnable() {}
 
     @Override
-    public void on_disable() {}
+    public void onDisable() {}
 }

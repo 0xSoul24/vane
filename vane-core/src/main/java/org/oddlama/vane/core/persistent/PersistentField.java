@@ -11,10 +11,10 @@ public class PersistentField {
     private Field field;
     private String path;
 
-    public PersistentField(Object owner, Field field, Function<String, String> map_name) {
+    public PersistentField(Object owner, Field field, Function<String, String> mapName) {
         this.owner = owner;
         this.field = field;
-        this.path = map_name.apply(field.getName().substring("storage_".length()));
+        this.path = mapName.apply(field.getName().substring("storage".length()));
 
         field.setAccessible(true);
     }
@@ -32,7 +32,7 @@ public class PersistentField {
     }
 
     public void save(JSONObject json) throws IOException {
-        json.put(path, PersistentSerializer.to_json(field, get()));
+        json.put(path, PersistentSerializer.toJson(field, get()));
     }
 
     public void load(JSONObject json) throws IOException {
@@ -41,7 +41,7 @@ public class PersistentField {
         }
 
         try {
-            field.set(owner, PersistentSerializer.from_json(field, json.get(path)));
+            field.set(owner, PersistentSerializer.fromJson(field, json.get(path)));
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Invalid field access on '" + field.getName() + "'. This is a bug.");
         }

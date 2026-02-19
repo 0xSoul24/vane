@@ -12,72 +12,72 @@
 
 # ¡NO CAMBIAR! La versión de este archivo de idioma. Se utiliza para determinar
 # si el archivo necesita ser actualizado.
-version: 3
+Version: 3
 # El código de idioma correspondiente utilizado en paquetes de recursos. Utilizado para
 # generación de paquete de recursos. Por lo general, esto es una combinación del
 # código de idioma (ISO 639) y el código de país (ISO 3166).
-resource_pack_lang_code: 'es_es'
+ResourcePackLangCode: 'es_es'
 
 # Este mensaje se envía cuando el jugador necesita seleccionar un área para
 # una nueva región.
-start_region_selection: "§aSelecciona un área seleccionando dos bloques mediante §b clic izquierdo-§a y §b clic derecho §acon la mano vacía."
+StartRegionSelection: "§aSelecciona un área seleccionando dos bloques mediante §b clic izquierdo-§a y §b clic derecho §acon la mano vacía."
 # Este mensaje se envía cuando el jugador selecciona el bloque primario
 # para una nueva región.
 # %1$s: Bloque X
 # %2$s: Bloque Y
 # %3$s: Bloque Z
-select_primary_block: "§aSeleccionado (%1$s§a, %2$s§a, %3$s§a) como bloque primario."
+SelectPrimaryBlock: "§aSeleccionado (%1$s§a, %2$s§a, %3$s§a) como bloque primario."
 # Este mensaje se envía cuando el jugador selecciona el bloque secundario
 # para una nueva región.
 # %1$s: Bloque X
 # %2$s: Bloque Y
 # %3$s: Bloque Z
-select_secondary_block: "§aSeleccionado (%1$s§a, %2$s§a, %3$s§a) como bloque secundario."
+SelectSecondaryBlock: "§aSeleccionado (%1$s§a, %2$s§a, %3$s§a) como bloque secundario."
 
-command_region:
-  usage: "%1$s"
-  description: "Abrir el menú de gestión de regiones."
-  help: "Ejecutar para abrir el menú de gestión de regiones."
+CommandRegion:
+  Usage: "%1$s"
+  Description: "Abrir el menú de gestión de regiones."
+  Help: "Ejecutar para abrir el menú de gestión de regiones."
 
-dynmap:
+Dynmap:
   # La etiqueta para la capa dynmap
-  layer_label: "Regiones"
+  LayerLabel: "Regiones"
   # La etiqueta para los marcadores dynmap
   # %1$s: Nombre de la región
-  marker_label: "%1$s"
+  MarkerLabel: "%1$s"
 
-blue_map:
+BlueMap:
   # La etiqueta para el conjunto de marcadores BlueMap
-  layer_label: "Regiones"
+  LayerLabel: "Regiones"
   # La etiqueta para los marcadores de región de BlueMap
   # %1$s: Nombre de la región
-  marker_label: "%1$s"
+  MarkerLabel: "%1$s"
 
-menus:
+Menus:
   # Configuración para el menú de nombres de grupos de región.
-  enter_region_group_name:
+  EnterRegionGroupName:
     # El título para el menú de nombres.
-    title: "§8§lIngrese el Nombre del Grupo de Región"
+    Title: "§8§lIngrese el Nombre del Grupo de Región"
 
   # Configuración para el menú de nombres de regiones.
-  enter_region_name:
+  EnterRegionName:
     # El título para el menú de nombres.
-    title: "§8§lIngrese el Nombre de la Región"
+    Title: "§8§lIngrese el Nombre de la Región"
 
   # Configuración para el menú de nombres de roles.
-  enter_role_name:
+  EnterRoleName:
     # El título para el menú de nombres.
-    title: "§8§lIngrese el Nombre del Rol"
+    Title: "§8§lIngrese el Nombre del Rol"
 
   # Configuración para el menú principal.
-  main:
+  Main:
     # El título para el menú principal.
-    title: "§8§lGestionar Regiones"
+    Title: "§8§lGestionar Regiones"
 
     # El ítem utilizado para iniciar una nueva selección de región.
-    create_region_start_selection:
-      name: "§a§lCrear Región"
-      lore:
+    CreateRegionStartSelection:
+      Name: "§a§lCrear Región"
+      Lore:
         - ""
         - "§7Inicia una nueva selección de región. Con la mano vacía,"
         - "§7haz §bclic izquierdo§7 para seleccionar el primer bloque y"
@@ -102,9 +102,9 @@ menus:
     # %15$s: Extensión máxima Y
     # %16$s: Extensión máxima Z
     # %17$s: precio y moneda
-    create_region_invalid_selection:
-      name: "§c§lSelección no válida"
-      lore:
+    CreateRegionInvalidSelection:
+      Name: "§c§lSelección no válida"
+      Lore:
         - ""
         - "§6Tu selección (%8$s§6 x %9$s§6 x %10$s§6) no es válida."
         - "§6Debe cumplir los siguientes requisitos:"
@@ -127,9 +127,9 @@ menus:
     # %8$s: max extent Y
     # %9$s: max extent Z
     # %10$s: price and currency
-    create_region_valid_selection:
-      name: "§a§lCrear Región"
-      lore:
+    CreateRegionValidSelection:
+      Name: "§a§lCrear Región"
+      Lore:
         - ""
         - "§7Tu selección (%1$s§7 x %2$s§7 x %3$s§7) es válida."
         - "§7Haz clic aquí para crear una nueva región."
@@ -143,39 +143,39 @@ menus:
         - "§7- §a✓§7 Puedes permitírtelo (%10$s§7)"
 
     # This item is used to cancel a pending selection.
-    cancel_selection:
-      name: "§c§lCancelar Selección"
-      lore: []
+    CancelSelection:
+      Name: "§c§lCancelar Selección"
+      Lore: []
 
     # This item is used to select a region where the player is administrator.
-    list_regions:
-      name: "§b§lSeleccionar Región"
-      lore: []
+    ListRegions:
+      Name: "§b§lSeleccionar Región"
+      Lore: []
 
     # The title for the region selection menu
-    select_region_title: "§8§lSeleccionar Región"
+    SelectRegionTitle: "§8§lSeleccionar Región"
     # The title for the region selection menu filter
-    filter_regions_title: "§8§lFiltrar Regiones"
+    FilterRegionsTitle: "§8§lFiltrar Regiones"
     # This item is used to represent a region in the selection menu.
     # %1$s: Region name
-    select_region:
-      name: "%1$s"
-      lore: []
+    SelectRegion:
+      Name: "%1$s"
+      Lore: []
 
     # This item is a shortcut to select the region the player is standing in.
     # %1$s: Region name
-    current_region:
-      name: "§b§lRegión Actual"
-      lore:
+    CurrentRegion:
+      Name: "§b§lRegión Actual"
+      Lore:
         - ""
         - "§7Región: %1$s"
         - ""
         - "§7Selecciona la región en la que te encuentras."
 
     # This item is used to create a new region group.
-    create_region_group:
-      name: "§a§lCrear Grupo de Regiones"
-      lore:
+    CreateRegionGroup:
+      Name: "§a§lCrear Grupo de Regiones"
+      Lore:
         - ""
         - "§7Crea un nuevo §bgrupo de regiones§7. Los grupos de regiones"
         - "§7se utilizan para establecer permisos para los jugadores"
@@ -183,228 +183,228 @@ menus:
         - "§7un grupo de regiones compartirán estos permisos"
 
     # This item is used to select a region group.
-    list_region_groups:
-      name: "§b§lSeleccionar Grupo de Regiones"
-      lore: []
+    ListRegionGroups:
+      Name: "§b§lSeleccionar Grupo de Regiones"
+      Lore: []
 
     # This item is a shortcut to select the region group of the region the player is standing in.
     # %1$s: Region group name
-    current_region_group:
-      name: "§b§lGrupo de Regiones Actual"
-      lore:
+    CurrentRegionGroup:
+      Name: "§b§lGrupo de Regiones Actual"
+      Lore:
         - ""
         - "§7Grupo de Regiones: %1$s"
         - ""
         - "§7Selecciona el grupo de regiones de la"
         - "§7región en la que te encuentras."
 
-    select_region_group_title: "§8§lSeleccionar Grupo de Regiones"
-    filter_region_groups_title: "§8§lFiltrar Grupos de Regiones"
+    SelectRegionGroupTitle: "§8§lSeleccionar Grupo de Regiones"
+    FilterRegionGroupsTitle: "§8§lFiltrar Grupos de Regiones"
     # This item is used to represent a region group in the selection menu.
     # %1$s: Region group name
-    select_region_group:
-      name: "%1$s"
-      lore: []
+    SelectRegionGroup:
+      Name: "%1$s"
+      Lore: []
 
   # Settings for the region menu.
-  region:
+  Region:
     # The title for the region menu.
     # %1$s: Region name
-    title: "§8§lRegión: %1$s"
+    Title: "§8§lRegión: %1$s"
 
     # The item used to rename a region.
-    rename:
-      name: "§b§lRenombrar Región"
-      lore: []
+    Rename:
+      Name: "§b§lRenombrar Región"
+      Lore: []
 
     # The item used to delete a region.
-    delete:
-      name: "§c§lEliminar Región"
-      lore: []
+    Delete:
+      Name: "§c§lEliminar Región"
+      Lore: []
     # The title for the delete confirmation dialog.
-    delete_confirm_title: "§c§l¿Eliminar región?"
+    DeleteConfirmTitle: "§c§l¿Eliminar región?"
     # The item to accept deleting.
-    delete_confirm_accept:
-      name: "§c§lELIMINAR REGIÓN"
-      lore: []
+    DeleteConfirmAccept:
+      Name: "§c§lELIMINAR REGIÓN"
+      Lore: []
     # The item to cancel deleting.
-    delete_confirm_cancel:
-      name: "§a§lCancelar"
-      lore: []
+    DeleteConfirmCancel:
+      Name: "§a§lCancelar"
+      Lore: []
 
       # El objeto utilizado para abrir la lista de grupos de regiones y asignar la región a uno.
-    assign_region_group:
-      name: "§b§lAsignar Grupo"
-      lore: []
+    AssignRegionGroup:
+      Name: "§b§lAsignar Grupo"
+      Lore: []
 
-    select_region_group_title: "§8§lSeleccionar Grupo de Regiones"
-    filter_region_groups_title: "§8§lFiltrar Grupos de Regiones"
+    SelectRegionGroupTitle: "§8§lSeleccionar Grupo de Regiones"
+    FilterRegionGroupsTitle: "§8§lFiltrar Grupos de Regiones"
     # El objeto utilizado para representar un grupo de regiones.
     # %1$s: Nombre del grupo de regiones
-    select_region_group:
-      name: "%1$s"
-      lore: []
+    SelectRegionGroup:
+      Name: "%1$s"
+      Lore: []
 
   # Configuraciones para el menú de grupos de regiones.
-  region_group:
+  RegionGroup:
     # El título para el menú de grupo de regiones.
     # %1$s: Nombre del grupo de regiones
-    title: "§8§lGrupo: %1$s"
+    Title: "§8§lGrupo: %1$s"
 
-    setting_toggle_on:
-      name: "§a§lACTIVADO"
-      lore: []
-    setting_toggle_off:
-      name: "§c§lDESACTIVADO"
-      lore: []
-    setting_info_animals:
-      name: "§b§lAnimales"
-      lore:
+    SettingToggleOn:
+      Name: "§a§lACTIVADO"
+      Lore: []
+    SettingToggleOff:
+      Name: "§c§lDESACTIVADO"
+      Lore: []
+    SettingInfoAnimals:
+      Name: "§b§lAnimales"
+      Lore:
         - ""
         - "§7Controla la aparición de mobs animales."
-    setting_info_monsters:
-      name: "§b§lMonstruos"
-      lore:
+    SettingInfoMonsters:
+      Name: "§b§lMonstruos"
+      Lore:
         - ""
         - "§7Controla la aparición de monstruos (mobs hostiles)."
-    setting_info_explosions:
-      name: "§b§lExplosiones"
-      lore:
+    SettingInfoExplosions:
+      Name: "§b§lExplosiones"
+      Lore:
         - ""
         - "§7Controla todos los tipos de explosiones."
-    setting_info_fire:
-      name: "§b§lFuego"
-      lore:
+    SettingInfoFire:
+      Name: "§b§lFuego"
+      Lore:
         - ""
         - "§7Controla si el fuego quema bloques y se propaga."
-    setting_info_pvp:
-      name: "§b§lPVP"
-      lore:
+    SettingInfoPvP:
+      Name: "§b§lPVP"
+      Lore:
         - ""
         - "§7Controla si se permite el combate PVP."
-    setting_info_trample:
-      name: "§b§lPisoteo"
-      lore:
+    SettingInfoTrample:
+      Name: "§b§lPisoteo"
+      Lore:
         - ""
         - "§7Controla si se puede pisotear la tierra de cultivo."
-    setting_info_vine_growth:
-      name: "§b§lCrecimiento de Enredaderas"
-      lore:
+    SettingInfoVineGrowth:
+      Name: "§b§lCrecimiento de Enredaderas"
+      Lore:
         - ""
         - "§7Controla si las enredaderas crecen en la región."
 
     # El objeto utilizado para cambiar el nombre de un grupo de regiones.
-    rename:
-      name: "§b§lRenombrar Grupo"
-      lore: []
+    Rename:
+      Name: "§b§lRenombrar Grupo"
+      Lore: []
 
     # El objeto utilizado para eliminar un grupo de regiones.
     # %1$s: Marca de verificación: Ninguna región usa este grupo
-    delete:
-      name: "§c§lEliminar Grupo"
-      lore:
+    Delete:
+      Name: "§c§lEliminar Grupo"
+      Lore:
         - ""
         - "§6Requisitos de eliminación:"
         - "§7- %1$s §7Ninguna región usa este grupo"
     # El título para el diálogo de confirmación de eliminación.
-    delete_confirm_title: "§c§l¿Eliminar grupo de regiones?"
+    DeleteConfirmTitle: "§c§l¿Eliminar grupo de regiones?"
     # El objeto para aceptar la eliminación.
-    delete_confirm_accept:
-      name: "§c§lELIMINAR GRUPO DE REGIONES"
-      lore: []
+    DeleteConfirmAccept:
+      Name: "§c§lELIMINAR GRUPO DE REGIONES"
+      Lore: []
     # El objeto para cancelar la eliminación.
-    delete_confirm_cancel:
-      name: "§a§lCancelar"
-      lore: []
+    DeleteConfirmCancel:
+      Name: "§a§lCancelar"
+      Lore: []
 
     # Este objeto se utiliza para crear un nuevo rol.
-    create_role:
-      name: "§a§lCrear Rol"
-      lore:
+    CreateRole:
+      Name: "§a§lCrear Rol"
+      Lore:
         - ""
         - "§7Crea un nuevo §brol§7. Los roles se utilizan"
         - "§7para establecer permisos para grupos de jugadores."
 
     # Este objeto se utiliza para abrir el menú de roles para un rol.
-    list_roles:
-      name: "§b§lRoles"
-      lore: []
+    ListRoles:
+      Name: "§b§lRoles"
+      Lore: []
 
-    select_role_title: "§8§lSeleccionar Rol"
-    filter_roles_title: "§8§lFiltrar Roles"
+    SelectRoleTitle: "§8§lSeleccionar Rol"
+    FilterRolesTitle: "§8§lFiltrar Roles"
     # Este objeto se utiliza para representar un rol en el menú de selección.
     # %1$s: Nombre del rol
-    select_role:
-      name: "%1$s"
-      lore: []
+    SelectRole:
+      Name: "%1$s"
+      Lore: []
 
   # Configuraciones para el menú de roles.
-  role:
+  Role:
     # El título para el menú de roles.
     # %1$s: Nombre del rol
-    title: "§8§lGrupo: %1$s"
+    Title: "§8§lGrupo: %1$s"
 
-    setting_toggle_on:
-      name: "§a§lACTIVADO"
-      lore: []
-    setting_toggle_off:
-      name: "§c§lDESACTIVADO"
-      lore: []
-    setting_info_admin:
-      name: "§b§lAdmin"
-      lore:
+    SettingToggleOn:
+      Name: "§a§lACTIVADO"
+      Lore: []
+    SettingToggleOff:
+      Name: "§c§lDESACTIVADO"
+      Lore: []
+    SettingInfoAdmin:
+      Name: "§b§lAdmin"
+      Lore:
         - ""
         - "§7La marca de administrador no puede ser activada o"
         - "§7desactivada y solo se aplica al grupo de administradores."
-    setting_info_build:
-      name: "§b§lConstruir"
-      lore:
+    SettingInfoBuild:
+      Name: "§b§lConstruir"
+      Lore:
         - ""
         - "§7Permite construir y minar bloques."
-    setting_info_use:
-      name: "§b§lUsar Cosas"
-      lore:
+    SettingInfoUse:
+      Name: "§b§lUsar Cosas"
+      Lore:
         - ""
         - "§7Permite usar varias cosas como puertas,"
         - "§7palancas, botones o componentes de redstone."
         - "§7También controla el §6acceso a la vista§7 a inventarios."
-    setting_info_container:
-      name: "§b§lContenedores"
-      lore:
+    SettingInfoContainer:
+      Name: "§b§lContenedores"
+      Lore:
         - ""
         - "§7Permite modificar las interacciones con inventarios."
         - "§7Sin esta marca, no se puede tomar nada"
         - "§7de los inventarios ni poner nada en ellos."
-    setting_info_portal:
-      name: "§b§lUsar Portales"
-      lore:
+    SettingInfoPortal:
+      Name: "§b§lUsar Portales"
+      Lore:
         - ""
         - "§7Permite interactuar con portales."
 
     # El objeto utilizado para cambiar el nombre de un rol.
-    rename:
-      name: "§b§lRenombrar Rol"
-      lore: []
+    Rename:
+      Name: "§b§lRenombrar Rol"
+      Lore: []
 
     # El objeto utilizado para eliminar un rol.
-    delete:
-      name: "§c§lEliminar Rol"
-      lore: []
+    Delete:
+      Name: "§c§lEliminar Rol"
+      Lore: []
     # El título para el diálogo de confirmación de eliminación.
-    delete_confirm_title: "§c§l¿Eliminar rol?"
+    DeleteConfirmTitle: "§c§l¿Eliminar rol?"
     # El objeto para aceptar la eliminación.
-    delete_confirm_accept:
-      name: "§c§lELIMINAR ROL"
-      lore: []
+    DeleteConfirmAccept:
+      Name: "§c§lELIMINAR ROL"
+      Lore: []
     # El objeto para cancelar la eliminación.
-    delete_confirm_cancel:
-      name: "§a§lCancelar"
-      lore: []
+    DeleteConfirmCancel:
+      Name: "§a§lCancelar"
+      Lore: []
 
     # Este objeto se utiliza para abrir el menú de asignación de jugadores para un rol.
-    assign_player:
-      name: "§b§lAsignar Jugadores"
-      lore:
+    AssignPlayer:
+      Name: "§b§lAsignar Jugadores"
+      Lore:
         - ""
         - "§7Asigna jugadores a este rol haciendo clic en ellos."
         - "§7Si el jugador tenía un rol diferente antes, serán"
@@ -412,19 +412,19 @@ menus:
         - "§7jugadores que aún no estén asignados a este rol."
         - "§7Puedes eliminar jugadores usando el menú §bEliminar Jugador§7."
     # Este objeto se utiliza para abrir el menú de eliminación de jugadores para un rol.
-    remove_player:
-      name: "§b§lEliminar Jugadores"
-      lore:
+    RemovePlayer:
+      Name: "§b§lEliminar Jugadores"
+      Lore:
         - ""
         - "§7Elimina jugadores de este rol haciendo clic en ellos."
         - "§7Esto significa que no tendrán ningún rol asignado después"
         - "§7y serán manejados por el rol general §6[otros]"
 
-    select_assign_player_title: "§8§lAsignar jugadores"
-    select_remove_player_title: "§8§lEliminar jugadores"
-    filter_players_title: "§8§lFiltrar jugadores"
+    SelectAssignPlayerTitle: "§8§lAsignar jugadores"
+    SelectRemovePlayerTitle: "§8§lEliminar jugadores"
+    FilterPlayersTitle: "§8§lFiltrar jugadores"
     # Este objeto se utiliza para representar a un jugador en el menú de selección.
     # %1$s: Nombre del jugador
-    select_player:
-      name: "%1$s"
-      lore: []
+    SelectPlayer:
+      Name: "%1$s"
+      Lore: []

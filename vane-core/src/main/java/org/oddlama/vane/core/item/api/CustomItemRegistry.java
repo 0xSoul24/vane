@@ -58,12 +58,12 @@ public interface CustomItemRegistry {
 
     /** Retrieves the global registry instance from the running vane-core instance, if any. */
     public static CustomItemRegistry instance() {
-        return Core.instance().item_registry();
+        return Core.instance().itemRegistry();
         // final var core = Bukkit.getServer().getPluginManager().getPlugin("vane-core");
         // if (core == null) {
         //	return Optional.empty();
         // }
 
-        // return Optional.of(((Core)core).item_registry());
+        // return Optional.of(((Core)core).itemRegistry());
     }
 }

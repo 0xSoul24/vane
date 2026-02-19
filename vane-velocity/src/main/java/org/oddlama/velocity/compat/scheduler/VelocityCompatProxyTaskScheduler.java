@@ -26,17 +26,17 @@ public class VelocityCompatProxyTaskScheduler implements ProxyTaskScheduler {
 
     @Override
     public ProxyScheduledTask schedule(VaneProxyPlugin owner, Runnable task, long delay, TimeUnit unit) {
-        ScheduledTask velocity_task = scheduler.buildTask(owner, task).delay(delay, unit).schedule();
-        return new VelocityCompatScheduledTask(velocity_task);
+        ScheduledTask velocityTask = scheduler.buildTask(owner, task).delay(delay, unit).schedule();
+        return new VelocityCompatScheduledTask(velocityTask);
     }
 
     @Override
     public ProxyScheduledTask schedule(VaneProxyPlugin owner, Runnable task, long delay, long period, TimeUnit unit) {
-        ScheduledTask velocity_task = scheduler
+        ScheduledTask velocityTask = scheduler
             .buildTask(owner, task)
             .delay(delay, unit)
             .repeat(period, unit)
             .schedule();
-        return new VelocityCompatScheduledTask(velocity_task);
+        return new VelocityCompatScheduledTask(velocityTask);
     }
 }

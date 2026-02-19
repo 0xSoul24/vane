@@ -15,69 +15,69 @@ public class PortalDynmapLayer extends ModuleComponent<Portals> {
     public static final String LAYER_ID = "vane_portals.portals";
 
     @ConfigInt(def = 29, min = 0, desc = "Layer ordering priority.")
-    public int config_layer_priority;
+    public int configLayerPriority;
 
     @ConfigBoolean(def = false, desc = "If the layer should be hidden by default.")
-    public boolean config_layer_hide;
+    public boolean configLayerHide;
 
-    @ConfigString(def = "compass", desc = "The dynmap marker icon.")
-    public String config_marker_icon;
-
-    @LangMessage
-    public TranslatedMessage lang_layer_label;
+    @ConfigString(def = "compass", desc = "The Dynmap marker icon.")
+    public String configMarkerIcon;
 
     @LangMessage
-    public TranslatedMessage lang_marker_label;
+    public TranslatedMessage langLayerLabel;
+
+    @LangMessage
+    public TranslatedMessage langMarkerLabel;
 
     private PortalDynmapLayerDelegate delegate = null;
 
     public PortalDynmapLayer(final Context<Portals> context) {
         super(
             context.group(
-                "dynmap",
-                "Enable dynmap integration. Public portals will then be shown on a separate dynmap layer."
+                "Dynmap",
+                "Enable Dynmap integration. Public portals will then be shown on a separate Dynmap layer."
             )
         );
     }
 
-    public void delayed_on_enable() {
-        final var plugin = get_module().getServer().getPluginManager().getPlugin("dynmap");
+    public void delayedOnEnable() {
+        final var plugin = getModule().getServer().getPluginManager().getPlugin("Dynmap");
         if (plugin == null) {
             return;
         }
 
         delegate = new PortalDynmapLayerDelegate(this);
-        delegate.on_enable(plugin);
+        delegate.onEnable(plugin);
     }
 
     @Override
-    public void on_enable() {
-        schedule_next_tick(this::delayed_on_enable);
+    public void onEnable() {
+        scheduleNextTick(this::delayedOnEnable);
     }
 
     @Override
-    public void on_disable() {
+    public void onDisable() {
         if (delegate != null) {
-            delegate.on_disable();
+            delegate.onDisable();
             delegate = null;
         }
     }
 
-    public void update_marker(final Portal portal) {
+    public void updateMarker(final Portal portal) {
         if (delegate != null) {
-            delegate.update_marker(portal);
+            delegate.updateMarker(portal);
         }
     }
 
-    public void remove_marker(final UUID portal_id) {
+    public void removeMarker(final UUID portalId) {
         if (delegate != null) {
-            delegate.remove_marker(portal_id);
+            delegate.removeMarker(portalId);
         }
     }
 
-    public void update_all_markers() {
+    public void updateAllMarkers() {
         if (delegate != null) {
-            delegate.update_all_markers();
+            delegate.updateAllMarkers();
         }
     }
 }

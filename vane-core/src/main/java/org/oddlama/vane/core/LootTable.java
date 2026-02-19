@@ -12,58 +12,58 @@ import org.oddlama.vane.core.functional.Consumer2;
 
 public class LootTable {
 
-    private Map<NamespacedKey, List<LootTableEntry>> possible_loot = new HashMap<>();
+    private Map<NamespacedKey, List<LootTableEntry>> possibleLoot = new HashMap<>();
 
     public LootTable() {}
 
     public LootTable put(final NamespacedKey key, final LootTableEntry entry) {
-        possible_loot.put(key, List.of(entry));
+        possibleLoot.put(key, List.of(entry));
         return this;
     }
 
     public LootTable put(final NamespacedKey key, final List<LootTableEntry> entries) {
-        possible_loot.put(key, entries);
+        possibleLoot.put(key, entries);
         return this;
     }
 
     public LootTable remove(final NamespacedKey key) {
-        possible_loot.remove(key);
+        possibleLoot.remove(key);
         return this;
     }
 
-    public Map<NamespacedKey, List<LootTableEntry>> possible_loot() {
-        return possible_loot;
+    public Map<NamespacedKey, List<LootTableEntry>> possibleLoot() {
+        return possibleLoot;
     }
 
-    public List<LootTableEntry> flat_copy() {
+    public List<LootTableEntry> flatCopy() {
         List<LootTableEntry> list = new ArrayList<>();
-        possible_loot.values().forEach(list::addAll);
+        possibleLoot.values().forEach(list::addAll);
         return list;
     }
 
-    public void generate_loot(final List<ItemStack> output, final Random random) {
-        for (final var set : possible_loot.values()) {
+    public void generateLoot(final List<ItemStack> output, final Random random) {
+        for (final var set : possibleLoot.values()) {
             for (final var loot : set) {
-                if (loot.evaluate_chance(random)) {
-                    loot.add_sample(output, random);
+                if (loot.evaluateChance(random)) {
+                    loot.addSample(output, random);
                 }
             }
         }
     }
 
-    public ItemStack generate_override(final Random random) {
-        double total_chance = 0;
+    public ItemStack generateOverride(final Random random) {
+        double totalChance = 0;
         final double threshold = random.nextDouble();
-        final List<ItemStack> result_container = new ArrayList<>(1);
-        final var loot_list = flat_copy();
-        Collections.shuffle(loot_list, random);
-        for (final var loot : loot_list) {
-            total_chance += loot.chance;
-            if (total_chance > threshold) {
-                loot.add_sample(result_container, random);
+        final List<ItemStack> resultContainer = new ArrayList<>(1);
+        final var lootList = flatCopy();
+        Collections.shuffle(lootList, random);
+        for (final var loot : lootList) {
+            totalChance += loot.chance;
+            if (totalChance > threshold) {
+                loot.addSample(resultContainer, random);
             }
-            if (!result_container.isEmpty()) {
-                return result_container.get(0);
+            if (!resultContainer.isEmpty()) {
+                return resultContainer.get(0);
             }
         }
         return null;
@@ -74,18 +74,18 @@ public class LootTable {
         public double chance;
         public Consumer2<List<ItemStack>, Random> generator;
 
-        public LootTableEntry(int rarity_expected_chests, final ItemStack item) {
-            this(1.0 / rarity_expected_chests, item.clone(), 1, 1);
+        public LootTableEntry(int rarityExpectedChests, final ItemStack item) {
+            this(1.0 / rarityExpectedChests, item.clone(), 1, 1);
         }
 
-        public LootTableEntry(int rarity_expected_chests, final ItemStack item, int amount_min, int amount_max) {
-            this(1.0 / rarity_expected_chests, item.clone(), amount_min, amount_max);
+        public LootTableEntry(int rarityExpectedChests, final ItemStack item, int amountMin, int amountMax) {
+            this(1.0 / rarityExpectedChests, item.clone(), amountMin, amountMax);
         }
 
-        public LootTableEntry(double chance, final ItemStack item, int amount_min, int amount_max) {
+        public LootTableEntry(double chance, final ItemStack item, int amountMin, int amountMax) {
             this(chance, (list, random) -> {
                 final var i = item.clone();
-                final var amount = random.nextInt(amount_max - amount_min + 1) + amount_min;
+                final var amount = random.nextInt(amountMax - amountMin + 1) + amountMin;
                 if (amount < 1) {
                     return;
                 }
@@ -100,11 +100,11 @@ public class LootTable {
             this.generator = generator;
         }
 
-        public void add_sample(final List<ItemStack> items, final Random random) {
+        public void addSample(final List<ItemStack> items, final Random random) {
             generator.apply(items, random);
         }
 
-        public boolean evaluate_chance(Random random) {
+        public boolean evaluateChance(Random random) {
             return random.nextDouble() < chance;
         }
     }

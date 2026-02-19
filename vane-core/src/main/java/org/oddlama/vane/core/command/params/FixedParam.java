@@ -11,57 +11,57 @@ import org.oddlama.vane.core.functional.Function1;
 
 public class FixedParam<T> extends BaseParam {
 
-    private T fixed_arg;
-    private String fixed_arg_str;
-    private boolean include_param = false;
-    private boolean ignore_case = false;
+    private T fixedArg;
+    private String fixedArgStr;
+    private boolean includeParam = false;
+    private boolean ignoreCase = false;
 
-    public FixedParam(Command<?> command, T fixed_arg, Function1<T, String> to_string) {
+    public FixedParam(Command<?> command, T fixedArg, Function1<T, String> toString) {
         super(command);
-        this.fixed_arg = fixed_arg;
-        this.fixed_arg_str = to_string.apply(fixed_arg);
+        this.fixedArg = fixedArg;
+        this.fixedArgStr = toString.apply(fixedArg);
     }
 
     /** Will ignore the case of the given argument when matching */
-    public FixedParam<T> ignore_case() {
-        this.ignore_case = true;
+    public FixedParam<T> ignoreCase() {
+        this.ignoreCase = true;
         return this;
     }
 
     /** Will pass this fixed parameter as an argument to the executed function */
-    public FixedParam<T> include_param() {
-        this.include_param = true;
+    public FixedParam<T> includeParam() {
+        this.includeParam = true;
         return this;
     }
 
     @Override
-    public CheckResult check_parse(CommandSender sender, String[] args, int offset) {
+    public CheckResult checkParse(CommandSender sender, String[] args, int offset) {
         if (args.length <= offset) {
-            return new ErrorCheckResult(offset, "§6missing argument: §3" + fixed_arg_str + "§r");
+            return new ErrorCheckResult(offset, "§6missing argument: §3" + fixedArgStr + "§r");
         }
         var parsed = parse(args[offset]);
         if (parsed == null) {
             return new ErrorCheckResult(
                 offset,
-                "§6invalid argument: expected §3" + fixed_arg_str + "§6 got §b" + args[offset] + "§r"
+                "§6invalid argument: expected §3" + fixedArgStr + "§6 got §b" + args[offset] + "§r"
             );
         }
-        return new ParseCheckResult(offset, fixed_arg_str, parsed, include_param);
+        return new ParseCheckResult(offset, fixedArgStr, parsed, includeParam);
     }
 
     @Override
-    public List<String> completions_for(CommandSender sender, String[] args, int offset) {
-        return Collections.singletonList(fixed_arg_str);
+    public List<String> completionsFor(CommandSender sender, String[] args, int offset) {
+        return Collections.singletonList(fixedArgStr);
     }
 
     private T parse(String arg) {
-        if (ignore_case) {
-            if (arg.equalsIgnoreCase(fixed_arg_str)) {
-                return fixed_arg;
+        if (ignoreCase) {
+            if (arg.equalsIgnoreCase(fixedArgStr)) {
+                return fixedArg;
             }
         } else {
-            if (arg.equals(fixed_arg_str)) {
-                return fixed_arg;
+            if (arg.equals(fixedArgStr)) {
+                return fixedArg;
             }
         }
 

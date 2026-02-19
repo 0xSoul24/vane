@@ -11,58 +11,58 @@ import org.oddlama.vane.portals.portal.Portal;
 public class PortalBlueMapLayer extends ModuleComponent<Portals> {
 
     @ConfigBoolean(def = false, desc = "If the marker set should be hidden by default.")
-    public boolean config_hide_by_default;
+    public boolean configHideByDefault;
 
     @LangMessage
-    public TranslatedMessage lang_layer_label;
+    public TranslatedMessage langLayerLabel;
 
     @LangMessage
-    public TranslatedMessage lang_marker_label;
+    public TranslatedMessage langMarkerLabel;
 
     private PortalBlueMapLayerDelegate delegate = null;
 
     public PortalBlueMapLayer(final Context<Portals> context) {
-        super(context.group("blue_map", "Enable BlueMap integration to show public portals."));
+        super(context.group("BlueMap", "Enable BlueMap integration to show public portals."));
     }
 
-    public void delayed_on_enable() {
-        final var plugin = get_module().getServer().getPluginManager().getPlugin("BlueMap");
+    public void delayedOnEnable() {
+        final var plugin = getModule().getServer().getPluginManager().getPlugin("BlueMap");
         if (plugin == null) {
             return;
         }
 
         delegate = new PortalBlueMapLayerDelegate(this);
-        delegate.on_enable(plugin);
+        delegate.onEnable(plugin);
     }
 
     @Override
-    public void on_enable() {
-        schedule_next_tick(this::delayed_on_enable);
+    public void onEnable() {
+        scheduleNextTick(this::delayedOnEnable);
     }
 
     @Override
-    public void on_disable() {
+    public void onDisable() {
         if (delegate != null) {
-            delegate.on_disable();
+            delegate.onDisable();
             delegate = null;
         }
     }
 
-    public void update_marker(final Portal portal) {
+    public void updateMarker(final Portal portal) {
         if (delegate != null) {
-            delegate.update_marker(portal);
+            delegate.updateMarker(portal);
         }
     }
 
-    public void remove_marker(final UUID portal_id) {
+    public void removeMarker(final UUID portalId) {
         if (delegate != null) {
-            delegate.remove_marker(portal_id);
+            delegate.removeMarker(portalId);
         }
     }
 
-    public void update_all_markers() {
+    public void updateAllMarkers() {
         if (delegate != null) {
-            delegate.update_all_markers();
+            delegate.updateAllMarkers();
         }
     }
 }

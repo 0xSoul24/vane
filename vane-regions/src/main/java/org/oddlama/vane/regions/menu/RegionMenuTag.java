@@ -4,13 +4,13 @@ import java.util.UUID;
 
 public class RegionMenuTag {
 
-    private final UUID region_id;
+    private final UUID regionId;
 
-    public RegionMenuTag(final UUID region_id) {
-        this.region_id = region_id;
+    public RegionMenuTag(final UUID regionId) {
+        this.regionId = regionId;
     }
 
-    public UUID region_id() {
-        return region_id;
+    public UUID regionId() {
+        return regionId;
     }
 }

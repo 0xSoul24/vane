@@ -1,6 +1,6 @@
 package org.oddlama.vane.trifles.items;
 
-import static org.oddlama.vane.util.PlayerUtil.swing_arm;
+import static org.oddlama.vane.util.PlayerUtil.swingArm;
 
 import java.util.List;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -31,44 +31,44 @@ import org.oddlama.vane.util.StorageUtil;
     name = "lodestone_scroll",
     base = Material.WARPED_FUNGUS_ON_A_STICK,
     durability = 15,
-    model_data = 0x760011,
+    modelData = 0x760011,
     version = 1
 )
 public class LodestoneScroll extends Scroll {
 
-    public static final NamespacedKey LODESTONE_LOCATION = StorageUtil.namespaced_key("vane", "lodestone_location");
+    public static final NamespacedKey LODESTONE_LOCATION = StorageUtil.namespacedKey("vane", "lodestone_location");
 
     @LangMessage
-    public TranslatedMessage lang_teleport_no_bound_lodestone;
+    public TranslatedMessage langTeleportNoBoundLodestone;
 
     @LangMessage
-    public TranslatedMessage lang_teleport_missing_lodestone;
+    public TranslatedMessage langTeleportMissingLodestone;
 
     @LangMessage
-    public TranslatedMessage lang_bound_lore;
+    public TranslatedMessage langBoundLore;
 
     public LodestoneScroll(Context<Trifles> context) {
         super(context, 6000);
     }
 
     @Override
-    public RecipeList default_recipes() {
+    public RecipeList defaultRecipes() {
         return RecipeList.of(
             new ShapedRecipeDefinition("generic")
-                .shape("aba", "epe")
-                .set_ingredient('p', "vane_trifles:papyrus_scroll")
-                .set_ingredient('e', Material.ENDER_PEARL)
-                .set_ingredient('a', Material.AMETHYST_SHARD)
-                .set_ingredient('b', Material.NETHERITE_INGOT)
+                .shape("ABA", "EPE")
+                .setIngredient('P', "vane_trifles:papyrus_scroll")
+                .setIngredient('E', Material.ENDER_PEARL)
+                .setIngredient('A', Material.AMETHYST_SHARD)
+                .setIngredient('B', Material.NETHERITE_INGOT)
                 .result(key().toString())
         );
     }
 
-    private Location get_lodestone_location(final ItemStack scroll) {
+    private Location getLodestoneLocation(final ItemStack scroll) {
         if (!scroll.hasItemMeta()) {
             return null;
         }
-        return StorageUtil.storage_get_location(
+        return StorageUtil.storageGetLocation(
             scroll.getItemMeta().getPersistentDataContainer(),
             LODESTONE_LOCATION,
             null
@@ -76,20 +76,20 @@ public class LodestoneScroll extends Scroll {
     }
 
     @Override
-    public Location teleport_location(final ItemStack scroll, Player player, boolean imminent_teleport) {
+    public Location teleportLocation(final ItemStack scroll, Player player, boolean imminentTeleport) {
         // This scroll cannot be used while sneaking to allow re-binding
         if (player.isSneaking()) {
             return null;
         }
 
-        final var lodestone_location = get_lodestone_location(scroll);
-        var lodestone = lodestone_location == null ? null : lodestone_location.getBlock();
+        final var lodestoneLocation = getLodestoneLocation(scroll);
+        var lodestone = lodestoneLocation == null ? null : lodestoneLocation.getBlock();
 
-        if (imminent_teleport) {
-            if (lodestone_location == null) {
-                lang_teleport_no_bound_lodestone.send_action_bar(player);
+        if (imminentTeleport) {
+            if (lodestoneLocation == null) {
+                langTeleportNoBoundLodestone.sendActionBar(player);
             } else if (lodestone.getType() != Material.LODESTONE) {
-                lang_teleport_missing_lodestone.send_action_bar(player);
+                langTeleportMissingLodestone.sendActionBar(player);
                 lodestone = null;
             }
         }
@@ -98,7 +98,7 @@ public class LodestoneScroll extends Scroll {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void on_player_interact(final PlayerInteractEvent event) {
+    public void onPlayerInteract(final PlayerInteractEvent event) {
         // Skip if no block clicked or the item is allowed to be used (e.g., torches in offhand)
         if (
             !event.hasBlock() ||
@@ -121,21 +121,21 @@ public class LodestoneScroll extends Scroll {
 
         // With a lodestone scroll in the main hand
         final var item = player.getEquipment().getItem(EquipmentSlot.HAND);
-        final var custom_item = get_module().core.item_registry().get(item);
-        if (!(custom_item instanceof LodestoneScroll scroll) || !scroll.enabled()) {
+        final var customItem = getModule().core.itemRegistry().get(item);
+        if (!(customItem instanceof LodestoneScroll scroll) || !scroll.enabled()) {
             return;
         }
 
         // Save lodestone location
         item.editMeta(meta -> {
-            StorageUtil.storage_set_location(
+            StorageUtil.storageSetLocation(
                 meta.getPersistentDataContainer(),
                 LODESTONE_LOCATION,
                 block.getLocation().add(0.5, 0.5, 0.5)
             );
             meta.lore(
                 List.of(
-                    lang_bound_lore
+                    langBoundLore
                         .format(
                             "§a" + block.getWorld().getName(),
                             "§b" + block.getX(),
@@ -148,7 +148,7 @@ public class LodestoneScroll extends Scroll {
         });
 
         // Effects and sound
-        swing_arm(player, event.getHand());
+        swingArm(player, event.getHand());
         block
             .getWorld()
             .spawnParticle(Particle.ENCHANT, block.getLocation().add(0.5, 2.0, 0.5), 100, 0.1, 0.3, 0.1, 2.0);

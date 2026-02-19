@@ -1,10 +1,10 @@
 package org.oddlama.vane.trifles.items;
 
 import static org.oddlama.vane.util.BlockUtil.relative;
-import static org.oddlama.vane.util.ItemUtil.damage_item;
-import static org.oddlama.vane.util.MaterialUtil.is_seeded_plant;
-import static org.oddlama.vane.util.PlayerUtil.harvest_plant;
-import static org.oddlama.vane.util.PlayerUtil.swing_arm;
+import static org.oddlama.vane.util.ItemUtil.damageItem;
+import static org.oddlama.vane.util.MaterialUtil.isSeededPlant;
+import static org.oddlama.vane.util.PlayerUtil.harvestPlant;
+import static org.oddlama.vane.util.PlayerUtil.swingArm;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -26,204 +26,204 @@ import org.oddlama.vane.util.BlockUtil;
 
 public class Sickles extends Listener<Trifles> {
 
-    @VaneItem(name = "wooden_sickle", base = Material.WOODEN_HOE, model_data = 0x760004, version = 1)
+    @VaneItem(name = "wooden_sickle", base = Material.WOODEN_HOE, modelData = 0x760004, version = 1)
     public static class WoodenSickle extends Sickle {
 
         public WoodenSickle(Context<Trifles> context) {
             super(context);
         }
 
-        public double config_attack_damage_def() {
+        public double configAttackDamageDef() {
             return 1.0;
         }
 
-        public double config_attack_speed_def() {
+        public double configAttackSpeedDef() {
             return 1.0;
         }
 
-        public int config_harvest_radius_def() {
+        public int configHarvestRadiusDef() {
             return 1;
         }
 
         @Override
-        public RecipeList default_recipes() {
+        public RecipeList defaultRecipes() {
             return RecipeList.of(
                 new ShapedRecipeDefinition("generic")
-                    .shape(" mm", "  m", " s ")
-                    .set_ingredient('m', Tag.PLANKS)
-                    .set_ingredient('s', Material.STICK)
+                    .shape(" MM", "  M", " S ")
+                    .setIngredient('M', Tag.PLANKS)
+                    .setIngredient('S', Material.STICK)
                     .result(key().toString())
             );
         }
     }
 
-    @VaneItem(name = "stone_sickle", base = Material.STONE_HOE, model_data = 0x760005, version = 1)
+    @VaneItem(name = "stone_sickle", base = Material.STONE_HOE, modelData = 0x760005, version = 1)
     public static class StoneSickle extends Sickle {
 
         public StoneSickle(Context<Trifles> context) {
             super(context);
         }
 
-        public double config_attack_damage_def() {
+        public double configAttackDamageDef() {
             return 1.5;
         }
 
-        public double config_attack_speed_def() {
+        public double configAttackSpeedDef() {
             return 1.5;
         }
 
-        public int config_harvest_radius_def() {
+        public int configHarvestRadiusDef() {
             return 1;
         }
 
         @Override
-        public RecipeList default_recipes() {
+        public RecipeList defaultRecipes() {
             return RecipeList.of(
                 new ShapedRecipeDefinition("generic")
-                    .shape(" mm", "  m", " s ")
-                    .set_ingredient('m', Tag.ITEMS_STONE_TOOL_MATERIALS)
-                    .set_ingredient('s', Material.STICK)
+                    .shape(" MM", "  M", " S ")
+                    .setIngredient('M', Tag.ITEMS_STONE_TOOL_MATERIALS)
+                    .setIngredient('S', Material.STICK)
                     .result(key().toString())
             );
         }
     }
 
-    @VaneItem(name = "iron_sickle", base = Material.IRON_HOE, model_data = 0x760006, version = 1)
+    @VaneItem(name = "iron_sickle", base = Material.IRON_HOE, modelData = 0x760006, version = 1)
     public static class IronSickle extends Sickle {
 
         public IronSickle(Context<Trifles> context) {
             super(context);
         }
 
-        public double config_attack_damage_def() {
+        public double configAttackDamageDef() {
             return 2.0;
         }
 
-        public double config_attack_speed_def() {
+        public double configAttackSpeedDef() {
             return 2.0;
         }
 
-        public int config_harvest_radius_def() {
+        public int configHarvestRadiusDef() {
             return 2;
         }
 
         @Override
-        public RecipeList default_recipes() {
+        public RecipeList defaultRecipes() {
             return RecipeList.of(
                 new ShapedRecipeDefinition("generic")
-                    .shape(" mm", "  m", " s ")
-                    .set_ingredient('m', Material.IRON_INGOT)
-                    .set_ingredient('s', Material.STICK)
+                    .shape(" MM", "  M", " S ")
+                    .setIngredient('M', Material.IRON_INGOT)
+                    .setIngredient('S', Material.STICK)
                     .result(key().toString())
             );
         }
     }
 
-    @VaneItem(name = "golden_sickle", base = Material.GOLDEN_HOE, model_data = 0x760007, version = 1)
+    @VaneItem(name = "golden_sickle", base = Material.GOLDEN_HOE, modelData = 0x760007, version = 1)
     public static class GoldenSickle extends Sickle {
 
         public GoldenSickle(Context<Trifles> context) {
             super(context);
         }
 
-        public double config_attack_damage_def() {
+        public double configAttackDamageDef() {
             return 1.5;
         }
 
-        public double config_attack_speed_def() {
+        public double configAttackSpeedDef() {
             return 3.5;
         }
 
-        public int config_harvest_radius_def() {
+        public int configHarvestRadiusDef() {
             return 3;
         }
 
         @Override
-        public RecipeList default_recipes() {
+        public RecipeList defaultRecipes() {
             return RecipeList.of(
                 new ShapedRecipeDefinition("generic")
-                    .shape(" mm", "  m", " s ")
-                    .set_ingredient('m', Material.GOLD_INGOT)
-                    .set_ingredient('s', Material.STICK)
+                    .shape(" MM", "  M", " S ")
+                    .setIngredient('M', Material.GOLD_INGOT)
+                    .setIngredient('S', Material.STICK)
                     .result(key().toString())
             );
         }
     }
 
-    @VaneItem(name = "diamond_sickle", base = Material.DIAMOND_HOE, model_data = 0x760008, version = 1)
+    @VaneItem(name = "diamond_sickle", base = Material.DIAMOND_HOE, modelData = 0x760008, version = 1)
     public static class DiamondSickle extends Sickle {
 
         public DiamondSickle(Context<Trifles> context) {
             super(context);
         }
 
-        public double config_attack_damage_def() {
+        public double configAttackDamageDef() {
             return 2.5;
         }
 
-        public double config_attack_speed_def() {
+        public double configAttackSpeedDef() {
             return 2.5;
         }
 
-        public int config_harvest_radius_def() {
+        public int configHarvestRadiusDef() {
             return 2;
         }
 
         @Override
-        public RecipeList default_recipes() {
+        public RecipeList defaultRecipes() {
             return RecipeList.of(
                 new ShapedRecipeDefinition("generic")
-                    .shape(" mm", "  m", " s ")
-                    .set_ingredient('m', Material.DIAMOND)
-                    .set_ingredient('s', Material.STICK)
+                    .shape(" MM", "  M", " S ")
+                    .setIngredient('M', Material.DIAMOND)
+                    .setIngredient('S', Material.STICK)
                     .result(key().toString())
             );
         }
     }
 
-    @VaneItem(name = "netherite_sickle", base = Material.NETHERITE_HOE, model_data = 0x760009, version = 1)
+    @VaneItem(name = "netherite_sickle", base = Material.NETHERITE_HOE, modelData = 0x760009, version = 1)
     public static class NetheriteSickle extends Sickle {
 
         public NetheriteSickle(Context<Trifles> context) {
             super(context);
         }
 
-        public double config_attack_damage_def() {
+        public double configAttackDamageDef() {
             return 3.0;
         }
 
-        public double config_attack_speed_def() {
+        public double configAttackSpeedDef() {
             return 3.0;
         }
 
-        public int config_harvest_radius_def() {
+        public int configHarvestRadiusDef() {
             return 2;
         }
 
         @Override
-        public RecipeList default_recipes() {
+        public RecipeList defaultRecipes() {
             return RecipeList.of(
                 new SmithingRecipeDefinition("generic")
                     .base("vane_trifles:diamond_sickle")
                     .addition(Material.NETHERITE_INGOT)
-                    .copy_nbt(true)
+                    .copyNbt(true)
                     .result(key().toString())
             );
         }
     }
 
     public Sickles(Context<Trifles> context) {
-        super(context.group("sickles", "Several sickles that allow players to harvest crops in a radius."));
-        new WoodenSickle(get_context());
-        new StoneSickle(get_context());
-        new IronSickle(get_context());
-        new GoldenSickle(get_context());
-        new DiamondSickle(get_context());
-        new NetheriteSickle(get_context());
+        super(context.group("Sickles", "Several sickles that allow players to harvest crops in a radius."));
+        new WoodenSickle(getContext());
+        new StoneSickle(getContext());
+        new IronSickle(getContext());
+        new GoldenSickle(getContext());
+        new DiamondSickle(getContext());
+        new NetheriteSickle(getContext());
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void on_player_right_click_plant(final PlayerInteractEvent event) {
+    public void onPlayerRightClickPlant(final PlayerInteractEvent event) {
         if (!event.hasBlock() || event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
@@ -233,36 +233,36 @@ public class Sickles extends Listener<Trifles> {
         }
 
         // Only seed when right-clicking a plant
-        final var root_block = event.getClickedBlock();
-        final var plant_type = root_block.getType();
-        if (!is_seeded_plant(plant_type)) {
+        final var rootBlock = event.getClickedBlock();
+        final var plantType = rootBlock.getType();
+        if (!isSeededPlant(plantType)) {
             return;
         }
 
         // Get item variant
         final var player = event.getPlayer();
         final var item = player.getEquipment().getItem(event.getHand());
-        final var custom_item = get_module().core.item_registry().get(item);
-        if (!(custom_item instanceof Sickle sickle) || !sickle.enabled()) {
+        final var customItem = getModule().core.itemRegistry().get(item);
+        if (!(customItem instanceof Sickle sickle) || !sickle.enabled()) {
             return;
         }
 
-        var total_harvested = 0;
+        var totalHarvested = 0;
         // Harvest surroundings
-        for (var relative_pos : BlockUtil.NEAREST_RELATIVE_BLOCKS_FOR_RADIUS.get(sickle.config_harvest_radius)) {
-            final var block = relative(root_block, relative_pos);
-            if (harvest_plant(player, block)) {
-                ++total_harvested;
+        for (var relativePos : BlockUtil.NEAREST_RELATIVE_BLOCKS_FOR_RADIUS.get(sickle.configHarvestRadius)) {
+            final var block = relative(rootBlock, relativePos);
+            if (harvestPlant(player, block)) {
+                ++totalHarvested;
             }
         }
 
         // Damage item if we harvested at least one plant
-        if (total_harvested > 0) {
-            damage_item(player, item, 1 + (int) (0.25 * total_harvested));
-            swing_arm(player, event.getHand());
-            root_block
+        if (totalHarvested > 0) {
+            damageItem(player, item, 1 + (int) (0.25 * totalHarvested));
+            swingArm(player, event.getHand());
+            rootBlock
                 .getWorld()
-                .playSound(root_block.getLocation(), Sound.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0f, 2.0f);
+                .playSound(rootBlock.getLocation(), Sound.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0f, 2.0f);
         }
 
         // Prevent offhand from triggering (e.g., placing torches)

@@ -40,9 +40,9 @@ import org.oddlama.vane.core.module.Module;
 
 public class ConfigManager {
 
-    private List<ConfigField<?>> config_fields = new ArrayList<>();
-    private Map<String, String> section_descriptions = new HashMap<>();
-    ConfigVersionField field_version;
+    private List<ConfigField<?>> configFields = new ArrayList<>();
+    private Map<String, String> sectionDescriptions = new HashMap<>();
+    ConfigVersionField fieldVersion;
     Module<?> module;
 
     public ConfigManager(Module<?> module) {
@@ -50,11 +50,11 @@ public class ConfigManager {
         compile(module, s -> s);
     }
 
-    public long expected_version() {
-        return module.annotation.config_version();
+    public long expectedVersion() {
+        return module.annotation.configVersion();
     }
 
-    private boolean has_config_annotation(Field field) {
+    private boolean hasConfigAnnotation(Field field) {
         for (var a : field.getAnnotations()) {
             if (a.annotationType().getName().startsWith("org.oddlama.vane.annotation.config.Config")) {
                 return true;
@@ -63,14 +63,14 @@ public class ConfigManager {
         return false;
     }
 
-    private void assert_field_prefix(Field field) {
-        if (!field.getName().startsWith("config_")) {
-            throw new RuntimeException("Configuration fields must be prefixed config_. This is a bug.");
+    private void assertFieldPrefix(Field field) {
+        if (!field.getName().startsWith("config")) {
+            throw new RuntimeException("Configuration fields must be prefixed config. This is a bug.");
         }
     }
 
-    private ConfigField<?> compile_field(Object owner, Field field, Function<String, String> map_name) {
-        assert_field_prefix(field);
+    private ConfigField<?> compileField(Object owner, Field field, Function<String, String> mapName) {
+        assertFieldPrefix(field);
 
         // Get the annotation
         Annotation annotation = null;
@@ -88,53 +88,53 @@ public class ConfigManager {
 
         // Return a correct wrapper object
         if (atype.equals(ConfigBoolean.class)) {
-            return new ConfigBooleanField(owner, field, map_name, (ConfigBoolean) annotation);
+            return new ConfigBooleanField(owner, field, mapName, (ConfigBoolean) annotation);
         } else if (atype.equals(ConfigDict.class)) {
-            return new ConfigDictField(owner, field, map_name, (ConfigDict) annotation);
+            return new ConfigDictField(owner, field, mapName, (ConfigDict) annotation);
         } else if (atype.equals(ConfigDouble.class)) {
-            return new ConfigDoubleField(owner, field, map_name, (ConfigDouble) annotation);
+            return new ConfigDoubleField(owner, field, mapName, (ConfigDouble) annotation);
         } else if (atype.equals(ConfigDoubleList.class)) {
-            return new ConfigDoubleListField(owner, field, map_name, (ConfigDoubleList) annotation);
+            return new ConfigDoubleListField(owner, field, mapName, (ConfigDoubleList) annotation);
         } else if (atype.equals(ConfigExtendedMaterial.class)) {
-            return new ConfigExtendedMaterialField(owner, field, map_name, (ConfigExtendedMaterial) annotation);
+            return new ConfigExtendedMaterialField(owner, field, mapName, (ConfigExtendedMaterial) annotation);
         } else if (atype.equals(ConfigInt.class)) {
-            return new ConfigIntField(owner, field, map_name, (ConfigInt) annotation);
+            return new ConfigIntField(owner, field, mapName, (ConfigInt) annotation);
         } else if (atype.equals(ConfigIntList.class)) {
-            return new ConfigIntListField(owner, field, map_name, (ConfigIntList) annotation);
+            return new ConfigIntListField(owner, field, mapName, (ConfigIntList) annotation);
         } else if (atype.equals(ConfigItemStack.class)) {
-            return new ConfigItemStackField(owner, field, map_name, (ConfigItemStack) annotation);
+            return new ConfigItemStackField(owner, field, mapName, (ConfigItemStack) annotation);
         } else if (atype.equals(ConfigLong.class)) {
-            return new ConfigLongField(owner, field, map_name, (ConfigLong) annotation);
+            return new ConfigLongField(owner, field, mapName, (ConfigLong) annotation);
         } else if (atype.equals(ConfigMaterial.class)) {
-            return new ConfigMaterialField(owner, field, map_name, (ConfigMaterial) annotation);
+            return new ConfigMaterialField(owner, field, mapName, (ConfigMaterial) annotation);
         } else if (atype.equals(ConfigMaterialMapMapMap.class)) {
-            return new ConfigMaterialMapMapMapField(owner, field, map_name, (ConfigMaterialMapMapMap) annotation);
+            return new ConfigMaterialMapMapMapField(owner, field, mapName, (ConfigMaterialMapMapMap) annotation);
         } else if (atype.equals(ConfigMaterialSet.class)) {
-            return new ConfigMaterialSetField(owner, field, map_name, (ConfigMaterialSet) annotation);
+            return new ConfigMaterialSetField(owner, field, mapName, (ConfigMaterialSet) annotation);
         } else if (atype.equals(ConfigString.class)) {
-            return new ConfigStringField(owner, field, map_name, (ConfigString) annotation);
+            return new ConfigStringField(owner, field, mapName, (ConfigString) annotation);
         } else if (atype.equals(ConfigStringList.class)) {
-            return new ConfigStringListField(owner, field, map_name, (ConfigStringList) annotation);
+            return new ConfigStringListField(owner, field, mapName, (ConfigStringList) annotation);
         } else if (atype.equals(ConfigStringListMap.class)) {
-            return new ConfigStringListMapField(owner, field, map_name, (ConfigStringListMap) annotation);
+            return new ConfigStringListMapField(owner, field, mapName, (ConfigStringListMap) annotation);
         } else if (atype.equals(ConfigVersion.class)) {
             if (owner != module) {
                 throw new RuntimeException("@ConfigVersion can only be used inside the main module. This is a bug.");
             }
-            if (field_version != null) {
+            if (fieldVersion != null) {
                 throw new RuntimeException(
                     "There must be exactly one @ConfigVersion field! (found multiple). This is a bug."
                 );
             }
-            return field_version = new ConfigVersionField(owner, field, map_name, (ConfigVersion) annotation);
+            return fieldVersion = new ConfigVersionField(owner, field, mapName, (ConfigVersion) annotation);
         } else {
             throw new RuntimeException("Missing ConfigField handler for @" + atype.getName() + ". This is a bug.");
         }
     }
 
-    private boolean verify_version(File file, long version) {
-        if (version != expected_version()) {
-            module.log.severe(file.getName() + ": expected version " + expected_version() + ", but got " + version);
+    private boolean verifyVersion(File file, long version) {
+        if (version != expectedVersion()) {
+            module.log.severe(file.getName() + ": expected version " + expectedVersion() + ", but got " + version);
 
             if (version == 0) {
                 module.log.severe("Something went wrong while generating or loading the configuration.");
@@ -142,13 +142,13 @@ public class ConfigManager {
                 module.log.severe(
                     "system permission issue, please report this to https://github.com/oddlama/vane/issues"
                 );
-            } else if (version < expected_version()) {
+            } else if (version < expectedVersion()) {
                 module.log.severe("This config is for an older version of " + module.getName() + ".");
                 module.log.severe("Please update your configuration. A new default configuration");
                 module.log.severe("has been generated as 'config.yml.new'. Alternatively you can");
                 module.log.severe("delete your configuration to have a new one generated next time.");
 
-                generate_file(new File(module.getDataFolder(), "config.yml.new"), null);
+                generateFile(new File(module.getDataFolder(), "config.yml.new"), null);
             } else {
                 module.log.severe("This config is for a future version of " + module.getName() + ".");
                 module.log.severe("Please use the correct file for this version, or delete it and");
@@ -161,107 +161,107 @@ public class ConfigManager {
         return true;
     }
 
-    public void add_section_description(String yaml_path, String description) {
-        section_descriptions.put(yaml_path, description);
+    public void addSectionDescription(String yamlPath, String description) {
+        sectionDescriptions.put(yamlPath, description);
     }
 
     @SuppressWarnings("unchecked")
-    public void compile(Object owner, Function<String, String> map_name) {
+    public void compile(Object owner, Function<String, String> mapName) {
         // Compile all annotated fields
-        config_fields.addAll(
+        configFields.addAll(
             getAllFields(owner.getClass())
                 .stream()
-                .filter(this::has_config_annotation)
-                .map(f -> compile_field(owner, f, map_name))
+                .filter(this::hasConfigAnnotation)
+                .map(f -> compileField(owner, f, mapName))
                 .toList()
         );
 
         // Sort fields alphabetically, and by precedence (e.g., put a version last and lang first)
-        Collections.sort(config_fields);
+        Collections.sort(configFields);
 
-        if (owner == module && field_version == null) {
+        if (owner == module && fieldVersion == null) {
             throw new RuntimeException("There must be exactly one @ConfigVersion field! (found none). This is a bug.");
         }
     }
 
-    private String indent_str(int level) {
+    private String indentStr(int level) {
         return "  ".repeat(level);
     }
 
-    public void generate_yaml(StringBuilder builder, YamlConfiguration existing_compatible_config) {
+    public void generateYaml(StringBuilder builder, YamlConfiguration existingCompatibleConfig) {
         builder.append("# vim: set tabstop=2 softtabstop=0 expandtab shiftwidth=2:\n");
         builder.append("# This config file will automatically be updated, as long\n");
         builder.append("# as there are no incompatible changes between versions.\n");
         builder.append("# This means that additional comments will not be preserved!\n");
 
         // Use the version field as a neutral field in the root group
-        ConfigField<?> last_field = field_version;
+        ConfigField<?> lastField = fieldVersion;
         var indent = "";
 
-        for (var f : config_fields) {
+        for (var f : configFields) {
             builder.append("\n");
 
-            if (!ConfigField.same_group(last_field, f)) {
-                final var new_indent_level = f.group_count();
-                final var common_indent_level = ConfigField.common_group_count(last_field, f);
+            if (!ConfigField.sameGroup(lastField, f)) {
+                final var newIndentLevel = f.groupCount();
+                final var commonIndentLevel = ConfigField.commonGroupCount(lastField, f);
 
                 // Build a full common section path
-                var section_path = "";
-                for (int i = 0; i < common_indent_level; ++i) {
-                    section_path = Context.append_yaml_path(section_path, f.components()[i], ".");
+                var sectionPath = "";
+                for (int i = 0; i < commonIndentLevel; ++i) {
+                    sectionPath = Context.appendYamlPath(sectionPath, f.components()[i], ".");
                 }
 
                 // For each unopened section
-                for (int i = common_indent_level; i < new_indent_level; ++i) {
-                    indent = indent_str(i);
+                for (int i = commonIndentLevel; i < newIndentLevel; ++i) {
+                    indent = indentStr(i);
 
                     // Get a full section path
-                    section_path = Context.append_yaml_path(section_path, f.components()[i], ".");
+                    sectionPath = Context.appendYamlPath(sectionPath, f.components()[i], ".");
 
                     // Append section description, if given.
-                    final var section_desc = section_descriptions.get(section_path);
-                    if (section_desc != null) {
-                        final var description_wrapped = WordUtils.wrap(
-                            section_desc,
+                    final var sectionDesc = sectionDescriptions.get(sectionPath);
+                    if (sectionDesc != null) {
+                        final var descriptionWrapped = WordUtils.wrap(
+                            sectionDesc,
                             Math.max(60, 80 - indent.length()),
                             "\n" + indent + "# ",
                             false
                         );
                         builder.append(indent);
                         builder.append("# ");
-                        builder.append(description_wrapped);
+                        builder.append(descriptionWrapped);
                         builder.append("\n");
                     }
 
                     // Append section
-                    final var section_name = f.components()[i];
+                    final var sectionName = f.components()[i];
                     builder.append(indent);
-                    builder.append(section_name);
+                    builder.append(sectionName);
                     builder.append(":\n");
                 }
 
-                indent = indent_str(new_indent_level);
+                indent = indentStr(newIndentLevel);
             }
 
-            // Append field yaml
-            f.generate_yaml(builder, indent, existing_compatible_config);
-            last_field = f;
+            // Append field YAML
+            f.generateYaml(builder, indent, existingCompatibleConfig);
+            lastField = f;
         }
     }
 
-    public File standard_file() {
+    public File standardFile() {
         return new File(module.getDataFolder(), "config.yml");
     }
 
-    public boolean generate_file(File file, YamlConfiguration existing_compatible_config) {
+    public boolean generateFile(File file, YamlConfiguration existingCompatibleConfig) {
         final var builder = new StringBuilder();
-        generate_yaml(builder, existing_compatible_config);
+        generateYaml(builder, existingCompatibleConfig);
         final var content = builder.toString();
 
         // Save to tmp file, then move atomically to prevent corruption.
-        final var tmp_file = new File(file.getAbsolutePath() + ".tmp");
+        final var tmpFile = new File(file.getAbsolutePath() + ".tmp");
         try {
-            Files.writeString(tmp_file.toPath(), content);
+            Files.writeString(tmpFile.toPath(), content);
         } catch (IOException e) {
             module.log.log(Level.SEVERE, "error while writing config file '" + file + "'", e);
             return false;
@@ -270,7 +270,7 @@ public class ConfigManager {
         // Move atomically to prevent corruption.
         try {
             Files.move(
-                tmp_file.toPath(),
+                tmpFile.toPath(),
                 file.toPath(),
                 StandardCopyOption.REPLACE_EXISTING,
                 StandardCopyOption.ATOMIC_MOVE
@@ -294,22 +294,22 @@ public class ConfigManager {
         var yaml = YamlConfiguration.loadConfiguration(file);
 
         // Check version
-        final var version = yaml.getLong("version", -1);
-        if (!verify_version(file, version)) {
+        final var version = yaml.getLong("Version", -1);
+        if (!verifyVersion(file, version)) {
             return false;
         }
 
         // Upgrade config to include all necessary keys (version-compatible extensions)
-        final var tmp_file = new File(module.getDataFolder(), "config.yml.tmp");
-        if (!generate_file(tmp_file, yaml)) {
+        final var tmpFile = new File(module.getDataFolder(), "config.yml.tmp");
+        if (!generateFile(tmpFile, yaml)) {
             return false;
         }
 
         // Move atomically to prevent corruption.
         try {
             Files.move(
-                tmp_file.toPath(),
-                standard_file().toPath(),
+                tmpFile.toPath(),
+                standardFile().toPath(),
                 StandardCopyOption.REPLACE_EXISTING,
                 StandardCopyOption.ATOMIC_MOVE
             );
@@ -317,9 +317,9 @@ public class ConfigManager {
             module.log.log(
                 Level.SEVERE,
                 "error while atomically replacing '" +
-                standard_file() +
+                standardFile() +
                 "' with updated version. Please manually resolve the conflict (new file is named '" +
-                tmp_file +
+                tmpFile +
                 "')",
                 e
             );
@@ -331,11 +331,11 @@ public class ConfigManager {
 
         try {
             // Check configuration for errors
-            for (var f : config_fields) {
-                f.check_loadable(yaml);
+            for (var f : configFields) {
+                f.checkLoadable(yaml);
             }
 
-            for (var f : config_fields) {
+            for (var f : configFields) {
                 f.load(yaml);
             }
         } catch (YamlLoadException e) {
@@ -346,14 +346,14 @@ public class ConfigManager {
         return true;
     }
 
-    public void register_metrics(Metrics metrics) {
+    public void registerMetrics(Metrics metrics) {
         // Track config values. Fields automatically know whether they want to be tracked or not via
         // the annotation.
         // By default, annotations use sensible defaults, so e.g., no strings will be tracked
         // automatically, except
         // when explicitly requested (e.g., language).
-        for (var f : config_fields) {
-            f.register_metrics(metrics);
+        for (var f : configFields) {
+            f.registerMetrics(metrics);
         }
     }
 }

@@ -1,7 +1,7 @@
 package org.oddlama.vane.util;
 
-import static org.oddlama.vane.util.MaterialUtil.is_replaceable_grass;
-import static org.oddlama.vane.util.MaterialUtil.is_tillable;
+import static org.oddlama.vane.util.MaterialUtil.isReplaceableGrass;
+import static org.oddlama.vane.util.MaterialUtil.isTillable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,26 +44,26 @@ public class BlockUtil {
 
     static {
         for (int i = 0; i <= NEAREST_RELATIVE_BLOCKS_FOR_RADIUS_MAX; ++i) {
-            NEAREST_RELATIVE_BLOCKS_FOR_RADIUS.add(nearest_blocks_for_radius(i));
+            NEAREST_RELATIVE_BLOCKS_FOR_RADIUS.add(nearestBlocksForRadius(i));
         }
     }
 
-    public static boolean equals_pos(final Block b1, final Block b2) {
+    public static boolean equalsPos(final Block b1, final Block b2) {
         return b1.getX() == b2.getX() && b1.getY() == b2.getY() && b1.getZ() == b2.getZ();
     }
 
-    public static void drop_naturally(Block block, ItemStack drop) {
-        drop_naturally(block.getLocation().add(0.5, 0.5, 0.5), drop);
+    public static void dropNaturally(Block block, ItemStack drop) {
+        dropNaturally(block.getLocation().add(0.5, 0.5, 0.5), drop);
     }
 
-    public static void drop_naturally(Location loc, ItemStack drop) {
+    public static void dropNaturally(Location loc, ItemStack drop) {
         loc
             .getWorld()
             .dropItem(loc.add(Vector.getRandom().subtract(new Vector(.5, .5, .5)).multiply(0.5)), drop)
             .setVelocity(Vector.getRandom().add(new Vector(-.5, +.5, -.5)).normalize().multiply(.15));
     }
 
-    public static List<BlockVector> nearest_blocks_for_radius(int radius) {
+    public static List<BlockVector> nearestBlocksForRadius(int radius) {
         final var ret = new ArrayList<BlockVector>();
 
         // Use square bounding box
@@ -86,12 +86,12 @@ public class BlockUtil {
         return block.getRelative(relative.getBlockX(), relative.getBlockY(), relative.getBlockZ());
     }
 
-    public static Block next_tillable_block(final Block root_block, int radius, boolean careless) {
-        for (final var relative_pos : NEAREST_RELATIVE_BLOCKS_FOR_RADIUS.get(radius)) {
-            final var block = relative(root_block, relative_pos);
+    public static Block nextTillableBlock(final Block rootBlock, int radius, boolean careless) {
+        for (final var relativePos : NEAREST_RELATIVE_BLOCKS_FOR_RADIUS.get(radius)) {
+            final var block = relative(rootBlock, relativePos);
 
             // Check for a tillable material
-            if (!is_tillable(block.getType())) {
+            if (!isTillable(block.getType())) {
                 continue;
             }
 
@@ -101,7 +101,7 @@ public class BlockUtil {
             if (above.getType() == Material.AIR) {
                 // If the block above is air, we can till the block.
                 return block;
-            } else if (careless && is_replaceable_grass(above.getType())) {
+            } else if (careless && isReplaceableGrass(above.getType())) {
                 // If the block above is replaceable grass, delete it and return the block.
                 above.setType(Material.AIR);
                 return block;
@@ -112,7 +112,7 @@ public class BlockUtil {
         return null;
     }
 
-    public static Block[] adjacent_blocks_3d(final Block root) {
+    public static Block[] adjacentBlocks3D(final Block root) {
         final var adjacent = new Block[26];
 
         // Direct adjacent
@@ -150,13 +150,13 @@ public class BlockUtil {
         return adjacent;
     }
 
-    public static Block next_seedable_block(final Block root_block, Material farmland_type, int radius) {
-        for (var relative_pos : NEAREST_RELATIVE_BLOCKS_FOR_RADIUS.get(radius)) {
-            final var block = relative(root_block, relative_pos);
+    public static Block nextSeedableBlock(final Block rootBlock, Material farmlandType, int radius) {
+        for (var relativePos : NEAREST_RELATIVE_BLOCKS_FOR_RADIUS.get(radius)) {
+            final var block = relative(rootBlock, relativePos);
             final var below = block.getRelative(BlockFace.DOWN);
 
             // The Block below must be farmland and the block itself must be air
-            if (below.getType() == farmland_type && block.getType() == Material.AIR) {
+            if (below.getType() == farmlandType && block.getType() == Material.AIR) {
                 return block;
             }
         }
@@ -165,14 +165,14 @@ public class BlockUtil {
         return null;
     }
 
-    public static void update_lever(final Block block, final BlockFace face) {
+    public static void updateLever(final Block block, final BlockFace face) {
         final var level = ((CraftWorld) block.getWorld()).getHandle();
-        final var connected_block = block.getRelative(face.getOppositeFace());
-        final var block_pos_1 = new BlockPos(block.getX(), block.getY(), block.getZ());
-        final var block_pos_2 = new BlockPos(connected_block.getX(), connected_block.getY(), connected_block.getZ());
-        final var initiator_block = level.getBlockIfLoaded(block_pos_1);
-        level.updateNeighborsAt(block_pos_1, initiator_block);
-        level.updateNeighborsAt(block_pos_2, initiator_block);
+        final var connectedBlock = block.getRelative(face.getOppositeFace());
+        final var blockPos1 = new BlockPos(block.getX(), block.getY(), block.getZ());
+        final var blockPos2 = new BlockPos(connectedBlock.getX(), connectedBlock.getY(), connectedBlock.getZ());
+        final var initiatorBlock = level.getBlockIfLoaded(blockPos1);
+        level.updateNeighborsAt(blockPos1, initiatorBlock);
+        level.updateNeighborsAt(blockPos2, initiatorBlock);
     }
 
     public static class Corner {
@@ -221,7 +221,7 @@ public class BlockUtil {
         }
 
         /** Rotates the corner as if it were on a north facing block given the block's rotation. */
-        public Corner rotate_to_north_reference(final BlockFace rotation) {
+        public Corner rotateToNorthReference(final BlockFace rotation) {
             switch (rotation) {
                 default:
                     throw new IllegalArgumentException("rotation must be one of NORTH, EAST, SOUTH, WEST");
@@ -237,7 +237,7 @@ public class BlockUtil {
         }
 
         /** Returns {NORTH, SOUTH}_{EAST, WEST} to indicate the XZ corner. */
-        public BlockFace xz_face() {
+        public BlockFace xzFace() {
             if (x) {
                 if (z) {
                     return BlockFace.SOUTH_EAST;
@@ -266,18 +266,18 @@ public class BlockUtil {
 
     public static class Oct {
 
-        private Vector hit_pos; // Relative to a block middle
+        private Vector hitPos; // Relative to a block middle
         private Corner corner;
         private BlockFace face;
 
-        public Oct(final Vector hit_pos, final BlockFace face) {
-            this.hit_pos = hit_pos;
-            this.corner = new Corner(hit_pos);
+        public Oct(final Vector hitPos, final BlockFace face) {
+            this.hitPos = hitPos;
+            this.corner = new Corner(hitPos);
             this.face = face;
         }
 
-        public Vector hit_pos() {
-            return hit_pos;
+        public Vector hitPos() {
+            return hitPos;
         }
 
         public Corner corner() {
@@ -289,7 +289,7 @@ public class BlockUtil {
         }
     }
 
-    public static Oct raytrace_oct(final LivingEntity entity, final Block block) {
+    public static Oct raytraceOct(final LivingEntity entity, final Block block) {
         // Ray-trace position and face
         final var result = entity.rayTraceBlocks(10.0);
         if (block == null || result == null || !block.equals(result.getHitBlock())) {
@@ -298,10 +298,10 @@ public class BlockUtil {
 
         // Get in-block hit position and bias the result
         // a bit inside the clicked face, so we don't get ambiguous results.
-        final var block_middle = block.getLocation().toVector().add(new Vector(0.5, 0.5, 0.5));
+        final var blockMiddle = block.getLocation().toVector().add(new Vector(0.5, 0.5, 0.5));
         final var hit = result
             .getHitPosition()
-            .subtract(block_middle)
+            .subtract(blockMiddle)
             .subtract(result.getHitBlockFace().getDirection().multiply(0.25));
 
         return new Oct(hit, result.getHitBlockFace());
@@ -313,38 +313,38 @@ public class BlockUtil {
         public double dominance = 0.0;
     }
 
-    public static RaytraceDominantFaceResult raytrace_dominant_face(final LivingEntity entity, final Block block) {
+    public static RaytraceDominantFaceResult raytraceDominantFace(final LivingEntity entity, final Block block) {
         // Ray trace clicked face
         final var result = entity.rayTraceBlocks(10.0);
         if (block == null || result == null || !block.equals(result.getHitBlock())) {
             return null;
         }
 
-        final var block_middle = block.getLocation().toVector().add(new Vector(0.5, 0.5, 0.5));
-        final var hit_position = result.getHitPosition();
-        final var diff = hit_position.subtract(block_middle);
+        final var blockMiddle = block.getLocation().toVector().add(new Vector(0.5, 0.5, 0.5));
+        final var hitPosition = result.getHitPosition();
+        final var diff = hitPosition.subtract(blockMiddle);
 
         final var ret = new RaytraceDominantFaceResult();
         for (final var face : BlockUtil.XZ_FACES) {
             // Calculate how dominant the current face contributes to the clicked point
-            final double face_dominance;
+            final double faceDominance;
             if (face.getModX() != 0) {
-                face_dominance = diff.getX() * face.getModX();
+                faceDominance = diff.getX() * face.getModX();
             } else { // if (face.getModZ() != 0) {
-                face_dominance = diff.getZ() * face.getModZ();
+                faceDominance = diff.getZ() * face.getModZ();
             }
 
             // Find maximum dominant face
-            if (face_dominance > ret.dominance) {
+            if (faceDominance > ret.dominance) {
                 ret.face = face;
-                ret.dominance = face_dominance;
+                ret.dominance = faceDominance;
             }
         }
 
         return ret;
     }
 
-    public static String texture_from_skull(final Skull skull) {
+    public static String textureFromSkull(final Skull skull) {
         final var profile = skull.getProfile();
         if (profile == null) {
             return null;
