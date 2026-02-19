@@ -2,10 +2,12 @@ plugins {
 	`java-library`
     alias(libs.plugins.paperweightUserdev)
 	alias(libs.plugins.runPaper) // Adds runServer and runMojangMappedServer tasks for testing
+    kotlin("jvm")
 }
 
 dependencies {
 	paperweight.paperDevBundle(rootProject.libs.versions.paper)
+    implementation(kotlin("stdlib"))
 }
 
 java {
@@ -184,4 +186,7 @@ tasks.register<Delete>("cleanWorld") {
 			"world_the_end"
 		)
 	})
+}
+repositories {
+    mavenCentral()
 }

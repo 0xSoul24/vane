@@ -3,6 +3,7 @@ import java.security.MessageDigest
 plugins {
     alias(libs.plugins.shadow)
     alias(libs.plugins.blossom) // Text replacement for version numbers
+    kotlin("jvm")
 }
 
 sourceSets {
@@ -23,6 +24,7 @@ dependencies {
     implementation(libs.commonsText)
     api(libs.json)
     implementation(project(":vane-annotations"))
+    implementation(kotlin("stdlib"))
 }
 
 val resourcePackSha1: String by lazy {
@@ -50,12 +52,14 @@ tasks {
             include(dependency(":vane-annotations"))
             include(dependency("org.apache.commons:commons-lang3"))
             include(dependency("org.apache.commons:commons-text"))
+            include(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
         }
         relocate("org.bstats", "org.oddlama.vane.external.bstats")
         relocate("org.reflections", "org.oddlama.vane.external.reflections")
         relocate("org.json", "org.oddlama.vane.external.json")
         relocate("org.apache.commons.lang3", "org.oddlama.vane.external.apache.commons.lang3")
         relocate("org.apache.commons.text", "org.oddlama.vane.external.apache.commons.text")
+        relocate("kotlin", "org.oddlama.vane.external.kotlin")
     }
 
     processResources {
@@ -63,4 +67,10 @@ tasks {
             expand(projectProperties + mapOf("resourcePackSha1" to resourcePackSha1))
         }
     }
+}
+repositories {
+    mavenCentral()
+}
+kotlin {
+    jvmToolchain(21)
 }

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.shadow)
     alias(libs.plugins.blossom)
+    kotlin("jvm")
 }
 
 sourceSets {
@@ -18,11 +19,12 @@ dependencies {
     implementation(libs.slf4j)
     implementation(rootProject.project(":vane-core"))
     compileOnly(libs.json)
+    implementation(kotlin("stdlib"))
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -35,4 +37,7 @@ tasks {
         relocate("com.electronwill.night-config", "org.oddlama.vane.vane_velocity.external.night-config")
         relocate("org.json", "org.oddlama.vane.external.json")
     }
+}
+repositories {
+    mavenCentral()
 }

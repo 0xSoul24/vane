@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.shadow)
+    kotlin("jvm")
 }
 
 dependencies {
@@ -12,6 +13,7 @@ dependencies {
     implementation(libs.json)
     implementation(rootProject.project(":vane-core"))
     implementation(rootProject.project(":vane-proxy-core"))
+    implementation(kotlin("stdlib"))
 }
 
 java {
@@ -43,4 +45,7 @@ tasks {
     build {
         dependsOn("copyJar")
     }
+}
+repositories {
+    mavenCentral()
 }

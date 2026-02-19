@@ -1,9 +1,11 @@
 plugins {
     alias(libs.plugins.shadow)
+    kotlin("jvm")
 }
 
 dependencies {
     compileOnly(libs.json)
+    implementation(kotlin("stdlib"))
 }
 
 tasks {
@@ -11,4 +13,10 @@ tasks {
         configurations = listOf()
         relocate("org.json", "org.oddlama.vane.external.json")
     }
+}
+repositories {
+    mavenCentral()
+}
+kotlin {
+    jvmToolchain(21)
 }
