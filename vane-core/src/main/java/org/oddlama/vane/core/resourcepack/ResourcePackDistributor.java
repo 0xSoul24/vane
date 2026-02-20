@@ -150,6 +150,26 @@ public class ResourcePackDistributor extends Listener<Core> {
         }
     }
 
+    @Override
+    public void on_disable() {
+        // Release all pending configuration latches so blocked threads can exit
+        for (var latch : latches.values()) {
+            latch.countDown();
+        }
+        latches.clear();
+
+        if (file_watcher != null) {
+            file_watcher.stop();
+            file_watcher = null;
+        }
+        if (dev_server != null) {
+            dev_server.stop();
+            dev_server = null;
+        }
+
+        super.on_disable();
+    }
+
     @EventHandler
     public void on_player_async_connection_configure(AsyncPlayerConnectionConfigureEvent event) {
         var profile_uuid = event.getConnection().getProfile().getId();
