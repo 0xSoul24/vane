@@ -94,7 +94,7 @@ public class ChestSorter extends Listener<Trifles> {
             if (leftovers.size() != 0) {
                 // Abort! Something went totally wrong!
                 inventory.setStorageContents(savedContentsCondensed);
-                getModule().log.warning("Sorting inventory " + inventory + " produced leftovers!");
+                getModule().getLog().warning("Sorting inventory " + inventory + " produced leftovers!");
             }
         } catch (Exception e) {
             inventory.setStorageContents(savedContentsCondensed);

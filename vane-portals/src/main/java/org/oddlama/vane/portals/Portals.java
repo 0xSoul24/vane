@@ -275,7 +275,7 @@ public class Portals extends Module<Portals> {
         getModule().registerPermission(adminPermission);
 
         // TODO legacy, remove in v2.
-        persistentStorageManager.addMigrationTo(
+        getPersistentStorageManager().addMigrationTo(
             2,
             "Portal visibility GROUP_INTERNAL was added. This is a no-op.",
             json -> {}
@@ -284,7 +284,7 @@ public class Portals extends Module<Portals> {
 
     @SuppressWarnings("unchecked")
     private void registerEntities() {
-        getModule().core.unfreezeRegistries();
+        getModule().getCore().unfreezeRegistries();
         registerEntity(
             NamespacedKey.minecraft("item"),
             namespace(),
@@ -390,7 +390,7 @@ public class Portals extends Module<Portals> {
     public Style style(final NamespacedKey key) {
         final var s = styles.get(key);
         if (s == null) {
-            log.warning("Encountered invalid style " + key + ", falling back to default style.");
+            getLogger().warning("Encountered invalid style " + key + ", falling back to default style.");
             return styles.get(Style.defaultStyleKey());
         } else {
             return s;
@@ -432,7 +432,7 @@ public class Portals extends Module<Portals> {
 
         // Close and taint all related open menus
         getModule()
-            .core.menuManager.forEachOpen((player, menu) -> {
+            .getCore().menuManager.forEachOpen((player, menu) -> {
                 if (
                     menu.tag() instanceof PortalMenuTag &&
                     Objects.equals(((PortalMenuTag) menu.tag()).portalId(), portal.id())
@@ -1011,10 +1011,10 @@ public class Portals extends Module<Portals> {
                 final var portal = PersistentSerializer.fromJson(Portal.class, new JSONObject(new String(jsonBytes)));
                 indexPortal(portal);
             } catch (IOException e) {
-                log.log(Level.SEVERE, "error while serializing persistent data!", e);
+                getLogger().log(Level.SEVERE, "error while serializing persistent data!", e);
             }
         }
-        log.log(
+        getLogger().log(
             Level.INFO,
             "Loaded " + pdcPortals.size() + " portals for world " + world.getName() + "(" + world.getUID() + ")"
         );
@@ -1077,7 +1077,7 @@ public class Portals extends Module<Portals> {
                         json.toString().getBytes()
                     );
                 } catch (IOException e) {
-                    log.log(Level.SEVERE, "error while serializing persistent data!", e);
+                    getLogger().log(Level.SEVERE, "error while serializing persistent data!", e);
                     return;
                 }
 

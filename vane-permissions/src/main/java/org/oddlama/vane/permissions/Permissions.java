@@ -133,7 +133,7 @@ public class Permissions extends Module<Permissions> {
             final var attachment = sender.addAttachment(this);
             senderAttachments.put(sender, attachment);
 
-            final var attachedPerms = consoleAttachment.getPermissions();
+            final var attachedPerms = getConsoleAttachment().getPermissions();
             attachedPerms.forEach((p, v) -> attachment.setPermission(p, v));
         }
     }
@@ -182,7 +182,7 @@ public class Permissions extends Module<Permissions> {
                         final var group = perm.substring("vane.permissions.groups.".length());
                         final var groupPerms = permissionGroups.get(group);
                         if (groupPerms == null) {
-                            log.severe(
+                            getLog().severe(
                                 "Nonexistent permission group '" +
                                 group +
                                 "' referenced by group '" +
@@ -224,7 +224,7 @@ public class Permissions extends Module<Permissions> {
             for (var p : permissionGroups.getOrDefault(group, Collections.emptySet())) {
                 final var perm = getServer().getPluginManager().getPermission(p);
                 if (perm == null) {
-                    log.warning("Use of unregistered permission '" + p + "' might have unintended effects.");
+                    getLog().warning("Use of unregistered permission '" + p + "' might have unintended effects.");
                 }
                 attachment.setPermission(p, true);
             }
@@ -255,7 +255,7 @@ public class Permissions extends Module<Permissions> {
 
         final var added = set.add(group);
         if (added) {
-            log.info("[audit] Group " + group + " assigned to " + player.getUniqueId() + " (" + player.getName() + ")");
+            getLog().info("[audit] Group " + group + " assigned to " + player.getUniqueId() + " (" + player.getName() + ")");
             saveAndRecalculate(player);
         }
 
@@ -270,7 +270,7 @@ public class Permissions extends Module<Permissions> {
         }
 
         if (removed) {
-            log.info(
+            getLog().info(
                 "[audit] Group " + group + " removed from " + player.getUniqueId() + " (" + player.getName() + ")"
             );
             saveAndRecalculate(player);

@@ -72,12 +72,12 @@ public class SpawnProtection extends Listener<Admin> {
             if (world == null) {
                 // todo print error and show valid worlds.
                 getModule()
-                    .log.warning(
+                    .getLog().warning(
                         "The world \"" + configWorld + "\" configured for spawn-protection could not be found."
                     );
-                getModule().log.warning("These are the names of worlds existing on this server:");
+                getModule().getLog().warning("These are the names of worlds existing on this server:");
                 for (final var w : getModule().getServer().getWorlds()) {
-                    getModule().log.warning("  \"" + w.getName() + "\"");
+                    getModule().getLog().warning("  \"" + w.getName() + "\"");
                 }
                 spawnCenter = null;
             } else {

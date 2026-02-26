@@ -230,12 +230,11 @@ public class Regions extends Module<Regions> {
     }
 
     private boolean setupEconomy() {
-        getModule().log.info("Enabling economy integration");
+        getModule().getLog().info("Enabling economy integration");
 
         Plugin vaultApiPlugin = getModule().getServer().getPluginManager().getPlugin("Vault");
         if (vaultApiPlugin == null) {
-            getModule()
-                .log.severe(
+            getModule().getLog().severe(
                     "Economy was selected as the currency provider, but the Vault plugin wasn't found! Falling back to material currency."
                 );
             return false;
@@ -437,8 +436,7 @@ public class Regions extends Module<Regions> {
         markPersistentStorageDirty();
 
         // Close and taint all related open menus
-        getModule()
-            .core.menuManager.forEachOpen((player, menu) -> {
+        getModule().getCore().menuManager.forEachOpen((player, menu) -> {
                 if (
                     menu.tag() instanceof RegionGroupMenuTag &&
                     Objects.equals(((RegionGroupMenuTag) menu.tag()).regionGroupId(), group.id())
@@ -465,7 +463,7 @@ public class Regions extends Module<Regions> {
             if (price > 0) {
                 final var transaction = economy.withdraw(player, price);
                 if (!transaction.transactionSuccess()) {
-                    log.warning(
+                    getLog().warning(
                         "Player " +
                         player +
                         " tried to create region '" +
@@ -474,7 +472,7 @@ public class Regions extends Module<Regions> {
                         price +
                         ") but the economy plugin failed to withdraw:"
                     );
-                    log.warning("Error message: " + transaction.errorMessage);
+                    getLog().warning("Error message: " + transaction.errorMessage);
                     return false;
                 }
             }
@@ -518,8 +516,7 @@ public class Regions extends Module<Regions> {
         updatePersistentData();
 
         // Close and taint all related open menus
-        getModule()
-            .core.menuManager.forEachOpen((player, menu) -> {
+        getModule().getCore().menuManager.forEachOpen((player, menu) -> {
                 if (
                     menu.tag() instanceof RegionMenuTag &&
                     Objects.equals(((RegionMenuTag) menu.tag()).regionId(), region.id())
@@ -718,10 +715,10 @@ public class Regions extends Module<Regions> {
                 final var region = PersistentSerializer.fromJson(Region.class, new JSONObject(new String(jsonBytes)));
                 indexRegion(region);
             } catch (IOException e) {
-                log.log(Level.SEVERE, "error while serializing persistent data!", e);
+                getLog().log(Level.SEVERE, "error while serializing persistent data!", e);
             }
         }
-        log.log(
+        getLog().log(
             Level.INFO,
             "Loaded " + pdcRegions.size() + " regions for world " + world.getName() + "(" + world.getUID() + ")"
         );
@@ -780,7 +777,7 @@ public class Regions extends Module<Regions> {
                         json.toString().getBytes()
                     );
                 } catch (IOException e) {
-                    log.log(Level.SEVERE, "error while serializing persistent data!", e);
+                    getLog().log(Level.SEVERE, "error while serializing persistent data!", e);
                     return;
                 }
 

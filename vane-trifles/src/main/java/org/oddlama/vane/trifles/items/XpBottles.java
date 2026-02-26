@@ -95,7 +95,7 @@ public class XpBottles extends Listener<Trifles> {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerItemConsume(final PlayerItemConsumeEvent event) {
         final var item = event.getItem();
-        final var customItem = getModule().core.itemRegistry().get(item);
+        final var customItem = getModule().getCore().itemRegistry().get(item);
         if (!(customItem instanceof XpBottle bottle) || !bottle.enabled()) {
             return;
         }

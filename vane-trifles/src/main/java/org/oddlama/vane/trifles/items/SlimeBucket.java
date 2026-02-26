@@ -91,7 +91,7 @@ public class SlimeBucket extends CustomItem<Trifles> {
         // With a slimeBucket in main hand
         final var player = event.getPlayer();
         final var itemInHand = player.getEquipment().getItem(event.getHand());
-        final var customItem = getModule().core.itemRegistry().get(itemInHand);
+        final var customItem = getModule().getCore().itemRegistry().get(itemInHand);
         if (!(customItem instanceof SlimeBucket slimeBucket) || !slimeBucket.enabled()) {
             return;
         }
@@ -137,7 +137,7 @@ public class SlimeBucket extends CustomItem<Trifles> {
 
             final var correctModelData = inSlimeChunk ? CUSTOM_MODEL_DATA_JUMPY : CUSTOM_MODEL_DATA_QUIET;
             for (final var item : player.getInventory().getContents()) {
-                final var customItem = getModule().core.itemRegistry().get(item);
+                final var customItem = getModule().getCore().itemRegistry().get(item);
                 if (customItem instanceof SlimeBucket slimeBucket && slimeBucket.enabled()) {
                     // Update slime bucket custom model data
                     item.editMeta(meta -> {

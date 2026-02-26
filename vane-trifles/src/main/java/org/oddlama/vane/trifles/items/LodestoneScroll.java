@@ -121,7 +121,7 @@ public class LodestoneScroll extends Scroll {
 
         // With a lodestone scroll in the main hand
         final var item = player.getEquipment().getItem(EquipmentSlot.HAND);
-        final var customItem = getModule().core.itemRegistry().get(item);
+        final var customItem = getModule().getCore().itemRegistry().get(item);
         if (!(customItem instanceof LodestoneScroll scroll) || !scroll.enabled()) {
             return;
         }

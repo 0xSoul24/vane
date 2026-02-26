@@ -354,7 +354,7 @@ public class PortalConstructor extends Listener<Portals> {
     ) {
         if (getModule().isPortalBlock(boundaryBlock)) {
             getModule()
-                .log.severe(
+                .getLog().severe(
                     "constructPortal() was called on a boundary that already belongs to a portal! This is a bug."
                 );
             return null;
@@ -407,7 +407,7 @@ public class PortalConstructor extends Listener<Portals> {
             type = PortalBlock.Type.PORTAL;
         } else {
             getModule()
-                .log.warning(
+                .getLog().warning(
                     "Invalid block type '" +
                     mat +
                     "' encountered in portal block creation. Assuming boundary variant 1."

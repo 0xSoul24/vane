@@ -25,8 +25,7 @@ public class RegionEconomyDelegate {
             .getServicesManager()
             .getRegistration(Economy.class);
         if (rsp == null) {
-            getModule()
-                .log.severe(
+            getModule().getLog().severe(
                     "Economy was selected as the currency provider, but no Economy service provider is registered via VaultAPI! Falling back to material currency."
                 );
             return false;

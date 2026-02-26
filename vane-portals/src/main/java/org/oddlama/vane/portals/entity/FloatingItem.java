@@ -23,6 +23,7 @@ public class FloatingItem extends ItemEntity {
         setPos(x, y, z);
     }
 
+    @SuppressWarnings("unchecked")
     public FloatingItem(EntityType<?> entitytypes, Level world) {
         super((EntityType<? extends ItemEntity>)entitytypes, world);
         setSilent(true);

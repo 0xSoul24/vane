@@ -41,7 +41,7 @@ public class RegionDynmapLayerDelegate {
                 }
             );
         } catch (Exception e) {
-            getModule().log.log(Level.WARNING, "Error while enabling dynmap integration!", e);
+            getModule().getLog().log(Level.WARNING, "Error while enabling dynmap integration!", e);
             return;
         }
 
@@ -49,7 +49,7 @@ public class RegionDynmapLayerDelegate {
             return;
         }
 
-        getModule().log.info("Enabling dynmap integration");
+        getModule().getLog().info("Enabling dynmap integration");
         dynmapEnabled = true;
         createOrLoadLayer();
     }
@@ -59,7 +59,7 @@ public class RegionDynmapLayerDelegate {
             return;
         }
 
-        getModule().log.info("Disabling dynmap integration");
+        getModule().getLog().info("Disabling dynmap integration");
         dynmapEnabled = false;
         dynmapApi = null;
         markerApi = null;
@@ -78,7 +78,7 @@ public class RegionDynmapLayerDelegate {
         }
 
         if (markerSet == null) {
-            getModule().log.severe("Failed to create dynmap region marker set!");
+            getModule().getLog().severe("Failed to create dynmap region marker set!");
             return;
         }
 

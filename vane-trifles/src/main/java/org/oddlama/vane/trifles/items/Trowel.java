@@ -164,7 +164,7 @@ public class Trowel extends CustomItem<Trifles> {
         }
 
         final var item = event.getCurrentItem();
-        final var customItem = getModule().core.itemRegistry().get(item);
+        final var customItem = getModule().getCore().itemRegistry().get(item);
         if (!(customItem instanceof Trowel trowel) || !trowel.enabled()) {
             return;
         }
@@ -190,7 +190,7 @@ public class Trowel extends CustomItem<Trifles> {
         // With a trowel in main hand
         final var player = event.getPlayer();
         final var itemInHand = player.getEquipment().getItem(EquipmentSlot.HAND);
-        final var customItem = getModule().core.itemRegistry().get(itemInHand);
+        final var customItem = getModule().getCore().itemRegistry().get(itemInHand);
         if (!(customItem instanceof Trowel trowel) || !trowel.enabled()) {
             return;
         }
@@ -219,8 +219,7 @@ public class Trowel extends CustomItem<Trifles> {
                 possibleSlots[index] = possibleSlots[--count];
                 continue;
             }
-            org.oddlama.vane.core.item.api.CustomItem customItemSlot = getModule()
-                .core.itemRegistry()
+            org.oddlama.vane.core.item.api.CustomItem customItemSlot = getModule().getCore().itemRegistry()
                 .get(itemStack);
             // if the item is a custom item, don't place it
             if (customItemSlot != null) {

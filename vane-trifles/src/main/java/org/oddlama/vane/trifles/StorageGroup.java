@@ -74,7 +74,7 @@ public class StorageGroup extends Listener<Trifles> {
         ) {
             // Allow putting in any items that are not a storage item.
             if (!isStorageItem(event.getCursor())) {
-                final var customItem = getModule().core.itemRegistry().get(event.getCurrentItem());
+                final var customItem = getModule().getCore().itemRegistry().get(event.getCurrentItem());
 
                 // Only if the clicked storage item is a custom item
                 if (customItem != null) {
@@ -267,7 +267,7 @@ public class StorageGroup extends Listener<Trifles> {
             return false;
         }
 
-        var customItem = getModule().core.itemRegistry().get(item);
+        var customItem = getModule().getCore().itemRegistry().get(item);
         if (customItem != null && (customItem instanceof Backpack || customItem instanceof Pouch)) {
             return true;
         }
@@ -337,7 +337,7 @@ public class StorageGroup extends Listener<Trifles> {
             // if the item has neither custom name nor item name (an old item with custom
             // name reset), get the name from registry if possible
             if (name == null) {
-                CustomItem customItem = getModule().core.itemRegistry().get(item);
+                CustomItem customItem = getModule().getCore().itemRegistry().get(item);
                 name = customItem != null ? customItem.displayName() : Component.text("");
             }
             nameable.customName(name);

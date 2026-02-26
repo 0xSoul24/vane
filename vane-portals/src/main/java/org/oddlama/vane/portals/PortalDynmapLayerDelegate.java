@@ -43,7 +43,7 @@ public class PortalDynmapLayerDelegate {
                 }
             );
         } catch (Exception e) {
-            getModule().log.log(Level.WARNING, "Error while enabling dynmap integration!", e);
+            getModule().getLog().log(Level.WARNING, "Error while enabling dynmap integration!", e);
             return;
         }
 
@@ -51,7 +51,7 @@ public class PortalDynmapLayerDelegate {
             return;
         }
 
-        getModule().log.info("Enabling dynmap integration");
+        getModule().getLog().info("Enabling dynmap integration");
         dynmapEnabled = true;
         createOrLoadLayer();
     }
@@ -61,7 +61,7 @@ public class PortalDynmapLayerDelegate {
             return;
         }
 
-        getModule().log.info("Disabling dynmap integration");
+        getModule().getLog().info("Disabling dynmap integration");
         dynmapEnabled = false;
         dynmapApi = null;
         markerApi = null;
@@ -80,7 +80,7 @@ public class PortalDynmapLayerDelegate {
         }
 
         if (markerSet == null) {
-            getModule().log.severe("Failed to create dynmap portal marker set!");
+            getModule().getLog().severe("Failed to create dynmap portal marker set!");
             return;
         }
 
@@ -92,7 +92,7 @@ public class PortalDynmapLayerDelegate {
         // Load marker
         markerIcon = markerApi.getMarkerIcon(parent.configMarkerIcon);
         if (markerIcon == null) {
-            getModule().log.severe("Failed to load dynmap portal marker icon!");
+            getModule().getLog().severe("Failed to load dynmap portal marker icon!");
             return;
         }
 

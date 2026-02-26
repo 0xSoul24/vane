@@ -54,7 +54,7 @@ public class Trifles extends Module<Trifles> {
 
             if (packetEventsPlugin != null && packetEventsPlugin.isEnabled()) {
                 packetEventsEnabled = true;
-                getModule().log.info("Enabling PacketEvents integration");
+                getModule().getLog().info("Enabling PacketEvents integration");
             }
         });
     }

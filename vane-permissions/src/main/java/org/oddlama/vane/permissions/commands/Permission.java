@@ -235,7 +235,7 @@ public class Permission extends Command<Permissions> {
                         var perm = getModule().getServer().getPluginManager().getPermission(att.getPermission());
                         if (perm == null) {
                             getModule()
-                                .log.warning("Encountered unregistered permission '" + att.getPermission() + "'");
+                                .getLog().warning("Encountered unregistered permission '" + att.getPermission() + "'");
                             return;
                         }
                         langListPermission.send(
@@ -253,7 +253,7 @@ public class Permission extends Command<Permissions> {
         for (var p : getModule().permissionGroups.getOrDefault(group, Collections.emptySet())) {
             var perm = getModule().getServer().getPluginManager().getPermission(p);
             if (perm == null) {
-                getModule().log.warning("Use of unregistered permission '" + p + "' might have unintended effects.");
+                getModule().getLog().warning("Use of unregistered permission '" + p + "' might have unintended effects.");
                 langListPermission.send(sender, "§d" + p, permissionValueColorCode(true) + true, "");
             } else {
                 langListPermission.send(

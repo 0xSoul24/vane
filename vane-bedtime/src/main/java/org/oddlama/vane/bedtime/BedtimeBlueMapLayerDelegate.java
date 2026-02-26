@@ -29,7 +29,7 @@ public class BedtimeBlueMapLayerDelegate {
 
     public void onEnable(final Plugin plugin) {
         BlueMapAPI.onEnable(api -> {
-            getModule().log.info("Enabling BlueMap integration");
+            getModule().getLog().info("Enabling BlueMap integration");
             bluemapEnabled = true;
 
             // Create marker sets
@@ -46,7 +46,7 @@ public class BedtimeBlueMapLayerDelegate {
             return;
         }
 
-        getModule().log.info("Disabling BlueMap integration");
+        getModule().getLog().info("Disabling BlueMap integration");
         bluemapEnabled = false;
     }
 

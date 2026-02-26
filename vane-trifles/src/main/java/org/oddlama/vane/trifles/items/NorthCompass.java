@@ -57,7 +57,7 @@ public class NorthCompass extends CustomItem<Trifles> {
             return;
         }
 
-        final var customItem = getModule().core.itemRegistry().get(item);
+        final var customItem = getModule().getCore().itemRegistry().get(item);
         if (!(customItem instanceof NorthCompass northCompass) || !northCompass.enabled()) {
             return;
         }

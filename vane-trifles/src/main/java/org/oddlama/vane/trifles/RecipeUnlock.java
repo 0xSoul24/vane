@@ -18,8 +18,7 @@ public class RecipeUnlock extends Listener<Trifles> {
     public void onPlayerJoin(final PlayerJoinEvent event) {
         final var count = Nms.unlockAllRecipes(event.getPlayer());
         if (count > 0) {
-            getModule()
-                .log.info(
+            getModule().getLog().info(
                     "Given " +
                     count +
                     " recipes to " +

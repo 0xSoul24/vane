@@ -64,7 +64,7 @@ public class Pouch extends CustomItem<Trifles> {
         // Assert this is a matching custom item
         final var player = event.getPlayer();
         final var item = player.getEquipment().getItem(event.getHand());
-        final var customItem = getModule().core.itemRegistry().get(item);
+        final var customItem = getModule().getCore().itemRegistry().get(item);
         if (!(customItem instanceof Pouch pouch) || !pouch.enabled()) {
             return;
         }

@@ -154,8 +154,7 @@ public class RegionMenu extends ModuleComponent<Regions> {
                     if (getModule().configEconomyAsCurrency) {
                         final var transaction = getModule().economy.deposit(player2, price);
                         if (!transaction.transactionSuccess()) {
-                            getModule()
-                                .log.severe(
+                            getModule().getLog().severe(
                                     "Player " +
                                     player2 +
                                     " deleted region '" +
@@ -164,7 +163,7 @@ public class RegionMenu extends ModuleComponent<Regions> {
                                     price +
                                     ") but the economy plugin failed to deposit:"
                                 );
-                            getModule().log.severe("Error message: " + transaction.errorMessage);
+                            getModule().getLog().severe("Error message: " + transaction.errorMessage);
                         }
                     } else {
                         giveItems(player2, new ItemStack(getModule().configCurrency), (int) price);

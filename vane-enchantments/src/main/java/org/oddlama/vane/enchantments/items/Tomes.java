@@ -27,13 +27,13 @@ public class Tomes extends ModuleGroup<Enchantments> {
             "Tomes",
             "These tomes are needed to craft custom enchantments. If you disable them here, you will need to adjust the recipes for the enchantments accordingly."
         );
-        new GrindstoneListener(getContext());
-        new AncientTome(getContext());
-        new EnchantedAncientTome(getContext());
-        new AncientTomeOfKnowledge(getContext());
-        new EnchantedAncientTomeOfKnowledge(getContext());
-        new AncientTomeOfTheGods(getContext());
-        new EnchantedAncientTomeOfTheGods(getContext());
+        new GrindstoneListener(context);
+        new AncientTome(context);
+        new EnchantedAncientTome(context);
+        new AncientTomeOfKnowledge(context);
+        new EnchantedAncientTomeOfKnowledge(context);
+        new AncientTomeOfTheGods(context);
+        new EnchantedAncientTomeOfTheGods(context);
     }
 
     @VaneItem(name = "ancient_tome", base = Material.BOOK, modelData = 0x770000, version = 1)
@@ -298,7 +298,7 @@ public class Tomes extends ModuleGroup<Enchantments> {
                 return;
             }
 
-            final var customItem = getModule().core.itemRegistry().get(res);
+            final var customItem = getModule().getCore().itemRegistry().get(res);
             if (customItem instanceof EnchantedAncientTome) {
                 event.setResult(CustomItemHelper.newStack("vane_enchantments:ancient_tome"));
             } else if (customItem instanceof EnchantedAncientTomeOfKnowledge) {

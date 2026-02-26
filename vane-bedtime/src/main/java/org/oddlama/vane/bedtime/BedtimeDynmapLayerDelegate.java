@@ -42,7 +42,7 @@ public class BedtimeDynmapLayerDelegate {
                 }
             );
         } catch (Exception e) {
-            getModule().log.log(Level.WARNING, "Error while enabling dynmap integration!", e);
+            getModule().getLog().log(Level.WARNING, "Error while enabling dynmap integration!", e);
             return;
         }
 
@@ -50,7 +50,7 @@ public class BedtimeDynmapLayerDelegate {
             return;
         }
 
-        getModule().log.info("Enabling dynmap integration");
+        getModule().getLog().info("Enabling dynmap integration");
         dynmapEnabled = true;
         createOrLoadLayer();
     }
@@ -60,7 +60,7 @@ public class BedtimeDynmapLayerDelegate {
             return;
         }
 
-        getModule().log.info("Disabling dynmap integration");
+        getModule().getLog().info("Disabling dynmap integration");
         dynmapEnabled = false;
         dynmapApi = null;
         markerApi = null;
@@ -79,7 +79,7 @@ public class BedtimeDynmapLayerDelegate {
         }
 
         if (markerSet == null) {
-            getModule().log.severe("Failed to create dynmap bedtime marker set!");
+            getModule().getLog().severe("Failed to create dynmap bedtime marker set!");
             return;
         }
 
@@ -91,7 +91,7 @@ public class BedtimeDynmapLayerDelegate {
         // Load marker
         markerIcon = markerApi.getMarkerIcon(parent.configMarkerIcon);
         if (markerIcon == null) {
-            getModule().log.severe("Failed to load dynmap bedtime marker icon!");
+            getModule().getLog().severe("Failed to load dynmap bedtime marker icon!");
             return;
         }
 

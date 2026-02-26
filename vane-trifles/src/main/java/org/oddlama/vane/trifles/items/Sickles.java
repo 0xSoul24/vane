@@ -242,7 +242,7 @@ public class Sickles extends Listener<Trifles> {
         // Get item variant
         final var player = event.getPlayer();
         final var item = player.getEquipment().getItem(event.getHand());
-        final var customItem = getModule().core.itemRegistry().get(item);
+        final var customItem = getModule().getCore().itemRegistry().get(item);
         if (!(customItem instanceof Sickle sickle) || !sickle.enabled()) {
             return;
         }
