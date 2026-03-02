@@ -1,0 +1,27 @@
+package org.oddlama.vane.enchantments.enchantments.registry
+
+import io.papermc.paper.registry.RegistryKey
+import io.papermc.paper.registry.TypedKey
+import io.papermc.paper.registry.data.EnchantmentRegistryEntry
+import io.papermc.paper.registry.event.RegistryComposeEvent
+import io.papermc.paper.registry.keys.ItemTypeKeys
+import net.kyori.adventure.key.Key
+import org.bukkit.enchantments.Enchantment
+import org.oddlama.vane.enchantments.CustomEnchantmentRegistry
+
+class AngelRegistry(composeEvent: RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder>) :
+    CustomEnchantmentRegistry("angel", mutableListOf(ItemTypeKeys.ELYTRA), 5) {
+    init {
+        this.exclusiveWith(
+            mutableListOf(
+                TypedKey.create(
+                    RegistryKey.ENCHANTMENT, Key.key(
+                        NAMESPACE, "wings"
+                    )
+                )
+            )
+        ).register(
+            composeEvent
+        )
+    }
+}

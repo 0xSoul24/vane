@@ -9,10 +9,34 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
+import org.bukkit.Particle
+import org.bukkit.util.Vector
 import org.oddlama.vane.util.BlockUtil.dropNaturally
+import java.util.concurrent.ThreadLocalRandom
 
 
 object PlayerUtil {
+    @JvmStatic
+    fun spawnElytraBoostParticles(player: Player) {
+        val loc = player.location
+        val vel = player.velocity.length()
+        repeat(16) {
+            val rnd = Vector.getRandom().subtract(Vector(.5, .5, .5)).normalize().multiply(.25)
+            val dir = rnd.clone().multiply(.5).subtract(player.velocity)
+            loc
+                .getWorld()
+                .spawnParticle(
+                    Particle.FIREWORK,
+                    loc.add(rnd),
+                    0,
+                    dir.getX(),
+                    dir.getY(),
+                    dir.getZ(),
+                    vel * ThreadLocalRandom.current().nextDouble(0.4, 0.6)
+                )
+        }
+    }
+
     @JvmStatic
     fun applyElytraBoost(player: Player, factor: Double) {
         val v = player.location.getDirection()
