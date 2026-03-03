@@ -19,7 +19,7 @@ import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import org.bstats.velocity.Metrics;
 import org.oddlama.vane.proxycore.VaneProxyPlugin;
-import org.oddlama.vane.proxycore.log.slf4jCompatLogger;
+import org.oddlama.vane.proxycore.log.Slf4jCompatLogger;
 import org.oddlama.vane.proxycore.util.Version;
 import org.oddlama.velocity.commands.Maintenance;
 import org.oddlama.velocity.commands.Ping;
@@ -55,12 +55,12 @@ public class Velocity extends VaneProxyPlugin {
         @DataDirectory final Path dataDir
     ) {
         this.server = new VelocityCompatProxyServer(server);
-        this.logger = new slf4jCompatLogger(logger);
+        this.logger = new Slf4jCompatLogger(logger);
 
         this.metricsFactory = metricsFactory;
 
         this.velocityServer = server;
-        this.dataDir = dataDir.toFile();
+        this.dataFolder = dataDir.toFile();
     }
 
     public ProxyServer getRawProxy() {

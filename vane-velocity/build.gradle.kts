@@ -36,10 +36,12 @@ tasks {
             include(dependency("org.bstats:bstats-base"))
             include(dependency("org.json:json"))
             include(dependency(rootProject.project(":vane-proxy-core")))
+            include(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
         }
 
         relocate("org.json", "org.oddlama.vane.vane_velocity.external.json")
         relocate("org.bstats", "org.oddlama.vane.vane_velocity.external.bstats")
+        relocate("kotlin", "org.oddlama.vane.vane_velocity.external.kotlin")
     }
 
     build {

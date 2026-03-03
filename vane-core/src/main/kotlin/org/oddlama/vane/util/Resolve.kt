@@ -20,6 +20,7 @@ object Resolve {
         return skin
     }
 
+    @JvmStatic
     @Throws(IOException::class, JSONException::class, URISyntaxException::class)
     fun resolveUuid(name: String): UUID {
         val url = "https://api.mojang.com/users/profiles/minecraft/$name"

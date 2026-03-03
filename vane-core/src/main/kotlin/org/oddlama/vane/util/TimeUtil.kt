@@ -14,6 +14,7 @@ object TimeUtil {
         timeMultiplier = mult
     }
 
+    @JvmStatic
     @Throws(NumberFormatException::class)
     fun parseTime(input: String): Long {
         var ret: Long = 0
