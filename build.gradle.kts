@@ -75,7 +75,7 @@ configure(subprojects.filter {
 
 // All Projects with jar shadow
 configure(subprojects.filter {
-	listOf("vane-regions", "vane-core", "vane-portals", "vane-regions", "vane-trifles").contains(it.name)
+	listOf("vane-regions", "vane-core", "vane-portals", "vane-regions", "vane-trifles", "vane-enchantments", "vane-permissions", "vane-admin", "vane-bedtime").contains(it.name)
 }) {
 	tasks.register<Copy>("copyJar") {
 		evaluationDependsOn(project.path)
@@ -85,15 +85,6 @@ configure(subprojects.filter {
 	}
 }
 
-// All Projects without jar shadow
-configure(subprojects.filter {
-	listOf("vane-admin", "vane-bedtime", "vane-enchantments", "vane-permissions").contains(it.name)
-}) {
-	tasks.register<Copy>("copyJar") {
-		from(tasks.jar)
-		into("${project.rootProject.projectDir}/target")
-	}
-}
 
 // All Projects except proxies and annotations.
 val vanePlugins = subprojects.filter {
