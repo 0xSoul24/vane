@@ -1,13 +1,14 @@
 plugins {
     alias(libs.plugins.shadow)
     kotlin("jvm")
+    kotlin("kapt")
 }
 
 dependencies {
     compileOnly(fileTree(mapOf("dir" to "external", "include" to listOf("*.jar"))))
     compileOnly(libs.spotbugsAnnotations)
     implementation(libs.velocity)
-    annotationProcessor(libs.velocity)
+    kapt(libs.velocity)
     implementation(libs.bstatsVelocity)
     implementation(libs.bstatsBase)
     implementation(libs.json)
