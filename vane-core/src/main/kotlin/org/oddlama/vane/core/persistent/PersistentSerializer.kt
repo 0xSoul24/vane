@@ -108,19 +108,28 @@ object PersistentSerializer {
     val deserializers: MutableMap<Class<*>?, Function<Any?, Any?>> = HashMap()
 
     init {
-        // Primitive types
+        // Primitive types (boolean, char, double, float, int, long)
         serializers[Boolean::class.javaPrimitiveType] = Function { obj -> obj.toString() }
         serializers[Char::class.javaPrimitiveType] = Function { obj -> obj.toString() }
         serializers[Double::class.javaPrimitiveType] = Function { obj -> obj.toString() }
         serializers[Float::class.javaPrimitiveType] = Function { obj -> obj.toString() }
         serializers[Int::class.javaPrimitiveType] = Function { obj -> obj.toString() }
         serializers[Long::class.javaPrimitiveType] = Function { obj -> obj.toString() }
+        // Kotlin Boolean::class.java resolves to the primitive 'boolean', so we also register
+        // the boxed Java types (javaObjectType) to handle generic type parameters from Java code
+        // (e.g. Map<RoleSetting, Boolean> in Java gives java.lang.Boolean as the value type).
         serializers[Boolean::class.java] = Function { obj -> obj.toString() }
+        serializers[Boolean::class.javaObjectType] = Function { obj -> obj.toString() }
         serializers[Char::class.java] = Function { obj -> obj.toString() }
+        serializers[Char::class.javaObjectType] = Function { obj -> obj.toString() }
         serializers[Double::class.java] = Function { obj -> obj.toString() }
+        serializers[Double::class.javaObjectType] = Function { obj -> obj.toString() }
         serializers[Float::class.java] = Function { obj -> obj.toString() }
+        serializers[Float::class.javaObjectType] = Function { obj -> obj.toString() }
         serializers[Int::class.java] = Function { obj -> obj.toString() }
+        serializers[Int::class.javaObjectType] = Function { obj -> obj.toString() }
         serializers[Long::class.java] = Function { obj -> obj.toString() }
+        serializers[Long::class.javaObjectType] = Function { obj -> obj.toString() }
 
         deserializers[Boolean::class.javaPrimitiveType] = Function { x -> (x as String?).toBoolean() }
         deserializers[Char::class.javaPrimitiveType] = Function { x -> (x as String)[0] }
@@ -129,11 +138,17 @@ object PersistentSerializer {
         deserializers[Int::class.javaPrimitiveType] = Function { x -> (x as String).toInt() }
         deserializers[Long::class.javaPrimitiveType] = Function { x -> (x as String).toLong() }
         deserializers[Boolean::class.java] = Function { x -> (x as String?).toBoolean() }
+        deserializers[Boolean::class.javaObjectType] = Function { x -> (x as String?).toBoolean() }
         deserializers[Char::class.java] = Function { x -> (x as String)[0] }
+        deserializers[Char::class.javaObjectType] = Function { x -> (x as String)[0] }
         deserializers[Double::class.java] = Function { x -> (x as String).toDouble() }
+        deserializers[Double::class.javaObjectType] = Function { x -> (x as String).toDouble() }
         deserializers[Float::class.java] = Function { x -> (x as String).toFloat() }
+        deserializers[Float::class.javaObjectType] = Function { x -> (x as String).toFloat() }
         deserializers[Int::class.java] = Function { x -> (x as String).toInt() }
+        deserializers[Int::class.javaObjectType] = Function { x -> (x as String).toInt() }
         deserializers[Long::class.java] = Function { x -> (x as String).toLong() }
+        deserializers[Long::class.javaObjectType] = Function { x -> (x as String).toLong() }
 
         // Other types
         serializers[String::class.java] = Function { x -> x }
@@ -163,10 +178,15 @@ object PersistentSerializer {
     @JvmStatic
     @Throws(IOException::class)
     fun toJson(cls: Class<*>?, value: Any?): Any? {
-        val serializer: Function<Any?, Any?> = serializers[cls]!!
         if (isNull(value)) {
             return JSONObject.NULL
         }
+        val serializer: Function<Any?, Any?> = serializers[cls]
+            ?: if (cls != null && cls.isEnum) {
+                Function { obj -> (obj as Enum<*>).name }
+            } else {
+                throw IOException("No serializer registered for type $cls. This is a bug.")
+            }
         return serializer.apply(value)
     }
 
@@ -221,10 +241,16 @@ object PersistentSerializer {
     @JvmStatic
     @Throws(IOException::class)
     fun <U> fromJson(cls: Class<U>?, value: Any?): U? {
-        val deserializer: Function<Any?, Any?> = deserializers[cls]!!
         if (isNull(value)) {
             return null
         }
+        val deserializer: Function<Any?, Any?> = deserializers[cls]
+            ?: if (cls != null && cls.isEnum) {
+                @Suppress("UNCHECKED_CAST")
+                Function { obj -> java.lang.Enum.valueOf(cls as Class<out Enum<*>>, obj as String) }
+            } else {
+                throw IOException("No deserializer registered for type $cls. This is a bug.")
+            }
         @Suppress("UNCHECKED_CAST")
         return deserializer.apply(value) as U?
     }
