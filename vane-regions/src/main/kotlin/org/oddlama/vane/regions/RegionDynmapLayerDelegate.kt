@@ -1,27 +1,26 @@
-package org.oddlama.vane.portals
+package org.oddlama.vane.regions
 
+import org.bukkit.plugin.Plugin
 import org.dynmap.DynmapCommonAPI
 import org.dynmap.DynmapCommonAPIListener
 import org.dynmap.markers.Marker
 import org.dynmap.markers.MarkerAPI
-import org.dynmap.markers.MarkerIcon
 import org.dynmap.markers.MarkerSet
-import org.oddlama.vane.portals.portal.Portal
+import org.oddlama.vane.regions.region.Region
 import java.util.*
 import java.util.logging.Level
 
-class PortalDynmapLayerDelegate(private val parent: PortalDynmapLayer) {
+class RegionDynmapLayerDelegate(private val parent: RegionDynmapLayer) {
     private var dynmapApi: DynmapCommonAPI? = null
     private var markerApi: MarkerAPI? = null
     private var dynmapEnabled = false
 
     private var markerSet: MarkerSet? = null
-    private var markerIcon: MarkerIcon? = null
 
-    val module: Portals?
-        get() = parent.module
+    val module: Regions
+        get() = parent.module!!
 
-    fun onEnable() {
+    fun onEnable(@Suppress("UNUSED_PARAMETER") plugin: Plugin?) {
         try {
             DynmapCommonAPIListener.register(
                 object : DynmapCommonAPIListener() {
@@ -32,7 +31,7 @@ class PortalDynmapLayerDelegate(private val parent: PortalDynmapLayer) {
                 }
             )
         } catch (e: Exception) {
-            module!!.log.log(Level.WARNING, "Error while enabling dynmap integration!", e)
+            this.module.log.log(Level.WARNING, "Error while enabling dynmap integration!", e)
             return
         }
 
@@ -40,7 +39,7 @@ class PortalDynmapLayerDelegate(private val parent: PortalDynmapLayer) {
             return
         }
 
-        module!!.log.info("Enabling dynmap integration")
+        this.module.log.info("Enabling dynmap integration")
         dynmapEnabled = true
         createOrLoadLayer()
     }
@@ -50,7 +49,7 @@ class PortalDynmapLayerDelegate(private val parent: PortalDynmapLayer) {
             return
         }
 
-        module!!.log.info("Disabling dynmap integration")
+        this.module.log.info("Disabling dynmap integration")
         dynmapEnabled = false
         dynmapApi = null
         markerApi = null
@@ -58,75 +57,64 @@ class PortalDynmapLayerDelegate(private val parent: PortalDynmapLayer) {
 
     private fun createOrLoadLayer() {
         // Create or retrieve layer
-        markerSet = markerApi!!.getMarkerSet(PortalDynmapLayer.LAYER_ID)
+        markerSet = markerApi!!.getMarkerSet(RegionDynmapLayer.LAYER_ID)
         if (markerSet == null) {
             markerSet = markerApi!!.createMarkerSet(
-                PortalDynmapLayer.LAYER_ID,
-                parent.langLayerLabel!!.str(),
+                RegionDynmapLayer.LAYER_ID,
+                // Use safe call with fallback for nullable TranslatedMessage
+                parent.langLayerLabel?.str() ?: "",
                 null,
                 false
             )
         }
 
         if (markerSet == null) {
-            module!!.log.severe("Failed to create dynmap portal marker set!")
+            this.module.log.severe("Failed to create dynmap region marker set!")
             return
         }
 
         // Update attributes
-        markerSet!!.markerSetLabel = parent.langLayerLabel!!.str()
+        markerSet!!.markerSetLabel = parent.langLayerLabel?.str() ?: ""
         markerSet!!.layerPriority = parent.configLayerPriority
         markerSet!!.hideByDefault = parent.configLayerHide
-
-        // Load marker
-        markerIcon = markerApi!!.getMarkerIcon(parent.configMarkerIcon)
-        if (markerIcon == null) {
-            module!!.log.severe("Failed to load dynmap portal marker icon!")
-            return
-        }
 
         // Initial update
         updateAllMarkers()
     }
 
-    private fun idFor(portalId: UUID?): String? {
-        return portalId?.toString()
+    private fun idFor(regionId: UUID): String {
+        return regionId.toString()
     }
 
-    private fun idFor(portal: Portal): String? {
-        return idFor(portal.id())
+    private fun idFor(region: Region): String {
+        return idFor(region.id()!!)
     }
 
-    fun updateMarker(portal: Portal) {
+    fun updateMarker(region: Region) {
         if (!dynmapEnabled) {
             return
         }
 
-        // Don't show private portals
-        if (portal.visibility() == Portal.Visibility.PRIVATE) {
-            removeMarker(portal.id())
-            return
-        }
+        // Area markers can't be updated.
+        removeMarker(region.id()!!)
 
-        val loc = portal.spawn()
-        val worldName = loc.getWorld().name
-        val markerId = idFor(portal) ?: return
-        val markerLabel = parent.langMarkerLabel!!.str(portal.name())
+        val min = region.extent()!!.min()
+        val max = region.extent()!!.max()
+        val worldName = min!!.world.name
+        val markerId = idFor(region)
+        // Use safe call with fallback for nullable TranslatedMessage
+        val markerLabel = parent.langMarkerLabel?.str(region.name()) ?: region.name()
 
-        markerSet!!.createMarker(
-            markerId,
-            markerLabel,
-            worldName,
-            loc.x,
-            loc.y,
-            loc.z,
-            markerIcon,
-            false
-        )
+        val xs = doubleArrayOf(min.x.toDouble(), (max!!.x + 1).toDouble())
+        val zs = doubleArrayOf(min.z.toDouble(), (max.z + 1).toDouble())
+        val area = markerSet!!.createAreaMarker(markerId, markerLabel, false, worldName, xs, zs, false)
+        area.setRangeY((max.y + 1).toDouble(), min.y.toDouble())
+        area.setLineStyle(parent.configLineWeight, parent.configLineOpacity, parent.configLineColor)
+        area.setFillStyle(parent.configFillOpacity, parent.configFillColor)
     }
 
-    fun removeMarker(portalId: UUID?) {
-        removeMarker(idFor(portalId))
+    fun removeMarker(regionId: UUID) {
+        removeMarker(idFor(regionId))
     }
 
     fun removeMarker(markerId: String?) {
@@ -152,9 +140,10 @@ class PortalDynmapLayerDelegate(private val parent: PortalDynmapLayer) {
 
         // Update all existing
         val idSet = HashSet<String?>()
-        for (portal in module!!.allAvailablePortals().filterNotNull()) {
-            idSet.add(idFor(portal))
-            updateMarker(portal)
+        for (region in this.module.allRegions()) {
+            val r = region ?: continue
+            idSet.add(idFor(r))
+            updateMarker(r)
         }
 
         // Remove orphaned

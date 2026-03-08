@@ -26,6 +26,7 @@ import org.oddlama.vane.core.material.ExtendedMaterial
 import org.oddlama.vane.core.menu.Menu
 import org.oddlama.vane.core.module.Module
 import org.oddlama.vane.core.persistent.PersistentSerializer
+import org.oddlama.vane.core.persistent.storedUuidsByPrefix
 import org.oddlama.vane.portals.entity.FloatingItem
 import org.oddlama.vane.portals.menu.PortalMenuGroup
 import org.oddlama.vane.portals.menu.PortalMenuTag
@@ -983,14 +984,8 @@ class Portals : Module<Portals?>() {
     }
 
     // Helper: extract stored portal UUIDs from a world's PersistentDataContainer
-    private fun getStoredPortalIds(data: org.bukkit.persistence.PersistentDataContainer, storagePortalPrefix: String): MutableSet<UUID?> {
-        return data.keys
-            .stream()
-            .filter { key: NamespacedKey? -> key.toString().startsWith(storagePortalPrefix) }
-            .map { key: NamespacedKey? -> key.toString().substring(storagePortalPrefix.length) }
-            .map { uuid: String? -> UUID.fromString(uuid) }
-            .collect(Collectors.toSet())
-    }
+    private fun getStoredPortalIds(data: org.bukkit.persistence.PersistentDataContainer, storagePortalPrefix: String): Set<UUID> =
+        data.storedUuidsByPrefix(storagePortalPrefix)
 
     private inner class PortalDisableRunnable(private val src: Portal?, private val dst: Portal?) : Runnable {
         override fun run() {

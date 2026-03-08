@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
     compileOnly(libs.json)
+    compileOnly(project(":vane-core"))
     implementation(kotlin("stdlib"))
 }
 
