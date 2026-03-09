@@ -10,7 +10,7 @@ import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic
 
-private val mandatoryAnnotations: Array<Class<out Annotation>> = arrayOf(Name::class.java)
+private val mandatoryAnnotations = listOf(Name::class.java)
 
 @SupportedAnnotationTypes(
     "org.oddlama.vane.annotation.command.Aliases",
@@ -22,8 +22,10 @@ class CommandAnnotationProcessor : AbstractProcessor() {
     override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
         annotations.forEach { annotation ->
             val elements = roundEnv.getElementsAnnotatedWith(annotation)
-            elements.forEach { verifyIsClass(processingEnv, it, annotation.simpleName.toString()) }
-            elements.forEach { verifyExtendsType(processingEnv, it, "org.oddlama.vane.core.command.Command<", annotation.simpleName.toString(), "org.oddlama.vane.core.command.Command") }
+            elements.forEach {
+                verifyIsClass(processingEnv, it, annotation.simpleName.toString())
+                verifyExtendsType(processingEnv, it, "org.oddlama.vane.core.command.Command<", annotation.simpleName.toString(), "org.oddlama.vane.core.command.Command")
+            }
 
             // Verify that all mandatory annotations are present
             if (annotation.asType().toString() == "org.oddlama.vane.annotation.command.VaneCommand") {

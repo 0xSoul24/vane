@@ -65,14 +65,10 @@ class ConfigAndLangProcessor : AbstractProcessor() {
     private fun verifyType(annotation: TypeElement, element: Element) {
         val type = element.asType().toString()
         val requiredType = fieldTypeMapping[annotation.asType().toString()]
-
-        if (requiredType == null) {
-            processingEnv.messager.printMessage(
+            ?: return processingEnv.messager.printMessage(
                 Diagnostic.Kind.ERROR,
                 "${element.asType()}: @${annotation.simpleName} has no requiredType mapping! This is a bug."
             )
-            return
-        }
 
         if (requiredType != "<any>" && requiredType != type) {
             processingEnv.messager.printMessage(

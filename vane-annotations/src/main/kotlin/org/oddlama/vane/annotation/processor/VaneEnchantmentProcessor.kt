@@ -13,8 +13,10 @@ class VaneEnchantmentProcessor : AbstractProcessor() {
     override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
         annotations.forEach { annotation ->
             val elements = roundEnv.getElementsAnnotatedWith(annotation)
-            elements.forEach { verifyIsClass(processingEnv, it, "VaneEnchantment") }
-            elements.forEach { verifyExtendsType(processingEnv, it, "org.oddlama.vane.core.enchantments.CustomEnchantment<", "VaneEnchantment", "org.oddlama.vane.core.enchantments.CustomEnchantment") }
+            elements.forEach {
+                verifyIsClass(processingEnv, it, "VaneEnchantment")
+                verifyExtendsType(processingEnv, it, "org.oddlama.vane.core.enchantments.CustomEnchantment<", "VaneEnchantment", "org.oddlama.vane.core.enchantments.CustomEnchantment")
+            }
         }
 
         return true

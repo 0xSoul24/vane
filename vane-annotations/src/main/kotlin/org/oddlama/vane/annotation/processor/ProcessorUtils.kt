@@ -7,13 +7,14 @@ import javax.lang.model.element.TypeElement
 import javax.lang.model.type.DeclaredType
 import javax.tools.Diagnostic
 
-fun verifyIsClass(processingEnv: ProcessingEnvironment, element: Element, annotationName: String) =
+fun verifyIsClass(processingEnv: ProcessingEnvironment, element: Element, annotationName: String) {
     if (element.kind != ElementKind.CLASS) {
         processingEnv.messager.printMessage(
             Diagnostic.Kind.ERROR,
             "${element.asType()}: @$annotationName must be applied to a class"
         )
-    } else Unit
+    }
+}
 
 fun verifyExtendsType(
     processingEnv: ProcessingEnvironment,
@@ -22,24 +23,20 @@ fun verifyExtendsType(
     annotationName: String,
     requiredFullName: String
 ) {
-    val start = element as? TypeElement ?: run {
+    val start = element as? TypeElement ?: return processingEnv.messager.printMessage(
+        Diagnostic.Kind.ERROR,
+        "${element.asType()}: @$annotationName must be applied to a class"
+    )
+
+    val found = generateSequence(start) { current ->
+        val sc = current.superclass
+        if (sc is DeclaredType) sc.asElement() as? TypeElement else null
+    }.any { it.asType().toString().startsWith(requiredSuperPrefix) }
+
+    if (!found) {
         processingEnv.messager.printMessage(
             Diagnostic.Kind.ERROR,
-            "${element.asType()}: @$annotationName must be applied to a class"
+            "${start.asType()}: @$annotationName must be applied to a class inheriting from $requiredFullName"
         )
-        return
     }
-
-    var t: TypeElement? = start
-    while (t != null) {
-        if (t.asType().toString().startsWith(requiredSuperPrefix)) return
-
-        val sc = t.superclass
-        t = if (sc is DeclaredType) (sc.asElement() as? TypeElement) else null
-    }
-
-    processingEnv.messager.printMessage(
-        Diagnostic.Kind.ERROR,
-        "${start.asType()}: @$annotationName must be applied to a class inheriting from $requiredFullName"
-    )
 }
