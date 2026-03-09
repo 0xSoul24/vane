@@ -1,0 +1,71 @@
+package org.oddlama.vane.trifles.items
+
+import org.bukkit.Location
+import org.bukkit.Material
+import org.bukkit.NamespacedKey
+import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
+import org.bukkit.inventory.ItemStack
+import org.oddlama.vane.annotation.item.VaneItem
+import org.oddlama.vane.annotation.lang.LangMessage
+import org.oddlama.vane.core.config.recipes.RecipeList
+import org.oddlama.vane.core.config.recipes.ShapedRecipeDefinition
+import org.oddlama.vane.core.lang.TranslatedMessage
+import org.oddlama.vane.core.module.Context
+import org.oddlama.vane.trifles.Trifles
+import org.oddlama.vane.trifles.event.PlayerTeleportScrollEvent
+import org.oddlama.vane.util.StorageUtil
+
+@VaneItem(
+    name = "unstable_scroll",
+    base = Material.WARPED_FUNGUS_ON_A_STICK,
+    durability = 25,
+    modelData = 0x760001,
+    version = 1
+)
+class UnstableScroll(context: Context<Trifles?>) : Scroll(context, 6000) {
+    @LangMessage
+    var langTeleportNoPreviousTeleport: TranslatedMessage? = null
+
+    override fun defaultRecipes(): RecipeList {
+        return RecipeList.of(
+            ShapedRecipeDefinition("generic")
+                .shape("ABA", "EPE")
+                .setIngredient('P', "vane_trifles:papyrus_scroll")
+                .setIngredient('E', Material.CHORUS_FRUIT)
+                .setIngredient('A', Material.AMETHYST_SHARD)
+                .setIngredient('B', Material.COMPASS)
+                .result(key().toString())
+        )
+    }
+
+    override fun teleportLocation(scroll: ItemStack?, player: Player?, imminentTeleport: Boolean): Location? {
+        val p = player ?: return null
+        val loc = StorageUtil.storageGetLocation(
+            p.persistentDataContainer,
+            LAST_SCROLL_TELEPORT_LOCATION,
+            null
+        )
+        if (imminentTeleport && loc == null) {
+            langTeleportNoPreviousTeleport!!.sendActionBar(p)
+        }
+        return loc
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    fun onPlayerTeleportScroll(event: PlayerTeleportScrollEvent) {
+        StorageUtil.storageSetLocation(
+            event.getPlayer().persistentDataContainer,
+            LAST_SCROLL_TELEPORT_LOCATION,
+            event.from
+        )
+    }
+
+    companion object {
+        val LAST_SCROLL_TELEPORT_LOCATION: NamespacedKey = StorageUtil.namespacedKey(
+            "vane",
+            "last_scroll_teleport_location"
+        )
+    }
+}

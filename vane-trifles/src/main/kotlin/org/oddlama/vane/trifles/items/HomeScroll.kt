@@ -1,0 +1,57 @@
+package org.oddlama.vane.trifles.items
+
+import net.kyori.adventure.text.Component
+import org.bukkit.Location
+import org.bukkit.Material
+import org.bukkit.Tag
+import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
+import org.oddlama.vane.annotation.item.VaneItem
+import org.oddlama.vane.core.config.recipes.RecipeList
+import org.oddlama.vane.core.config.recipes.ShapedRecipeDefinition
+import org.oddlama.vane.core.module.Context
+import org.oddlama.vane.trifles.Trifles
+
+@VaneItem(
+    name = "home_scroll",
+    base = Material.WARPED_FUNGUS_ON_A_STICK,
+    durability = 25,
+    modelData = 0x760000,
+    version = 1
+)
+class HomeScroll(context: Context<Trifles?>) : Scroll(context, 10000) {
+    override fun defaultRecipes(): RecipeList {
+        return RecipeList.of(
+            ShapedRecipeDefinition("generic")
+                .shape("ABC", "EPE")
+                .setIngredient('P', "vane_trifles:papyrus_scroll")
+                .setIngredient('E', Material.ENDER_PEARL)
+                .setIngredient('A', Material.CAMPFIRE)
+                .setIngredient('B', Material.GOAT_HORN)
+                .setIngredient('C', Tag.BEDS)
+                .result(key().toString())
+        )
+    }
+
+    // @Override
+    // public LootTableList defaultLootTables() {
+    //	// TODO spawn scroll with 1 usage! possible with nbt nice.
+    // }
+    override fun teleportLocation(scroll: ItemStack?, player: Player?, imminentTeleport: Boolean): Location? {
+        val p = player ?: return null
+        val toLocation = p.respawnLocation
+        if (imminentTeleport && toLocation == null) {
+            // replaced deprecated call with getRespawnLocation()
+            val toPotentialLocation = p.respawnLocation
+            if (toPotentialLocation != null) {
+                // "You have no home bed or charge respawn anchor, or it was obstructed"
+                // The most cursed sentence in minecraft.
+                p.sendActionBar(Component.translatable("block.minecraft.spawn.not_valid"))
+            } else {
+                // "Sleep in a bed to change your respawn point."
+                p.sendActionBar(Component.translatable("advancements.adventure.sleep_in_bed.description"))
+            }
+        }
+        return toLocation
+    }
+}
