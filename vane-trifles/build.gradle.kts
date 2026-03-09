@@ -13,6 +13,7 @@ dependencies {
 	compileOnly(libs.packetEvents)
 	compileOnly(libs.json)
     implementation(kotlin("stdlib"))
+    compileOnly(project(":vane-core"))
 }
 
 tasks {

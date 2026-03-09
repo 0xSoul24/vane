@@ -9,6 +9,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
+    compileOnly(project(":vane-core"))
 }
 
 tasks {
