@@ -12,37 +12,29 @@ import org.bukkit.OfflinePlayer
 import java.util.concurrent.CompletableFuture
 
 class OfflinePlayerArgumentType : CustomArgumentType.Converted<OfflinePlayer, String> {
-    override fun getNativeType(): ArgumentType<String> {
-        return StringArgumentType.word()
-    }
+
+    override fun getNativeType(): ArgumentType<String> = StringArgumentType.word()
 
     @Throws(CommandSyntaxException::class)
-    override fun convert(nativeType: String): OfflinePlayer {
-        for (p in Bukkit.getOfflinePlayers()) {
-            if (nativeType.equals(p.name, ignoreCase = true)) {
-                return p
-            }
-        }
-        throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownArgument().create()
-    }
+    override fun convert(nativeType: String): OfflinePlayer =
+        Bukkit.getOfflinePlayers().firstOrNull { nativeType.equals(it.name, ignoreCase = true) }
+            ?: throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownArgument().create()
 
     override fun <S : Any> listSuggestions(
         context: CommandContext<S>,
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> {
-        val players: Array<out OfflinePlayer> = Bukkit.getOfflinePlayers()
-        var stream = players.asSequence().mapNotNull { it.name }
-        if (builder.remaining.isNotBlank()) {
-            stream = stream.filter { it.contains(builder.remaining, ignoreCase = true) }
-        }
-        stream.forEach { builder.suggest(it) }
+        val remaining = builder.remaining
+        Bukkit.getOfflinePlayers()
+            .asSequence()
+            .mapNotNull { it.name }
+            .filter { remaining.isBlank() || it.contains(remaining, ignoreCase = true) }
+            .forEach { builder.suggest(it) }
         return builder.buildFuture()
     }
 
     companion object {
         @JvmStatic
-        fun offlinePlayer(): OfflinePlayerArgumentType {
-            return OfflinePlayerArgumentType()
-        }
+        fun offlinePlayer(): OfflinePlayerArgumentType = OfflinePlayerArgumentType()
     }
 }

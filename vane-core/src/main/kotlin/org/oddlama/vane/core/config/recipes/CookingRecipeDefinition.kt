@@ -38,7 +38,7 @@ class CookingRecipeDefinition(name: String?, private val type: String) : RecipeD
     }
 
     override fun toDict(): Any {
-        val dict = HashMap<String?, Any?>()
+        val dict = mutableMapOf<String?, Any?>()
         dict["CookingTime"] = this.cookingTime
         dict["Experience"] = this.experience
         dict["Input"] = this.input

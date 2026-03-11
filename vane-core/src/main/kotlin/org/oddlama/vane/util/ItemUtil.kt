@@ -32,38 +32,25 @@ import org.oddlama.vane.util.Nms.itemHandle
 import org.oddlama.vane.util.Nms.playerHandle
 import org.oddlama.vane.util.Nms.worldHandle
 import java.util.*
-import java.util.function.Consumer
 
 object ItemUtil {
     private val SKULL_OWNER: UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
 
     @JvmStatic
     fun damageItem(player: Player, itemStack: ItemStack, amount: Int) {
-        if (player.gameMode == GameMode.CREATIVE) { // don't damage the tool if the player is in creative
-            return
-        }
-
-        if (amount <= 0) {
-            return
-        }
-
+        if (player.gameMode == GameMode.CREATIVE) return
+        if (amount <= 0) return
         val handle = itemHandle(itemStack) ?: return
-
-        handle.hurtAndBreak(amount, worldHandle(player.world)!!, playerHandle(player)) { item: Item? ->
+        handle.hurtAndBreak(amount, worldHandle(player.world), playerHandle(player)) { _: Item? ->
             player.broadcastSlotBreak(EquipmentSlot.HAND)
             itemStack.subtract()
         }
     }
 
     fun nameOf(item: ItemStack?): String {
-        if (item == null || !item.hasItemMeta()) {
-            return ""
-        }
+        if (item == null || !item.hasItemMeta()) return ""
         val meta = item.itemMeta
-        if (!meta.hasDisplayName()) {
-            return ""
-        }
-
+        if (!meta.hasDisplayName()) return ""
         return PlainTextComponentSerializer.plainText().serialize(meta.displayName()!!)
     }
 
@@ -170,9 +157,7 @@ object ItemUtil {
     fun skullForPlayer(player: OfflinePlayer?, isForMenu: Boolean): ItemStack {
         val item = ItemStack(Material.PLAYER_HEAD)
         if (!isForMenu || Core.instance()?.configPlayerHeadsInMenus == true) {
-            item.editMeta(
-                SkullMeta::class.java,
-                Consumer { meta: SkullMeta? -> meta!!.owningPlayer = player })
+            item.editMeta(SkullMeta::class.java) { meta -> meta.owningPlayer = player }
         }
         return item
     }
@@ -248,9 +233,7 @@ object ItemUtil {
 
             if (itemStack.type == Material.ENCHANTED_BOOK) {
                 val flevel = level
-                itemStack.editMeta(
-                    EnchantmentStorageMeta::class.java,
-                    Consumer { meta: EnchantmentStorageMeta? -> meta!!.addStoredEnchant(ench, flevel, false) })
+                itemStack.editMeta(EnchantmentStorageMeta::class.java) { meta -> meta.addStoredEnchant(ench, flevel, false) }
             } else {
                 itemStack.addEnchantment(ench, level)
             }

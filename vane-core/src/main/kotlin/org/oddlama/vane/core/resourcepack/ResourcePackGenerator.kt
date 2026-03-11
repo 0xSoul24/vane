@@ -5,7 +5,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
-import java.nio.charset.StandardCharsets
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
@@ -25,7 +24,7 @@ class ResourcePackGenerator {
         for ((namespace, map) in translations) {
             for ((langCode, langMap) in map) {
                 zip.putNextEntry(ZipEntry("assets/$namespace/lang/$langCode.json"))
-                zip.write(langMap.toString().toByteArray(StandardCharsets.UTF_8))
+                zip.write(langMap.toString().toByteArray(Charsets.UTF_8))
                 zip.closeEntry()
             }
         }
@@ -33,7 +32,7 @@ class ResourcePackGenerator {
 
     @Throws(IOException::class)
     fun addFile(path: String, stream: InputStream) {
-        files[path] = stream.readAllBytes()
+        files[path] = stream.readBytes()
     }
 
     @Throws(IOException::class)

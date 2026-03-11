@@ -79,7 +79,7 @@ class DeathScroll(context: Context<Trifles?>) : Scroll(context, 6000) {
         val pdc = event.player.persistentDataContainer
         StorageUtil.storageSetLocation(pdc, RECENT_DEATH_LOCATION, event.player.location)
         pdc.set(RECENT_DEATH_TIME, PersistentDataType.LONG, System.currentTimeMillis())
-        event.player.setCooldown(this.baseMaterial()!!, 0)
+        event.player.setCooldown(this.baseMaterial(), 0)
     }
 
     companion object {

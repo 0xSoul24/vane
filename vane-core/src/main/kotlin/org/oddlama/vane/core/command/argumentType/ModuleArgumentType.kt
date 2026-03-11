@@ -9,38 +9,27 @@ import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import io.papermc.paper.command.brigadier.MessageComponentSerializer
 import io.papermc.paper.command.brigadier.argument.CustomArgumentType
+import net.kyori.adventure.text.Component
 import org.oddlama.vane.core.Core
 import org.oddlama.vane.core.module.Module
-import net.kyori.adventure.text.Component
 import java.util.concurrent.CompletableFuture
 
-class ModuleArgumentType : CustomArgumentType.Converted<Module<*>, String> {
-    private lateinit var core: Core
+class ModuleArgumentType private constructor(private val core: Core) :
+    CustomArgumentType.Converted<Module<*>, String> {
 
-    override fun getNativeType(): ArgumentType<String> {
-        return StringArgumentType.word()
-    }
-
-    private fun setCore(core: Core): ModuleArgumentType {
-        this.core = core
-        return this
-    }
+    override fun getNativeType(): ArgumentType<String> = StringArgumentType.word()
 
     @Throws(CommandSyntaxException::class)
-    override fun convert(nativeType: String): Module<*> {
-        val found = core.modules
+    override fun convert(nativeType: String): Module<*> =
+        core.modules
             .asSequence()
             .filterNotNull()
             .firstOrNull { it.annotationName.equals(nativeType, ignoreCase = true) }
-
-        if (found != null) return found
-
-        throw SimpleCommandExceptionType(
-            MessageComponentSerializer.message().serialize(
-                Component.text("Unknown module: $nativeType")
-            )
-        ).create()
-    }
+            ?: throw SimpleCommandExceptionType(
+                MessageComponentSerializer.message().serialize(
+                    Component.text("Unknown module: $nativeType")
+                )
+            ).create()
 
     override fun <S : Any> listSuggestions(
         context: CommandContext<S>,
@@ -58,8 +47,6 @@ class ModuleArgumentType : CustomArgumentType.Converted<Module<*>, String> {
 
     companion object {
         @JvmStatic
-        fun module(core: Core): ModuleArgumentType {
-            return ModuleArgumentType().setCore(core)
-        }
+        fun module(core: Core): ModuleArgumentType = ModuleArgumentType(core)
     }
 }

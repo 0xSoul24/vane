@@ -9,7 +9,6 @@ import org.bukkit.persistence.PersistentDataType
 import org.oddlama.vane.core.Core
 import org.oddlama.vane.core.item.api.CustomItem
 import org.oddlama.vane.util.StorageUtil.namespacedKey
-import java.util.function.Consumer
 
 object CustomItemHelper {
     /** Used in persistent item storage to identify custom items.  */
@@ -28,15 +27,14 @@ object CustomItemHelper {
      * This prevents information de-sync in case a subclass forgets to call super.
      */
     fun updateItemStack(customItem: CustomItem, itemStack: ItemStack): ItemStack {
-        itemStack.editMeta(Consumer { meta: ItemMeta? ->
-            val data = meta!!.persistentDataContainer
+        itemStack.editMeta { meta: ItemMeta ->
+            val data = meta.persistentDataContainer
             data.set(CUSTOM_ITEM_IDENTIFIER, PersistentDataType.STRING, customItem.key().toString())
             data.set(CUSTOM_ITEM_VERSION, PersistentDataType.INTEGER, customItem.version())
-            // Use the new CustomModelDataComponent API instead of the deprecated setCustomModelData(Integer).
             val customModelDataComponent = meta.customModelDataComponent
             customModelDataComponent.floats = listOf(customItem.customModelData().toFloat())
             meta.setCustomModelDataComponent(customModelDataComponent)
-        })
+        }
 
         DurabilityManager.initializeOrUpdateMax(customItem, itemStack)
         return customItem.updateItemStack(itemStack)
@@ -74,7 +72,9 @@ object CustomItemHelper {
     fun newStack(customItemKey: String, amount: Int): ItemStack {
         val registry = Core.instance()?.itemRegistry()
             ?: throw IllegalStateException("CustomItemRegistry is not initialized")
-        val ci = registry.get(NamespacedKey.fromString(customItemKey))
+        val key = NamespacedKey.fromString(customItemKey)
+            ?: throw IllegalArgumentException("Invalid namespaced key: $customItemKey")
+        val ci = registry.get(key)
             ?: throw IllegalArgumentException("Unknown custom item: $customItemKey")
         return newStack(ci, amount)
     }
@@ -88,8 +88,8 @@ object CustomItemHelper {
     /** Creates a new item stack with the given number of items of this custom item.  */
     @JvmStatic
     fun newStack(customItem: CustomItem, amount: Int): ItemStack {
-        val itemStack = ItemStack(customItem.baseMaterial()!!, amount)
-        itemStack.editMeta(Consumer { meta: ItemMeta? -> meta!!.itemName(customItem.displayName()) })
+        val itemStack = ItemStack(customItem.baseMaterial(), amount)
+        itemStack.editMeta(ItemMeta::class.java) { meta -> meta.itemName(customItem.displayName()) }
         return updateItemStack(customItem, itemStack)
     }
 
@@ -102,7 +102,7 @@ object CustomItemHelper {
     @JvmStatic
     fun convertExistingStack(customItem: CustomItem, itemStack: ItemStack): ItemStack {
         var itemStack = itemStack
-        itemStack = itemStack.clone().withType(customItem.baseMaterial()!!)
+        itemStack = itemStack.clone().withType(customItem.baseMaterial())
         return updateItemStack(customItem, itemStack)
     }
 }

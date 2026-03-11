@@ -1,7 +1,7 @@
 package org.oddlama.vane.proxycore
 
 import org.oddlama.vane.proxycore.scheduler.ProxyScheduledTask
-import org.oddlama.vane.util.TimeUtil.formatTime
+import org.oddlama.vane.util.formatTime
 import java.io.*
 import java.util.concurrent.TimeUnit
 import java.util.logging.Level

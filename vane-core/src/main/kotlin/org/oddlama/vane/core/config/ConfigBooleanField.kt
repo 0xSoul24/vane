@@ -4,23 +4,16 @@ import org.bukkit.configuration.file.YamlConfiguration
 import org.oddlama.vane.annotation.config.ConfigBoolean
 import org.oddlama.vane.core.YamlLoadException
 import java.lang.reflect.Field
-import java.util.function.Function
 
 class ConfigBooleanField(
     owner: Any?,
     field: Field,
-    mapName: Function<String?, String?>,
+    mapName: (String?) -> String?,
     private val annotation: ConfigBoolean
 ) : ConfigField<Boolean?>(owner, field, mapName, "boolean", annotation.desc) {
-    override fun def(): Boolean {
-        val override = overriddenDef()
-        return override ?: annotation.def
-    }
 
-    override fun metrics(): Boolean {
-        val override = overriddenMetrics()
-        return override ?: annotation.metrics
-    }
+    override fun def(): Boolean = overriddenDef() ?: annotation.def
+    override fun metrics(): Boolean = overriddenMetrics() ?: annotation.metrics
 
     override fun generateYaml(builder: StringBuilder, indent: String, existingCompatibleConfig: YamlConfiguration?) {
         appendDescription(builder, indent)
@@ -35,9 +28,8 @@ class ConfigBooleanField(
     @Throws(YamlLoadException::class)
     override fun checkLoadable(yaml: YamlConfiguration) {
         checkYamlPath(yaml)
-
         if (!yaml.isBoolean(yamlPath())) {
-            throw YamlLoadException("Invalid type for yaml path '" + yamlPath() + "', expected boolean")
+            throw YamlLoadException("Invalid type for yaml path '${yamlPath()}', expected boolean")
         }
     }
 
@@ -48,8 +40,8 @@ class ConfigBooleanField(
     override fun load(yaml: YamlConfiguration) {
         try {
             field.setBoolean(owner, loadFromYaml(yaml))
-        } catch (e: IllegalAccessException) {
-            throw RuntimeException("Invalid field access on '" + field.name + "'. This is a bug.")
+        } catch (_: IllegalAccessException) {
+            throw RuntimeException("Invalid field access on '${field.name}'. This is a bug.")
         }
     }
 }

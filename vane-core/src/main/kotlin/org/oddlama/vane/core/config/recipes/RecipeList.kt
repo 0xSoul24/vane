@@ -3,46 +3,24 @@ package org.oddlama.vane.core.config.recipes
 import org.oddlama.vane.core.config.ConfigDictSerializable
 import java.util.*
 
-class RecipeList : ConfigDictSerializable {
-    private var recipes: MutableList<RecipeDefinition?> = ArrayList<RecipeDefinition?>()
+class RecipeList(private var recipes: MutableList<RecipeDefinition?> = mutableListOf()) : ConfigDictSerializable {
 
-    constructor()
+    fun recipes(): MutableList<RecipeDefinition?> = recipes
 
-    constructor(recipes: MutableList<RecipeDefinition?>) {
-        this.recipes = recipes
-    }
+    override fun toDict(): MutableMap<String, Any> =
+        recipes.filterNotNull().associateTo(LinkedHashMap()) { r -> toYamlName(r.name)!! to (r.toDict() as Any) }
 
-    fun recipes(): MutableList<RecipeDefinition?> {
-        return recipes
-    }
-
-    // Mapear nombres especiales a PascalCase para YAML: 'generic' -> 'Generic', 'terralith_generic' -> 'TerralithGeneric', 'terralith_rare' -> 'TerralithRare', 'ancientcity' -> 'AncientCity', 'bastion' -> 'Bastion', 'from_shulker_box' -> 'FromShulkerBox'
-    override fun toDict(): MutableMap<String?, Any?> {
-        val map: MutableMap<String?, Any?> = LinkedHashMap()
-        for (r in recipes) {
-            if (r == null) continue
-            map[toYamlName(r.name())] = r.toDict()
-        }
-        return map
-    }
-
-    override fun fromDict(dict: MutableMap<String?, Any?>?) {
+    override fun fromDict(dict: MutableMap<String, Any>) {
         recipes.clear()
-        if (dict == null) return
-        for (e in dict.entries) {
-            val key = e.key
-            val internalName = if (key.isNullOrEmpty()) key else fromYamlName(key)
-            recipes.add(RecipeDefinition.fromDict(internalName, e.value!!))
+        dict.entries.forEach { (key, value) ->
+            val internalName = if (key.isEmpty()) key else fromYamlName(key)
+            recipes.add(RecipeDefinition.fromDict(internalName, value))
         }
     }
 
     companion object {
         @JvmStatic
-        fun of(vararg defs: RecipeDefinition?): RecipeList {
-            val rl = RecipeList()
-            rl.recipes = defs.toMutableList()
-            return rl
-        }
+        fun of(vararg defs: RecipeDefinition?): RecipeList = RecipeList(defs.toMutableList())
 
         private fun toYamlName(s: String?): String? {
             if (s.isNullOrEmpty()) return s

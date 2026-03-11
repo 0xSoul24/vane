@@ -30,7 +30,7 @@ class ShapelessRecipeDefinition(name: String?) : RecipeDefinition(name) {
     }
 
     override fun toDict(): Any {
-        val dict = HashMap<String?, Any?>()
+        val dict = mutableMapOf<String?, Any?>()
         dict["Type"] = "shapeless"
         dict["Ingredients"] = this.ingredients
         dict["Result"] = this.result

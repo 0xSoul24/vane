@@ -14,12 +14,9 @@ import org.oddlama.vane.core.module.Context
 import java.util.*
 
 class LootChestProtector(context: Context<Core?>?) : Listener<Core?>(context) {
-    // Prevent loot chest destruction
-    private val lootBreakAttempts: MutableMap<Block?, MutableMap<UUID?, Long?>?> =
-        HashMap<Block?, MutableMap<UUID?, Long?>?>()
+    // Tracks first-break attempts: block -> (playerUUID -> timestamp)
+    private val lootBreakAttempts: MutableMap<Block, MutableMap<UUID, Long>> = mutableMapOf()
 
-    // TODO(legacy): this should become a separate group instead of having
-    // this boolean.
     @ConfigBoolean(
         def = true,
         desc = "Prevent players from breaking blocks with loot-tables (like treasure chests) when they first attempt to destroy it. They still can break it, but must do so within a short timeframe."
@@ -31,41 +28,24 @@ class LootChestProtector(context: Context<Core?>?) : Listener<Core?>(context) {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onBreakLootChest(event: BlockBreakEvent) {
-        if (!configWarnBreakingLootBlocks) {
-            return
-        }
+        if (!configWarnBreakingLootBlocks) return
 
-        val state = event.getBlock().getState(false)
-        if (state !is Lootable) {
-            return
-        }
+        val lootable = event.block.getState(false) as? Lootable ?: return
+        if (!lootable.hasLootTable()) return
 
-        val lootable = state as Lootable
-        if (!lootable.hasLootTable()) {
-            return
-        }
-
-        val block = event.getBlock()
+        val block = event.block
         val player = event.player
-        var blockAttempts = lootBreakAttempts[block]
         val now = System.currentTimeMillis()
-        if (blockAttempts != null) {
-            val playerAttemptTime = blockAttempts[player.uniqueId]
-            if (playerAttemptTime != null) {
-                val elapsed = now - playerAttemptTime
-                if (elapsed in 5001..<30000) {
-                    // Allow
-                    return
-                }
-            } else {
-                blockAttempts[player.uniqueId] = now
-            }
-        } else {
-            blockAttempts = HashMap<UUID?, Long?>()
-            blockAttempts[player.uniqueId] = now
-            lootBreakAttempts[block] = blockAttempts
+
+        val blockAttempts = lootBreakAttempts.getOrPut(block) { mutableMapOf() }
+        val previousAttempt = blockAttempts[player.uniqueId]
+
+        if (previousAttempt != null) {
+            val elapsed = now - previousAttempt
+            if (elapsed in 5001L until 30000L) return  // Allow break within the window
         }
 
+        blockAttempts[player.uniqueId] = now
         langBreakLootBlockPrevented!!.send(player)
         event.isCancelled = true
     }

@@ -17,7 +17,7 @@ import org.oddlama.vane.core.item.CustomItemHelper
 import org.oddlama.vane.core.item.api.InhibitBehavior
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.trifles.Trifles
-import org.oddlama.vane.util.Conversions
+import org.oddlama.vane.util.expForLevel
 import org.oddlama.vane.util.PlayerUtil
 import java.util.*
 
@@ -83,7 +83,7 @@ class XpBottles(context: Context<Trifles?>) :
 
         // Add player experience without applying mending effects
         module!!.lastXpBottleConsumeTime[player.uniqueId] = System.currentTimeMillis()
-        player.giveExp(Conversions.expForLevel(customItem.configCapacity), false)
+        player.giveExp(expForLevel(customItem.configCapacity), false)
         player
             .world
             .playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0f, 1.0f)

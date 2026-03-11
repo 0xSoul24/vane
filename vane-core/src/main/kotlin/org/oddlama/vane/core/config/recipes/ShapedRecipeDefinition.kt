@@ -8,8 +8,8 @@ import org.bukkit.inventory.ShapedRecipe
 import org.oddlama.vane.util.ItemUtil
 
 class ShapedRecipeDefinition(name: String?) : RecipeDefinition(name) {
-    private var shape: MutableList<String> = ArrayList()
-    private var ingredients: MutableMap<String?, String?> = HashMap()
+    private var shape: MutableList<String> = mutableListOf()
+    private var ingredients: MutableMap<String?, String?> = mutableMapOf()
     private var result: String? = null
 
     fun shape(vararg shape: String): ShapedRecipeDefinition {
@@ -18,7 +18,7 @@ class ShapedRecipeDefinition(name: String?) : RecipeDefinition(name) {
     }
 
     fun setIngredient(id: Char, ingredient: String?): ShapedRecipeDefinition {
-        this.ingredients["" + id] = ingredient
+        this.ingredients[id.toString()] = ingredient
         return this
     }
 
@@ -36,7 +36,7 @@ class ShapedRecipeDefinition(name: String?) : RecipeDefinition(name) {
     }
 
     override fun toDict(): Any {
-        val dict = HashMap<String?, Any?>()
+        val dict = mutableMapOf<String?, Any?>()
         dict["Type"] = "shaped"
         dict["Shape"] = this.shape
         dict["Ingredients"] = this.ingredients

@@ -21,7 +21,6 @@ import org.oddlama.vane.core.lang.TranslatedMessage
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.core.module.Module
 import org.oddlama.vane.core.module.ModuleComponent
-import java.util.*
 
 @VaneCommand
 abstract class Command<T : Module<T?>?> @JvmOverloads constructor(
@@ -33,17 +32,9 @@ abstract class Command<T : Module<T?>?> @JvmOverloads constructor(
             permission = this@Command.permission.name
         }
 
-        override fun getUsage(): String {
-            return this@Command.langUsage.str("§7/§3$name")
-        }
-
-        override fun getDescription(): String {
-            return this@Command.langDescription.str()
-        }
-
-        override fun getPlugin(): Plugin {
-            return this@Command.module!!
-        }
+        override fun getUsage(): String = this@Command.langUsage.str("§7/§3$name")
+        override fun getDescription(): String = this@Command.langDescription.str()
+        override fun getPlugin(): Plugin = this@Command.module!!
 
         // Adapted to match org.bukkit.command.Command: execute(CommandSender, String, Array<String>)
         @Throws(IllegalArgumentException::class)
@@ -59,17 +50,14 @@ abstract class Command<T : Module<T?>?> @JvmOverloads constructor(
             // Combine label and args into a nullable array expected by rootParam
             val combined = arrayOfNulls<String>(args.size + 1)
             combined[0] = commandLabel
-            for (i in args.indices) combined[i + 1] = args[i]
+            args.forEachIndexed { i, arg -> combined[i + 1] = arg }
 
             // Ambiguous matches will always execute the
             // first chain based on definition order.
-            try {
-                val check = rootParam.checkAccept(sender, combined, 0)
-                return check?.apply(this@Command, sender) ?: false
+            return try {
+                rootParam.checkAccept(sender, combined, 0)?.apply(this@Command, sender) ?: false
             } catch (e: Exception) {
-                sender.sendMessage(
-                    "§cAn unexpected error occurred. Please examine the console log and/or notify a server administrator."
-                )
+                sender.sendMessage("§cAn unexpected error occurred. Please examine the console log and/or notify a server administrator.")
                 throw e
             }
         }
@@ -77,41 +65,30 @@ abstract class Command<T : Module<T?>?> @JvmOverloads constructor(
         @Throws(IllegalArgumentException::class)
         override fun tabComplete(sender: CommandSender, alias: String, args: Array<String>): MutableList<String> {
             // Don't allow information exfiltration!
-            if (!sender.hasPermission(permission!!)) {
-                return mutableListOf()
-            }
+            if (!sender.hasPermission(permission!!)) return mutableListOf()
 
             // Combine label and args into a nullable array expected by rootParam
             val combined = arrayOfNulls<String>(args.size + 1)
             combined[0] = alias
-            for (i in args.indices) combined[i + 1] = args[i]
+            args.forEachIndexed { i, arg -> combined[i + 1] = arg }
 
-            try {
+            return try {
                 // rootParam.buildCompletions may return MutableList<String?>; convert to non-nullable list
-                val completionsNullable = rootParam.buildCompletions(sender, combined, 0) ?: mutableListOf()
-                val completions: MutableList<String> = mutableListOf()
-                for (c in completionsNullable) {
-                    if (c != null) completions.add(c)
-                }
-                return completions
+                rootParam.buildCompletions(sender, combined, 0)
+                    ?.filterNotNull()
+                    ?.toMutableList()
+                    ?: mutableListOf()
             } catch (e: Exception) {
-                sender.sendMessage(
-                    "§cAn unexpected error occurred. Please examine the console log and/or notify a server administrator."
-                )
+                sender.sendMessage("§cAn unexpected error occurred. Please examine the console log and/or notify a server administrator.")
                 throw e
             }
         }
     }
 
     // Language
-    @LangMessage
-    lateinit var langUsage: TranslatedMessage
-
-    @LangMessage
-    lateinit var langDescription: TranslatedMessage
-
-    @LangMessage
-    lateinit var langHelp: TranslatedMessage
+    @LangMessage lateinit var langUsage: TranslatedMessage
+    @LangMessage lateinit var langDescription: TranslatedMessage
+    @LangMessage lateinit var langHelp: TranslatedMessage
 
     // Variables
     val name: String
@@ -126,22 +103,20 @@ abstract class Command<T : Module<T?>?> @JvmOverloads constructor(
     private var aliases: Aliases?
 
     // Backwards-compatible getter for subclasses that override getCommandBase()
-    open fun getCommandBase(): LiteralArgumentBuilder<CommandSourceStack> {
-        return commandBaseField!!
-    }
+    open fun getCommandBase(): LiteralArgumentBuilder<CommandSourceStack> = commandBaseField!!
 
     init {
         var context = context
         // Make namespace
         name = javaClass.getAnnotation(Name::class.java).value
         // Convert name to PascalCase for the group name
-        val groupName = "Command" + name.substring(0, 1).uppercase(Locale.getDefault()) + name.substring(1)
+        val groupName = "Command${name.replaceFirstChar { it.uppercase() }}"
         context = context.group(groupName, "Enable command $name")
         setContext(context)
 
         // Register permission
         permission = Permission(
-            "vane." + module!!.annotationName + ".commands." + name,
+            "vane.${module!!.annotationName}.commands.$name",
             "Allow access to /$name",
             permissionDefault
         )
@@ -153,63 +128,40 @@ abstract class Command<T : Module<T?>?> @JvmOverloads constructor(
         module!!.addConsolePermission(permission)
 
         // Initialize root parameter
-        rootParam = AnyParam(this, "/" + this.name, Function1 { str: String? -> str })
+        rootParam = AnyParam(this, "/$name", Function1 { it })
 
         // Create bukkit command
-        bukkitCommand = BukkitCommand(name)
-        bukkitCommand.setLabel(name)
-        bukkitCommand.setName(name)
+        bukkitCommand = BukkitCommand(name).also {
+            it.setLabel(name)
+            it.setName(name)
+        }
 
         aliases = javaClass.getAnnotation(Aliases::class.java)
-        this.commandBaseField = Commands.literal(name)
-        if (aliases != null) {
-            bukkitCommand.setAliases(aliases!!.value.toMutableList())
-        }
+        commandBaseField = Commands.literal(name)
+        aliases?.let { bukkitCommand.setAliases(it.value.toMutableList()) }
     }
 
-    fun getBukkitCommand(): BukkitCommand {
-        return bukkitCommand
-    }
+    fun getBukkitCommand(): BukkitCommand = bukkitCommand
+    fun getPermission(): String = permission.name
 
-    fun getPermission(): String {
-        return permission.name
-    }
+    val prefix: String get() = "vane:${module!!.annotationName}"
 
-    val prefix: String
-        get() = "vane:" + module!!.annotationName
-
-    fun params(): Param {
-        return rootParam
-    }
+    fun params(): Param = rootParam
 
     val command: LiteralCommandNode<CommandSourceStack>
         get() {
-            val cmd =
-                getCommandBase()
-            val oldRequirement =
-                cmd.getRequirement()
-            return cmd
-                .requires { stack: CommandSourceStack ->
-                    stack.sender.hasPermission(permission) && oldRequirement.test(stack)
-                }
-                .build()
+            val cmd = getCommandBase()
+            val oldRequirement = cmd.requirement
+            return cmd.requires { stack ->
+                stack.sender.hasPermission(permission) && oldRequirement.test(stack)
+            }.build()
         }
 
-    fun getAliases(): MutableList<String> {
-        return if (aliases != null && aliases!!.value.isNotEmpty()) {
-            aliases!!.value.toMutableList()
-        } else {
-            mutableListOf()
-        }
-    }
+    fun getAliases(): MutableList<String> =
+        aliases?.value?.toMutableList() ?: mutableListOf()
 
-    override fun onEnable() {
-        module!!.registerCommand(this)
-    }
-
-    override fun onDisable() {
-        module!!.unregisterCommand(this)
-    }
+    override fun onEnable() { module!!.registerCommand(this) }
+    override fun onDisable() { module!!.unregisterCommand(this) }
 
     fun printHelp(sender: CommandSender?) {
         langUsage.send(sender, "§7/§3$name")
@@ -217,15 +169,14 @@ abstract class Command<T : Module<T?>?> @JvmOverloads constructor(
     }
 
     fun printHelp2(ctx: CommandContext<CommandSourceStack>): Int {
-        langUsage.send(ctx.getSource()!!.sender, "§7/§3$name")
-        langHelp.send(ctx.getSource()!!.sender)
+        langUsage.send(ctx.source.sender, "§7/§3$name")
+        langHelp.send(ctx.source.sender)
         return Command.SINGLE_SUCCESS
     }
 
-    fun help(): LiteralArgumentBuilder<CommandSourceStack> {
-        return Commands.literal("help").executes { ctx: CommandContext<CommandSourceStack> ->
+    fun help(): LiteralArgumentBuilder<CommandSourceStack> =
+        Commands.literal("help").executes { ctx ->
             printHelp2(ctx)
             Command.SINGLE_SUCCESS
         }
-    }
 }

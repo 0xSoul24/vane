@@ -12,30 +12,24 @@ import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.util.Nms.playerHandle
 
 class AnvilMenu(context: Context<*>, player: Player, private val title: String) : Menu(context) {
-    private val entity = playerHandle(player)
+    private val entity: ServerPlayer = requireNotNull(playerHandle(player))
     private val container: AnvilContainer
-    private val containerId: Int = entity!!.nextContainerCounter()
+    private val containerId: Int = entity.nextContainerCounter()
 
     init {
-        this.container = AnvilContainer(containerId, entity!!)
+        this.container = AnvilContainer(containerId, entity)
         this.container.setTitle(Component.literal(title))
         this.inventory = container.bukkitView.topInventory
     }
 
     override fun openWindow(player: Player) {
-        if (tainted) {
-            return
-        }
+        if (tainted) return
 
         if (playerHandle(player) !== entity) {
-            manager
-                .module!!
-                .log.warning("AnvilMenu.open() was called with a player for whom this inventory wasn't created!")
+            manager.module!!.log.warning("AnvilMenu.open() was called with a player for whom this inventory wasn't created!")
         }
 
-        entity!!.connection.send(
-            ClientboundOpenScreenPacket(containerId, container.type, Component.literal(title))
-        )
+        entity.connection.send(ClientboundOpenScreenPacket(containerId, container.type, Component.literal(title)))
         entity.initMenu(container)
         entity.containerMenu = container
     }

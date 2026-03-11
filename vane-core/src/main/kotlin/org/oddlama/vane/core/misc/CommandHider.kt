@@ -15,33 +15,20 @@ class CommandHider(context: Context<Core?>) : Listener<Core?>(
     )
 ) {
     private fun allowCommandEvent(message: String, player: Player): Boolean {
-        var message = message
-        message = message.trim { it <= ' ' }
-        if (!message.startsWith("/")) {
-            return false
-        }
+        val trimmed = message.trim()
+        if (!trimmed.startsWith("/")) return false
 
-        var id = message.substring(1)
-        val spaceIndex = id.indexOf(' ')
-        if (spaceIndex > -1) {
-            id = id.substring(0, spaceIndex)
-        }
+        val raw = trimmed.substring(1)
+        val id = raw.substringBefore(' ')
 
-        val commandMap = module!!.server.commandMap.knownCommands
-        val command = commandMap[id]
-        if (command != null) {
-            return command.testPermissionSilent(player)
-        }
-
-        return true
+        val command = module!!.server.commandMap.knownCommands[id] ?: return true
+        return command.testPermissionSilent(player)
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerCommandPreprocess(event: PlayerCommandPreprocessEvent) {
-        if (!allowCommandEvent(event.message, event.getPlayer())) {
-            // Use a hardcoded default message instead of deprecated getSpigotConfig()
-            val msg = "Unknown command. Type \"/help\" for help."
-            event.getPlayer().sendMessage(msg)
+        if (!allowCommandEvent(event.message, event.player)) {
+            event.player.sendMessage("Unknown command. Type \"/help\" for help.")
             event.isCancelled = true
         }
     }

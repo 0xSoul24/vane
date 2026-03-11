@@ -5,12 +5,11 @@ import org.oddlama.vane.annotation.config.ConfigVersion
 import org.oddlama.vane.core.YamlLoadException
 import org.oddlama.vane.core.module.Module
 import java.lang.reflect.Field
-import java.util.function.Function
 
 class ConfigVersionField(
     owner: Any?,
     field: Field,
-    mapName: Function<String?, String?>,
+    mapName: (String?) -> String?,
     var annotation: ConfigVersion?
 ) : ConfigField<Long?>(
     owner,
@@ -24,13 +23,8 @@ class ConfigVersionField(
         this.sortPriority = 100
     }
 
-    override fun def(): Long? {
-        return null
-    }
-
-    override fun metrics(): Boolean {
-        return true
-    }
+    override fun def(): Long? = null
+    override fun metrics(): Boolean = true
 
     override fun generateYaml(builder: StringBuilder, indent: String, existingCompatibleConfig: YamlConfiguration?) {
         appendDescription(builder, indent)
@@ -40,26 +34,22 @@ class ConfigVersionField(
     @Throws(YamlLoadException::class)
     override fun checkLoadable(yaml: YamlConfiguration) {
         checkYamlPath(yaml)
-
         if (yaml.get(yamlPath()) !is Number) {
-            throw YamlLoadException("Invalid type for yaml path '" + yamlPath() + "', expected long")
+            throw YamlLoadException("Invalid type for yaml path '${yamlPath()}', expected long")
         }
-
-        val `val` = yaml.getLong(yamlPath())
-        if (`val` < 1) {
-            throw YamlLoadException("Configuration '" + yamlPath() + "' has an invalid value: Value must be >= 1")
+        val value = yaml.getLong(yamlPath())
+        if (value < 1) {
+            throw YamlLoadException("Configuration '${yamlPath()}' has an invalid value: Value must be >= 1")
         }
     }
 
-    fun loadFromYaml(yaml: YamlConfiguration): Long {
-        return yaml.getLong(yamlPath())
-    }
+    fun loadFromYaml(yaml: YamlConfiguration): Long = yaml.getLong(yamlPath())
 
     override fun load(yaml: YamlConfiguration) {
         try {
             field.setLong(owner, loadFromYaml(yaml))
-        } catch (e: IllegalAccessException) {
-            throw RuntimeException("Invalid field access on '" + field.name + "'. This is a bug.")
+        } catch (_: IllegalAccessException) {
+            throw RuntimeException("Invalid field access on '${field.name}'. This is a bug.")
         }
     }
 }

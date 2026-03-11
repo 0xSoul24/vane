@@ -51,7 +51,7 @@ class SmithingRecipeDefinition(name: String?) : RecipeDefinition(name) {
     }
 
     override fun toDict(): Any {
-        val dict = HashMap<String?, Any?>()
+        val dict = mutableMapOf<String?, Any?>()
         dict["Base"] = this.base
         dict["Addition"] = this.addition
         dict["CopyNbt"] = this.copyNbt

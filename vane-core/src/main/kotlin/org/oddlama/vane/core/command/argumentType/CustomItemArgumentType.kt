@@ -15,51 +15,39 @@ import org.oddlama.vane.core.Core
 import org.oddlama.vane.core.item.api.CustomItem
 import java.util.concurrent.CompletableFuture
 
-class CustomItemArgumentType private constructor(private var module: Core) :
+class CustomItemArgumentType private constructor(private val module: Core) :
     CustomArgumentType.Converted<CustomItem, NamespacedKey> {
-    override fun getNativeType(): ArgumentType<NamespacedKey> {
-        return ArgumentTypes.namespacedKey()
-    }
+
+    override fun getNativeType(): ArgumentType<NamespacedKey> = ArgumentTypes.namespacedKey()
 
     @Throws(CommandSyntaxException::class)
-    override fun convert(nativeType: NamespacedKey): CustomItem {
-        val items = module.itemRegistry()?.all() ?: emptyList()
-        val found = items.filterNotNull().firstOrNull { item -> item.key() == nativeType }
-        if (found != null) {
-            return found
-        }
-        throw SimpleCommandExceptionType(
-            MessageComponentSerializer.message().serialize(
-                Component.text("Unknown custom item: $nativeType")
-            )
-        ).create()
-    }
+    override fun convert(nativeType: NamespacedKey): CustomItem =
+        module.itemRegistry()?.all()
+            ?.firstOrNull { it.key() == nativeType }
+            ?: throw SimpleCommandExceptionType(
+                MessageComponentSerializer.message().serialize(
+                    Component.text("Unknown custom item: $nativeType")
+                )
+            ).create()
 
     override fun <S : Any> listSuggestions(
         context: CommandContext<S>,
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> {
         val remaining = builder.remainingLowerCase
-        val items = module.itemRegistry()?.all() ?: emptyList()
-
-        items
-            .asSequence()
-            .map { it?.key()?.toString() to it?.displayName() }
-            .filter { remaining.isBlank() || it.first?.lowercase()?.contains(remaining) == true }
-            .forEach { (key, name) ->
-                if (name != null && key != null) {
-                    builder.suggest(key, MessageComponentSerializer.message().serialize(name))
-                } else if (key != null) {
-                    builder.suggest(key)
-                }
+        module.itemRegistry()?.all()
+            ?.asSequence()
+            ?.filter { remaining.isBlank() || it.key().toString().lowercase().contains(remaining) }
+            ?.forEach { item ->
+                val key = item.key().toString()
+                val name = item.displayName()
+                if (name != null) builder.suggest(key, MessageComponentSerializer.message().serialize(name))
+                else builder.suggest(key)
             }
-
         return builder.buildFuture()
     }
 
     companion object {
-        fun customItem(module: Core): CustomItemArgumentType {
-            return CustomItemArgumentType(module)
-        }
+        fun customItem(module: Core): CustomItemArgumentType = CustomItemArgumentType(module)
     }
 }

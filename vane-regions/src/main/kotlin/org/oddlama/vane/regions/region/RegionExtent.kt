@@ -49,7 +49,7 @@ class RegionExtent {
     }
 
     fun world(): UUID? {
-        return min.worldId()
+        return min.worldId
     }
 
     fun min(): Block? {

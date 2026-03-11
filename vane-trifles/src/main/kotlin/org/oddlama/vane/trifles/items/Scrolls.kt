@@ -15,7 +15,7 @@ import org.oddlama.vane.core.item.api.CustomItem
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.trifles.Trifles
 import org.oddlama.vane.trifles.event.PlayerTeleportScrollEvent
-import org.oddlama.vane.util.Conversions
+import org.oddlama.vane.util.msToTicks
 import org.oddlama.vane.util.ItemUtil
 import org.oddlama.vane.util.PlayerUtil
 
@@ -45,7 +45,7 @@ class Scrolls(context: Context<Trifles?>) : Listener<Trifles?>(
         // Accumulate base materials so the cooldown can be applied to all scrolls regardless of
         // base material.
         for (scroll in scrolls) {
-            baseMaterials.add(scroll.baseMaterial()!!)
+            baseMaterials.add(scroll.baseMaterial())
         }
     }
 
@@ -87,7 +87,7 @@ class Scrolls(context: Context<Trifles?>) : Listener<Trifles?>(
         val toLocation = customItem.teleportLocation(item, player, true) ?: return
 
         // Check cooldown
-        if (player.getCooldown(customItem.baseMaterial()!!) > 0) {
+        if (player.getCooldown(customItem.baseMaterial()) > 0) {
             return
         }
 
@@ -114,19 +114,19 @@ class Scrolls(context: Context<Trifles?>) : Listener<Trifles?>(
         player.teleport(to, PlayerTeleportEvent.TeleportCause.PLUGIN)
 
         // Play sounds
-        from.getWorld().playSound(from, Sound.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.1f)
-        to.getWorld().playSound(to, Sound.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.1f)
-        from.getWorld().playSound(from, Sound.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.PLAYERS, 1.0f, 1.0f)
-        to.getWorld().playSound(to, Sound.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.PLAYERS, 1.0f, 1.0f)
+        from.world.playSound(from, Sound.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.1f)
+        to.world.playSound(to, Sound.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.1f)
+        from.world.playSound(from, Sound.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.PLAYERS, 1.0f, 1.0f)
+        to.world.playSound(to, Sound.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.PLAYERS, 1.0f, 1.0f)
 
         // Create particles
-        from.getWorld().spawnParticle(Particle.PORTAL, from.clone().add(0.0, 1.0, 0.0), 200, 1.0, 2.0, 1.0, 1.0)
-        to.getWorld().spawnParticle(Particle.END_ROD, to.clone().add(0.0, 1.0, 0.0), 100, 1.0, 2.0, 1.0, 1.0)
+        from.world.spawnParticle(Particle.PORTAL, from.clone().add(0.0, 1.0, 0.0), 200, 1.0, 2.0, 1.0, 1.0)
+        to.world.spawnParticle(Particle.END_ROD, to.clone().add(0.0, 1.0, 0.0), 100, 1.0, 2.0, 1.0, 1.0)
         return true
     }
 
     fun cooldownAll(player: Player, cooldownMs: Int) {
-        val cooldownTicks = Conversions.msToTicks(cooldownMs.toLong()).toInt()
+        val cooldownTicks = msToTicks(cooldownMs.toLong()).toInt()
         for (mat in baseMaterials) {
             // Don't ever decrease cooldown
             if (player.getCooldown(mat) < cooldownTicks) {

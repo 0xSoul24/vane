@@ -9,7 +9,6 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
-import org.bukkit.Particle
 import org.bukkit.util.Vector
 import org.oddlama.vane.util.BlockUtil.dropNaturally
 import java.util.concurrent.ThreadLocalRandom
@@ -23,31 +22,21 @@ object PlayerUtil {
         repeat(16) {
             val rnd = Vector.getRandom().subtract(Vector(.5, .5, .5)).normalize().multiply(.25)
             val dir = rnd.clone().multiply(.5).subtract(player.velocity)
-            loc
-                .getWorld()
-                .spawnParticle(
-                    Particle.FIREWORK,
-                    loc.add(rnd),
-                    0,
-                    dir.getX(),
-                    dir.getY(),
-                    dir.getZ(),
-                    vel * ThreadLocalRandom.current().nextDouble(0.4, 0.6)
-                )
+            loc.world.spawnParticle(
+                Particle.FIREWORK,
+                loc.add(rnd),
+                0,
+                dir.x, dir.y, dir.z,
+                vel * ThreadLocalRandom.current().nextDouble(0.4, 0.6)
+            )
         }
     }
 
     @JvmStatic
     fun applyElytraBoost(player: Player, factor: Double) {
-        val v = player.location.getDirection()
-        v.normalize()
-        v.multiply(factor)
-
-        // Set velocity, play sound
+        val v = player.location.direction.normalize().multiply(factor)
         player.velocity = player.velocity.add(v)
-        player
-            .world
-            .playSound(player.location, Sound.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.4f, 2.0f)
+        player.world.playSound(player.location, Sound.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.4f, 2.0f)
     }
 
     @JvmStatic
@@ -64,83 +53,54 @@ object PlayerUtil {
     // ItemStack amounts are discarded, only the mapped value counts.
     // CAUTION: There must not be duplicate item keys that could stack.
     @JvmStatic
-    fun hasItems(player: Player, items: MutableMap<ItemStack?, Int>): Boolean {
-        if (player.gameMode == GameMode.CREATIVE) {
-            return true
-        }
-
+    fun hasItems(player: Player, items: Map<ItemStack?, Int>): Boolean {
+        if (player.gameMode == GameMode.CREATIVE) return true
         val inventory = player.inventory
-        for (e in items.entries) {
-            val item = e.key!!.clone()
-            item.amount = 1
-            val amount = e.value
-            if (!inventory.containsAtLeast(item, amount)) {
-                return false
-            }
+        return items.all { (item, amount) ->
+            inventory.containsAtLeast(item!!.clone().also { it.amount = 1 }, amount)
         }
-
-        return true
     }
 
     @JvmStatic
-    fun takeItems(player: Player, item: ItemStack): Boolean {
-        val map = HashMap<ItemStack?, Int>()
-        map[item] = item.amount
-        return takeItems(player, map)
-    }
+    fun takeItems(player: Player, item: ItemStack): Boolean =
+        takeItems(player, mutableMapOf(item to item.amount))
 
     @JvmStatic
-    fun takeItems(player: Player, items: MutableMap<ItemStack?, Int>): Boolean {
-        if (player.gameMode == GameMode.CREATIVE) {
-            return true
-        }
+    fun takeItems(player: Player, items: Map<ItemStack?, Int>): Boolean {
+        if (player.gameMode == GameMode.CREATIVE) return true
+        if (!hasItems(player, items)) return false
 
-        if (!hasItems(player, items)) {
-            return false
-        }
-
-        val inventory = player.inventory
-        val stacks = items.entries.flatMap { e -> createLawfulStacks(e.key!!, e.value).toList() }
-
-        val leftovers = inventory.removeItem(*stacks.toTypedArray())
-        if (!leftovers.isEmpty()) {
-            Bukkit.getLogger()
-                .warning(
-                    "[vane] Unexpected leftovers while removing the following items from a player's inventory: " +
-                            stacks
-                )
-            for (l in leftovers.entries) {
-                Bukkit.getLogger().warning("[vane] Leftover: " + l.key + ", amount: " + l.value)
+        val stacks = items.entries.flatMap { (item, amount) -> createLawfulStacks(item!!, amount).toList() }
+        val leftovers = player.inventory.removeItem(*stacks.toTypedArray())
+        if (leftovers.isNotEmpty()) {
+            Bukkit.getLogger().warning(
+                "[vane] Unexpected leftovers while removing the following items from a player's inventory: $stacks"
+            )
+            leftovers.forEach { (_, leftover) ->
+                Bukkit.getLogger().warning("[vane] Leftover: ${leftover.type}, amount: ${leftover.amount}")
             }
             return false
         }
-
         return true
     }
 
     @JvmStatic
     fun giveItem(player: Player, item: ItemStack?) {
-        if (item != null) giveItems(player, arrayOf(item))
+        item?.let { giveItems(player, arrayOf(it)) }
     }
 
-    // Ignores item.getAmount().
+    // Ignores item.amount; creates properly-sized stacks.
     fun createLawfulStacks(item: ItemStack, amount: Int): Array<ItemStack> {
-        val stacks = (item.maxStackSize - 1 + amount) / item.maxStackSize
-        val leftover = amount % item.maxStackSize
-        if (stacks < 1) {
-            return emptyArray()
-        }
+        val maxStack = item.maxStackSize
+        val stacks = (maxStack - 1 + amount) / maxStack
+        if (stacks < 1) return emptyArray()
 
-        val items = Array(stacks) {
-            val clone = item.clone()
-            clone.amount = item.maxStackSize
-            clone
+        val leftover = amount % maxStack
+        return Array(stacks) { i ->
+            item.clone().also { clone ->
+                clone.amount = if (i == stacks - 1 && leftover != 0) leftover else maxStack
+            }
         }
-        if (leftover != 0) {
-            items[stacks - 1].amount = leftover
-        }
-
-        return items
     }
 
     @JvmStatic
@@ -150,24 +110,18 @@ object PlayerUtil {
 
     fun giveItems(player: Player, items: Array<ItemStack>) {
         val leftovers = player.inventory.addItem(*items)
-        for (item in leftovers.values) {
-            player.location.getWorld().dropItem(player.location, item).pickupDelay = 0
+        leftovers.values.forEach { item ->
+            player.location.world.dropItem(player.location, item).pickupDelay = 0
         }
     }
 
     @JvmStatic
     fun tillBlock(player: Player, block: Block): Boolean {
-        // Create block break event for block to till and check if it gets canceled
         val breakEvent = BlockBreakEvent(block, player)
         Bukkit.getPluginManager().callEvent(breakEvent)
-        if (breakEvent.isCancelled) {
-            return false
-        }
+        if (breakEvent.isCancelled) return false
 
-        // Till block
         block.type = Material.FARMLAND
-
-        // Play sound
         player.world.playSound(player.location, Sound.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0f, 1.0f)
         return true
     }
@@ -180,104 +134,56 @@ object PlayerUtil {
         plantType: Material,
         seedType: Material
     ): Boolean {
-        // Create block place event for seed to place and check if it gets canceled
         val below = block.getRelative(BlockFace.DOWN)
-        val placeEvent = BlockPlaceEvent(
-            block,
-            below.state,
-            below,
-            usedItem,
-            player,
-            true,
-            EquipmentSlot.HAND
-        )
+        val placeEvent = BlockPlaceEvent(block, below.state, below, usedItem, player, true, EquipmentSlot.HAND)
         Bukkit.getPluginManager().callEvent(placeEvent)
-        if (placeEvent.isCancelled) {
-            return false
-        }
+        if (placeEvent.isCancelled) return false
 
-        // Remove one seed from inventory if not in creative mode
         if (player.gameMode != GameMode.CREATIVE) {
             val seedstack = ItemStack(seedType, 1)
-            if (!player.inventory.containsAtLeast(seedstack, 1)) {
-                return false
-            }
-
+            if (!player.inventory.containsAtLeast(seedstack, 1)) return false
             player.inventory.removeItem(seedstack)
         }
 
-        // Set block seeded
         block.type = plantType
-        val ageable = block.blockData as Ageable
-        ageable.age = 0
-        block.blockData = ageable
+        (block.blockData as Ageable).also { ageable ->
+            ageable.age = 0
+            block.blockData = ageable
+        }
 
-        // Play sound
-        player
-            .world
-            .playSound(
-                player.location,
-                if (seedType == Material.NETHER_WART) Sound.ITEM_NETHER_WART_PLANT else Sound.ITEM_CROP_PLANT,
-                SoundCategory.BLOCKS,
-                1.0f,
-                1.0f
-            )
+        val sound = if (seedType == Material.NETHER_WART) Sound.ITEM_NETHER_WART_PLANT else Sound.ITEM_CROP_PLANT
+        player.world.playSound(player.location, sound, SoundCategory.BLOCKS, 1.0f, 1.0f)
         return true
     }
 
     @JvmStatic
     fun harvestPlant(player: Player, block: Block): Boolean {
-        val drops: Array<ItemStack>?
-        when (block.type) {
-            Material.WHEAT -> drops = arrayOf(ItemStack(Material.WHEAT, 1 + (Math.random() * 2.5).toInt()))
-            Material.CARROTS -> drops =
-                arrayOf(ItemStack(Material.CARROT, 1 + (Math.random() * 2.5).toInt()))
-
-            Material.POTATOES -> drops =
-                arrayOf(ItemStack(Material.POTATO, 1 + (Math.random() * 2.5).toInt()))
-
-            Material.BEETROOTS -> drops =
-                arrayOf(ItemStack(Material.BEETROOT, 1 + (Math.random() * 2.5).toInt()))
-
-            Material.NETHER_WART -> drops =
-                arrayOf(ItemStack(Material.NETHER_WART, 1 + (Math.random() * 2.5).toInt()))
-
+        val drops = when (block.type) {
+            Material.WHEAT      -> arrayOf(ItemStack(Material.WHEAT,       1 + (Math.random() * 2.5).toInt()))
+            Material.CARROTS    -> arrayOf(ItemStack(Material.CARROT,      1 + (Math.random() * 2.5).toInt()))
+            Material.POTATOES   -> arrayOf(ItemStack(Material.POTATO,      1 + (Math.random() * 2.5).toInt()))
+            Material.BEETROOTS  -> arrayOf(ItemStack(Material.BEETROOT,    1 + (Math.random() * 2.5).toInt()))
+            Material.NETHER_WART -> arrayOf(ItemStack(Material.NETHER_WART, 1 + (Math.random() * 2.5).toInt()))
             else -> return false
         }
 
-        if (block.blockData !is Ageable) {
-            return false
-        }
+        val ageable = block.blockData as? Ageable ?: return false
+        if (ageable.age != ageable.maximumAge) return false
 
-        // Only harvest fully grown plants
-        val ageable = block.blockData as Ageable
-        if (ageable.age != ageable.maximumAge) {
-            return false
-        }
-
-        // Create a block break event for block to harvest and check if it gets canceled
         val breakEvent = BlockBreakEvent(block, player)
         Bukkit.getPluginManager().callEvent(breakEvent)
-        if (breakEvent.isCancelled) {
-            return false
-        }
+        if (breakEvent.isCancelled) return false
 
-        // Reset crop state
         ageable.age = 0
         block.blockData = ageable
-
-        // Drop items
-        for (drop in drops) {
-            dropNaturally(block, drop)
-        }
-
+        drops.forEach { dropNaturally(block, it) }
         return true
     }
 
     @JvmStatic
     fun swingArm(player: Player, hand: EquipmentSlot) {
         when (hand) {
-            EquipmentSlot.HAND -> player.swingMainHand()
+            EquipmentSlot.HAND     -> player.swingMainHand()
             EquipmentSlot.OFF_HAND -> player.swingOffHand()
             else -> {}
         }

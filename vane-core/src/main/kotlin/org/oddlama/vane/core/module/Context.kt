@@ -95,26 +95,21 @@ interface Context<T : Module<T?>?> {
     fun onGenerateResourcePack(pack: ResourcePackGenerator?) {
     }
 
-    fun scheduleTaskTimer(task: Runnable, delayTicks: Long, periodTicks: Long): BukkitTask {
-        return this.module!!.server.scheduler.runTaskTimer(this.module!!, task, delayTicks, periodTicks)
-    }
+    fun scheduleTaskTimer(task: Runnable, delayTicks: Long, periodTicks: Long): BukkitTask =
+        this.module!!.server.scheduler.runTaskTimer(this.module!!, task, delayTicks, periodTicks)
 
-    fun scheduleTask(task: Runnable, delayTicks: Long): BukkitTask {
-        return this.module!!.server.scheduler.runTaskLater(this.module!!, task, delayTicks)
-    }
+    fun scheduleTask(task: Runnable, delayTicks: Long): BukkitTask =
+        this.module!!.server.scheduler.runTaskLater(this.module!!, task, delayTicks)
 
-    fun scheduleNextTick(task: Runnable): BukkitTask {
-        return this.module!!.server.scheduler.runTask(this.module!!, task)
-    }
+    fun scheduleNextTick(task: Runnable): BukkitTask =
+        this.module!!.server.scheduler.runTask(this.module!!, task)
 
     fun addStorageMigrationTo(to: Long, name: String?, migrator: Consumer<JSONObject?>) {
         this.module!!.persistentStorageManager.addMigrationTo(to, name, migrator)
     }
 
     fun storagePathOf(field: String): String? {
-        if (!field.startsWith("storage")) {
-            throw RuntimeException("Configuration fields must be prefixed storage. This is a bug.")
-        }
+        require(field.startsWith("storage")) { "Configuration fields must be prefixed storage. This is a bug." }
         return variableYamlPath(field.substring("storage".length))
     }
 
@@ -124,11 +119,7 @@ interface Context<T : Module<T?>?> {
 
     companion object {
         @JvmStatic
-        fun appendYamlPath(ns1: String, ns2: String?, separator: String?): String? {
-            if (ns1.isEmpty()) {
-                return ns2
-            }
-            return ns1 + separator + ns2
-        }
+        fun appendYamlPath(ns1: String, ns2: String?, separator: String?): String? =
+            if (ns1.isEmpty()) ns2 else ns1 + separator + ns2
     }
 }

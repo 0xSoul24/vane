@@ -16,7 +16,7 @@ import org.oddlama.vane.core.config.recipes.ShapedRecipeDefinition
 import org.oddlama.vane.core.enchantments.CustomEnchantment
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.enchantments.Enchantments
-import org.oddlama.vane.util.Conversions
+import org.oddlama.vane.util.msToTicks
 import org.oddlama.vane.util.ItemUtil
 import org.oddlama.vane.util.PlayerUtil
 
@@ -98,7 +98,7 @@ class Wings(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?>(
         }
 
         // Apply boost
-        val cooldown = Conversions.msToTicks(getBoostCooldown(level).toLong())
+        val cooldown = msToTicks(getBoostCooldown(level).toLong())
         player.setCooldown(Material.ELYTRA, cooldown.toInt())
         PlayerUtil.applyElytraBoost(player, getBoostStrength(level))
         ItemUtil.damageItem(player, chest, (1.0 + 2.0 * Math.random()).toInt())

@@ -72,7 +72,7 @@ class Portal {
     }
 
     fun spawnWorld(): UUID? {
-        return spawn!!.worldId()
+        return spawn!!.worldId
     }
 
     fun spawn(): Location {

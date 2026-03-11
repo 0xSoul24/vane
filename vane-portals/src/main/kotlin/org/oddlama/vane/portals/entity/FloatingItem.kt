@@ -16,7 +16,7 @@ class FloatingItem(entitytypes: EntityType<out ItemEntity>, world: Level) : Item
 ) {
     constructor(location: Location) : this(location.getWorld(), location.x, location.y, location.z)
 
-    constructor(world: World, x: Double, y: Double, z: Double) : this(EntityType.ITEM, Nms.worldHandle(world)!!) {
+    constructor(world: World, x: Double, y: Double, z: Double) : this(EntityType.ITEM, Nms.worldHandle(world)) {
         setPos(x, y, z)
     }
 

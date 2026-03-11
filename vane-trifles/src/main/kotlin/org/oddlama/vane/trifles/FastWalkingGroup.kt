@@ -8,7 +8,7 @@ import org.oddlama.vane.annotation.config.ConfigLong
 import org.oddlama.vane.annotation.config.ConfigMaterialSet
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.core.module.ModuleGroup
-import org.oddlama.vane.util.Conversions
+import org.oddlama.vane.util.msToTicks
 
 class FastWalkingGroup(context: Context<Trifles?>) :
     ModuleGroup<Trifles?>(context, "FastWalking", "Enable faster walking on certain materials.") {
@@ -27,7 +27,7 @@ class FastWalkingGroup(context: Context<Trifles?>) :
     var walkSpeedEffect: PotionEffect? = null
 
     override fun onConfigChange() {
-        val ticks = Conversions.msToTicks(configDuration)
+        val ticks = msToTicks(configDuration)
         walkSpeedEffect = PotionEffect(PotionEffectType.SPEED, ticks.toInt(), configSpeedLevel - 1)
             .withAmbient(false)
             .withParticles(false)

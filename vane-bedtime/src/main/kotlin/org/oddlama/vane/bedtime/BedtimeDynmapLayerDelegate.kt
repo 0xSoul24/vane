@@ -149,7 +149,7 @@ class BedtimeDynmapLayerDelegate(private val parent: BedtimeDynmapLayer) {
         // Update all existing
         val idSet = HashSet<String?>()
         for (player in this.module!!.offlinePlayersWithValidName) {
-            if (updateMarker(player!!)) {
+            if (updateMarker(player)) {
                 idSet.add(idFor(player))
             }
         }

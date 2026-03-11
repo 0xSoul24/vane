@@ -3,7 +3,7 @@ package org.oddlama.vane.proxycore.commands
 import org.oddlama.vane.proxycore.Maintenance
 import org.oddlama.vane.proxycore.ProxyPlayer
 import org.oddlama.vane.proxycore.VaneProxyPlugin
-import org.oddlama.vane.util.TimeUtil.parseTime
+import org.oddlama.vane.util.parseTime
 import java.util.*
 
 class ProxyMaintenanceCommand(permission: String?, plugin: VaneProxyPlugin) : ProxyCommand(permission, plugin) {

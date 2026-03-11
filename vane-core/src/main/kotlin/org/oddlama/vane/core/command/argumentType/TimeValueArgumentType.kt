@@ -11,34 +11,23 @@ import org.oddlama.vane.core.command.enums.TimeValue
 import java.util.concurrent.CompletableFuture
 
 class TimeValueArgumentType : CustomArgumentType.Converted<TimeValue, String> {
-    override fun getNativeType(): ArgumentType<String> {
-        return StringArgumentType.word()
-    }
+    override fun getNativeType(): ArgumentType<String> = StringArgumentType.word()
 
     @Throws(CommandSyntaxException::class)
-    override fun convert(nativeType: String): TimeValue {
-        return TimeValue.valueOf(nativeType)
-    }
+    override fun convert(nativeType: String): TimeValue = TimeValue.valueOf(nativeType.replaceFirstChar { it.uppercaseChar() })
 
-    // Use the exact signature expected by Brigadier: S : Any
     override fun <S : Any> listSuggestions(
         context: CommandContext<S>,
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> {
-        val remaining = builder.remaining
-        for (time in TimeValue.entries) {
-            val name = time.name
-            if (remaining.isBlank() || name.contains(remaining)) {
-                builder.suggest(name)
-            }
-        }
+        val remaining = builder.remaining.lowercase()
+        TimeValue.entries
+            .filter { remaining.isBlank() || it.displayName.contains(remaining) }
+            .forEach { builder.suggest(it.displayName) }
         return builder.buildFuture()
     }
 
     companion object {
-        @JvmStatic
-        fun timeValue(): TimeValueArgumentType {
-            return TimeValueArgumentType()
-        }
+        fun timeValue() = TimeValueArgumentType()
     }
 }

@@ -18,40 +18,26 @@ open class ModuleGroup<T : Module<T?>?> @JvmOverloads constructor(
     @JvmField
     var configEnabledDef: Boolean = true
 
-    fun configEnabledDef(): Boolean {
-        return configEnabledDef
-    }
-
-    fun configEnabledDesc(): String? {
-        return configEnabledDesc
-    }
+    fun configEnabledDef(): Boolean = configEnabledDef
+    fun configEnabledDesc(): String? = configEnabledDesc
 
     init {
-        if (compileSelf) {
-            compileSelf()
-        }
+        if (compileSelf) compileSelf()
     }
 
-    override fun enabled(): Boolean {
-        return configEnabled
-    }
+    override fun enabled(): Boolean = configEnabled
 
     override fun enable() {
-        if (configEnabled) {
-            super.enable()
-        }
+        if (configEnabled) super.enable()
     }
 
     override fun disable() {
-        if (configEnabled) {
-            super.disable()
-        }
+        if (configEnabled) super.disable()
     }
 
     companion object {
         @JvmStatic
-        fun <U : Module<U?>?> create(context: Context<U?>, group: String?, description: String?): ModuleGroup<U?> {
-            return ModuleGroup(context, group, description)
-        }
+        fun <U : Module<U?>?> create(context: Context<U?>, group: String?, description: String?): ModuleGroup<U?> =
+            ModuleGroup(context, group, description)
     }
 }

@@ -78,7 +78,7 @@ class PortalTeleporter(context: Context<Portals?>?) : Listener<Portals?>(context
             if (entity is Player) {
                 // For players traveling in the same world, we can use the NMS player's connection's
                 // teleport method, which only modifies player position without dismounting.
-                Nms.getPlayer(entity)!!.connection.teleport(
+                Nms.getPlayer(entity).connection.teleport(
                     targetLocation.x,
                     targetLocation.y,
                     targetLocation.z,
@@ -87,7 +87,7 @@ class PortalTeleporter(context: Context<Portals?>?) : Listener<Portals?>(context
                 )
             } else {
                 // Similarly, we can just move entities.
-                nmsEntity!!.absSnapTo(
+                nmsEntity.absSnapTo(
                     targetLocation.x,
                     targetLocation.y,
                     targetLocation.z,
@@ -97,7 +97,7 @@ class PortalTeleporter(context: Context<Portals?>?) : Listener<Portals?>(context
             }
 
             // For some unknown reason (SPIGOT-619) we always need to set the yaw again.
-            nmsEntity!!.yHeadRot = targetLocation.yaw
+            nmsEntity.yHeadRot = targetLocation.yaw
         } else {
             val passengers = ArrayList(entity.passengers)
 

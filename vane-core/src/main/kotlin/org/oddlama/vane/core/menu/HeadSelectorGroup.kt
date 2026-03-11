@@ -10,16 +10,15 @@ import org.oddlama.vane.core.module.ModuleComponent
 
 class HeadSelectorGroup(context: Context<Core?>) :
     ModuleComponent<Core?>(context.namespace("HeadSelector", "Menu configuration for the head selector menu.")) {
-    @JvmField
+
     @LangMessage
-    var langTitle: TranslatedMessage? = null
+    lateinit var langTitle: TranslatedMessage
+
+    @LangMessage
+    lateinit var langFilterTitle: TranslatedMessage
 
     @JvmField
-    @LangMessage
-    var langFilterTitle: TranslatedMessage? = null
-
-    @JvmField
-    var itemSelectHead: TranslatedItemStack<*>? = TranslatedItemStack<Core?>(
+    var itemSelectHead: TranslatedItemStack<*> = TranslatedItemStack<Core?>(
         getContext()!!,
         "SelectHead",
         Material.BARRIER,

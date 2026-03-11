@@ -376,7 +376,7 @@ class Portals : Module<Portals?>() {
         // Play sound
         portal
             .spawn()
-            .getWorld()
+            .world
             .playSound(portal.spawn(), Sound.ENTITY_ENDER_EYE_DEATH, SoundCategory.BLOCKS, 1.0f, 1.0f)
     }
 
@@ -389,7 +389,7 @@ class Portals : Module<Portals?>() {
         // Play sound
         portal
             .spawn()
-            .getWorld()
+            .world
             .playSound(portal.spawn(), Sound.ENTITY_ENDER_EYE_DEATH, SoundCategory.BLOCKS, 1.0f, 2.0f)
     }
 
@@ -402,7 +402,7 @@ class Portals : Module<Portals?>() {
     }
 
     fun allAvailablePortals(): MutableCollection<Portal?> {
-        return portals.values.stream().filter { p: Portal? -> p!!.spawn().isWorldLoaded() }.collect(Collectors.toList())
+        return portals.values.stream().filter { p: Portal? -> p!!.spawn().isWorldLoaded }.collect(Collectors.toList())
     }
 
     fun removePortalBlock(portalBlock: PortalBlock) {
@@ -507,7 +507,7 @@ class Portals : Module<Portals?>() {
 
     fun portalFor(uuid: UUID?): Portal? {
         val portal = portals[uuid]
-        if (portal == null || !portal.spawn().isWorldLoaded()) {
+        if (portal == null || !portal.spawn().isWorldLoaded) {
             return null
         }
         return portal
@@ -641,7 +641,7 @@ class Portals : Module<Portals?>() {
         stopDisableTask(portal, target)
         val task = scheduleTask(
             PortalDisableRunnable(portal, target),
-            Conversions.msToTicks(configDeactivationDelay)
+            msToTicks(configDeactivationDelay)
         )
         disableTasks[portal.id()] = task
         disableTasks[target.id()] = task
@@ -882,7 +882,7 @@ class Portals : Module<Portals?>() {
         persistentStorageManager.addMigrationTo(
              2,
              "Portal visibility GROUP_INTERNAL was added. This is a no-op."
-        ) { json -> }
+        ) { _ -> }
     }
 
     fun loadPersistentData(world: World) {

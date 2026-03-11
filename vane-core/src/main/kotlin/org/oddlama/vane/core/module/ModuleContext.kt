@@ -17,41 +17,30 @@ open class ModuleContext<T : Module<T?>?> @JvmOverloads constructor(
 ) : Context<T?> {
     override var module: T? = null // cache to not generate chains of getContext()
         protected set
-    private val subcontexts: MutableList<Context<T?>> = ArrayList<Context<T?>>()
-    private val components: MutableList<ModuleComponent<T?>> = ArrayList<ModuleComponent<T?>>()
+    private val subcontexts: MutableList<Context<T?>> = mutableListOf()
+    private val components: MutableList<ModuleComponent<T?>> = mutableListOf()
 
     // Guard to avoid compiling the same context multiple times
-    private var compiled: Boolean = false
+    private var compiled = false
 
     init {
-        this.module = context.module
-
-        if (compileSelf) {
-            compileSelf()
-        }
+        module = context.module
+        if (compileSelf) compileSelf()
     }
 
-    override fun yamlPath(): String? {
-        return Context.appendYamlPath(context.yamlPath()!!, name, separator)
-    }
+    override fun yamlPath(): String? =
+        Context.appendYamlPath(context.yamlPath()!!, name, separator)
 
-    override fun variableYamlPath(variable: String?): String? {
-        return Context.appendYamlPath(yamlPath()!!, variable, separator)
-    }
+    override fun variableYamlPath(variable: String?): String? =
+        Context.appendYamlPath(yamlPath()!!, variable, separator)
 
-    override fun enabled(): Boolean {
-        return context.enabled()
-    }
+    override fun enabled(): Boolean = context.enabled()
 
     private fun compileComponent(component: Any) {
-        module!!.langManager.compile(component) { variable: String? -> this.variableYamlPath(variable) ?: "" }
-        module!!.configManager.compile(component) { variable: String? -> this.variableYamlPath(variable) ?: "" }
-        if (description != null) {
-            module!!.configManager.addSectionDescription(yamlPath(), description)
-        }
-        module!!.persistentStorageManager.compile(
-            component
-        ) { variable: String? -> this.variableYamlPath(variable) ?: "" }
+        module!!.langManager.compile(component) { variableYamlPath(it) ?: "" }
+        module!!.configManager.compile(component) { variableYamlPath(it) ?: "" }
+        if (description != null) module!!.configManager.addSectionDescription(yamlPath(), description)
+        module!!.persistentStorageManager.compile(component) { variableYamlPath(it) ?: "" }
     }
 
     // Changed visibility to internal so Module can safely trigger compilation after initialization
@@ -68,7 +57,7 @@ open class ModuleContext<T : Module<T?>?> @JvmOverloads constructor(
         // which would create a self-reference; that must be handled by the parent.
         try {
             context.addChild(this)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // Swallow exceptions here to avoid breaking initialization; the parent
             // should manage subcontext relationships correctly. Log if necessary.
         }
@@ -85,60 +74,36 @@ open class ModuleContext<T : Module<T?>?> @JvmOverloads constructor(
 
     override fun enable() {
         onModuleEnable()
-        for (component in components) {
-            component.dispatchEnable()
-        }
-        for (subcontext in subcontexts) {
-            subcontext.enable()
-        }
+        components.forEach { it.dispatchEnable() }
+        subcontexts.forEach { it.enable() }
     }
 
     override fun disable() {
-        for (i in subcontexts.indices.reversed()) {
-            subcontexts[i].disable()
-        }
-        for (i in components.indices.reversed()) {
-            components[i].dispatchDisable()
-        }
+        subcontexts.reversed().forEach { it.disable() }
+        components.reversed().forEach { it.dispatchDisable() }
         onModuleDisable()
     }
 
     override fun configChange() {
         onConfigChange()
-        for (component in components) {
-            component.dispatchConfigChange()
-        }
-        for (subcontext in subcontexts) {
-            subcontext.configChange()
-        }
+        components.forEach { it.dispatchConfigChange() }
+        subcontexts.forEach { it.configChange() }
     }
 
     @Throws(IOException::class)
     override fun generateResourcePack(pack: ResourcePackGenerator?) {
         onGenerateResourcePack(pack)
-        for (component in components) {
-            component.onGenerateResourcePack(pack)
-        }
-        for (subcontext in subcontexts) {
-            subcontext.generateResourcePack(pack)
-        }
+        components.forEach { it.onGenerateResourcePack(pack) }
+        subcontexts.forEach { it.generateResourcePack(pack) }
     }
 
     override fun forEachModuleComponent(f: Consumer1<ModuleComponent<*>?>?) {
-        for (component in components) {
-            f!!.apply(component)
-        }
-        for (subcontext in subcontexts) {
-            subcontext.forEachModuleComponent(f)
-        }
+        components.forEach { f!!.apply(it) }
+        subcontexts.forEach { it.forEachModuleComponent(f) }
     }
 
     override fun onModuleEnable() {}
-
     override fun onModuleDisable() {}
-
     override fun onConfigChange() {}
-
-    @Throws(IOException::class)
-    override fun onGenerateResourcePack(pack: ResourcePackGenerator?) {}
+    @Throws(IOException::class) override fun onGenerateResourcePack(pack: ResourcePackGenerator?) {}
 }

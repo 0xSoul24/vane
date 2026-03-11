@@ -16,7 +16,6 @@ import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.core.module.Module
 import org.oddlama.vane.core.module.ModuleComponent
 import org.oddlama.vane.util.ItemUtil
-import java.util.function.Consumer
 
 class TranslatedItemStack<T : Module<T?>?>(
     context: Context<T?>,
@@ -58,37 +57,24 @@ class TranslatedItemStack<T : Module<T?>?>(
         desc: String?
     ) : this(context, configNamespace, from(defMaterial), defAmount, desc)
 
-    fun item(vararg args: Any?): ItemStack {
-        return ItemUtil.nameItem(
-            configMaterial!!.item(configAmount)!!,
-            langName!!.format(*args),
-            langLore!!.format(*args)
-        )
-    }
+    fun item(vararg args: Any?): ItemStack =
+        ItemUtil.nameItem(configMaterial!!.item(configAmount)!!, langName!!.format(*args), langLore!!.format(*args))
 
-    fun itemTransformLore(fLore: Consumer<MutableList<Component?>?>, vararg args: Any?): ItemStack {
+    fun itemTransformLore(fLore: (MutableList<Component?>?) -> Unit, vararg args: Any?): ItemStack {
         val lore = langLore!!.format(*args)
-        fLore.accept(lore)
+        fLore(lore)
         return ItemUtil.nameItem(configMaterial!!.item(configAmount)!!, langName!!.format(*args), lore)
     }
 
-    fun itemAmount(amount: Int, vararg args: Any?): ItemStack {
-        return ItemUtil.nameItem(configMaterial!!.item(amount)!!, langName!!.format(*args), langLore!!.format(*args))
-    }
+    fun itemAmount(amount: Int, vararg args: Any?): ItemStack =
+        ItemUtil.nameItem(configMaterial!!.item(amount)!!, langName!!.format(*args), langLore!!.format(*args))
 
-    fun alternative(alternative: ItemStack, vararg args: Any?): ItemStack {
-        return ItemUtil.nameItem(alternative, langName!!.format(*args), langLore!!.format(*args))
-    }
+    fun alternative(alternative: ItemStack, vararg args: Any?): ItemStack =
+        ItemUtil.nameItem(alternative, langName!!.format(*args), langLore!!.format(*args))
 
-    fun configMaterialDef(): ExtendedMaterial? {
-        return defMaterial
-    }
-
-    fun configAmountDef(): Int {
-        return defAmount
-    }
+    fun configMaterialDef(): ExtendedMaterial? = defMaterial
+    fun configAmountDef(): Int = defAmount
 
     override fun onEnable() {}
-
     override fun onDisable() {}
 }

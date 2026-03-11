@@ -7,136 +7,80 @@ import org.oddlama.vane.core.YamlLoadException
 import org.oddlama.vane.util.MaterialUtil.materialFrom
 import org.oddlama.vane.util.StorageUtil.namespacedKey
 import java.lang.reflect.Field
-import java.util.function.Function
 
 class ConfigItemStackField(
     owner: Any?,
     field: Field,
-    mapName: Function<String?, String?>,
+    mapName: (String?) -> String?,
     var annotation: ConfigItemStack
 ) : ConfigField<ItemStack?>(owner, field, mapName, "item stack", annotation.desc) {
+
+    private fun ItemStack.materialKeyString() =
+        "\"${escapeYaml(type.key.namespace)}:${escapeYaml(type.key.key)}\""
+
     private fun appendItemStackDefinition(builder: StringBuilder, indent: String?, prefix: String?, def: ItemStack) {
-        // Material
-        builder.append(indent)
-        builder.append(prefix)
-        builder.append("  material: ")
-        val material =
-            "\"" +
-                    escapeYaml(def.type.getKey().namespace) +
-                    ":" +
-                    escapeYaml(def.type.getKey().key) +
-                    "\""
-        builder.append(material)
-        builder.append("\n")
-
-        // Amount
-        if (def.amount != 1) {
-            builder.append(indent)
-            builder.append(prefix)
-            builder.append("  amount: ")
-            builder.append(def.amount)
-            builder.append("\n")
-        }
+        builder.append("$indent$prefix  material: ${def.materialKeyString()}\n")
+        if (def.amount != 1) builder.append("$indent$prefix  amount: ${def.amount}\n")
     }
 
-    override fun def(): ItemStack {
-        val override = overriddenDef()
-        return override ?: ItemStack(annotation.def.type, annotation.def.amount)
-    }
-
-    override fun metrics(): Boolean {
-        val override = overriddenMetrics()
-        return override ?: annotation.metrics
-    }
+    override fun def(): ItemStack = overriddenDef() ?: ItemStack(annotation.def.type, annotation.def.amount)
+    override fun metrics(): Boolean = overriddenMetrics() ?: annotation.metrics
 
     override fun generateYaml(builder: StringBuilder, indent: String, existingCompatibleConfig: YamlConfiguration?) {
         appendDescription(builder, indent)
-
-        // Default
-        builder.append(indent)
-        builder.append("# Default:\n")
+        builder.append("$indent# Default:\n")
         appendItemStackDefinition(builder, indent, "# ", def())
-
-        // Definition
-        builder.append(indent)
-        builder.append(basename())
-        builder.append(":\n")
+        builder.append("$indent${basename()}:\n")
         val def = if (existingCompatibleConfig != null && existingCompatibleConfig.contains(yamlPath()))
-            loadFromYaml(existingCompatibleConfig)
-        else
-            def()
+            loadFromYaml(existingCompatibleConfig) else def()
         appendItemStackDefinition(builder, indent, "", def)
     }
 
     @Throws(YamlLoadException::class)
     override fun checkLoadable(yaml: YamlConfiguration) {
         checkYamlPath(yaml)
-
-        if (!yaml.isConfigurationSection(yamlPath())) {
-            throw YamlLoadException("Invalid type for yaml path '" + yamlPath() + "', expected group")
-        }
-
+        if (!yaml.isConfigurationSection(yamlPath()))
+            throw YamlLoadException("Invalid type for yaml path '${yamlPath()}', expected group")
         for (varKey in yaml.getConfigurationSection(yamlPath())!!.getKeys(false)) {
-            val varPath = yamlPath() + "." + varKey
+            val varPath = "${yamlPath()}.$varKey"
             when (varKey) {
                 "material" -> {
-                    if (!yaml.isString(varPath)) {
+                    if (!yaml.isString(varPath))
                         throw YamlLoadException("Invalid type for yaml path '$varPath', expected list")
-                    }
-
-                    val str = yaml.getString(varPath)
-                    val split: Array<String?> = str!!.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                    if (split.size != 2) {
-                        throw YamlLoadException(
-                            "Invalid material for yaml path '" +
-                                    yamlPath() +
-                                    "': '" +
-                                    str +
-                                    "' is not a valid namespaced key"
-                        )
-                    }
+                    val str = yaml.getString(varPath)!!
+                    val (ns, key) = requireNamespacedKeyParts(yamlPath(), str, "material")
+                    if (ns.isEmpty() || key.isEmpty())
+                        throw YamlLoadException("Invalid material for yaml path '${yamlPath()}': '$str' is not a valid namespaced key")
                 }
-
                 "amount" -> {
-                    if (yaml.get(varPath) !is Number) {
-                        throw YamlLoadException("Invalid type for yaml path '" + yamlPath() + "', expected int")
-                    }
-                    val `val` = yaml.getInt(yamlPath())
-                    if (`val` < 0) {
-                        throw YamlLoadException("Invalid value for yaml path '" + yamlPath() + "' Must be >= 0")
-                    }
+                    if (yaml.get(varPath) !is Number)
+                        throw YamlLoadException("Invalid type for yaml path '${yamlPath()}', expected int")
+                    if (yaml.getInt(varPath) < 0)
+                        throw YamlLoadException("Invalid value for yaml path '${yamlPath()}' Must be >= 0")
                 }
             }
         }
     }
 
     fun loadFromYaml(yaml: YamlConfiguration): ItemStack {
-        var materialStr: String? = ""
+        var materialStr = ""
         var amount = 1
         for (varKey in yaml.getConfigurationSection(yamlPath())!!.getKeys(false)) {
-            val varPath = yamlPath() + "." + varKey
+            val varPath = "${yamlPath()}.$varKey"
             when (varKey) {
-                "material" -> {
-                    amount = 0
-                    materialStr = yaml.getString(varPath)
-                }
-
-                "amount" -> {
-                    amount = yaml.getInt(varPath)
-                }
+                "material" -> { materialStr = yaml.getString(varPath)!!; amount = 0 }
+                "amount"   -> amount = yaml.getInt(varPath)
             }
         }
-
-        val split: Array<String?> = materialStr!!.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        val material = materialFrom(namespacedKey(split[0]!!, split[1]!!))
-        return ItemStack(material!!, amount)
+        val (ns, key) = requireNamespacedKeyParts(yamlPath(), materialStr, "material")
+        return ItemStack(materialFrom(namespacedKey(ns, key))!!, amount)
     }
 
     override fun load(yaml: YamlConfiguration) {
         try {
             field.set(owner, loadFromYaml(yaml))
-        } catch (e: IllegalAccessException) {
-            throw RuntimeException("Invalid field access on '" + field.name + "'. This is a bug.")
+        } catch (_: IllegalAccessException) {
+            throw RuntimeException("Invalid field access on '${field.name}'. This is a bug.")
         }
     }
 }

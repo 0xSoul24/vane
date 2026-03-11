@@ -18,7 +18,7 @@ import org.oddlama.vane.core.item.api.InhibitBehavior
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.trifles.Trifles
 import org.oddlama.vane.trifles.items.XpBottles.XpBottle
-import org.oddlama.vane.util.Conversions
+import org.oddlama.vane.util.expForLevel
 import org.oddlama.vane.util.PlayerUtil
 import java.util.*
 import kotlin.math.roundToInt
@@ -92,7 +92,7 @@ class EmptyXpBottle(context: Context<Trifles?>) : CustomItem<Trifles?>(context) 
         var xpBottle: XpBottle? = null
         var exp = 0
         for (bottle in module!!.xpBottles!!.bottles) {
-            val curExp = ((1.0 / (1.0 - configLossPercentage)) * Conversions.expForLevel(bottle.configCapacity)).toInt()
+            val curExp = ((1.0 / (1.0 - configLossPercentage)) * expForLevel(bottle.configCapacity)).toInt()
 
             // Check if player has enough xp and this variant has more than the last
             if (getTotalExp(player) >= curExp && curExp > exp) {

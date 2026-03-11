@@ -17,18 +17,18 @@ import org.oddlama.vane.core.module.Context
 
 @Name("weather")
 class Weather(context: Context<Admin?>) : org.oddlama.vane.core.command.Command<Admin?>(context) {
-    override fun getCommandBase(): LiteralArgumentBuilder<CommandSourceStack> {
-        return super.getCommandBase()
+    override fun getCommandBase(): LiteralArgumentBuilder<CommandSourceStack> =
+        super.getCommandBase()
             .then(help())
             .then(
                 Commands.argument<WeatherValue>("weather", WeatherArgumentType.weather())
-                    .executes { ctx: CommandContext<CommandSourceStack> ->
+                    .executes { ctx ->
                         setWeatherCurrentWorld(ctx.source.sender as Player, weather(ctx))
                         Command.SINGLE_SUCCESS
                     }
                     .then(
                         Commands.argument("world", ArgumentTypes.world())
-                            .executes { ctx: CommandContext<CommandSourceStack> ->
+                            .executes { ctx ->
                                 setWeather(
                                     ctx.source.sender,
                                     weather(ctx),
@@ -38,18 +38,15 @@ class Weather(context: Context<Admin?>) : org.oddlama.vane.core.command.Command<
                             }
                     )
             )
-    }
 
-    private fun weather(ctx: CommandContext<CommandSourceStack>): WeatherValue {
-        return ctx.getArgument("weather", WeatherValue::class.java)
-    }
+    private fun weather(ctx: CommandContext<CommandSourceStack>): WeatherValue =
+        ctx.getArgument("weather", WeatherValue::class.java)
 
-    private fun setWeatherCurrentWorld(player: Player, w: WeatherValue) {
+    private fun setWeatherCurrentWorld(player: Player, w: WeatherValue) =
         setWeather(player, w, player.world)
-    }
 
-    private fun setWeather(sender: CommandSender?, w: WeatherValue, world: World) {
-        world.setStorm(w.storm())
-        world.isThundering = w.thunder()
+    private fun setWeather(@Suppress("UNUSED_PARAMETER") sender: CommandSender?, w: WeatherValue, world: World) {
+        world.setStorm(w.storm)
+        world.isThundering = w.thunder
     }
 }

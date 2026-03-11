@@ -32,8 +32,8 @@ import org.oddlama.vane.core.module.Module
 import org.oddlama.vane.core.module.ModuleComponent
 import org.oddlama.vane.core.resourcepack.ResourcePackDistributor
 import org.oddlama.vane.core.resourcepack.ResourcePackGenerator
-import org.oddlama.vane.util.Conversions.msToTicks
 import org.oddlama.vane.util.IOUtil.readJsonFromUrl
+import org.oddlama.vane.util.msToTicks
 import java.io.File
 import java.io.IOException
 import java.net.URISyntaxException
@@ -52,29 +52,20 @@ class Core : Module<Core?>() {
     )
     var configPlayerHeadsInMenus: Boolean = false
 
-    @LangMessage
-    var langCommandNotAPlayer: TranslatedMessage? = null
-
-    @LangMessage
-    var langCommandPermissionDenied: TranslatedMessage? = null
-
-    @LangMessage
-    var langInvalidTimeFormat: TranslatedMessage? = null
+    @LangMessage var langCommandNotAPlayer: TranslatedMessage? = null
+    @LangMessage var langCommandPermissionDenied: TranslatedMessage? = null
+    @LangMessage var langInvalidTimeFormat: TranslatedMessage? = null
 
     // Module registry
-    private val vaneModules: SortedSet<Module<*>> =
-        TreeSet(
-            Comparator { a: Module<*>, b: Module<*> ->
-                a.annotationName.compareTo(b.annotationName)
-            })
+    private val vaneModules: SortedSet<Module<*>> = TreeSet(compareBy { it.annotationName })
 
     val resourcePackDistributor: ResourcePackDistributor
 
-    fun registerModule(module: Module<*>?) {
+    fun registerModule(module: Module<*>) {
         vaneModules.add(module)
     }
 
-    fun unregisterModule(module: Module<*>?) {
+    fun unregisterModule(module: Module<*>) {
         vaneModules.remove(module)
     }
 
@@ -136,7 +127,7 @@ class Core : Module<Core?>() {
         if (configUpdateNotices) {
             // Now, and every hour after that, check if a new version is available.
             // OPs will get a message about this when they join.
-            scheduleTaskTimer({ this.checkForUpdate() }, 1L, msToTicks(2 * 60L * 60L * 1000L))
+            scheduleTaskTimer(::checkForUpdate, 1L, msToTicks(2 * 60L * 60L * 1000L))
         }
     }
 
@@ -146,12 +137,10 @@ class Core : Module<Core?>() {
         try {
             // Make relevant fields accessible
             val frozen = MappedRegistry::class.java.getDeclaredField("frozen" /* frozen */)
-            frozen.setAccessible(true)
-            val intrusiveHolderCache =
-                MappedRegistry::class.java.getDeclaredField(
-                    "unregisteredIntrusiveHolders" /* unregisteredIntrusiveHolders (1.19.3+), intrusiveHolderCache (until 1.19.2) */
-                )
-            intrusiveHolderCache.setAccessible(true)
+                .also { it.isAccessible = true }
+            val intrusiveHolderCache = MappedRegistry::class.java.getDeclaredField(
+                "unregisteredIntrusiveHolders" /* unregisteredIntrusiveHolders (1.19.3+), intrusiveHolderCache (until 1.19.2) */
+            ).also { it.isAccessible = true }
 
             // Unfreeze required registries
             frozen.set(BuiltInRegistries.ENTITY_TYPE, false)
@@ -160,56 +149,41 @@ class Core : Module<Core?>() {
                 IdentityHashMap<EntityType<*>?, Holder.Reference<EntityType<*>?>?>()
             )
             // Since 1.20.2 this is also needed for enchantments:
-        } catch (e: NoSuchFieldException) {
-            log.log(Level.SEVERE, "Failed to unfreeze registries", e)
-        } catch (e: SecurityException) {
-            log.log(Level.SEVERE, "Failed to unfreeze registries", e)
-        } catch (e: IllegalArgumentException) {
-            log.log(Level.SEVERE, "Failed to unfreeze registries", e)
-        } catch (e: IllegalAccessException) {
-            log.log(Level.SEVERE, "Failed to unfreeze registries", e)
-        }
-    }
-
-    override fun onModuleDisable() {}
-
-    fun generateResourcePack(): File? {
-        try {
-            val file = File("VaneResourcePack.zip")
-            val pack = ResourcePackGenerator()
-
-            for (m in vaneModules) {
-                m.generateResourcePack(pack)
-            }
-
-            pack.write(file)
-            return file
         } catch (e: Exception) {
-            log.log(Level.SEVERE, "Error while generating resourcepack", e)
-            return null
+            when (e) {
+                is NoSuchFieldException, is SecurityException, is IllegalArgumentException, is IllegalAccessException ->
+                    log.log(Level.SEVERE, "Failed to unfreeze registries", e)
+                else -> throw e
+            }
         }
     }
+
+    override fun onModuleDisable() = Unit
+
+    fun generateResourcePack(): File? =
+        runCatching {
+            File("VaneResourcePack.zip").also { file ->
+                ResourcePackGenerator().also { pack ->
+                    vaneModules.forEach { it.generateResourcePack(pack) }
+                    pack.write(file)
+                }
+            }
+        }.onFailure { log.log(Level.SEVERE, "Error while generating resourcepack", it) }.getOrNull()
 
     fun forAllModuleComponents(f: Consumer1<ModuleComponent<*>?>?) {
-        for (m in vaneModules) {
-            m.forEachModuleComponent(f)
-        }
+        vaneModules.forEach { it.forEachModuleComponent(f) }
     }
 
-    fun itemRegistry(): CustomItemRegistry? {
-        return itemRegistry
-    }
+    fun itemRegistry(): CustomItemRegistry? = itemRegistry
 
-    fun modelDataRegistry(): CustomModelDataRegistry? {
-        return modelDataRegistry
-    }
+    fun modelDataRegistry(): CustomModelDataRegistry? = modelDataRegistry
 
     fun checkForUpdate() {
         if (currentVersion == null) {
             try {
-                val properties = Properties()
-                properties.load(Core::class.java.getResourceAsStream("/vane-core.properties"))
-                currentVersion = "v" + properties.getProperty("version")
+                currentVersion = "v" + Properties().also { props ->
+                    props.load(Core::class.java.getResourceAsStream("/vane-core.properties"))
+                }.getProperty("version")
             } catch (e: IOException) {
                 log.severe("Could not load current version from included properties file: $e")
                 return
@@ -220,61 +194,45 @@ class Core : Module<Core?>() {
             val json = readJsonFromUrl("https://api.github.com/repos/oddlama/vane/releases/latest")
             latestVersion = json.getString("tag_name")
             if (latestVersion != null && latestVersion != currentVersion) {
-                log.warning(
-                    "A newer version of vane is available online! (current=" +
-                            currentVersion +
-                            ", new=" +
-                            latestVersion +
-                            ")"
-                )
+                log.warning("A newer version of vane is available online! (current=$currentVersion, new=$latestVersion)")
                 log.warning("Please update as soon as possible to get the latest features and fixes.")
                 log.warning("Get the latest release here: https://github.com/oddlama/vane/releases/latest")
             }
-        } catch (e: IOException) {
-            log.warning("Could not check for updates: $e")
-        } catch (e: JSONException) {
-            log.warning("Could not check for updates: $e")
-        } catch (e: URISyntaxException) {
-            log.warning("Could not check for updates: $e")
+        } catch (e: Exception) {
+            when (e) {
+                is IOException, is JSONException, is URISyntaxException ->
+                    log.warning("Could not check for updates: $e")
+                else -> throw e
+            }
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
     fun onPlayerJoinSendUpdateNotice(event: PlayerJoinEvent) {
-        if (!configUpdateNotices) {
-            return
-        }
+        if (!configUpdateNotices) return
 
+        val player = event.player
         // Send an update message if a new version is available and player is OP.
-        if (latestVersion != null && (latestVersion != currentVersion) && event.getPlayer().isOp) {
+        if (latestVersion != null && latestVersion != currentVersion && player.isOp) {
             // This message is intentionally not translated to ensure it will
             // be displayed correctly and so that everyone understands it.
-            event
-                .getPlayer()
-                .sendMessage(
-                    Component.text("A new version of vane ", NamedTextColor.GREEN)
-                        .append(Component.text("($latestVersion)", NamedTextColor.AQUA))
-                        .append(Component.text(" is available!", NamedTextColor.GREEN))
-                )
-            event
-                .getPlayer()
-                .sendMessage(Component.text("Please update soon to get the latest features.", NamedTextColor.GREEN))
-            event
-                .getPlayer()
-                .sendMessage(
-                    Component.text("Click here to go to the download page", NamedTextColor.AQUA).clickEvent(
-                        ClickEvent.openUrl("https://github.com/oddlama/vane/releases/latest")
-                    )
-                )
+            player.sendMessage(
+                Component.text("A new version of vane ", NamedTextColor.GREEN)
+                    .append(Component.text("($latestVersion)", NamedTextColor.AQUA))
+                    .append(Component.text(" is available!", NamedTextColor.GREEN))
+            )
+            player.sendMessage(Component.text("Please update soon to get the latest features.", NamedTextColor.GREEN))
+            player.sendMessage(
+                Component.text("Click here to go to the download page", NamedTextColor.AQUA)
+                    .clickEvent(ClickEvent.openUrl("https://github.com/oddlama/vane/releases/latest"))
+            )
         }
     }
 
     companion object {
-        /** Use sparingly.  */
+        /** Use sparingly. */
         private var INSTANCE: Core? = null
 
-        fun instance(): Core? {
-            return INSTANCE
-        }
+        fun instance(): Core? = INSTANCE
     }
 }

@@ -16,7 +16,6 @@ import net.minecraft.util.datafix.DataFixers
 import net.minecraft.util.datafix.fixes.References
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
-import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.CreativeModeTabs
 import net.minecraft.world.item.crafting.RecipeHolder
 import org.bukkit.Bukkit
@@ -34,59 +33,34 @@ import org.bukkit.inventory.ItemStack
 
 object Nms {
     @JvmStatic
-    fun getPlayer(player: Player): ServerPlayer? {
-        return (player as CraftPlayer).handle
-    }
+    fun getPlayer(player: Player): ServerPlayer = (player as CraftPlayer).handle
 
     @JvmStatic
-    fun entityHandle(entity: org.bukkit.entity.Entity): Entity? {
-        return (entity as CraftEntity).handle
-    }
+    fun entityHandle(entity: org.bukkit.entity.Entity): Entity = (entity as CraftEntity).handle
 
-    fun bukkitItemStack(stack: net.minecraft.world.item.ItemStack?): ItemStack {
-        return CraftItemStack.asCraftMirror(stack)
-    }
-
+    fun bukkitItemStack(stack: net.minecraft.world.item.ItemStack?): ItemStack =
+        CraftItemStack.asCraftMirror(stack)
 
     @JvmStatic
     fun itemHandle(itemStack: ItemStack?): net.minecraft.world.item.ItemStack? {
-        if (itemStack == null) {
-            return null
-        }
-
-        if (itemStack !is CraftItemStack) {
-            return CraftItemStack.asNMSCopy(itemStack)
-        }
-
-        try {
+        itemStack ?: return null
+        if (itemStack !is CraftItemStack) return CraftItemStack.asNMSCopy(itemStack)
+        return try {
             val handle = CraftItemStack::class.java.getDeclaredField("handle")
-            handle.setAccessible(true)
-            return handle.get(itemStack) as net.minecraft.world.item.ItemStack?
-        } catch (e: NoSuchFieldException) {
-            return null
-        } catch (e: IllegalAccessException) {
-            return null
-        }
+                .also { it.isAccessible = true }
+            handle.get(itemStack) as? net.minecraft.world.item.ItemStack
+        } catch (_: NoSuchFieldException) { null }
+          catch (_: IllegalAccessException) { null }
     }
 
     @JvmStatic
-    fun playerHandle(player: Player?): ServerPlayer? {
-        if (player !is CraftPlayer) {
-            return null
-        }
-        return player.handle
-    }
+    fun playerHandle(player: Player?): ServerPlayer? = (player as? CraftPlayer)?.handle
 
     @JvmStatic
-    fun worldHandle(world: World): ServerLevel? {
-        return (world as CraftWorld).handle
-    }
+    fun worldHandle(world: World): ServerLevel = (world as CraftWorld).handle
 
     @JvmStatic
-    fun serverHandle(): DedicatedServer? {
-        val bukkitServer = Bukkit.getServer()
-        return (bukkitServer as CraftServer).server
-    }
+    fun serverHandle(): DedicatedServer = (Bukkit.getServer() as CraftServer).server
 
     @JvmStatic
     fun registerEntity(
@@ -95,51 +69,36 @@ object Nms {
         key: String?,
         builder: EntityType.Builder<*>
     ) {
-        val id = pseudoNamespace + "_" + key
-        // From:
-        // https://papermc.io/forums/t/register-and-spawn-a-custom-entity-on-1-13-x/293,
-        // adapted for 1.18
-        // Get the datafixer
+        val id = "${pseudoNamespace}_$key"
         val worldVersion = SharedConstants.getCurrentVersion().dataVersion().version()
         val worldVersionKey = DataFixUtils.makeKey(worldVersion)
-        val dataTypes: MutableMap<*, Type<*>?>? = DataFixers.getDataFixer()
+        @Suppress("UNCHECKED_CAST")
+        val dataTypesMap = DataFixers.getDataFixer()
             .getSchema(worldVersionKey)
             .findChoiceType(References.ENTITY)
-            .types()
-        @Suppress("UNCHECKED_CAST")
-        val dataTypesMap = dataTypes as MutableMap<Any, Type<*>?>
-        // Inject the new custom entity (this registers the key/id with the server,
-        // so it will be available in vanilla constructs like the /summon command)
+            .types() as MutableMap<Any, Type<*>?>
         dataTypesMap["minecraft:$id"] = dataTypesMap[baseEntityType.toString()]
-        // Store a new type in registry
         val rk: ResourceKey<EntityType<*>> =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.withDefaultNamespace(id))
         Registry.register(BuiltInRegistries.ENTITY_TYPE, id, builder.build(rk))
     }
 
     @JvmStatic
-    fun spawn(world: World, entity: Entity) {
-        worldHandle(world)!!.addFreshEntity(entity)
-    }
+    fun spawn(world: World, entity: Entity) = worldHandle(world).addFreshEntity(entity)
 
     @JvmStatic
     fun unlockAllRecipes(player: Player?): Int {
-        val recipes: MutableCollection<RecipeHolder<*>> = serverHandle()!!.recipeManager.getRecipes()
+        val recipes: MutableCollection<RecipeHolder<*>> = serverHandle().recipeManager.getRecipes()
         return playerHandle(player)!!.awardRecipes(recipes)
     }
 
     @JvmStatic
-    fun creativeTabId(itemStack: net.minecraft.world.item.ItemStack): Int {
-        // TODO FIXME BUG this is broken and always returns 0
-        return CreativeModeTabs.allTabs().stream().takeWhile { tab: CreativeModeTab? -> tab!!.contains(itemStack) }
-            .count().toInt()
-    }
+    fun creativeTabId(itemStack: net.minecraft.world.item.ItemStack): Int =
+        CreativeModeTabs.allTabs().takeWhile { it.contains(itemStack) }.count()
 
     @JvmStatic
     fun setAirNoDrops(block: Block) {
-        val entity = worldHandle(block.world)!!.getBlockEntity(
-            BlockPos(block.x, block.y, block.z)
-        )
+        worldHandle(block.world).getBlockEntity(BlockPos(block.x, block.y, block.z))
         block.setType(Material.AIR, false)
     }
 }

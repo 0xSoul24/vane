@@ -12,42 +12,25 @@ class TranslatedMessage(
     private val key: String,
     private val defaultTranslation: String
 ) {
-    fun key(): String {
-        return key
-    }
+    fun key(): String = key
 
-    fun str(vararg args: Any?): String {
+    fun str(vararg args: Any?): String =
         try {
-            val argsAsStrings = stringifyArgsForStr(key, args)
-            return String.format(defaultTranslation, *argsAsStrings)
+            String.format(defaultTranslation, *stringifyArgsForStr(key, args))
         } catch (e: Exception) {
             throw RuntimeException("Error while formatting message '$key'", e)
         }
-    }
 
-    fun strComponent(vararg args: Any?): Component {
-        return LegacyComponentSerializer.legacySection().deserialize(str(*args))
-    }
+    fun strComponent(vararg args: Any?): Component =
+        LegacyComponentSerializer.legacySection().deserialize(str(*args))
 
     fun format(vararg args: Any?): Component {
-        if (module.core?.configClientSideTranslations != true) {
-            return strComponent(*args)
-        }
-
-        val list = ArrayList<ComponentLike?>()
-        for (o in args) {
+        if (module.core?.configClientSideTranslations != true) return strComponent(*args)
+        val list = args.map { o ->
             when (o) {
-                is ComponentLike -> {
-                    list.add(o)
-                }
-
-                is String -> {
-                    list.add(LegacyComponentSerializer.legacySection().deserialize(o))
-                }
-
-                else -> {
-                    throw RuntimeException("Error while formatting message '$key', got invalid argument $o")
-                }
+                is ComponentLike -> o
+                is String -> LegacyComponentSerializer.legacySection().deserialize(o)
+                else -> throw RuntimeException("Error while formatting message '$key', got invalid argument $o")
             }
         }
         return Component.translatable(key, list)
@@ -55,31 +38,23 @@ class TranslatedMessage(
 
     fun broadcastServerPlayers(vararg args: Any?) {
         val component = format(*args)
-        for (player in module.server.onlinePlayers) {
-            player.sendMessage(component)
-        }
+        module.server.onlinePlayers.forEach { it.sendMessage(component) }
     }
 
     fun broadcastServer(vararg args: Any?) {
         val component = format(*args)
-        for (player in module.server.onlinePlayers) {
-            player.sendMessage(component)
-        }
+        module.server.onlinePlayers.forEach { it.sendMessage(component) }
         module.clog.info(Component.text("[broadcast] ").append(strComponent(*args)))
     }
 
     fun broadcastWorld(world: World, vararg args: Any?) {
         val component = format(*args)
-        for (player in world.players) {
-            player.sendMessage(component)
-        }
+        world.players.forEach { it.sendMessage(component) }
     }
 
     fun broadcastWorldActionBar(world: World, vararg args: Any?) {
         val component = format(*args)
-        for (player in world.players) {
-            player.sendActionBar(component)
-        }
+        world.players.forEach { it.sendActionBar(component) }
     }
 
     fun send(sender: CommandSender?, vararg args: Any?) {
@@ -98,8 +73,6 @@ class TranslatedMessage(
 
     fun sendAndLog(sender: CommandSender?, vararg args: Any?) {
         module.clog.info(strComponent(*args))
-
-        // Also send it to sender if it's not the console
         if (sender != null && sender !== module.server.consoleSender) {
             sender.sendMessage(format(*args))
         }

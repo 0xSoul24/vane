@@ -1,16 +1,11 @@
 package org.oddlama.vane.core.command.enums
 
-enum class WeatherValue(private val isStorm: Boolean, private val isThunder: Boolean) {
+enum class WeatherValue(val storm: Boolean, val thunder: Boolean) {
     Clear(false, false),
     Sun(false, false),
     Rain(true, false),
     Thunder(true, true);
 
-    fun storm(): Boolean {
-        return isStorm
-    }
-
-    fun thunder(): Boolean {
-        return isThunder
-    }
+    /** The lowercase name used in-game (tab-complete suggestions, argument parsing). */
+    val displayName: String get() = name.lowercase()
 }

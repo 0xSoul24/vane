@@ -11,33 +11,23 @@ import org.oddlama.vane.core.command.enums.WeatherValue
 import java.util.concurrent.CompletableFuture
 
 class WeatherArgumentType : CustomArgumentType.Converted<WeatherValue, String> {
-    override fun getNativeType(): ArgumentType<String> {
-        return StringArgumentType.word()
-    }
+    override fun getNativeType(): ArgumentType<String> = StringArgumentType.word()
 
     @Throws(CommandSyntaxException::class)
-    override fun convert(nativeType: String): WeatherValue {
-        return WeatherValue.valueOf(nativeType)
-    }
+    override fun convert(nativeType: String): WeatherValue = WeatherValue.valueOf(nativeType.replaceFirstChar { it.uppercaseChar() })
 
     override fun <S : Any> listSuggestions(
         context: CommandContext<S>,
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> {
-        val remaining = builder.remaining
-        for (weather in WeatherValue.entries) {
-            val name = weather.name
-            if (remaining.isBlank() || name.contains(remaining)) {
-                builder.suggest(name)
-            }
-        }
+        val remaining = builder.remaining.lowercase()
+        WeatherValue.entries
+            .filter { remaining.isBlank() || it.displayName.contains(remaining) }
+            .forEach { builder.suggest(it.displayName) }
         return builder.buildFuture()
     }
 
     companion object {
-        @JvmStatic
-        fun weather(): WeatherArgumentType {
-            return WeatherArgumentType()
-        }
+        fun weather() = WeatherArgumentType()
     }
 }

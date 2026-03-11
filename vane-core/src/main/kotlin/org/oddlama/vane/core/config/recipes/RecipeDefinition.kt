@@ -12,108 +12,82 @@ import org.oddlama.vane.util.MaterialUtil.materialFrom
 import org.oddlama.vane.util.StorageUtil.namespacedKey
 import java.lang.reflect.Modifier
 
-abstract class RecipeDefinition(var name: String?) {
-    fun name(): String? {
-        return name
-    }
-
-    fun key(baseKey: NamespacedKey): NamespacedKey {
-        return namespacedKey(baseKey.namespace(), baseKey.value() + "." + name)
-    }
+abstract class RecipeDefinition(val name: String?) {
+    fun key(baseKey: NamespacedKey): NamespacedKey =
+        namespacedKey(baseKey.namespace(), "${baseKey.value()}.$name")
 
     abstract fun toRecipe(baseKey: NamespacedKey?): Recipe?
-
     abstract fun toDict(): Any?
-
     abstract fun fromDict(dict: Any?): RecipeDefinition?
 
     companion object {
         @JvmStatic
         fun fromDict(name: String?, dict: Any): RecipeDefinition {
-            require(dict is MutableMap<*, *>) { "Invalid recipe dictionary: Argument must be a Map<String, Object>, but is " + dict.javaClass + "!" }
-            val typeObj = if (dict.containsKey("Type")) dict["Type"] else dict["type"]
+            require(dict is Map<*, *>) {
+                "Invalid recipe dictionary: Argument must be a Map<String, Object>, but is ${dict.javaClass}!"
+            }
+            val typeObj = dict["Type"] ?: dict["type"]
             require(typeObj is String) { "Invalid recipe dictionary: recipe type must exist and be a string!" }
 
-            when (typeObj) {
-                "shaped" -> return ShapedRecipeDefinition(name).fromDict(dict)
-                "shapeless" -> return ShapelessRecipeDefinition(name).fromDict(dict)
-                "blasting", "furnace", "campfire", "smoking" -> return CookingRecipeDefinition(name, typeObj).fromDict(
-                    dict
-                )
-
-                "smithing" -> return SmithingRecipeDefinition(name).fromDict(dict)
-                "stonecutting" -> return StonecuttingRecipeDefinition(name).fromDict(dict)
-                else -> {}
+            return when (typeObj) {
+                "shaped"     -> ShapedRecipeDefinition(name).fromDict(dict)
+                "shapeless"  -> ShapelessRecipeDefinition(name).fromDict(dict)
+                "blasting", "furnace", "campfire", "smoking" -> CookingRecipeDefinition(name, typeObj).fromDict(dict)
+                "smithing"   -> SmithingRecipeDefinition(name).fromDict(dict)
+                "stonecutting" -> StonecuttingRecipeDefinition(name).fromDict(dict)
+                else -> throw IllegalArgumentException("Unknown recipe type '$typeObj'")
             }
-
-            throw IllegalArgumentException("Unknown recipe type '$typeObj'")
         }
 
         @JvmStatic
         fun recipeChoice(definition: String): RecipeChoice {
-            var definition = definition
-            definition = definition.trim()
+            val trimmed = definition.trim()
 
             // Try a material #tag
-            if (definition.startsWith("#")) {
-                for (f in Tag::class.java.getDeclaredFields()) {
-                    if (Modifier.isStatic(f.modifiers) && f.type == Tag::class.java) {
-                        try {
-                            val tag = f.get(null) as Tag<*>?
-                                ?: // System.out.println("warning: " + f + " has no associated key! It
-                                // therefore cannot be used in custom recipes.");
-                                continue
-                            if (tag.key().toString() == definition.substring(1)) {
-                                @Suppress("UNCHECKED_CAST")
-                                return MaterialChoice(tag as Tag<Material>)
-                            }
-                        } catch (e: IllegalArgumentException) {
-                            throw IllegalArgumentException("Invalid material tag: $definition")
-                        } catch (e: IllegalAccessException) {
-                            throw IllegalArgumentException("Invalid material tag: $definition")
+            if (trimmed.startsWith("#")) {
+                for (f in Tag::class.java.declaredFields) {
+                    if (!Modifier.isStatic(f.modifiers) || f.type != Tag::class.java) continue
+                    try {
+                        val tag = f.get(null) as? Tag<*> ?: continue
+                        if (tag.key.toString() == trimmed.substring(1)) {
+                            @Suppress("UNCHECKED_CAST")
+                            return MaterialChoice(tag as Tag<Material>)
                         }
+                    } catch (_: IllegalAccessException) {
+                        throw IllegalArgumentException("Invalid material tag: $trimmed")
                     }
                 }
-                throw IllegalArgumentException("Unknown material tag: $definition")
+                throw IllegalArgumentException("Unknown material tag: $trimmed")
             }
 
             // Tuple of materials
-            if (definition.startsWith("(") && definition.endsWith(")")) {
-                val parts = definition.substring(1, definition.length - 1)
+            if (trimmed.startsWith("(") && trimmed.endsWith(")")) {
+                val parts = trimmed.substring(1, trimmed.length - 1)
                     .split(",")
                     .map { it.trim() }
                     .map { key ->
-                        val mat = materialFrom(NamespacedKey.fromString(key)!!)
-                        requireNotNull(mat) { "Unknown material (only normal materials are allowed in tags): $key" }
-                        mat
+                        requireNotNull(materialFrom(NamespacedKey.fromString(key)!!)) {
+                            "Unknown material (only normal materials are allowed in tags): $key"
+                        }
                     }
                 return MaterialChoice(parts)
             }
 
-            // Check if the amount is included
-            val mult = definition.indexOf('*')
-            var amount = 1
-            if (mult != -1) {
-                val amountStr = definition.substring(0, mult).trim()
-                try {
-                    amount = amountStr.toInt()
-                    if (amount <= 0) {
-                        amount = 1
-                    }
-
-                    // Remove amount from definition for parsing
-                    definition = definition.substring(mult + 1).trim()
-                } catch (e: NumberFormatException) {
-                }
+            // Check if amount is included: only treat '*' as separator when the prefix is a valid int
+            val multIdx = trimmed.indexOf('*')
+            val (amount, itemDef) = if (multIdx != -1) {
+                val amt = trimmed.substring(0, multIdx).trim().toIntOrNull()
+                if (amt != null) amt.coerceAtLeast(1) to trimmed.substring(multIdx + 1).trim()
+                else 1 to trimmed
+            } else {
+                1 to trimmed
             }
 
             // Exact choice of itemstack including NBT
-            val itemStackAndIsSimpleMat = ItemUtil.itemstackFromString(definition)
+            val itemStackAndIsSimpleMat = ItemUtil.itemstackFromString(itemDef)
             val itemStack = itemStackAndIsSimpleMat.getLeft()!!
             val isSimpleMat = itemStackAndIsSimpleMat.getRight() ?: false
-            if (isSimpleMat && amount == 1) {
-                return MaterialChoice(itemStack.type)
-            }
+            if (isSimpleMat && amount == 1) return MaterialChoice(itemStack.type)
 
             itemStack.amount = amount
             return ExactChoice(itemStack)

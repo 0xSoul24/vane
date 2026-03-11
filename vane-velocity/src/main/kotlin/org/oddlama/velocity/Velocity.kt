@@ -13,7 +13,7 @@ import com.velocitypowered.proxy.network.ConnectionManager
 import org.bstats.velocity.Metrics
 import org.oddlama.vane.proxycore.VaneProxyPlugin
 import org.oddlama.vane.proxycore.log.Slf4jCompatLogger
-import org.oddlama.vane.proxycore.util.Version
+import org.oddlama.vane.proxycore.util.VERSION
 import org.oddlama.velocity.commands.Maintenance
 import org.oddlama.velocity.commands.Ping
 import org.oddlama.velocity.compat.VelocityCompatProxyServer
@@ -27,7 +27,7 @@ import java.util.logging.Level
 @Plugin(
     id = "vane-velocity",
     name = "Vane Velocity",
-    version = Version.VERSION,
+    version = VERSION,
     description = "TODO",
     authors = ["oddlama", "Serial-ATA"],
     url = "https://github.com/oddlama/vane"

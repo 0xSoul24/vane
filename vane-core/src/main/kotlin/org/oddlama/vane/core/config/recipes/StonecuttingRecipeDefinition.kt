@@ -30,7 +30,7 @@ class StonecuttingRecipeDefinition(name: String?) : RecipeDefinition(name) {
     }
 
     override fun toDict(): Any {
-        val dict = HashMap<String?, Any?>()
+        val dict = mutableMapOf<String?, Any?>()
         dict["Input"] = this.input
         dict["Result"] = this.result
         dict["Type"] = "stonecutting"

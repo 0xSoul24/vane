@@ -33,7 +33,8 @@ class RegionSelectionListener(context: Context<Regions?>?) : Listener<Regions?>(
             return
         }
 
-        val player = event.getPlayer()
+        val player = event.player
+        if (!module!!.isSelectingRegion(player)) return
         val selection: RegionSelection = module!!.getRegionSelection(player)
 
         if (player.equipment.itemInMainHand.type != Material.AIR ||

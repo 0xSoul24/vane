@@ -20,7 +20,7 @@ import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.core.module.Module
 import org.oddlama.vane.util.StorageUtil.namespacedKey
 import org.oddlama.vane.util.snakeCaseToPascalCase
-import java.util.EnumSet
+import java.util.*
 
 open class CustomItem<T : Module<T?>?> @JvmOverloads constructor(
     context: Context<T?>,
@@ -71,53 +71,29 @@ open class CustomItem<T : Module<T?>?> @JvmOverloads constructor(
         module!!.core?.itemRegistry()?.register(this)
     }
 
-    override fun key(): NamespacedKey {
-        return key
-    }
+    override fun key(): NamespacedKey = key
 
-    fun name(): String {
-        if (nameOverride != null) {
-            return nameOverride
-        }
-        return annotation!!.name
-    }
+    fun name(): String = nameOverride ?: annotation!!.name
 
     override fun enabled(): Boolean {
-        // Explicitly stated to not be forgotten, as enabled() is also part of
-        // Listener<T>.
+        // Explicitly stated to not be forgotten, as enabled() is also part of Listener<T>.
         return annotation!!.enabled && super.enabled()
     }
 
-    override fun version(): Int {
-        return annotation!!.version
-    }
+    override fun version(): Int = annotation!!.version
 
-    override fun baseMaterial(): Material? {
-        return annotation!!.base
-    }
+    override fun baseMaterial(): Material = annotation!!.base
 
-    override fun customModelData(): Int {
-        if (customModelDataOverride != null) {
-            return customModelDataOverride
-        }
-        return annotation!!.modelData
-    }
+    override fun customModelData(): Int = customModelDataOverride ?: annotation!!.modelData
 
-    override fun displayName(): Component? {
-        return langName!!.format().decoration(TextDecoration.ITALIC, false)
-    }
+    override fun displayName(): Component? =
+        langName!!.format().decoration(TextDecoration.ITALIC, false)
 
-    fun configDurabilityDef(): Int {
-        return annotation!!.durability
-    }
+    fun configDurabilityDef(): Int = annotation!!.durability
 
-    override fun durability(): Int {
-        return configDurability
-    }
+    override fun durability(): Int = configDurability
 
-    override fun updateItemStack(itemStack: ItemStack): ItemStack {
-        return itemStack
-    }
+    override fun updateItemStack(itemStack: ItemStack): ItemStack = itemStack
 
     override fun inhibitedBehaviors(): EnumSet<InhibitBehavior> {
         return EnumSet.of(InhibitBehavior.USE_IN_VANILLA_RECIPE)

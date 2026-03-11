@@ -5,35 +5,24 @@ import org.bukkit.persistence.PersistentDataHolder
 import org.bukkit.persistence.PersistentDataType
 
 class CooldownData(private val key: NamespacedKey, private val cooldownTime: Long) {
+    private fun PersistentDataHolder.elapsedSinceLast(): Long =
+        System.currentTimeMillis() - persistentDataContainer.getOrDefault(key, PersistentDataType.LONG, 0L)
+
     /**
      * Updates the cooldown data if and only if the cooldown has been exceeded.
-     * 
-     * @return returns true if cooldownTime has been exceeded.
+     *
+     * @return true if cooldownTime has been exceeded.
      */
     fun checkOrUpdateCooldown(holder: PersistentDataHolder): Boolean {
-        val persistentData = holder.persistentDataContainer
-        val lastTime = persistentData.getOrDefault(key, PersistentDataType.LONG, 0L)
-        val now = System.currentTimeMillis()
-        if (now - lastTime < cooldownTime) {
-            return false
-        }
-
-        persistentData.set(key, PersistentDataType.LONG, now)
+        if (holder.elapsedSinceLast() < cooldownTime) return false
+        holder.persistentDataContainer.set(key, PersistentDataType.LONG, System.currentTimeMillis())
         return true
     }
 
     /**
-     * @return Gets the status of the cooldown without updating
+     * @return the status of the cooldown without updating.
      */
-    fun peekCooldown(holder: PersistentDataHolder): Boolean {
-        val persistentData = holder.persistentDataContainer
-        val lastTime = persistentData.getOrDefault(this.key, PersistentDataType.LONG, 0L)
-        val now = System.currentTimeMillis()
-        return now - lastTime >= this.cooldownTime
-    }
+    fun peekCooldown(holder: PersistentDataHolder): Boolean = holder.elapsedSinceLast() >= cooldownTime
 
-    fun clear(holder: PersistentDataHolder) {
-        val persistentData = holder.persistentDataContainer
-        persistentData.remove(key)
-    }
+    fun clear(holder: PersistentDataHolder) = holder.persistentDataContainer.remove(key)
 }

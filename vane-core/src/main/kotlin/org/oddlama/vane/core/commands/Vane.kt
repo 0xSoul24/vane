@@ -2,7 +2,6 @@ package org.oddlama.vane.core.commands
 
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import com.mojang.brigadier.context.CommandContext
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.command.brigadier.Commands
 import org.bukkit.command.CommandSender
@@ -16,37 +15,29 @@ import org.oddlama.vane.core.command.argumentType.ModuleArgumentType
 import org.oddlama.vane.core.lang.TranslatedMessage
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.core.module.Module
-import java.util.*
+import java.util.Random
 
 @Name("vane")
 class Vane(context: Context<Core?>) : org.oddlama.vane.core.command.Command<Core?>(context) {
-    @LangMessage
-    private val langReloadSuccess: TranslatedMessage? = null
+    @LangMessage private val langReloadSuccess: TranslatedMessage? = null
+    @LangMessage private val langReloadFail: TranslatedMessage? = null
+    @LangMessage private val langResourcePackGenerateSuccess: TranslatedMessage? = null
+    @LangMessage private val langResourcePackGenerateFail: TranslatedMessage? = null
 
-    @LangMessage
-    private val langReloadFail: TranslatedMessage? = null
-
-    @LangMessage
-    private val langResourcePackGenerateSuccess: TranslatedMessage? = null
-
-    @LangMessage
-    private val langResourcePackGenerateFail: TranslatedMessage? = null
-
-    override fun getCommandBase(): LiteralArgumentBuilder<CommandSourceStack> {
-        return super.getCommandBase()
+    override fun getCommandBase(): LiteralArgumentBuilder<CommandSourceStack> =
+        super.getCommandBase()
             .then(help())
             .then(
                 Commands.literal("reload")
-                    .executes { ctx: CommandContext<CommandSourceStack> ->
-                        reloadAll(ctx.getSource()!!.sender)
+                    .executes { ctx ->
+                        reloadAll(ctx.source.sender)
                         Command.SINGLE_SUCCESS
                     }
                     .then(
                         Commands.argument<Module<*>>("module", ModuleArgumentType.module(module!!))
-                            .executes { ctx: CommandContext<CommandSourceStack> ->
+                            .executes { ctx ->
                                 reloadModule(
-                                    ctx.getSource()!!.sender,
-                                    // Cast to Module<*> to satisfy Kotlin's type system for captured generics
+                                    ctx.source.sender,
                                     ctx.getArgument("module", Module::class.java) as Module<*>
                                 )
                                 Command.SINGLE_SUCCESS
@@ -55,34 +46,26 @@ class Vane(context: Context<Core?>) : org.oddlama.vane.core.command.Command<Core
             )
             .then(
                 Commands.literal("generate_resource_pack")
-                    .executes { ctx: CommandContext<CommandSourceStack> ->
-                        generateResourcePack(ctx.getSource()!!.sender)
+                    .executes { ctx ->
+                        generateResourcePack(ctx.source.sender)
                         Command.SINGLE_SUCCESS
                     }
             )
             .then(
                 Commands.literal("test_do_not_use_if_you_are_not_a_dev")
-                    .executes { ctx: CommandContext<CommandSourceStack> ->
-                        test(ctx.getSource()!!.sender)
+                    .executes { ctx ->
+                        test(ctx.source.sender)
                         Command.SINGLE_SUCCESS
                     }
             )
-    }
 
     private fun reloadModule(sender: CommandSender?, module: Module<*>) {
-        if (module.reloadConfiguration()) {
-            langReloadSuccess!!.send(sender, "§bvane-" + module.annotationName)
-        } else {
-            langReloadFail!!.send(sender, "§bvane-" + module.annotationName)
-        }
+        val msg = if (module.reloadConfiguration()) langReloadSuccess else langReloadFail
+        msg!!.send(sender, "§bvane-${module.annotationName}")
     }
 
     private fun reloadAll(sender: CommandSender?) {
-        // Iterate modules from core if available, otherwise nothing to reload
-        val coreModules = module!!.core?.modules?.filterNotNull() ?: emptySet()
-        for (m in coreModules) {
-            reloadModule(sender, m)
-        }
+        module!!.core?.modules?.filterNotNull()?.forEach { reloadModule(sender, it) }
     }
 
     private fun generateResourcePack(sender: CommandSender?) {
@@ -102,59 +85,40 @@ class Vane(context: Context<Core?>) : org.oddlama.vane.core.command.Command<Core
     private fun testTomeGeneration() {
         val lootTable = LootTables.ABANDONED_MINESHAFT.lootTable
         val inventory = module!!.server.createInventory(null, 3 * 9)
-        val context =
-            (LootContext.Builder(
-                module!!.server.worlds[0].getBlockAt(0, 0, 0).location
-            )).build()
+        val context = LootContext.Builder(
+            module!!.server.worlds[0].getBlockAt(0, 0, 0).location
+        ).build()
         val random = Random()
 
-        var tomes = 0
         val simulationCount = 10000
-        val gtPercentage = 0.2 // (0-2) (average 1) with 1/5 chance
+        val gtPercentage = 0.2
         val tolerance = 0.7
+        var tomes = 0
+
         module!!.log.info("Testing ancient tome generation...")
 
-        for (i in 0..<simulationCount) {
+        repeat(simulationCount) {
             inventory.clear()
             lootTable.fillInventory(inventory, random, context)
-            for (`is` in inventory.storageContents) {
-                if (`is` != null && `is`.hasItemMeta()) {
-                    val modelData = `is`.itemMeta.customModelDataComponent.floats
-                    if (!modelData.isEmpty() && modelData.first() == 0x770000.toFloat()) {
-                        ++tomes
-                    }
+            inventory.storageContents.forEach { item ->
+                if (item != null && item.hasItemMeta()) {
+                    val modelData = item.itemMeta.customModelDataComponent.floats
+                    if (modelData.isNotEmpty() && modelData.first() == 0x770000.toFloat()) tomes++
                 }
             }
         }
 
-        if (tomes == 0) {
-            module!!.log.severe("0 tomes were generated in $simulationCount chests.")
-        } else if (tomes > gtPercentage * simulationCount * tolerance &&
-            tomes < (gtPercentage * simulationCount) / tolerance
-        ) { // 70% tolerance to lower bound
-            module!!
-                .log.warning(
-                    tomes.toString() +
-                            " tomes were generated in " +
-                            simulationCount +
-                            " chests. This is " +
-                            ((100.0 * (tomes.toDouble() / simulationCount)) / gtPercentage) +
-                            "% of the expected value."
-                )
-        } else {
-            module!!
-                .log.info(
-                    tomes.toString() +
-                            " tomes were generated in " +
-                            simulationCount +
-                            " chests. This is " +
-                            ((100.0 * (tomes.toDouble() / simulationCount)) / gtPercentage) +
-                            "% of the expected value."
-                )
+        val percentage = (100.0 * tomes.toDouble() / simulationCount) / gtPercentage
+        val msg = "$tomes tomes were generated in $simulationCount chests. This is $percentage% of the expected value."
+
+        when {
+            tomes == 0 -> module!!.log.severe("0 tomes were generated in $simulationCount chests.")
+            tomes > gtPercentage * simulationCount * tolerance &&
+            tomes < (gtPercentage * simulationCount) / tolerance ->
+                module!!.log.warning(msg)
+            else -> module!!.log.info(msg)
         }
     }
 
-    private fun test(sender: CommandSender?) {
-        testTomeGeneration()
-    }
+    private fun test(sender: CommandSender?) = testTomeGeneration()
 }

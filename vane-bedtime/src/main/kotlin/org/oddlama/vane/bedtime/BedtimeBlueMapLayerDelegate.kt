@@ -86,9 +86,7 @@ class BedtimeBlueMapLayerDelegate(private val parent: BedtimeBlueMapLayer) {
     fun updateAllMarkers() {
         // Update all existing
         for (player in module!!.offlinePlayersWithValidName) {
-            if (player != null) {
-                updateMarker(player)
-            }
+            updateMarker(player)
         }
     }
 

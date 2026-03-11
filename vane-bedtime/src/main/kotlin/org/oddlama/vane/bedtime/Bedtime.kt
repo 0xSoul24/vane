@@ -87,7 +87,7 @@ class Bedtime : Module<Bedtime?>() {
             .forEach { p: Player? ->
                 // skipSleepTimer = false (-> set sleepCounter to 100)
                 // updateSleepingPlayers = false
-                Nms.getPlayer(p!!)!!.stopSleepInBed(false, false)
+                Nms.getPlayer(p!!).stopSleepInBed(false, false)
             }
     }
 

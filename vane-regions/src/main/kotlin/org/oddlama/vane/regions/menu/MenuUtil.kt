@@ -13,7 +13,6 @@ import org.oddlama.vane.core.menu.MenuItem
 import org.oddlama.vane.regions.Regions
 import org.oddlama.vane.regions.region.RegionGroup
 import java.util.*
-import java.util.function.Consumer
 import java.util.stream.Collectors
 
 /**
@@ -62,7 +61,7 @@ internal fun menuItemSettingToggle(
     Menu.ClickResult.SUCCESS
 }) {
     override fun item(item: ItemStack?) {
-        val maybeAddForcedHint = Consumer { lore: MutableList<Component?>? ->
+        val maybeAddForcedHint: (MutableList<Component?>?) -> Unit = { lore ->
             if (hasOverride()) {
                 lore!!.add(Component.empty())
                 lore.add(Component.text("FORCED BY SERVER"))

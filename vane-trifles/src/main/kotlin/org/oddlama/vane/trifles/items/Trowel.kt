@@ -203,7 +203,7 @@ class Trowel(context: Context<Trifles?>) : org.oddlama.vane.core.item.CustomItem
             val blockHitResult = BlockHitResult(hitPos, direction, blockPos, false)
             val amountPre = nmsItem!!.count
             val actionContext = UseOnContext(
-                nmsWorld!!,
+                nmsWorld,
                 nmsPlayer,
                 InteractionHand.MAIN_HAND,
                 nmsItem,

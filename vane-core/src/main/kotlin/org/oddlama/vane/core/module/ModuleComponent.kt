@@ -26,16 +26,12 @@ abstract class ModuleComponent<T : Module<T?>?>(context: Context<T?>?) {
         context.compile(this as ModuleComponent<T?>)
     }
 
-    fun getContext(): Context<T?>? {
-        return context
-    }
+    fun getContext(): Context<T?>? = context
 
     val module: T?
         get() = context!!.module
 
-    open fun enabled(): Boolean {
-        return context!!.enabled()
-    }
+    open fun enabled(): Boolean = context!!.enabled()
 
     protected abstract fun onEnable()
 
@@ -51,31 +47,25 @@ abstract class ModuleComponent<T : Module<T?>?>(context: Context<T?>?) {
     fun onGenerateResourcePack(pack: ResourcePackGenerator?) {
     }
 
-    fun scheduleTaskTimer(task: Runnable, delayTicks: Long, periodTicks: Long): BukkitTask {
-        return context!!.scheduleTaskTimer(task, delayTicks, periodTicks)
-    }
+    fun scheduleTaskTimer(task: Runnable, delayTicks: Long, periodTicks: Long): BukkitTask =
+        context!!.scheduleTaskTimer(task, delayTicks, periodTicks)
 
-    fun scheduleTask(task: Runnable, delayTicks: Long): BukkitTask {
-        return context!!.scheduleTask(task, delayTicks)
-    }
+    fun scheduleTask(task: Runnable, delayTicks: Long): BukkitTask =
+        context!!.scheduleTask(task, delayTicks)
 
-    fun scheduleNextTick(task: Runnable): BukkitTask {
-        return context!!.scheduleNextTick(task)
-    }
+    fun scheduleNextTick(task: Runnable): BukkitTask =
+        context!!.scheduleNextTick(task)
 
     fun addStorageMigrationTo(to: Long, name: String?, migrator: Consumer<JSONObject?>) {
         context!!.addStorageMigrationTo(to, name, migrator)
     }
 
-    fun storagePathOf(field: String): String? {
-        return context!!.storagePathOf(field)
-    }
+    fun storagePathOf(field: String): String? = context!!.storagePathOf(field)
 
     fun markPersistentStorageDirty() {
         context!!.markPersistentStorageDirty()
     }
 
-    fun namespacedKey(value: String?): NamespacedKey {
-        return NamespacedKey(this.module!!, getContext()!!.variableYamlPath(value)!!)
-    }
+    fun namespacedKey(value: String?): NamespacedKey =
+        NamespacedKey(this.module!!, getContext()!!.variableYamlPath(value)!!)
 }

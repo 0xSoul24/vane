@@ -5,35 +5,16 @@ import org.oddlama.vane.core.command.Command
 
 class ParseCheckResult(
     private val depth: Int,
-    private val argumentType: String?,
-    private val parsed: Any?,
-    private val includeParam: Boolean
+    val argumentType: String,
+    val parsed: Any?,
+    val includeParam: Boolean
 ) : CheckResult {
-    fun argumentType(): String? {
-        return argumentType
-    }
+    override fun depth(): Int = depth
+    override fun good(): Boolean = true
 
-    fun parsed(): Any? {
-        return parsed
-    }
+    override fun apply(command: Command<*>?, sender: CommandSender?): Boolean =
+        error("ParseCheckResult cannot be applied! This is a bug.")
 
-    fun includeParam(): Boolean {
-        return includeParam
-    }
-
-    override fun depth(): Int {
-        return depth
-    }
-
-    override fun good(): Boolean {
-        return true
-    }
-
-    override fun apply(command: Command<*>?, sender: CommandSender?): Boolean {
-        throw RuntimeException("ParseCheckResult cannot be applied! This is a bug.")
-    }
-
-    override fun prepend(argumentType: String?, parsedArg: Any?, include: Boolean): CheckResult? {
-        throw RuntimeException("Cannot prepend to ParseCheckResult! This is a bug.")
-    }
+    override fun prepend(argumentType: String, parsedArg: Any?, include: Boolean): CheckResult =
+        error("Cannot prepend to ParseCheckResult! This is a bug.")
 }

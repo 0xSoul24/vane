@@ -7,8 +7,8 @@ import org.oddlama.vane.annotation.lang.LangMessage
 import org.oddlama.vane.core.lang.TranslatedMessage
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.core.module.ModuleGroup
-import org.oddlama.vane.util.Conversions
-import org.oddlama.vane.util.TimeUtil
+import org.oddlama.vane.util.formatTime
+import org.oddlama.vane.util.msToTicks
 
 class AutostopGroup(context: Context<Admin?>) : ModuleGroup<Admin?>(
     context,
@@ -74,10 +74,10 @@ class AutostopGroup(context: Context<Admin?>) : ModuleGroup<Admin?>(
                 langShutdown!!.sendAndLog(null)
                 module!!.server.shutdown()
             },
-            Conversions.msToTicks(delay)
+            msToTicks(delay)
         )
 
-        langScheduled!!.sendAndLog(sender, "§b" + TimeUtil.formatTime(delay))
+        langScheduled!!.sendAndLog(sender, "§b" + formatTime(delay))
     }
 
     fun status(sender: CommandSender?) {
@@ -86,7 +86,7 @@ class AutostopGroup(context: Context<Admin?>) : ModuleGroup<Admin?>(
             return
         }
 
-        langStatus!!.send(sender, "§b" + TimeUtil.formatTime(remaining()))
+        langStatus!!.send(sender, "§b" + formatTime(remaining()))
     }
 
     override fun onModuleEnable() {

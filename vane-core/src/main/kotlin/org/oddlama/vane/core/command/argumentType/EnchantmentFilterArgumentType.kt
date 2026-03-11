@@ -31,18 +31,13 @@ class EnchantmentFilterArgumentType : CustomArgumentType.Converted<Enchantment, 
         val item = (stack.sender as Player).inventory.itemInMainHand
 
         val registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT)
+        val remaining = builder.remainingLowerCase
 
-        var enchantments = registry.asSequence()
-        if (item.type != Material.BOOK && item.type != Material.ENCHANTED_BOOK) {
-            enchantments = enchantments.filter { it.canEnchantItem(item) }
-        }
-
-        var suggestions = enchantments.map { it.key.asString() }
-        if (builder.remaining.isNotBlank()) {
-            suggestions = suggestions.filter { it.contains(builder.remainingLowerCase) }
-        }
-
-        suggestions.forEach { builder.suggest(it) }
+        registry.asSequence()
+            .filter { item.type == Material.BOOK || item.type == Material.ENCHANTED_BOOK || it.canEnchantItem(item) }
+            .map { it.key.asString() }
+            .filter { remaining.isBlank() || it.contains(remaining) }
+            .forEach { builder.suggest(it) }
         return builder.buildFuture()
     }
 

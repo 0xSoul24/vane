@@ -14,7 +14,7 @@ import org.oddlama.vane.core.menu.Menu.Companion.isLeftClick
 import org.oddlama.vane.core.menu.Menu.Companion.isLeftOrRightClick
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.util.ItemUtil
-import java.util.stream.Collectors
+import kotlin.random.Random
 
 object MenuFactory {
     @JvmStatic
@@ -61,24 +61,20 @@ object MenuFactory {
             context,
             Bukkit.createInventory(null, columns, LegacyComponentSerializer.legacySection().deserialize(title))
         )
-        val confirmIndex = (Math.random() * columns).toInt()
+        val confirmIndex = Random.nextInt(columns)
 
         for (i in 0 until columns) {
             if (i == confirmIndex) {
-                confirmationMenu.add(
-                    MenuItem(i, itemConfirm) { player: Player?, menu: Menu?, _: MenuItem? ->
-                        menu!!.close(player!!)
-                        onConfirm.apply(player)
-                    }
-                )
+                confirmationMenu.add(MenuItem(i, itemConfirm) { p, menu, _ ->
+                    menu!!.close(p!!)
+                    onConfirm.apply(p)
+                })
             } else {
-                confirmationMenu.add(
-                    MenuItem(i, itemCancel) { p: Player?, menu: Menu?, _: MenuItem? ->
-                        menu!!.close(p!!)
-                        onCancel.apply(p)
-                        Menu.ClickResult.SUCCESS
-                    }
-                )
+                confirmationMenu.add(MenuItem(i, itemCancel) { p, menu, _ ->
+                    menu!!.close(p!!)
+                    onCancel.apply(p)
+                    Menu.ClickResult.SUCCESS
+                })
             }
         }
 
@@ -98,7 +94,7 @@ object MenuFactory {
         allowNothing: Boolean,
         onConfirm: Function2<Player?, ItemStack?, Menu.ClickResult?>,
         onCancel: Consumer1<Player?>,
-        onSelectItem: Function1<ItemStack?, ItemStack?> = Function1 { i: ItemStack? -> i }
+        onSelectItem: Function1<ItemStack?, ItemStack?> = Function1 { it }
     ): Menu {
         // Use non-null assertion: menuManager is expected to be initialized when menus are created
         val menuManager = context.module!!.core!!.menuManager!!
@@ -172,17 +168,12 @@ object MenuFactory {
 
         // Accept item
         itemSelectorMenu.add(
-            MenuItem(2, menuManager.itemSelectorAccept!!.item(), Function3 { p: Player?, menu: Menu?, _: MenuItem? ->
+            MenuItem(2, menuManager.itemSelectorAccept!!.item(), Function3 { p, menu, _ ->
                  val item: ItemStack? = if (selectedItem.originalSelected === noItem) {
-                     if (allowNothing) {
-                         null
-                     } else {
-                         return@Function3 Menu.ClickResult.ERROR
-                     }
+                     if (allowNothing) null else return@Function3 Menu.ClickResult.ERROR
                  } else {
                      selectedItem.originalSelected
                  }
-
                  menu!!.close(p!!)
                  onConfirm.apply(p, item)
              })
@@ -190,7 +181,7 @@ object MenuFactory {
 
         // Cancel item
         itemSelectorMenu.add(
-            MenuItem(6, menuManager.itemSelectorCancel!!.item()) { p: Player?, menu: Menu?, _: MenuItem? ->
+            MenuItem(6, menuManager.itemSelectorCancel!!.item()) { p, menu, _ ->
                 menu!!.close(p!!)
                 onCancel.apply(player)
                 Menu.ClickResult.SUCCESS
@@ -214,24 +205,14 @@ object MenuFactory {
         filter: F?,
         onClick: Function3<Player?, Menu?, T?, Menu.ClickResult?>,
         onCancel: Consumer1<Player?>?
-    ): Menu {
-        return genericSelector<T?, F?>(
-            context,
-            player,
-            title,
-            filterTitle,
-            things,
-            toItem,
-            filter,
-            { p: Player?, menu: Menu?, t: T?, event: InventoryClickEvent? ->
-                if (!isLeftClick(event)) {
-                    return@genericSelector Menu.ClickResult.INVALID_CLICK
-                }
-                onClick.apply(p, menu, t)
-            },
-            onCancel
-        )
-    }
+    ): Menu = genericSelector<T, F>(
+        context, player, title, filterTitle, things, toItem, filter,
+        { p, menu, t, event ->
+            if (!isLeftClick(event)) Menu.ClickResult.INVALID_CLICK
+            else onClick.apply(p, menu, t)
+        },
+        onCancel
+    )
 
     @JvmStatic
     fun <T, F : Filter<T?>?> genericSelector(
@@ -244,19 +225,17 @@ object MenuFactory {
         filter: F?,
         onClick: Function4<Player?, Menu?, T?, InventoryClickEvent?, Menu.ClickResult?>?,
         onCancel: Consumer1<Player?>?
-    ): Menu {
-        return GenericSelector.create<T?, F?>(
-            context,
-            player,
-            title ?: "",
-            filterTitle ?: "",
-            things,
-            toItem ?: Function1 { _: T? -> null },
-            filter,
-            onClick ?: Function4 { _: Player?, _: Menu?, _: T?, _: InventoryClickEvent? -> Menu.ClickResult.INVALID_CLICK },
-            onCancel ?: Consumer1 { _: Player? -> }
-        )
-    }
+    ): Menu = GenericSelector.create(
+        context,
+        player,
+        title ?: "",
+        filterTitle ?: "",
+        things,
+        toItem ?: Function1 { null },
+        filter,
+        onClick ?: Function4 { _, _, _, _ -> Menu.ClickResult.INVALID_CLICK },
+        onCancel ?: Consumer1 { }
+    )
 
     @JvmStatic
     fun headSelector(
@@ -264,19 +243,14 @@ object MenuFactory {
         player: Player?,
         onClick: Function3<Player?, Menu?, HeadMaterial?, Menu.ClickResult?>,
         onCancel: Consumer1<Player?>?
-    ): Menu {
-        return headSelector(
-            context,
-            player,
-            { p: Player?, menu: Menu?, t: HeadMaterial?, event: InventoryClickEvent? ->
-                if (!isLeftClick(event)) {
-                    return@headSelector Menu.ClickResult.INVALID_CLICK
-                }
-                onClick.apply(p, menu, t)
-            },
-            onCancel
-        )
-    }
+    ): Menu = headSelector(
+        context, player,
+        { p, menu, t, event ->
+            if (!isLeftClick(event)) Menu.ClickResult.INVALID_CLICK
+            else onClick.apply(p, menu, t)
+        },
+        onCancel
+    )
 
     @JvmStatic
     fun headSelector(
@@ -285,53 +259,24 @@ object MenuFactory {
         onClick: Function4<Player?, Menu?, HeadMaterial?, InventoryClickEvent?, Menu.ClickResult?>?,
         onCancel: Consumer1<Player?>?
     ): Menu {
-        // Use non-null assertion: menuManager is expected to be initialized when menus are created
-        val menuManager = context.module!!.core!!.menuManager!!
-        val allHeads = all()
-            .stream()
-            .sorted { a: HeadMaterial?, b: HeadMaterial? ->
-                a!!.key().toString().compareTo(b!!.key().toString(), ignoreCase = true)
-            }
-            .collect(Collectors.toList())
+        val menuManager = requireNotNull(context.module!!.core!!.menuManager)
+        val allHeads = all().sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.key.toString() })
 
-        val filter = HeadFilter()
-        // Adapter to satisfy GenericSelector.create's expected Filter<T?> type parameter
-        val filterAdapter: Filter<HeadMaterial?> = object : Filter<HeadMaterial?> {
-            override fun openFilterSettings(context: Context<*>, player: Player, filterTitle: String, returnTo: Menu?) {
-                filter.openFilterSettings(context, player, filterTitle, returnTo)
-            }
-
-            override fun reset() {
-                filter.reset()
-            }
-
-            override fun filter(things: MutableList<HeadMaterial?>?): MutableList<HeadMaterial?>? {
-                return filter.filter(things)
-            }
-        }
-         // Keep original nullable element types to match expected signature
-         val allHeadsK: MutableList<HeadMaterial?> = allHeads.map { it }.toMutableList()
-
-         val toItemFunc: Function1<HeadMaterial?, ItemStack?> = Function1 { h: HeadMaterial? ->
-             val hh = h!!
-             menuManager.headSelector!!.itemSelectHead!!.alternative(
-                 hh.item(),
-                 "§a§l" + hh.name(),
-                 "§6" + hh.category(),
-                 "§b" + hh.tags()
-             )
-         }
-
-         return GenericSelector.create(
-             context,
-             player,
-             menuManager.headSelector!!.langTitle!!.str("§5§l" + allHeadsK.size),
-             menuManager.headSelector!!.langFilterTitle!!.str(),
-             allHeadsK,
-             toItemFunc,
-             filterAdapter,
-             onClick ?: Function4 { _: Player?, _: Menu?, _: HeadMaterial?, _: InventoryClickEvent? -> Menu.ClickResult.INVALID_CLICK },
-             onCancel ?: Consumer1 { _: Player? -> }
-         )
-     }
+        return GenericSelector.create(
+            context,
+            player,
+            menuManager.headSelector!!.langTitle.str("§5§l${allHeads.size}"),
+            menuManager.headSelector!!.langFilterTitle.str(),
+            allHeads.toMutableList(),
+            { h ->
+                menuManager.headSelector!!.itemSelectHead.alternative(
+                    h!!.item(), "§a§l${h.name}", "§6${h.category}", "§b${h.tags}"
+                )
+            },
+            @Suppress("UNCHECKED_CAST")
+            (HeadFilter() as Filter<HeadMaterial?>?),
+            onClick ?: Function4 { _, _, _, _ -> Menu.ClickResult.INVALID_CLICK },
+            onCancel ?: Consumer1 { }
+        )
+    }
  }

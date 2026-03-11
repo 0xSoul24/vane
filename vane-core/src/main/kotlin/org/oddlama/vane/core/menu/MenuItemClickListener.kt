@@ -12,21 +12,14 @@ class MenuItemClickListener(
 ) : MenuWidget {
     constructor(slot: Int, onClick: Function3<Player?, Menu?, ItemStack?, Menu.ClickResult?>) : this(
         slot,
-        Function4 { player: Player?, menu: Menu?, item: ItemStack?, event: InventoryClickEvent? ->
-            if (!Menu.isLeftClick(event)) {
-                Menu.ClickResult.INVALID_CLICK
-            } else {
-                onClick.apply(player, menu, item)
-            }
+        Function4 { player, menu, item, event ->
+            if (!Menu.isLeftClick(event)) Menu.ClickResult.INVALID_CLICK
+            else onClick.apply(player, menu, item)
         })
 
-    fun slot(): Int {
-        return slot
-    }
+    fun slot(): Int = slot
 
-    override fun update(menu: Menu?): Boolean {
-        return false
-    }
+    override fun update(menu: Menu?): Boolean = false
 
     override fun click(
         player: Player?,
@@ -35,14 +28,7 @@ class MenuItemClickListener(
         slot: Int,
         event: InventoryClickEvent?
     ): Menu.ClickResult? {
-        if (this.slot != slot) {
-            return Menu.ClickResult.IGNORE
-        }
-
-        return if (onClick != null) {
-            onClick.apply(player, menu, item, event)
-        } else {
-            Menu.ClickResult.IGNORE
-        }
+        if (this.slot != slot) return Menu.ClickResult.IGNORE
+        return onClick?.apply(player, menu, item, event) ?: Menu.ClickResult.IGNORE
     }
 }

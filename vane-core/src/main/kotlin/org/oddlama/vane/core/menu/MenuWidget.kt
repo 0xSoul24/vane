@@ -12,6 +12,6 @@ interface MenuWidget {
         menu: Menu?,
         item: ItemStack?,
         slot: Int,
-        event: InventoryClickEvent?
+        event: InventoryClickEvent?,
     ): Menu.ClickResult?
 }

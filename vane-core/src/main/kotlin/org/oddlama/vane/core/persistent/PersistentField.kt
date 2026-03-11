@@ -3,44 +3,35 @@ package org.oddlama.vane.core.persistent
 import org.json.JSONObject
 import java.io.IOException
 import java.lang.reflect.Field
-import java.util.function.Function
 
-class PersistentField(private val owner: Any?, private val field: Field, mapName: Function<String?, String?>) {
-    private val path: String? = mapName.apply(field.name.substring("storage".length))
+class PersistentField(private val owner: Any?, private val field: Field, mapName: (String?) -> String?) {
+    private val path: String? = mapName(field.name.substring("storage".length))
 
     init {
-
-        field.setAccessible(true)
+        field.isAccessible = true
     }
 
-    fun path(): String? {
-        return path
-    }
+    fun path(): String? = path
 
-    fun get(): Any? {
+    fun get(): Any? =
         try {
-            return field.get(owner)
-        } catch (e: IllegalAccessException) {
-            throw RuntimeException("Invalid field access on '" + field.name + "'. This is a bug.")
+            field.get(owner)
+        } catch (_: IllegalAccessException) {
+            throw RuntimeException("Invalid field access on '${field.name}'. This is a bug.")
         }
-    }
 
     @Throws(IOException::class)
     fun save(json: JSONObject) {
-        val value = PersistentSerializer.toJson(field, get()) ?: JSONObject.NULL
-        json.put(path, value)
+        json.put(path, PersistentSerializer.toJson(field, get()) ?: JSONObject.NULL)
     }
 
     @Throws(IOException::class)
     fun load(json: JSONObject) {
-        if (!json.has(path)) {
-            throw IOException("Missing key in persistent storage: '$path'")
-        }
-
+        if (!json.has(path)) throw IOException("Missing key in persistent storage: '$path'")
         try {
             field.set(owner, PersistentSerializer.fromJson(field, json.get(path)))
-        } catch (e: IllegalAccessException) {
-            throw RuntimeException("Invalid field access on '" + field.name + "'. This is a bug.")
+        } catch (_: IllegalAccessException) {
+            throw RuntimeException("Invalid field access on '${field.name}'. This is a bug.")
         }
     }
 }

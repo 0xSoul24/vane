@@ -10,7 +10,7 @@ import org.oddlama.vane.annotation.config.ConfigDouble
 import org.oddlama.vane.annotation.config.ConfigLong
 import org.oddlama.vane.core.Listener
 import org.oddlama.vane.core.module.Context
-import org.oddlama.vane.util.Conversions
+import org.oddlama.vane.util.msToTicks
 import org.oddlama.vane.util.Nms
 import kotlin.Comparator
 import kotlin.Int
@@ -89,7 +89,7 @@ class WorldRebuild(context: Context<Admin?>) : Listener<Admin?>(
                 this.states.sortWith(RebuildComparator(center))
 
                 // Initialize delay
-                task = this@WorldRebuild.module!!.scheduleTask(this, Conversions.msToTicks(configDelay))
+                task = this@WorldRebuild.module!!.scheduleTask(this, msToTicks(configDelay))
             }
         }
 
@@ -148,7 +148,7 @@ class WorldRebuild(context: Context<Admin?>) : Listener<Admin?>(
                 rebuildNextBlock()
 
                 // Adjust delay
-                val delay = Conversions.msToTicks(
+                val delay = msToTicks(
                     max(configMinDelay, (configDelay * exp(-amountRebuild * configDelayFalloff)).toInt().toLong())
                 )
                 this@WorldRebuild.module!!.scheduleTask(this, delay)

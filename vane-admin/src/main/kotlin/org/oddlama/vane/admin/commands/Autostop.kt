@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender
 import org.oddlama.vane.admin.Admin
 import org.oddlama.vane.admin.AutostopGroup
 import org.oddlama.vane.annotation.command.Name
-import org.oddlama.vane.util.Conversions
+import org.oddlama.vane.util.ticksToMs
 
 @Name("autostop")
 class Autostop(var autostop: AutostopGroup) : org.oddlama.vane.core.command.Command<Admin?>(autostop) {
@@ -65,6 +65,6 @@ class Autostop(var autostop: AutostopGroup) : org.oddlama.vane.core.command.Comm
     }
 
     private fun scheduleDelay(sender: CommandSender?, delay: Int) {
-        autostop.schedule(sender, Conversions.ticksToMs(delay.toLong()))
+        autostop.schedule(sender, ticksToMs(delay.toLong()))
     }
 }

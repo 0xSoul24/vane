@@ -7,37 +7,15 @@ import org.oddlama.vane.util.ItemUtil
 import org.oddlama.vane.util.StorageUtil.namespacedKey
 
 class HeadMaterial(
-    private val key: NamespacedKey?,
-    private val name: String?,
-    private val category: String?,
-    tags: MutableList<String?>,
-    private val base64Texture: String?
+    val key: NamespacedKey?,
+    val name: String?,
+    val category: String?,
+    tags: List<String?>,
+    val texture: String?
 ) {
-    private val tags: MutableSet<String?> = HashSet(tags)
+    val tags: Set<String?> = tags.toHashSet()
 
-    fun key(): NamespacedKey? {
-        return key
-    }
-
-    fun name(): String? {
-        return name
-    }
-
-    fun category(): String? {
-        return category
-    }
-
-    fun tags(): MutableSet<String?> {
-        return tags
-    }
-
-    fun texture(): String? {
-        return base64Texture
-    }
-
-    fun item(): ItemStack {
-        return ItemUtil.skullWithTexture(name!!, base64Texture!!)
-    }
+    fun item(): ItemStack = ItemUtil.skullWithTexture(name!!, texture!!)
 
     companion object {
         @JvmStatic
@@ -46,14 +24,9 @@ class HeadMaterial(
             val name = json.getString("name")
             val category = json.getString("category")
             val texture = json.getString("texture")
-
-            val tags = ArrayList<String?>()
             val tagsArr = json.getJSONArray("tags")
-            for (i in 0..<tagsArr.length()) {
-                tags.add(tagsArr.getString(i))
-            }
-
-            val key = namespacedKey("vane", category + "_" + id)
+            val tags = (0 until tagsArr.length()).map { tagsArr.getString(it) }
+            val key = namespacedKey("vane", "${category}_$id")
             return HeadMaterial(key, name, category, tags, texture)
         }
     }

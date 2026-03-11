@@ -6,13 +6,9 @@ interface CustomModelDataRegistry {
     /** A range of custom model data ids.  */
     @JvmRecord
     data class Range(val from: Int, val to: Int) {
-        fun contains(data: Int): Boolean {
-            return data in from..<to
-        }
+        fun contains(data: Int): Boolean = data in from..<to
 
-        fun overlaps(range: Range): Boolean {
-            return !(to >= range.from || from >= range.to)
-        }
+        fun overlaps(range: Range): Boolean = to > range.from && from < range.to
 
         init {
             require(from < to) { "A range must contain at least one integer" }
@@ -25,20 +21,20 @@ interface CustomModelDataRegistry {
     fun has(data: Int): Boolean
 
     /** Returns true if any custom model data in the given range is already reserved.  */
-    fun hasAny(range: Range?): Boolean
+    fun hasAny(range: Range): Boolean
 
     /** Returns the range associated to a specific key.  */
-    fun get(resourceKey: NamespacedKey?): Range?
+    fun get(resourceKey: NamespacedKey): Range?
 
     /** Returns the key associated to specific custom model data, if any.  */
     fun get(data: Int): NamespacedKey?
 
     /** Returns the key associated to the first encountered registered id in the given range.  */
-    fun get(range: Range?): NamespacedKey?
+    fun get(range: Range): NamespacedKey?
 
     /** Reserves the given range.  */
-    fun reserve(resourceKey: NamespacedKey?, range: Range?)
+    fun reserve(resourceKey: NamespacedKey, range: Range)
 
-    /** Reserves the given range.  */
-    fun reserveSingle(resourceKey: NamespacedKey?, data: Int)
+    /** Reserves a single id.  */
+    fun reserveSingle(resourceKey: NamespacedKey, data: Int)
 }

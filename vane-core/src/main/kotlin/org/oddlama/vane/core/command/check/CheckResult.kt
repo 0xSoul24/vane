@@ -8,7 +8,7 @@ interface CheckResult {
 
     fun apply(command: Command<*>?, sender: CommandSender?): Boolean
 
-    fun prepend(argumentType: String?, parsedArg: Any?, include: Boolean): CheckResult?
+    fun prepend(argumentType: String, parsedArg: Any?, include: Boolean): CheckResult
 
     fun good(): Boolean
 }

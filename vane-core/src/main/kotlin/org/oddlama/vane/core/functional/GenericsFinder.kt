@@ -3,36 +3,24 @@ package org.oddlama.vane.core.functional
 import java.io.Serializable
 import java.lang.invoke.SerializedLambda
 import java.lang.reflect.Method
-import java.util.*
-import java.util.function.Supplier
 
 interface GenericsFinder : Serializable {
-    fun serialized(): SerializedLambda {
-        try {
-            val replaceMethod = javaClass.getDeclaredMethod("writeReplace")
-            replaceMethod.setAccessible(true)
-            return replaceMethod.invoke(this) as SerializedLambda
-        } catch (e: Exception) {
-            throw java.lang.RuntimeException(e)
-        }
-    }
+    fun serialized(): SerializedLambda =
+        runCatching {
+            javaClass.getDeclaredMethod("writeReplace")
+                .also { it.isAccessible = true }
+                .invoke(this) as SerializedLambda
+        }.getOrElse { throw RuntimeException(it) }
 
     val containingClass: Class<*>
-        get() {
-            try {
-                val className = serialized().implClass.replace("/".toRegex(), ".")
-                return Class.forName(className)
-            } catch (e: Exception) {
-                throw java.lang.RuntimeException(e)
-            }
-        }
+        get() = runCatching {
+            Class.forName(serialized().implClass.replace("/", "."))
+        }.getOrElse { throw RuntimeException(it) }
 
     fun method(): Method {
         val lambda = serialized()
-        val containingClass = this.containingClass
-        return Arrays.stream(containingClass.getDeclaredMethods())
-            .filter { method: Method -> method.name == lambda.implMethodName }
-            .findFirst()
-            .orElseThrow(Supplier { RuntimeException() })
+        return containingClass.declaredMethods
+            .firstOrNull { it.name == lambda.implMethodName }
+            ?: throw RuntimeException("Method '${lambda.implMethodName}' not found")
     }
 }

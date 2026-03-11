@@ -17,80 +17,46 @@ import java.util.logging.Level
 open class Menu {
     protected val manager: MenuManager
     protected var inventory: Inventory? = null
-    private val widgets: MutableSet<MenuWidget> = HashSet()
+    private val widgets: MutableSet<MenuWidget> = mutableSetOf()
     var onClose: Consumer2<Player?, InventoryCloseEvent.Reason?>? = null
         private set
     var onNaturalClose: Consumer1<Player?>? = null
         private set
     private var tag: Any? = null
-
-    // A tainted menu will refuse to be opened.
-    // Useful to prevent an invalid menu from reopening
-    // after its state has been captured.
     protected var tainted: Boolean = false
 
     protected constructor(context: Context<*>) {
-        this.manager = context.module!!.core!!.menuManager!!
+        manager = context.module!!.core!!.menuManager!!
     }
 
     constructor(context: Context<*>, inventory: Inventory?) {
-        this.manager = context.module!!.core!!.menuManager!!
+        manager = context.module!!.core!!.menuManager!!
         this.inventory = inventory
     }
 
-    fun manager(): MenuManager {
-        return manager
-    }
+    fun manager(): MenuManager = manager
+    fun inventory(): Inventory? = inventory
+    fun tag(): Any? = tag
 
-    fun inventory(): Inventory? {
-        return inventory
-    }
+    fun tag(tag: Any?): Menu = apply { this.tag = tag }
+    fun taint() { tainted = true }
 
-    fun tag(): Any? {
-        return tag
-    }
+    fun add(widget: MenuWidget?) { widgets.add(widget!!) }
+    fun remove(widget: MenuWidget?): Boolean = widgets.remove(widget)
 
-    fun tag(tag: Any?): Menu {
-        this.tag = tag
-        return this
-    }
-
-    fun taint() {
-        this.tainted = true
-    }
-
-    fun add(widget: MenuWidget?) {
-        widgets.add(widget!!)
-    }
-
-    fun remove(widget: MenuWidget?): Boolean {
-        return widgets.remove(widget)
-    }
-
-    fun update() {
-        update(false)
-    }
+    fun update() = update(false)
 
     open fun update(forceUpdate: Boolean) {
-        val updated = widgets.stream().mapToInt { w: MenuWidget? -> if (w!!.update(this)) 1 else 0 }.sum()
-
-        if (updated > 0 || forceUpdate) {
-            // Send inventory content to players
-            manager.update(this)
-        }
+        val updated = widgets.count { it.update(this) }
+        if (updated > 0 || forceUpdate) manager.update(this)
     }
 
     open fun openWindow(player: Player) {
-        if (tainted) {
-            return
-        }
-        player.openInventory(inventory!!)
+        if (!tainted) player.openInventory(inventory!!)
     }
 
     fun open(player: Player) {
-        if (tainted) {
-            return
-        }
+        if (tainted) return
         update(true)
         manager.scheduleNextTick {
             manager.add(player, this)
@@ -100,114 +66,70 @@ open class Menu {
 
     @JvmOverloads
     fun close(player: Player, reason: InventoryCloseEvent.Reason = InventoryCloseEvent.Reason.PLUGIN): Boolean {
-        val topInventory = player.openInventory.topInventory
-        if (topInventory !== inventory) {
+        if (player.openInventory.topInventory !== inventory) {
             try {
                 throw RuntimeException("Invalid close from unrelated menu.")
             } catch (e: RuntimeException) {
-                manager
-                    .module!!
-                    .log.log(
-                        Level.WARNING,
-                        "Tried to close menu inventory that isn't opened by the player $player",
-                        e
-                    )
+                manager.module!!.log.log(
+                    Level.WARNING,
+                    "Tried to close menu inventory that isn't opened by the player $player", e
+                )
             }
             return false
         }
-
         manager.scheduleNextTick { player.closeInventory(reason) }
         return true
     }
 
-    fun onClose(onClose: Consumer2<Player?, InventoryCloseEvent.Reason?>?): Menu {
-        this.onClose = onClose
-        return this
-    }
-
-    fun onNaturalClose(onNaturalClose: Consumer1<Player?>?): Menu {
-        this.onNaturalClose = onNaturalClose
-        return this
-    }
+    fun onClose(onClose: Consumer2<Player?, InventoryCloseEvent.Reason?>?): Menu = apply { this.onClose = onClose }
+    fun onNaturalClose(onNaturalClose: Consumer1<Player?>?): Menu = apply { this.onNaturalClose = onNaturalClose }
 
     fun closed(player: Player, reason: InventoryCloseEvent.Reason?) {
-        if (reason == InventoryCloseEvent.Reason.PLAYER && onNaturalClose != null) {
-            onNaturalClose!!.apply(player)
+        if (reason == InventoryCloseEvent.Reason.PLAYER) {
+            onNaturalClose?.apply(player)
         } else {
-            if (onClose != null) {
-                onClose!!.apply(player, reason)
-            }
+            onClose?.apply(player, reason)
         }
         inventory!!.clear()
         manager.remove(player, this)
     }
 
-    fun onClick(player: Player?, item: ItemStack?, slot: Int, event: InventoryClickEvent?): ClickResult {
-        return ClickResult.IGNORE
-    }
+    open fun onClick(player: Player?, item: ItemStack?, slot: Int, event: InventoryClickEvent?): ClickResult =
+        ClickResult.IGNORE
 
     fun click(player: Player, item: ItemStack?, slot: Int, event: InventoryClickEvent) {
-        // Ignore unknown click actions
-        if (event.action == InventoryAction.UNKNOWN) {
-            return
-        }
+        if (event.action == InventoryAction.UNKNOWN) return
 
-        // Send event to this menu
         var result = ClickResult.IGNORE
         result = ClickResult.or(result, onClick(player, item, slot, event))
-
-        // Send event to all widgets
         for (widget in widgets) {
-            result = ClickResult.or(result, widget.click(player, this, item, slot, event)!!)
+            result = ClickResult.or(result, widget.click(player, this, item, slot, event) ?: ClickResult.IGNORE)
         }
 
         when (result) {
             ClickResult.INVALID_CLICK, ClickResult.IGNORE -> {}
-            ClickResult.SUCCESS -> player.playSound(
-                player.location,
-                Sound.UI_BUTTON_CLICK,
-                SoundCategory.MASTER,
-                1.0f,
-                1.0f
-            )
-
-            ClickResult.ERROR -> player.playSound(
-                player.location,
-                Sound.BLOCK_FIRE_EXTINGUISH,
-                SoundCategory.MASTER,
-                1.0f,
-                1.0f
-            )
-
+            ClickResult.SUCCESS -> player.playSound(player.location, Sound.UI_BUTTON_CLICK, SoundCategory.MASTER, 1f, 1f)
+            ClickResult.ERROR   -> player.playSound(player.location, Sound.BLOCK_FIRE_EXTINGUISH, SoundCategory.MASTER, 1f, 1f)
         }
     }
 
     enum class ClickResult(private val priority: Int) {
-        IGNORE(0),
-        INVALID_CLICK(1),
-        SUCCESS(2),
-        ERROR(3);
+        IGNORE(0), INVALID_CLICK(1), SUCCESS(2), ERROR(3);
 
         companion object {
-            fun or(a: ClickResult, b: ClickResult): ClickResult {
-                return if (a.priority > b.priority) a else b
-            }
+            fun or(a: ClickResult, b: ClickResult): ClickResult = if (a.priority > b.priority) a else b
         }
     }
 
     companion object {
         @JvmStatic
         fun isLeftOrRightClick(event: InventoryClickEvent?): Boolean {
-            if (event == null) return false
-            val type = event.click
+            val type = event?.click ?: return false
             return type == ClickType.LEFT || type == ClickType.RIGHT
         }
 
         @JvmStatic
-        fun isLeftClick(event: InventoryClickEvent?): Boolean {
-            if (event == null) return false
-            val type = event.click
-            return type == ClickType.LEFT
-        }
+        fun isLeftClick(event: InventoryClickEvent?): Boolean =
+            event?.click == ClickType.LEFT
     }
 }
