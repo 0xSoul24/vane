@@ -1,6 +1,7 @@
 [versions]
 paper = "1.21.11-R0.1-SNAPSHOT"
 bstats = "3.2.1"
+dokka = "2.1.0"
 
 [libraries]
 annotations = {group = "org.jetbrains", name = "annotations", version = "26.1.0"}
@@ -31,3 +32,4 @@ paperweightUserdev = {id = "io.papermc.paperweight.userdev", version = "2.0.0-be
 runPaper = {id = "xyz.jpenilla.run-paper", version = "3.0.2"}
 shadow = {id = "com.gradleup.shadow", version = "9.3.2"}
 blossom = {id = "net.kyori.blossom", version = "2.2.0"}
+dokka = {id = "org.jetbrains.dokka", version.ref = "dokka"}

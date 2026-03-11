@@ -2,12 +2,33 @@ plugins {
 	`java-library`
     alias(libs.plugins.paperweightUserdev)
 	alias(libs.plugins.runPaper) // Adds runServer and runMojangMappedServer tasks for testing
+    alias(libs.plugins.dokka)
     kotlin("jvm")
 }
 
 dependencies {
 	paperweight.paperDevBundle(rootProject.libs.versions.paper)
     implementation(kotlin("stdlib"))
+
+    // Dokka multi-module aggregation
+    dokka(project(":vane-admin"))
+    dokka(project(":vane-annotations"))
+    dokka(project(":vane-bedtime"))
+    dokka(project(":vane-core"))
+    dokka(project(":vane-enchantments"))
+    dokka(project(":vane-permissions"))
+    dokka(project(":vane-portals"))
+    dokka(project(":vane-proxy-core"))
+    dokka(project(":vane-regions"))
+    dokka(project(":vane-trifles"))
+    dokka(project(":vane-velocity"))
+}
+
+dokka {
+    moduleName.set("Vane")
+    dokkaPublications.html {
+        outputDirectory.set(layout.buildDirectory.dir("dokka/html"))
+    }
 }
 
 java {
@@ -27,6 +48,7 @@ tasks.runServer {
 subprojects {
 	apply(plugin = "java-library")
 	apply(plugin = "java")
+    apply(plugin = "org.jetbrains.dokka")
 
 	group = "org.oddlama.vane"
 	version = "1.21.1"
@@ -51,6 +73,17 @@ subprojects {
 		compileOnly(rootProject.libs.annotations)
 		annotationProcessor(rootProject.libs.annotations)
 	}
+
+    configure<org.jetbrains.dokka.gradle.DokkaExtension> {
+        moduleName.set(project.name)
+        dokkaSourceSets.configureEach {
+            sourceLink {
+                localDirectory.set(file("src/main/kotlin"))
+                remoteUrl("https://github.com/oddlama/vane/blob/main/${project.name}/src/main/kotlin")
+                remoteLineSuffix.set("#L")
+            }
+        }
+    }
 }
 
 // All Paper Plugins + Annotations.
