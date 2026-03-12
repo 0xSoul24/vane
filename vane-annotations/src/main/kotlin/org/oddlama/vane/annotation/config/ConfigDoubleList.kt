@@ -1,5 +1,6 @@
 package org.oddlama.vane.annotation.config
 
+/** List of double values configuration field with optional bounds. */
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FIELD)
 annotation class ConfigDoubleList(

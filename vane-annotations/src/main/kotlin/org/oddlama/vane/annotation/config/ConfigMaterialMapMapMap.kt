@@ -1,5 +1,6 @@
 package org.oddlama.vane.annotation.config
 
+/** Nested map configuration where the innermost values are Materials. */
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FIELD)
 annotation class ConfigMaterialMapMapMap(

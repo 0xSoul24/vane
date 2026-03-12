@@ -31,6 +31,12 @@ private val fieldTypeMapping: Map<String, String> = mapOf(
     "org.oddlama.vane.annotation.lang.LangVersion" to "long"
 )
 
+/**
+ * Annotation processor that validates configuration and language field annotations.
+ *
+ * It ensures that fields annotated with the config/lang annotations have the
+ * expected Java/Kotlin types according to [fieldTypeMapping].
+ */
 @SupportedAnnotationTypes(
     "org.oddlama.vane.annotation.config.ConfigBoolean",
     "org.oddlama.vane.annotation.config.ConfigDict",
@@ -62,6 +68,10 @@ class ConfigAndLangProcessor : AbstractProcessor() {
         return true
     }
 
+    /**
+     * Verifies that the annotated element has the expected type for the
+     * given annotation. Emits an error if the mapping is missing or types do not match.
+     */
     private fun verifyType(annotation: TypeElement, element: Element) {
         val type = element.asType().toString()
         val requiredType = fieldTypeMapping[annotation.asType().toString()]

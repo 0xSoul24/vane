@@ -12,6 +12,12 @@ import javax.tools.Diagnostic
 
 private val mandatoryAnnotations = listOf(Name::class.java)
 
+/**
+ * Validates command-related annotations such as `@VaneCommand`, `@Name` and `@Aliases`.
+ *
+ * Ensures annotated classes are valid command implementations and warns/errors when
+ * required annotations are missing.
+ */
 @SupportedAnnotationTypes(
     "org.oddlama.vane.annotation.command.Aliases",
     "org.oddlama.vane.annotation.command.Name",
@@ -24,7 +30,13 @@ class CommandAnnotationProcessor : AbstractProcessor() {
             val elements = roundEnv.getElementsAnnotatedWith(annotation)
             elements.forEach {
                 verifyIsClass(processingEnv, it, annotation.simpleName.toString())
-                verifyExtendsType(processingEnv, it, "org.oddlama.vane.core.command.Command<", annotation.simpleName.toString(), "org.oddlama.vane.core.command.Command")
+                verifyExtendsType(
+                    processingEnv,
+                    it,
+                    "org.oddlama.vane.core.command.Command<",
+                    annotation.simpleName.toString(),
+                    "org.oddlama.vane.core.command.Command"
+                )
             }
 
             // Verify that all mandatory annotations are present
@@ -36,6 +48,10 @@ class CommandAnnotationProcessor : AbstractProcessor() {
         return true
     }
 
+    /**
+     * Ensures that required command annotations (like `@Name`) are present on the class.
+     * Skips checks for classes that are already subclasses of the framework's generic Command.
+     */
     private fun verifyHasAnnotations(element: Element) {
         // Only check subclasses
         if (element.asType().toString().startsWith("org.oddlama.vane.core.command.Command<")) return

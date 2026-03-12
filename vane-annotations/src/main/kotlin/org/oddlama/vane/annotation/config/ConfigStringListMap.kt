@@ -1,5 +1,6 @@
 package org.oddlama.vane.annotation.config
 
+/** Map from string keys to lists of strings configuration entries. */
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FIELD)
 annotation class ConfigStringListMap(

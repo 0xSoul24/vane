@@ -7,6 +7,7 @@ import javax.annotation.processing.SupportedSourceVersion
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
 
+/** Validates usage of the `@VaneModule` annotation. */
 @SupportedAnnotationTypes("org.oddlama.vane.annotation.VaneModule")
 @SupportedSourceVersion(SourceVersion.RELEASE_21)
 class VaneModuleProcessor : AbstractProcessor() {
@@ -15,7 +16,13 @@ class VaneModuleProcessor : AbstractProcessor() {
             val elements = roundEnv.getElementsAnnotatedWith(annotation)
             elements.forEach {
                 verifyIsClass(processingEnv, it, "VaneModule")
-                verifyExtendsType(processingEnv, it, "org.oddlama.vane.core.module.Module<", "VaneModule", "org.oddlama.vane.core.Module")
+                verifyExtendsType(
+                    processingEnv,
+                    it,
+                    "org.oddlama.vane.core.module.Module<",
+                    "VaneModule",
+                    "org.oddlama.vane.core.Module"
+                )
             }
         }
 

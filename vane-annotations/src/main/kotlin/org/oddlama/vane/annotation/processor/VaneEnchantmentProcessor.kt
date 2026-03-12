@@ -7,6 +7,7 @@ import javax.annotation.processing.SupportedSourceVersion
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
 
+/** Annotation processor that validates usages of `@VaneEnchantment`. */
 @SupportedAnnotationTypes("org.oddlama.vane.annotation.enchantment.VaneEnchantment")
 @SupportedSourceVersion(SourceVersion.RELEASE_21)
 class VaneEnchantmentProcessor : AbstractProcessor() {
@@ -14,8 +15,15 @@ class VaneEnchantmentProcessor : AbstractProcessor() {
         annotations.forEach { annotation ->
             val elements = roundEnv.getElementsAnnotatedWith(annotation)
             elements.forEach {
+                // Ensure the annotation targets a class and the class extends the expected base.
                 verifyIsClass(processingEnv, it, "VaneEnchantment")
-                verifyExtendsType(processingEnv, it, "org.oddlama.vane.core.enchantments.CustomEnchantment<", "VaneEnchantment", "org.oddlama.vane.core.enchantments.CustomEnchantment")
+                verifyExtendsType(
+                    processingEnv,
+                    it,
+                    "org.oddlama.vane.core.enchantments.CustomEnchantment<",
+                    "VaneEnchantment",
+                    "org.oddlama.vane.core.enchantments.CustomEnchantment"
+                )
             }
         }
 

@@ -7,6 +7,15 @@ import javax.lang.model.element.TypeElement
 import javax.lang.model.type.DeclaredType
 import javax.tools.Diagnostic
 
+/** Utility helpers used by annotation processors in this module. */
+/**
+ * Verifies that the provided element is a class. Prints a compiler error message
+ * via the processing environment if it is not.
+ *
+ * @param processingEnv The annotation processing environment used to report errors.
+ * @param element The element annotated with the annotation being validated.
+ * @param annotationName The simple name of the annotation being validated (used in messages).
+ */
 fun verifyIsClass(processingEnv: ProcessingEnvironment, element: Element, annotationName: String) {
     if (element.kind != ElementKind.CLASS) {
         processingEnv.messager.printMessage(
@@ -16,6 +25,16 @@ fun verifyIsClass(processingEnv: ProcessingEnvironment, element: Element, annota
     }
 }
 
+/**
+ * Verifies that the provided element (class) extends or inherits from a type
+ * that starts with the given prefix. If it does not, an error is emitted.
+ *
+ * @param processingEnv Processing environment used for error reporting.
+ * @param element The element to check (expected to be a class).
+ * @param requiredSuperPrefix Prefix of the required superclass or interface name.
+ * @param annotationName Name of the annotation being validated (for diagnostics).
+ * @param requiredFullName Human-readable full name used in diagnostic messages.
+ */
 fun verifyExtendsType(
     processingEnv: ProcessingEnvironment,
     element: Element,
