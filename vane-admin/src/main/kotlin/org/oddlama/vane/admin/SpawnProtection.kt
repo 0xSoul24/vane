@@ -21,6 +21,9 @@ import org.oddlama.vane.core.Listener
 import org.oddlama.vane.core.module.Context
 import kotlin.math.sqrt
 
+/**
+ * Protects a configurable spawn area from block and entity interactions.
+ */
 class SpawnProtection(context: Context<Admin?>) : Listener<Admin?>(
     context.groupDefaultDisabled(
         "SpawnProtection",
@@ -29,6 +32,9 @@ class SpawnProtection(context: Context<Admin?>) : Listener<Admin?>(
                 "'."
     )
 ) {
+    private val admin: Admin
+        get() = requireNotNull(module)
+
     private val permission = Permission(
         PERMISSION_NAME,
         "Allow player to bypass spawn protection",
@@ -56,69 +62,74 @@ class SpawnProtection(context: Context<Admin?>) : Listener<Admin?>(
     private var spawnCenter: Location? = null
 
     init {
-        module!!.registerPermission(permission)
+        admin.registerPermission(permission)
     }
 
+    /**
+     * Recomputes the protected spawn center after config updates.
+     */
     public override fun onConfigChange() {
         spawnCenter = null
         scheduleNextTick {
-            val world: World? = module!!.server.getWorld(configWorld!!)
+            val worldName = configWorld ?: return@scheduleNextTick
+            val world: World? = admin.server.getWorld(worldName)
             if (world == null) {
-                // todo print error and show valid worlds.
-                module!!.log.warning(
+                /** TODO print error and show valid worlds. */
+                admin.log.warning(
                     "The world \"$configWorld\" configured for spawn-protection could not be found."
                 )
-                module!!.log.warning("These are the names of worlds existing on this server:")
-                for (w in module!!.server.worlds) {
-                    module!!.log.warning("  \"" + w.name + "\"")
+                admin.log.warning("These are the names of worlds existing on this server:")
+                for (w in admin.server.worlds) {
+                    admin.log.warning("  \"${w.name}\"")
                 }
                 spawnCenter = null
             } else {
-                if (configUseSpawnLocation) {
-                    spawnCenter = world.spawnLocation
-                    spawnCenter!!.y = 0.0
+                spawnCenter = if (configUseSpawnLocation) {
+                    world.spawnLocation.apply { y = 0.0 }
                 } else {
-                    spawnCenter = Location(world, configX.toDouble(), 0.0, configZ.toDouble())
+                    Location(world, configX.toDouble(), 0.0, configZ.toDouble())
                 }
             }
         }
     }
 
+    /**
+     * Convenience overload for block-based checks.
+     */
     fun denyModifySpawn(block: Block, entity: Entity?): Boolean {
         return denyModifySpawn(block.location, entity)
     }
 
+    /**
+     * Returns true when a player attempts to modify a protected spawn location.
+     */
     fun denyModifySpawn(location: Location, entity: Entity?): Boolean {
-        if (spawnCenter == null || entity !is Player) {
-            return false
-        }
+        val center = spawnCenter ?: return false
+        val player = entity as? Player ?: return false
 
-        val dx = location.x - spawnCenter!!.x
-        val dz = location.z - spawnCenter!!.z
+        val dx = location.x - center.x
+        val dz = location.z - center.z
         val distance = sqrt(dx * dx + dz * dz)
-        if (distance > configRadius) {
-            return false
-        }
-
-        return !entity.hasPermission(permission)
+        return distance <= configRadius && !player.hasPermission(permission)
     }
 
-    /* ************************ blocks ************************ */
+    /** Cancels block breaking in protected spawn area. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onBlockBreak(event: BlockBreakEvent) {
-        if (denyModifySpawn(event.getBlock(), event.player)) {
+        if (denyModifySpawn(event.block, event.player)) {
             event.isCancelled = true
         }
     }
 
+    /** Cancels block placement in protected spawn area. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onBlockPlace(event: BlockPlaceEvent) {
-        if (denyModifySpawn(event.getBlock(), event.getPlayer())) {
+        if (denyModifySpawn(event.block, event.player)) {
             event.isCancelled = true
         }
     }
 
-    /* ************************ hanging ************************ */
+    /** Cancels hanging-entity break actions in protected spawn area. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onHangingBreakByEntity(event: HangingBreakByEntityEvent) {
         if (denyModifySpawn(event.entity.location, event.remover)) {
@@ -126,6 +137,7 @@ class SpawnProtection(context: Context<Admin?>) : Listener<Admin?>(
         }
     }
 
+    /** Cancels hanging-entity placement in protected spawn area. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onHangingPlace(event: HangingPlaceEvent) {
         if (denyModifySpawn(event.entity.location, event.player)) {
@@ -133,41 +145,44 @@ class SpawnProtection(context: Context<Admin?>) : Listener<Admin?>(
         }
     }
 
-    /* ************************ player ************************ */
+    /** Cancels armor-stand manipulation in protected spawn area. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerArmorStandManipulate(event: PlayerArmorStandManipulateEvent) {
-        if (denyModifySpawn(event.rightClicked.location, event.getPlayer())) {
+        if (denyModifySpawn(event.rightClicked.location, event.player)) {
             event.isCancelled = true
         }
     }
 
+    /** Cancels bucket emptying in protected spawn area. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerBucketEmpty(event: PlayerBucketEmptyEvent) {
-        if (denyModifySpawn(event.block, event.getPlayer())) {
+        if (denyModifySpawn(event.block, event.player)) {
             event.isCancelled = true
         }
     }
 
+    /** Cancels bucket filling in protected spawn area. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerBucketFill(event: PlayerBucketFillEvent) {
-        if (denyModifySpawn(event.block, event.getPlayer())) {
+        if (denyModifySpawn(event.block, event.player)) {
             event.isCancelled = true
         }
     }
 
+    /** Cancels entity interaction in protected spawn area when interactions are disabled. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerInteractEntity(event: PlayerInteractEntityEvent) {
-        if (!configAllowInteraction && denyModifySpawn(event.rightClicked.location, event.getPlayer())) {
+        if (!configAllowInteraction && denyModifySpawn(event.rightClicked.location, event.player)) {
             event.isCancelled = true
         }
     }
 
+    /** Cancels block interaction in protected spawn area when interactions are disabled. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerInteract(event: PlayerInteractEvent) {
-        if (event.clickedBlock != null && !configAllowInteraction &&
-            denyModifySpawn(event.clickedBlock!!, event.getPlayer())
-        ) {
-            event.setCancelled(true)
+        val clickedBlock = event.clickedBlock ?: return
+        if (!configAllowInteraction && denyModifySpawn(clickedBlock, event.player)) {
+            event.isCancelled = true
         }
     }
 

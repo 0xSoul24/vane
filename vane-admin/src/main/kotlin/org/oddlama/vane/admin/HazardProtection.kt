@@ -16,13 +16,16 @@ import org.oddlama.vane.core.Listener
 import org.oddlama.vane.core.lang.TranslatedMessage
 import org.oddlama.vane.core.module.Context
 
+/**
+ * Prevents specific world hazards such as explosions, door breaking, and enderman griefing.
+ */
 class HazardProtection(context: Context<Admin?>) : Listener<Admin?>(
     context.group(
         "HazardProtection",
         "Enable hazard protection. The options below allow more fine-grained control over the hazards to protect from."
     )
 ) {
-    private val worldRebuild: WorldRebuild = WorldRebuild(getContext()!!)
+    private val worldRebuild = WorldRebuild(context)
 
     @ConfigBoolean(def = true, desc = "Restrict wither spawning to a list of worlds defined by wither_world_whitelist.")
     private val configEnableWitherWorldWhitelist = false
@@ -51,6 +54,12 @@ class HazardProtection(context: Context<Admin?>) : Listener<Admin?>(
     @LangMessage
     private val langWitherSpawnProhibited: TranslatedMessage? = null
 
+    private val witherSpawnProhibited: TranslatedMessage
+        get() = requireNotNull(langWitherSpawnProhibited)
+
+    /**
+     * Returns whether explosions for a given entity type should be blocked.
+     */
     private fun disableExplosion(type: EntityType): Boolean {
         return when (type) {
             EntityType.WITHER, EntityType.WITHER_SKULL -> configDisableWitherExplosions
@@ -59,13 +68,14 @@ class HazardProtection(context: Context<Admin?>) : Listener<Admin?>(
         }
     }
 
+    /**
+     * Cancels configured explosions or routes affected blocks to the rebuild system.
+     */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onEntityExplode(event: EntityExplodeEvent) {
         if (disableExplosion(event.entityType)) {
             if (worldRebuild.enabled()) {
-                // Schedule rebuild
                 worldRebuild.rebuild(event.blockList())
-                // Remove all affected blocks from event
                 event.blockList().clear()
             } else {
                 event.isCancelled = true
@@ -73,6 +83,7 @@ class HazardProtection(context: Context<Admin?>) : Listener<Admin?>(
         }
     }
 
+    /** Cancels hanging break events caused by blocked explosion sources. */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onHangingBreakByEntity(event: HangingBreakByEntityEvent) {
         if (disableExplosion(event.remover.type)) {
@@ -80,6 +91,7 @@ class HazardProtection(context: Context<Admin?>) : Listener<Admin?>(
         }
     }
 
+    /** Cancels entity door breaking when configured. */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onEntityBreakDoor(event: EntityBreakDoorEvent) {
         if (configDisableDoorBreaking) {
@@ -87,6 +99,7 @@ class HazardProtection(context: Context<Admin?>) : Listener<Admin?>(
         }
     }
 
+    /** Cancels fire ignited by lightning when configured. */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onBlockIgnite(event: BlockIgniteEvent) {
         if (event.cause == BlockIgniteEvent.IgniteCause.LIGHTNING && configDisableLightningFire) {
@@ -94,37 +107,27 @@ class HazardProtection(context: Context<Admin?>) : Listener<Admin?>(
         }
     }
 
+    /** Restricts wither spawning to configured whitelist worlds. */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onCreatureSpawn(event: CreatureSpawnEvent) {
-        if (!configEnableWitherWorldWhitelist) {
-            return
-        }
+        if (!configEnableWitherWorldWhitelist) return
 
-        // Only for wither spawns
-        if (event.getEntity().type != EntityType.WITHER) {
-            return
-        }
+        val entity = event.entity
+        if (entity.type != EntityType.WITHER) return
 
-        // Check if the world is whitelisted
-        val world = event.getEntity().world
-        if (configWitherWorldWhitelist!!.contains(world.name)) {
-            return
-        }
+        val world = entity.world
+        if (configWitherWorldWhitelist.orEmpty().contains(world.name)) return
 
-        langWitherSpawnProhibited!!.broadcastWorld(world, world.name)
+        witherSpawnProhibited.broadcastWorld(world, world.name)
         event.isCancelled = true
     }
 
+    /** Cancels enderman block pickup when configured. */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onEntityBlockChange(event: EntityChangeBlockEvent) {
-        if (!configDisableEndermanBlockPickup) {
-            return
-        }
+        if (!configDisableEndermanBlockPickup) return
 
-        // Only for enderman events
-        if (event.getEntity().type != EntityType.ENDERMAN) {
-            return
-        }
+        if (event.entity.type != EntityType.ENDERMAN) return
 
         event.isCancelled = true
     }

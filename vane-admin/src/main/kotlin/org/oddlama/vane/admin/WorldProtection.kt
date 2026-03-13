@@ -21,6 +21,9 @@ import org.bukkit.permissions.PermissionDefault
 import org.oddlama.vane.core.Listener
 import org.oddlama.vane.core.module.Context
 
+/**
+ * Prevents world modifications for players without the bypass permission.
+ */
 class WorldProtection(context: Context<Admin?>) : Listener<Admin?>(
     context.group(
         "WorldProtection",
@@ -30,6 +33,9 @@ class WorldProtection(context: Context<Admin?>) : Listener<Admin?>(
         false
     )
 ) {
+    private val admin: Admin
+        get() = requireNotNull(module)
+
     private val permission = Permission(
         PERMISSION_NAME,
         "Allow player to modify world",
@@ -37,18 +43,16 @@ class WorldProtection(context: Context<Admin?>) : Listener<Admin?>(
     )
 
     init {
-        module!!.registerPermission(permission)
+        admin.registerPermission(permission)
     }
 
-    fun denyModifyWorld(entity: Entity?): Boolean {
-        if (entity !is Player) {
-            return false
-        }
+    /**
+     * Returns true when the given entity is a player without world-modification permission.
+     */
+    fun denyModifyWorld(entity: Entity?): Boolean =
+        (entity as? Player)?.hasPermission(permission) == false
 
-        return !entity.hasPermission(permission)
-    }
-
-    /* ************************ blocks ************************ */
+    /** Handles block break attempts in protected worlds. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onBlockBreak(event: BlockBreakEvent) {
         if (denyModifyWorld(event.player)) {
@@ -56,14 +60,15 @@ class WorldProtection(context: Context<Admin?>) : Listener<Admin?>(
         }
     }
 
+    /** Handles block placement attempts in protected worlds. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onBlockPlace(event: BlockPlaceEvent) {
-        if (denyModifyWorld(event.getPlayer())) {
+        if (denyModifyWorld(event.player)) {
             event.isCancelled = true
         }
     }
 
-    /* ************************ enchantment ************************ */
+    /** Handles enchant preparation in protected worlds. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPrepareItemEnchant(event: PrepareItemEnchantEvent) {
         if (denyModifyWorld(event.enchanter)) {
@@ -71,6 +76,7 @@ class WorldProtection(context: Context<Admin?>) : Listener<Admin?>(
         }
     }
 
+    /** Handles enchant applications in protected worlds. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onItemEnchant(event: EnchantItemEvent) {
         if (denyModifyWorld(event.enchanter)) {
@@ -78,7 +84,7 @@ class WorldProtection(context: Context<Admin?>) : Listener<Admin?>(
         }
     }
 
-    /* ************************ entity ************************ */
+    /** Handles entity-caused combustion in protected worlds. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onEntityCombustByEntity(event: EntityCombustByEntityEvent) {
         if (denyModifyWorld(event.combuster)) {
@@ -86,27 +92,28 @@ class WorldProtection(context: Context<Admin?>) : Listener<Admin?>(
         }
     }
 
+    /** Handles entity damage interactions in protected worlds. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onEntityDamage(event: EntityDamageEvent) {
-        if (event is EntityDamageByEntityEvent) {
-            if (denyModifyWorld(event.damager)) {
-                event.isCancelled = true
-            } else if (denyModifyWorld(event.getEntity())) {
-                event.isCancelled = true
-            }
-        } else if (denyModifyWorld(event.getEntity())) {
+        val denied = when (event) {
+            is EntityDamageByEntityEvent -> denyModifyWorld(event.damager) || denyModifyWorld(event.entity)
+            else -> denyModifyWorld(event.entity)
+        }
+
+        if (denied) {
             event.isCancelled = true
         }
     }
 
+    /** Handles hunger changes in protected worlds. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onEntityFoodLevelChange(event: FoodLevelChangeEvent) {
-        if (denyModifyWorld(event.getEntity())) {
+        if (denyModifyWorld(event.entity)) {
             event.isCancelled = true
         }
     }
 
-    /* ************************ hanging ************************ */
+    /** Handles hanging-entity break actions in protected worlds. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onHangingBreakByEntity(event: HangingBreakByEntityEvent) {
         if (denyModifyWorld(event.remover)) {
@@ -114,6 +121,7 @@ class WorldProtection(context: Context<Admin?>) : Listener<Admin?>(
         }
     }
 
+    /** Handles hanging-entity placement in protected worlds. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onHangingPlace(event: HangingPlaceEvent) {
         if (denyModifyWorld(event.player)) {
@@ -121,7 +129,7 @@ class WorldProtection(context: Context<Admin?>) : Listener<Admin?>(
         }
     }
 
-    /* ************************ inventory ************************ */
+    /** Handles crafting interaction in protected worlds. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onItemCraft(event: CraftItemEvent) {
         if (denyModifyWorld(event.whoClicked)) {
@@ -129,52 +137,58 @@ class WorldProtection(context: Context<Admin?>) : Listener<Admin?>(
         }
     }
 
-    /* ************************ player ************************ */
+    /** Handles player armor-stand manipulation in protected worlds. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerArmorStandManipulate(event: PlayerArmorStandManipulateEvent) {
-        if (denyModifyWorld(event.getPlayer())) {
+        if (denyModifyWorld(event.player)) {
             event.isCancelled = true
         }
     }
 
+    /** Handles player bucket empty actions in protected worlds. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerBucketEmpty(event: PlayerBucketEmptyEvent) {
-        if (denyModifyWorld(event.getPlayer())) {
+        if (denyModifyWorld(event.player)) {
             event.isCancelled = true
         }
     }
 
+    /** Handles player bucket fill actions in protected worlds. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerBucketFill(event: PlayerBucketFillEvent) {
-        if (denyModifyWorld(event.getPlayer())) {
+        if (denyModifyWorld(event.player)) {
             event.isCancelled = true
         }
     }
 
+    /** Handles player book edits in protected worlds. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerEditBook(event: PlayerEditBookEvent) {
-        if (denyModifyWorld(event.getPlayer())) {
+        if (denyModifyWorld(event.player)) {
             event.isCancelled = true
         }
     }
 
+    /** Handles entity interaction initiated by players in protected worlds. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerInteractEntity(event: PlayerInteractEntityEvent) {
-        if (denyModifyWorld(event.getPlayer())) {
+        if (denyModifyWorld(event.player)) {
             event.isCancelled = true
         }
     }
 
+    /** Handles generic player interaction in protected worlds. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerInteract(event: PlayerInteractEvent) {
-        if (denyModifyWorld(event.getPlayer())) {
-            event.setCancelled(true)
+        if (denyModifyWorld(event.player)) {
+            event.isCancelled = true
         }
     }
 
+    /** Handles shearing actions in protected worlds. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerShearEntity(event: PlayerShearEntityEvent) {
-        if (denyModifyWorld(event.getPlayer())) {
+        if (denyModifyWorld(event.player)) {
             event.isCancelled = true
         }
     }

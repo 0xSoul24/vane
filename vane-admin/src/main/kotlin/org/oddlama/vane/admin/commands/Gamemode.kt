@@ -20,13 +20,16 @@ import org.oddlama.vane.annotation.lang.LangMessage
 import org.oddlama.vane.core.lang.TranslatedMessage
 import org.oddlama.vane.core.module.Context
 
+/**
+ * Command for toggling or explicitly setting player game mode.
+ */
 @Name("gamemode")
 @Aliases("gm")
 class Gamemode(context: Context<Admin?>) : org.oddlama.vane.core.command.Command<Admin?>(context) {
     @LangMessage
     private val langSet: TranslatedMessage? = null
 
-    // Cambiado CommandSourceStack? -> CommandSourceStack (no-null)
+    /** Builds the command tree for toggling and setting game mode. */
     override fun getCommandBase(): LiteralArgumentBuilder<CommandSourceStack> {
         return super.getCommandBase()
             .then(help())
@@ -35,7 +38,6 @@ class Gamemode(context: Context<Admin?>) : org.oddlama.vane.core.command.Command
                 Command.SINGLE_SUCCESS
             }
             .then(
-                // Usar tipos no-null para los argumentos genéricos
                 Commands.argument("game_mode", ArgumentTypes.gameMode())
                     .executes { ctx: CommandContext<CommandSourceStack> ->
                         setGamemodeSelf(
@@ -65,16 +67,20 @@ class Gamemode(context: Context<Admin?>) : org.oddlama.vane.core.command.Command
             )
     }
 
+    /** Resolves the selected player argument from command context. */
     @Throws(CommandSyntaxException::class)
     private fun player(ctx: CommandContext<CommandSourceStack>): Player {
         return ctx.getArgument("player", PlayerSelectorArgumentResolver::class.java)
-            .resolve(ctx.source)[0]
+            .resolve(ctx.source)
+            .first()
     }
 
+    /** Toggles the sender's own game mode between survival and creative. */
     private fun toggleGamemodeSelf(player: Player) {
         toggleGamemodePlayer(player, player)
     }
 
+    /** Toggles a target player's game mode between survival and creative. */
     private fun toggleGamemodePlayer(sender: CommandSender?, player: Player) {
         setGamemode(
             sender,
@@ -83,10 +89,12 @@ class Gamemode(context: Context<Admin?>) : org.oddlama.vane.core.command.Command
         )
     }
 
+    /** Sets the sender's own game mode to the requested value. */
     private fun setGamemodeSelf(player: Player, mode: GameMode) {
         setGamemode(player, mode, player)
     }
 
+    /** Applies a game mode and sends feedback to the command sender. */
     private fun setGamemode(sender: CommandSender?, mode: GameMode, player: Player) {
         player.gameMode = mode
         langSet!!.send(

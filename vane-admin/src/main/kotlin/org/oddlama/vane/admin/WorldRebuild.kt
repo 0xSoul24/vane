@@ -10,21 +10,24 @@ import org.oddlama.vane.annotation.config.ConfigDouble
 import org.oddlama.vane.annotation.config.ConfigLong
 import org.oddlama.vane.core.Listener
 import org.oddlama.vane.core.module.Context
-import org.oddlama.vane.util.msToTicks
 import org.oddlama.vane.util.Nms
-import kotlin.Comparator
-import kotlin.Int
-import kotlin.Long
+import org.oddlama.vane.util.msToTicks
 import kotlin.comparisons.compareValues
 import kotlin.math.exp
 import kotlin.math.max
 
+/**
+ * Rebuilds exploded blocks over time instead of fully cancelling explosions.
+ */
 class WorldRebuild(context: Context<Admin?>) : Listener<Admin?>(
     context.group(
         "WorldRebuild",
         "Instead of cancelling explosions, the world will regenerate after a short amount of time."
     )
 ) {
+    private val admin: Admin
+        get() = requireNotNull(module)
+
     @ConfigLong(def = 2000, min = 0, desc = "Delay in milliseconds until the world will be rebuilt.")
     private val configDelay: Long = 0
 
@@ -42,40 +45,38 @@ class WorldRebuild(context: Context<Admin?>) : Listener<Admin?>(
     )
     private val configMinDelay: Long = 0
 
-    private val rebuilders: MutableList<Rebuilder> = ArrayList<Rebuilder>()
+    private val rebuilders = mutableListOf<Rebuilder>()
 
+    /**
+     * Replaces exploded blocks with air and schedules asynchronous rebuild.
+     */
     fun rebuild(blocks: MutableList<Block>) {
-        // Store a snapshot of all block states
-        val states = ArrayList<BlockState>()
-        for (block in blocks) {
-            states.add(block.state)
-        }
+        val states = blocks.mapTo(mutableListOf()) { it.state }
 
-        // Set everything to air without triggering physics
         for (block in blocks) {
             Nms.setAirNoDrops(block)
         }
 
-        // Schedule rebuild
         rebuilders.add(Rebuilder(states))
     }
 
+    /** Finishes all pending rebuilds immediately when the module is disabled. */
     public override fun onDisable() {
-        // Finish all pending rebuilds now!
-        for (r in ArrayList<Rebuilder>(rebuilders)) {
+        for (r in rebuilders.toList()) {
             r.finishNow()
         }
         rebuilders.clear()
     }
 
+    /**
+     * Rebuild task that restores captured block states one by one.
+     */
     inner class Rebuilder(private var states: MutableList<BlockState>) : Runnable {
         private var task: BukkitTask? = null
         private var amountRebuild: Long = 0
 
         init {
-            // If no states to rebuild, skip initialization.
             if (this.states.isNotEmpty()) {
-                // Find top center point for rebuild order reference
                 val center = Vector(0, 0, 0)
                 var maxY = 0
                 for (state in this.states) {
@@ -85,38 +86,35 @@ class WorldRebuild(context: Context<Admin?>) : Listener<Admin?>(
                 center.multiply(1.0 / this.states.size)
                 center.setY(maxY + 1)
 
-                // Sort blocks to rebuild them in an ordered fashion
                 this.states.sortWith(RebuildComparator(center))
 
-                // Initialize delay
-                task = this@WorldRebuild.module!!.scheduleTask(this, msToTicks(configDelay))
+                task = admin.scheduleTask(this, msToTicks(configDelay))
             }
         }
 
+        /** Marks this rebuilder as complete and removes it from tracking. */
         private fun finish() {
             task = null
             this@WorldRebuild.rebuilders.remove(this)
         }
 
+        /** Restores the next block state in rebuild order. */
         private fun rebuildNextBlock() {
             rebuildBlock(states.removeAt(states.size - 1))
         }
 
+        /** Restores one captured block state and emits placement feedback. */
         private fun rebuildBlock(state: BlockState) {
             val block = state.block
             ++amountRebuild
 
-            // Break any block that isn't air first
             if (block.type != Material.AIR) {
                 block.breakNaturally()
             }
 
-            // Force update without physics to set a block type
             state.update(true, false)
-            // Second update forces block state specific update
             state.update(true, false)
 
-            // Play sound
             block
                 .world
                 .playSound(
@@ -128,10 +126,9 @@ class WorldRebuild(context: Context<Admin?>) : Listener<Admin?>(
                 )
         }
 
+        /** Restores all remaining states immediately and completes this rebuilder. */
         fun finishNow() {
-            if (task != null) {
-                task!!.cancel()
-            }
+            task?.cancel()
 
             for (state in states) {
                 rebuildBlock(state)
@@ -140,30 +137,27 @@ class WorldRebuild(context: Context<Admin?>) : Listener<Admin?>(
             finish()
         }
 
+        /** Rebuilds the next block and schedules the following run with adaptive delay. */
         override fun run() {
             if (states.isEmpty()) {
                 finish()
             } else {
-                // Rebuild next block
                 rebuildNextBlock()
 
-                // Adjust delay
                 val delay = msToTicks(
                     max(configMinDelay, (configDelay * exp(-amountRebuild * configDelayFalloff)).toInt().toLong())
                 )
-                this@WorldRebuild.module!!.scheduleTask(this, delay)
+                task = admin.scheduleTask(this, delay)
             }
         }
     }
 
-    class RebuildComparator(private val referencePoint: Vector) : Comparator<BlockState?> {
-        override fun compare(a: BlockState?, b: BlockState?): Int {
-            // Handle nulls defensively
-            if (a == null && b == null) return 0
-            if (a == null) return -1
-            if (b == null) return 1
-
-            // Sort by distance to top-most center. The Last block will be rebuilt first.
+    /**
+     * Orders blocks by distance to a top-center reference point.
+     */
+    class RebuildComparator(private val referencePoint: Vector) : Comparator<BlockState> {
+        /** Compares two block states by squared distance to the reference point. */
+        override fun compare(a: BlockState, b: BlockState): Int {
             val da = a.location.toVector().subtract(referencePoint).lengthSquared()
             val db = b.location.toVector().subtract(referencePoint).lengthSquared()
             return compareValues(da, db)

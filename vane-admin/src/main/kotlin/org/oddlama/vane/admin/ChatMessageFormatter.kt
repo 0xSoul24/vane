@@ -14,6 +14,9 @@ import org.oddlama.vane.core.Listener
 import org.oddlama.vane.core.lang.TranslatedMessage
 import org.oddlama.vane.core.module.Context
 
+/**
+ * Formats chat, join, and quit related messages.
+ */
 class ChatMessageFormatter(context: Context<Admin?>) : Listener<Admin?>(
     context.group(
         "ChatMessageFormatter",
@@ -32,38 +35,43 @@ class ChatMessageFormatter(context: Context<Admin?>) : Listener<Admin?>(
     @LangMessage
     private val langPlayerQuit: TranslatedMessage? = null
 
-    // Create custom chat renderer
-    val chatRenderer: ChatRenderer = ChatRenderer { source, sourceDisplayName, message, viewer -> // TODO more sophisticated formatting?
+    /** Renderer used for chat message formatting. */
+    private val chatRenderer = ChatRenderer { _, sourceDisplayName, message, _ ->
         val who = sourceDisplayName.color(NamedTextColor.AQUA)
         langPlayerChatFormat!!.strComponent(who, message)
     }
 
+    /** Applies the custom chat renderer to async chat events. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerChat(event: AsyncChatEvent) {
         event.renderer(chatRenderer)
     }
 
+    /** Suppresses default join message and broadcasts configured join text. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerJoin(event: PlayerJoinEvent) {
         event.joinMessage(null)
-        langPlayerJoin!!.broadcastServer(event.getPlayer().playerListName().color(NamedTextColor.GOLD))
+        langPlayerJoin!!.broadcastServer(event.player.playerListName().color(NamedTextColor.GOLD))
     }
 
+    /**
+     * Clears kick leave-message because quit handling already emits custom messaging.
+     *
+     * See Spigot issue SPIGOT-3034 for historical context.
+     */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onPlayerKick(event: PlayerKickEvent) {
-        // Bug in Spigot, doesn't do anything. But fixed in Paper since 1.17.
-        // https://hub.spigotmc.org/jira/browse/SPIGOT-3034
-        event.leaveMessage(Component.text(""))
-        // message is handled in quit event
+        event.leaveMessage(Component.empty())
     }
 
+    /** Suppresses default quit message and broadcasts configured quit or kick text. */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onPlayerQuit(event: PlayerQuitEvent) {
         event.quitMessage(null)
         if (event.reason == PlayerQuitEvent.QuitReason.KICKED) {
-            langPlayerKick!!.broadcastServer(event.getPlayer().playerListName().color(NamedTextColor.GOLD))
+            langPlayerKick!!.broadcastServer(event.player.playerListName().color(NamedTextColor.GOLD))
         } else {
-            langPlayerQuit!!.broadcastServer(event.getPlayer().playerListName().color(NamedTextColor.GOLD))
+            langPlayerQuit!!.broadcastServer(event.player.playerListName().color(NamedTextColor.GOLD))
         }
     }
 }

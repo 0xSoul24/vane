@@ -11,12 +11,17 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.oddlama.vane.admin.Admin
 import org.oddlama.vane.annotation.command.Name
+import org.oddlama.vane.core.command.Command as VaneCommand
 import org.oddlama.vane.core.command.argumentType.WeatherArgumentType
 import org.oddlama.vane.core.command.enums.WeatherValue
 import org.oddlama.vane.core.module.Context
 
+/**
+ * Command for changing weather in the current or a selected world.
+ */
 @Name("weather")
-class Weather(context: Context<Admin?>) : org.oddlama.vane.core.command.Command<Admin?>(context) {
+class Weather(context: Context<Admin?>) : VaneCommand<Admin?>(context) {
+    /** Builds the command tree for weather changes. */
     override fun getCommandBase(): LiteralArgumentBuilder<CommandSourceStack> =
         super.getCommandBase()
             .then(help())
@@ -39,14 +44,17 @@ class Weather(context: Context<Admin?>) : org.oddlama.vane.core.command.Command<
                     )
             )
 
+    /** Returns the parsed weather argument from the command context. */
     private fun weather(ctx: CommandContext<CommandSourceStack>): WeatherValue =
         ctx.getArgument("weather", WeatherValue::class.java)
 
-    private fun setWeatherCurrentWorld(player: Player, w: WeatherValue) =
-        setWeather(player, w, player.world)
+    /** Applies weather in the player's current world. */
+    private fun setWeatherCurrentWorld(player: Player, weather: WeatherValue) =
+        setWeather(player, weather, player.world)
 
-    private fun setWeather(@Suppress("UNUSED_PARAMETER") sender: CommandSender?, w: WeatherValue, world: World) {
-        world.setStorm(w.storm)
-        world.isThundering = w.thunder
+    /** Applies weather in a specific world. */
+    private fun setWeather(@Suppress("UNUSED_PARAMETER") sender: CommandSender?, weather: WeatherValue, world: World) {
+        world.setStorm(weather.storm)
+        world.isThundering = weather.thunder
     }
 }
