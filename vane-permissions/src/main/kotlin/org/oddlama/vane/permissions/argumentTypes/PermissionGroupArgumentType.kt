@@ -8,35 +8,40 @@ import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import io.papermc.paper.command.brigadier.argument.CustomArgumentType
 import java.util.concurrent.CompletableFuture
-import java.util.stream.Stream
 
-class PermissionGroupArgumentType private constructor(var permissionGroups: MutableMap<String, MutableSet<String>>) :
+/**
+ * Brigadier argument type that validates and suggests configured permission group names.
+ *
+ * @property permissionGroups available groups used for command suggestions.
+ */
+class PermissionGroupArgumentType private constructor(private val permissionGroups: Map<String, Set<String>>) :
     CustomArgumentType.Converted<String, String> {
+    /** Returns the parsed permission group name unchanged. */
     @Throws(CommandSyntaxException::class)
     override fun convert(nativeType: String): String {
         return nativeType
     }
 
-    override fun getNativeType(): ArgumentType<String> {
-        return StringArgumentType.string()
-    }
+    /** Uses Brigadier string parsing for the underlying native type. */
+    override fun getNativeType(): ArgumentType<String> = StringArgumentType.string()
 
+    /** Suggests known group names that contain the currently typed input. */
     override fun <S : Any> listSuggestions(
         context: CommandContext<S>,
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> {
-        var stream: Stream<String> = permissionGroups.keys.stream()
         val remaining = builder.remaining
-        if (!remaining.isBlank()) {
-            stream = stream.filter { group: String -> group.contains(remaining) }
-        }
-        stream.forEach { text: String -> builder.suggest(text) }
+        permissionGroups.keys
+            .asSequence()
+            .filter { remaining.isBlank() || it.contains(remaining) }
+            .forEach(builder::suggest)
         return builder.buildFuture()
     }
 
+    /** Static factories for permission group argument creation. */
     companion object {
-        fun permissionGroup(permissionGroups: MutableMap<String, MutableSet<String>>): PermissionGroupArgumentType {
-            return PermissionGroupArgumentType(permissionGroups)
-        }
+        /** Factory for creating a permission group argument backed by current group configuration. */
+        fun permissionGroup(permissionGroups: MutableMap<String, MutableSet<String>>): PermissionGroupArgumentType =
+            PermissionGroupArgumentType(permissionGroups)
     }
 }

@@ -24,20 +24,29 @@ import org.oddlama.vane.permissions.commands.Vouch
 import java.util.*
 
 @VaneModule(name = "permissions", bstats = 8641, configVersion = 1, langVersion = 1, storageVersion = 1)
+/**
+ * Manages permission groups, inheritance flattening, and runtime player attachments.
+ */
 class Permissions : Module<Permissions?>() {
-    // Configuration
+    /** Non-null typed accessor for this module instance. */
+    private val permissionsModule: Permissions
+        get() = requireNotNull(module)
+
+    /** If true, resets all default permissions to false and relies entirely on configured groups. */
     @ConfigBoolean(
         def = false,
         desc = "Remove all default permissions from ANY SOURCE (including other plugins and minecraft permissions) to start with a clean preset. This will allow you to exactly set which player have which permissions instead of having to resort to volatile stateful changes like negative permissions. This will result in OPed players to lose access to commands, if not explicitly added back via permissions. The wildcard permissions can be viewed using `perms list permissions`. The wildcard permissions `minecraft` and `craftbukkit` may be especially useful."
     )
     var configRemoveDefaults: Boolean = false
 
+    /** Name of the fallback group applied when a player has no stored assignments. */
     @ConfigString(
         def = "default",
         desc = "The permission group that will be given to players that have no other permission group."
     )
     var configDefaultGroup: String? = null
 
+    /** Raw configured group definitions before inheritance flattening. */
     @ConfigStringListMap(
         def = [ConfigStringListMapEntry(
             key = "default",
@@ -58,76 +67,81 @@ class Permissions : Module<Permissions?>() {
     )
     var configGroups: MutableMap<String, MutableList<String>>? = null
 
-    // Persistent storage
+    /** Persistent mapping from player UUID to assigned permission groups. */
     @Persistent
-    var storagePlayerGroups: MutableMap<UUID, MutableSet<String>> = HashMap<UUID, MutableSet<String>>()
+    var storagePlayerGroups: MutableMap<UUID, MutableSet<String>> = HashMap()
 
-    // Variables
-    val permissionGroups: MutableMap<String, MutableSet<String>> = HashMap<String, MutableSet<String>>()
-    private val playerAttachments: MutableMap<UUID, PermissionAttachment> = HashMap<UUID, PermissionAttachment>()
+    /** Flattened permissions per group after inheritance resolution. */
+    val permissionGroups: MutableMap<String, MutableSet<String>> = HashMap()
+    /** Active permission attachments for online players. */
+    private val playerAttachments: MutableMap<UUID, PermissionAttachment> = HashMap()
 
+    /** Applies configured default-permission reset on module enable. */
     override fun onModuleEnable() {
         scheduleNextTick {
             if (configRemoveDefaults) {
-                for (perm in module!!.server.pluginManager.permissions) {
+                for (perm in permissionsModule.server.pluginManager.permissions) {
                     perm.default = PermissionDefault.FALSE
-                    module!!.server.pluginManager.recalculatePermissionDefaults(perm)
+                    permissionsModule.server.pluginManager.recalculatePermissionDefaults(perm)
 
-                    // But still allow the console to execute commands
-                    this@Permissions.addConsolePermission(perm)
+                    addConsolePermission(perm)
                 }
             }
         }
     }
 
+    /** Rebuilds flattened group permissions whenever configuration changes. */
     override fun onConfigChange() {
         flattenGroups()
     }
 
+    /** Registers and recalculates permissions for joining players. */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onPlayerJoin(event: PlayerJoinEvent) {
         registerPlayer(event.player)
     }
 
+    /** Unregisters permission attachments when a player is kicked. */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onPlayerKick(event: PlayerKickEvent) {
         unregisterPlayer(event.player)
     }
 
+    /** Unregisters permission attachments when a player quits. */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onPlayerQuit(event: PlayerQuitEvent) {
         unregisterPlayer(event.player)
     }
 
-    private val senderAttachments: MutableMap<CommandSender?, PermissionAttachment?> =
-        HashMap<CommandSender?, PermissionAttachment?>()
+    /** Command-sender attachments used to mirror console-level permissions. */
+    private val senderAttachments = mutableMapOf<CommandSender, PermissionAttachment>()
 
     init {
         Permission(this)
         Vouch(this)
     }
 
+    /** Ensures a sender has mirrored console permissions attached. */
     private fun addConsolePermissions(sender: CommandSender) {
-        // Register attachment for sender if not done already
         if (!senderAttachments.containsKey(sender)) {
             val attachment = sender.addAttachment(this)
             senderAttachments[sender] = attachment
 
-            val attachedPerms: MutableMap<String, Boolean> = module!!.consoleAttachment?.permissions ?: mutableMapOf()
-            attachedPerms.forEach { (p: String, v: Boolean) -> attachment.setPermission(p, v) }
+            val attachedPerms = permissionsModule.consoleAttachment?.permissions.orEmpty()
+            attachedPerms.forEach { (permission, value) -> attachment.setPermission(permission, value) }
         }
     }
 
+    /** Mirrors console attachment permissions for operator command senders. */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onServerCommandEvent(event: ServerCommandEvent) {
         val sender = event.sender
         if (sender is Player && sender.isOp) {
-            // Console command sender will always have the correct permission attachment
-            // Command block shall be ignored for now (causes lag, see #178)
             addConsolePermissions(sender)
         }
     }
 
+    /** Mirrors console attachment permissions for remote operator command senders. */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onRemoteServerCommandEvent(event: RemoteServerCommandEvent) {
         val sender = event.sender
@@ -138,81 +152,72 @@ class Permissions : Module<Permissions?>() {
 
     /** Resolve references to other permission groups in the hierarchy.  */
     private fun flattenGroups() {
+        val inheritancePrefix = "vane.permissions.groups."
         permissionGroups.clear()
-        configGroups?.forEach { (k: String, v: MutableList<String>) ->
-            val set = HashSet<String>()
-            for (perm in v) {
-                if (!perm.startsWith("vane.permissions.groups.")) {
-                    set.add(perm)
-                }
-            }
-            permissionGroups[k] = set
+        configGroups?.forEach { (groupName, permissions) ->
+            permissionGroups[groupName] = permissions
+                .filterNot { it.startsWith(inheritancePrefix) }
+                .toMutableSet()
         }
 
-        // Resolve group inheritance
         var modified = true
         while (modified) {
             modified = false
-            configGroups?.forEach { (k: String, v: MutableList<String>) ->
-                val set: MutableSet<String> = permissionGroups[k] ?: return@forEach
-                permLoop@ for (perm in v) {
-                    if (perm.startsWith("vane.permissions.groups.")) {
-                        val group = perm.substring("vane.permissions.groups.".length)
+            configGroups?.forEach { (groupName, permissions) ->
+                val resolvedPermissions = permissionGroups[groupName] ?: return@forEach
+                for (permission in permissions) {
+                    if (permission.startsWith(inheritancePrefix)) {
+                        val group = permission.substring(inheritancePrefix.length)
                         val groupPerms = permissionGroups[group]
                         if (groupPerms == null) {
                             log.severe(
-                                "Nonexistent permission group '" +
-                                        group +
-                                        "' referenced by group '" +
-                                        k +
-                                        "'; Ignoring statement!"
+                                "Nonexistent permission group '$group' referenced by group '$groupName'; Ignoring statement!"
                             )
-                            continue@permLoop
+                            continue
                         }
-                        if (set.addAll(groupPerms)) modified = true
+                        if (resolvedPermissions.addAll(groupPerms)) {
+                            modified = true
+                        }
                     }
                 }
             }
         }
     }
 
+    /** Creates and stores a permission attachment for a joining player. */
     private fun registerPlayer(player: Player) {
-        // Register PermissionAttachment
         val attachment = player.addAttachment(this)
         playerAttachments[player.uniqueId] = attachment
 
-        // Attach permissions
         recalculatePlayerPermissions(player)
     }
 
+    /** Rebuilds all effective attachment permissions for the given player. */
     fun recalculatePlayerPermissions(player: Player) {
-        // Clear attachment
-        val attachment: PermissionAttachment = playerAttachments[player.uniqueId]!!
+        val attachment = playerAttachments[player.uniqueId] ?: return
         val attachedPerms = attachment.permissions
-        attachedPerms.forEach { (p: String, _) -> attachment.unsetPermission(p) }
+        attachedPerms.keys.toList().forEach(attachment::unsetPermission)
 
-        // Add permissions again
         var groups = storagePlayerGroups[player.uniqueId]
         if (groups.isNullOrEmpty()) {
-            // Assign player to a default permission group
             val defaultGroup = configDefaultGroup ?: "default"
             groups = mutableSetOf(defaultGroup)
         }
 
         for (group in groups) {
-            for (p in permissionGroups.getOrDefault(group, mutableSetOf())) {
-                val perm = module!!.server.pluginManager.getPermission(p)
+            for (permission in permissionGroups[group].orEmpty()) {
+                val perm = permissionsModule.server.pluginManager.getPermission(permission)
                 if (perm == null) {
-                    log.warning("Use of unregistered permission '$p' might have unintended effects.")
+                    log.warning("Use of unregistered permission '$permission' might have unintended effects.")
                 }
-                attachment.setPermission(p, true)
+                attachment.setPermission(permission, true)
             }
         }
 
-        // Update list of commands for client side root tab completion
         player.updateCommands()
     }
 
+    /** Removes and detaches stored attachment for an offline player. */
     private fun unregisterPlayer(player: Player) {
         val attachment = playerAttachments.remove(player.uniqueId)
         if (attachment != null) {
@@ -220,27 +225,27 @@ class Permissions : Module<Permissions?>() {
         }
     }
 
+    /** Persists storage changes and recalculates permissions if the player is online. */
     fun saveAndRecalculate(player: OfflinePlayer) {
         markPersistentStorageDirty()
 
-        // Recalculate permissions if player is currently online
-        if (player.isOnline) {
-            recalculatePlayerPermissions(player.player!!)
-        }
+        player.player?.let(::recalculatePlayerPermissions)
     }
 
+    /** Adds a player to a group and triggers persistence + recalculation on change. */
     fun addPlayerToGroup(player: OfflinePlayer, group: String?): Boolean {
-        val set = storagePlayerGroups.computeIfAbsent(player.uniqueId) { HashSet<String>() }
+        val set = storagePlayerGroups.getOrPut(player.uniqueId) { mutableSetOf() }
 
         val added = set.add(group ?: return false)
         if (added) {
-            log.info("[audit] Group " + group + " assigned to " + player.uniqueId + " (" + player.name + ")")
+            log.info("[audit] Group $group assigned to ${player.uniqueId} (${player.name})")
             saveAndRecalculate(player)
         }
 
         return added
     }
 
+    /** Removes a player from a group and triggers persistence + recalculation on change. */
     fun removePlayerFromGroup(player: OfflinePlayer, group: String?): Boolean {
         val set = storagePlayerGroups[player.uniqueId]
         var removed = false
@@ -249,9 +254,7 @@ class Permissions : Module<Permissions?>() {
         }
 
         if (removed) {
-            log.info(
-                "[audit] Group " + group + " removed from " + player.uniqueId + " (" + player.name + ")"
-            )
+            log.info("[audit] Group $group removed from ${player.uniqueId} (${player.name})")
             saveAndRecalculate(player)
         }
 

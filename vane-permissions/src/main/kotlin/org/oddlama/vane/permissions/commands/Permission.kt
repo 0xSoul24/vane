@@ -7,9 +7,6 @@ import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.command.brigadier.Commands
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
-import org.bukkit.permissions.Permission
-import org.bukkit.permissions.PermissionAttachmentInfo
 import org.bukkit.permissions.PermissionDefault
 import org.oddlama.vane.annotation.command.Aliases
 import org.oddlama.vane.annotation.command.Name
@@ -19,50 +16,73 @@ import org.oddlama.vane.core.lang.TranslatedMessage
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.permissions.Permissions
 import org.oddlama.vane.permissions.argumentTypes.PermissionGroupArgumentType
-import java.util.*
+import java.util.Locale
 
 @Name("permission")
 @Aliases("perm")
+/**
+ * Command suite for listing permission data and assigning/removing permission groups.
+ *
+ * @param context command context bound to the permissions module.
+ */
 class Permission(context: Context<Permissions?>) : org.oddlama.vane.core.command.Command<Permissions?>(context) {
+    /** Non-null typed accessor for the backing permissions module. */
+    private val permissionsModule: Permissions
+        get() = requireNotNull(module)
+
+    /** Message shown when no entries are available for a list command. */
     @LangMessage
     private val langListEmpty: TranslatedMessage? = null
 
+    /** Header shown when listing all configured groups. */
     @LangMessage
     private val langListHeaderGroups: TranslatedMessage? = null
 
+    /** Header shown when listing all registered permissions. */
     @LangMessage
     private val langListHeaderPermissions: TranslatedMessage? = null
 
+    /** Header shown when listing groups assigned to a specific player. */
     @LangMessage
     private val langListHeaderPlayerGroups: TranslatedMessage? = null
 
+    /** Header shown when listing effective permissions for a specific player. */
     @LangMessage
     private val langListHeaderPlayerPermissions: TranslatedMessage? = null
 
+    /** Header shown when listing permissions contained in a specific group. */
     @LangMessage
     private val langListHeaderGroupPermissions: TranslatedMessage? = null
 
+    /** Notice shown when player-specific permission details are unavailable offline. */
     @LangMessage
     private val langListPlayerOffline: TranslatedMessage? = null
 
+    /** Row format for a listed permission group. */
     @LangMessage
     private val langListGroup: TranslatedMessage? = null
 
+    /** Row format for a listed permission and its metadata. */
     @LangMessage
     private val langListPermission: TranslatedMessage? = null
 
+    /** Confirmation message for successful group assignment. */
     @LangMessage
     private val langGroupAssigned: TranslatedMessage? = null
 
+    /** Confirmation message for successful group removal. */
     @LangMessage
     private val langGroupRemoved: TranslatedMessage? = null
 
+    /** Error message when assigning a group already held by the player. */
     @LangMessage
     private val langGroupAlreadyAssigned: TranslatedMessage? = null
 
+    /** Error message when removing a group not held by the player. */
     @LangMessage
     private val langGroupNotAssigned: TranslatedMessage? = null
 
+    /** Builds the command tree for permission inspection and group management. */
     override fun getCommandBase(): LiteralArgumentBuilder<CommandSourceStack> {
         return super.getCommandBase()
             .then(help())
@@ -70,7 +90,7 @@ class Permission(context: Context<Permissions?>) : org.oddlama.vane.core.command
                 Commands.literal("list")
                     .then(
                         Commands.literal("groups")
-                            .executes { ctx: CommandContext<CommandSourceStack> ->
+                            .executes { ctx ->
                                 listGroups(ctx.source.sender)
                                 Command.SINGLE_SUCCESS
                             }
@@ -78,20 +98,19 @@ class Permission(context: Context<Permissions?>) : org.oddlama.vane.core.command
                                 Commands.argument<OfflinePlayer>(
                                     "offlinePlayer",
                                     OfflinePlayerArgumentType.offlinePlayer()
-                                ).executes { ctx: CommandContext<CommandSourceStack> ->
-                                    listGroupsForPlayer(sender(ctx), offlinePlayer(ctx))
+                                ).executes { ctx ->
+                                    listGroupsForPlayer(ctx.source.sender, offlinePlayer(ctx))
                                     Command.SINGLE_SUCCESS
                                 }
                             )
                     )
                     .then(
-                        Commands.literal("permissions") // FIXME weirdly autocompletion works in the console
-                            // but not in game ??
+                        Commands.literal("permissions")
                             .then(
                                 Commands.argument<String>(
                                     "permissionGroup",
-                                    PermissionGroupArgumentType.permissionGroup(module!!.permissionGroups)
-                                ).executes { ctx: CommandContext<CommandSourceStack> ->
+                                    PermissionGroupArgumentType.permissionGroup(permissionsModule.permissionGroups)
+                                ).executes { ctx ->
                                     listPermissionsForGroup(ctx.source.sender, permissionGroup(ctx))
                                     Command.SINGLE_SUCCESS
                                 }
@@ -100,12 +119,12 @@ class Permission(context: Context<Permissions?>) : org.oddlama.vane.core.command
                                 Commands.argument<OfflinePlayer>(
                                     "offlinePlayer",
                                     OfflinePlayerArgumentType.offlinePlayer()
-                                ).executes { ctx: CommandContext<CommandSourceStack> ->
+                                ).executes { ctx ->
                                     listPermissionsForPlayer(ctx.source.sender, offlinePlayer(ctx))
                                     Command.SINGLE_SUCCESS
                                 }
                             )
-                            .executes { ctx: CommandContext<CommandSourceStack> ->
+                            .executes { ctx ->
                                 listPermissions(ctx.source.sender)
                                 Command.SINGLE_SUCCESS
                             }
@@ -116,8 +135,8 @@ class Permission(context: Context<Permissions?>) : org.oddlama.vane.core.command
                     Commands.argument<OfflinePlayer>("offlinePlayer", OfflinePlayerArgumentType.offlinePlayer()).then(
                         Commands.argument<String>(
                             "permissionGroup",
-                            PermissionGroupArgumentType.permissionGroup(module!!.permissionGroups)
-                        ).executes { ctx: CommandContext<CommandSourceStack> ->
+                            PermissionGroupArgumentType.permissionGroup(permissionsModule.permissionGroups)
+                        ).executes { ctx ->
                             addPlayerToGroup(
                                 ctx.source.sender,
                                 offlinePlayer(ctx),
@@ -133,8 +152,8 @@ class Permission(context: Context<Permissions?>) : org.oddlama.vane.core.command
                     Commands.argument<OfflinePlayer>("offlinePlayer", OfflinePlayerArgumentType.offlinePlayer()).then(
                         Commands.argument<String>(
                             "permissionGroup",
-                            PermissionGroupArgumentType.permissionGroup(module!!.permissionGroups)
-                        ).executes { ctx: CommandContext<CommandSourceStack> ->
+                            PermissionGroupArgumentType.permissionGroup(permissionsModule.permissionGroups)
+                        ).executes { ctx ->
                             removePlayerFromGroup(
                                 ctx.source.sender,
                                 offlinePlayer(ctx),
@@ -147,18 +166,15 @@ class Permission(context: Context<Permissions?>) : org.oddlama.vane.core.command
             )
     }
 
-    private fun permissionGroup(ctx: CommandContext<CommandSourceStack>): String? {
-        return ctx.getArgument("permissionGroup", String::class.java)
-    }
+    /** Returns the resolved permission-group argument. */
+    private fun permissionGroup(ctx: CommandContext<CommandSourceStack>): String =
+        ctx.getArgument("permissionGroup", String::class.java)
 
-    private fun sender(ctx: CommandContext<CommandSourceStack>): Player {
-        return ctx.source.sender as Player
-    }
+    /** Returns the resolved offline-player argument. */
+    private fun offlinePlayer(ctx: CommandContext<CommandSourceStack>): OfflinePlayer =
+        ctx.getArgument("offlinePlayer", OfflinePlayer::class.java)
 
-    private fun offlinePlayer(ctx: CommandContext<CommandSourceStack>): OfflinePlayer {
-        return ctx.getArgument("offlinePlayer", OfflinePlayer::class.java)!!
-    }
-
+    /** Returns color prefix for the configured default value. */
     private fun permissionDefaultValueColorCode(def: PermissionDefault): String {
         return when (def) {
             PermissionDefault.FALSE -> "§c"
@@ -168,23 +184,28 @@ class Permission(context: Context<Permissions?>) : org.oddlama.vane.core.command
         }
     }
 
+    /** Returns color prefix for a boolean permission state. */
     private fun permissionValueColorCode(value: Boolean): String {
         return permissionDefaultValueColorCode(if (value) PermissionDefault.TRUE else PermissionDefault.FALSE)
     }
 
+    /** Lists configured permission groups. */
     private fun listGroups(sender: CommandSender?) {
         langListHeaderGroups!!.send(sender)
-        module!!.permissionGroups.keys.stream().sorted { a: String, b: String -> a.compareTo(b) }
-            .forEach { group: String -> langListGroup!!.send(sender, "§b$group") }
+        permissionsModule.permissionGroups.keys
+            .sorted()
+            .forEach { group -> langListGroup!!.send(sender, "§b$group") }
     }
 
+    /** Lists all registered permissions sorted by name. */
     private fun listPermissions(sender: CommandSender?) {
         langListHeaderPermissions!!.send(sender)
-        module!!.server.pluginManager.permissions.stream().sorted { a: Permission, b: Permission -> a.name.compareTo(b.name) }
-            .forEach { perm: Permission ->
+        permissionsModule.server.pluginManager.permissions
+            .sortedBy { it.name }
+            .forEach { perm ->
                 langListPermission!!.send(
                     sender,
-                    "§d" + perm.name,
+                    "§d${perm.name}",
                     permissionDefaultValueColorCode(perm.default) + perm.default.toString()
                         .lowercase(Locale.getDefault()),
                     perm.description
@@ -192,14 +213,13 @@ class Permission(context: Context<Permissions?>) : org.oddlama.vane.core.command
             }
     }
 
+    /** Lists effective permissions for an offline or online player. */
     private fun listPermissionsForPlayer(sender: CommandSender?, offlinePlayer: OfflinePlayer) {
-        langListHeaderPlayerPermissions!!.send(sender, "§b" + offlinePlayer.name)
+        langListHeaderPlayerPermissions!!.send(sender, "§b${offlinePlayer.name}")
         val player = offlinePlayer.player
         if (player == null) {
-            // Player is offline, show configured permissions only.
-            // Information from other plugins might be missing.
             langListPlayerOffline!!.send(sender)
-            val groups: MutableSet<String>? = module!!.storagePlayerGroups[offlinePlayer.uniqueId]
+            val groups = permissionsModule.storagePlayerGroups[offlinePlayer.uniqueId]
             if (groups == null) {
                 langListEmpty!!.send(sender)
             } else {
@@ -212,17 +232,17 @@ class Permission(context: Context<Permissions?>) : org.oddlama.vane.core.command
             if (effectivePermissions.isEmpty()) {
                 langListEmpty!!.send(sender)
             } else {
-                player.effectivePermissions.stream()
-                    .sorted { a: PermissionAttachmentInfo, b: PermissionAttachmentInfo -> a.permission.compareTo(b.permission) }
-                    .forEach { att: PermissionAttachmentInfo ->
-                        val perm: Permission? = module!!.server.pluginManager.getPermission(att.permission)
+                player.effectivePermissions
+                    .sortedBy { it.permission }
+                    .forEach { att ->
+                        val perm = permissionsModule.server.pluginManager.getPermission(att.permission)
                         if (perm == null) {
-                            module!!.log.warning("Encountered unregistered permission '" + att.permission + "'")
+                            permissionsModule.log.warning("Encountered unregistered permission '${att.permission}'")
                             return@forEach
                         }
                         langListPermission!!.send(
                             sender,
-                            "§d" + perm.name,
+                            "§d${perm.name}",
                             permissionValueColorCode(att.value) + att.value,
                             perm.description
                         )
@@ -231,16 +251,17 @@ class Permission(context: Context<Permissions?>) : org.oddlama.vane.core.command
         }
     }
 
-    private fun listPermissionsForGroupNoHeader(sender: CommandSender?, group: String?) {
-        for (p in module!!.permissionGroups.getOrDefault(group, mutableSetOf())) {
-            val perm: Permission? = module!!.server.pluginManager.getPermission(p)
+    /** Lists permissions contained in a group without a header message. */
+    private fun listPermissionsForGroupNoHeader(sender: CommandSender?, group: String) {
+        for (permission in permissionsModule.permissionGroups[group].orEmpty()) {
+            val perm = permissionsModule.server.pluginManager.getPermission(permission)
             if (perm == null) {
-                module!!.log.warning("Use of unregistered permission '$p' might have unintended effects.")
-                langListPermission!!.send(sender, "§d$p", permissionValueColorCode(true) + true, "")
+                permissionsModule.log.warning("Use of unregistered permission '$permission' might have unintended effects.")
+                langListPermission!!.send(sender, "§d$permission", permissionValueColorCode(true) + true, "")
             } else {
                 langListPermission!!.send(
                     sender,
-                    "§d" + perm.name,
+                    "§d${perm.name}",
                     permissionValueColorCode(true) + true,
                     perm.description
                 )
@@ -248,36 +269,40 @@ class Permission(context: Context<Permissions?>) : org.oddlama.vane.core.command
         }
     }
 
-    private fun listPermissionsForGroup(sender: CommandSender?, group: String?) {
+    /** Lists permissions contained in a specific group. */
+    private fun listPermissionsForGroup(sender: CommandSender?, group: String) {
         langListHeaderGroupPermissions!!.send(sender, "§b$group")
         listPermissionsForGroupNoHeader(sender, group)
     }
 
+    /** Lists configured groups for a player. */
     private fun listGroupsForPlayer(sender: CommandSender?, offlinePlayer: OfflinePlayer) {
-        val set: MutableSet<String>? = module!!.storagePlayerGroups[offlinePlayer.uniqueId]
+        val set = permissionsModule.storagePlayerGroups[offlinePlayer.uniqueId]
         if (set == null) {
             langListEmpty!!.send(sender)
         } else {
-            langListHeaderPlayerGroups!!.send(sender, "§b" + offlinePlayer.name)
+            langListHeaderPlayerGroups!!.send(sender, "§b${offlinePlayer.name}")
             for (group in set) {
                 langListGroup!!.send(sender, group)
             }
         }
     }
 
-    private fun addPlayerToGroup(sender: CommandSender?, player: OfflinePlayer, group: String?) {
-        if (module!!.addPlayerToGroup(player, group)) {
-            langGroupAssigned!!.send(sender, "§b" + player.name, "§a$group")
+    /** Adds a player to the specified group and sends localized feedback. */
+    private fun addPlayerToGroup(sender: CommandSender?, player: OfflinePlayer, group: String) {
+        if (permissionsModule.addPlayerToGroup(player, group)) {
+            langGroupAssigned!!.send(sender, "§b${player.name}", "§a$group")
         } else {
-            langGroupAlreadyAssigned!!.send(sender, "§b" + player.name, "§a$group")
+            langGroupAlreadyAssigned!!.send(sender, "§b${player.name}", "§a$group")
         }
     }
 
-    private fun removePlayerFromGroup(sender: CommandSender?, player: OfflinePlayer, group: String?) {
-        if (module!!.removePlayerFromGroup(player, group)) {
-            langGroupRemoved!!.send(sender, "§b" + player.name, "§a$group")
+    /** Removes a player from the specified group and sends localized feedback. */
+    private fun removePlayerFromGroup(sender: CommandSender?, player: OfflinePlayer, group: String) {
+        if (permissionsModule.removePlayerFromGroup(player, group)) {
+            langGroupRemoved!!.send(sender, "§b${player.name}", "§a$group")
         } else {
-            langGroupNotAssigned!!.send(sender, "§b" + player.name, "§a$group")
+            langGroupNotAssigned!!.send(sender, "§b${player.name}", "§a$group")
         }
     }
 }
