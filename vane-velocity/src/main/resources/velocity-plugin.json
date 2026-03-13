@@ -1,0 +1,14 @@
+{
+  "id": "vane-velocity",
+  "name": "Vane Velocity",
+  "version": "${version}",
+  "description": "Velocity proxy integration for Vane with maintenance mode, dynamic MOTD/favicon, auth multiplexing, and managed backend startup.",
+  "url": "https://github.com/oddlama/vane",
+  "authors": [
+    "oddlama",
+    "Serial-ATA"
+  ],
+  "dependencies": [],
+  "main": "org.oddlama.velocity.Velocity"
+}
+

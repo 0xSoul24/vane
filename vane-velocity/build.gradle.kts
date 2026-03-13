@@ -4,6 +4,11 @@ plugins {
     kotlin("kapt")
 }
 
+kapt {
+    // Explicitly disable annotation processor discovery from the compile classpath for this module
+    includeCompileClasspath = false
+}
+
 dependencies {
     compileOnly(fileTree(mapOf("dir" to "external", "include" to listOf("*.jar"))))
     compileOnly(libs.spotbugsAnnotations)
