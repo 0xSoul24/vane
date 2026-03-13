@@ -16,15 +16,20 @@ import org.oddlama.vane.core.lang.TranslatedMessage
 import org.oddlama.vane.core.module.Module
 import org.oddlama.vane.util.Nms
 import org.oddlama.vane.util.WorldUtil
-import java.util.*
+import java.util.UUID
 import kotlin.math.ceil
 
 @VaneModule(name = "bedtime", bstats = 8639, configVersion = 3, langVersion = 5, storageVersion = 1)
+/**
+ * Advances the night once enough players are sleeping and updates map integrations.
+ *
+ * @constructor Creates the bedtime module and registers its map integration components.
+ */
 class Bedtime : Module<Bedtime?>() {
-    // One set of sleeping players per world, to keep track
-    private val worldSleepers = HashMap<UUID?, HashSet<UUID?>>()
+    /** Tracks currently sleeping player UUIDs per world UUID. */
+    private val worldSleepers = mutableMapOf<UUID, MutableSet<UUID>>()
 
-    // Configuration
+    /** Fraction of non-spectator players that must be sleeping to trigger a night skip. */
     @ConfigDouble(
         def = 0.5,
         min = 0.0,
@@ -33,6 +38,7 @@ class Bedtime : Module<Bedtime?>() {
     )
     var configSleepThreshold: Double = 0.0
 
+    /** World time (in ticks) to advance to when the sleep threshold is met. 1000 is just after sunrise. */
     @ConfigLong(
         def = 1000,
         min = 0,
@@ -41,136 +47,141 @@ class Bedtime : Module<Bedtime?>() {
     )
     var configTargetTime: Long = 0
 
+    /** Number of ticks over which the time transition is smoothly interpolated. */
     @ConfigLong(def = 100, min = 0, max = 1200, desc = "The interpolation time in ticks for a smooth change of time.")
     var configInterpolationTicks: Long = 0
 
-    // Language
+    /** Message broadcast to the world when a player enters a bed. */
     @LangMessage
     private val langPlayerBedEnter: TranslatedMessage? = null
 
+    /** Message broadcast to the world when a player leaves a bed. */
     @LangMessage
     private val langPlayerBedLeave: TranslatedMessage? = null
 
+    /** Dynmap integration component. */
     var dynmapLayer: BedtimeDynmapLayer = BedtimeDynmapLayer(this)
+    /** BlueMap integration component. */
     var blueMapLayer: BedtimeBlueMapLayer = BedtimeBlueMapLayer(this)
 
+    /** Schedules a delayed check for the sleep threshold in a world. */
     fun startCheckWorldTask(world: World) {
         if (enoughPlayersSleeping(world)) {
-            scheduleTask(
-                {
-                    checkWorldNow(world)
-                },
-                (100 - 2).toLong()
-            )
+            scheduleTask({ checkWorldNow(world) }, 98L)
         }
     }
 
+    /** Applies night skip effects immediately if the sleep threshold is still met. */
     fun checkWorldNow(world: World) {
-        // Abort task if condition changed
+        /* Abort task if condition changed. */
         if (!enoughPlayersSleeping(world)) {
             return
         }
 
-        // Let the sun rise, and set weather
+        /* Let the sun rise, and clear weather. */
         WorldUtil.changeTimeSmoothly(world, this, configTargetTime, configInterpolationTicks)
         world.setStorm(false)
         world.isThundering = false
 
-        // Clear sleepers
+        /* Clear sleepers. */
         resetSleepers(world)
 
-        // Wakeup players as if they were actually sleeping through the night
-        world
-            .players
-            .stream()
-            .filter { obj: Player? -> obj!!.isSleeping }
-            .forEach { p: Player? ->
-                // skipSleepTimer = false (-> set sleepCounter to 100)
-                // updateSleepingPlayers = false
-                Nms.getPlayer(p!!).stopSleepInBed(false, false)
+        /* Wake players as if they had slept through the night. */
+        world.players
+            .asSequence()
+            .filter(Player::isSleeping)
+            .forEach {
+                /*
+                 * skipSleepTimer = false (sets sleepCounter to 100)
+                 * updateSleepingPlayers = false
+                 */
+                Nms.getPlayer(it).stopSleepInBed(false, false)
             }
     }
 
+    /** Registers a sleeping player, updates map markers, and schedules a sleep threshold check. */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onPlayerBedEnter(event: PlayerBedEnterEvent) {
-        val player = event.getPlayer()
+        val player = event.player
         val world = player.world
 
-        // Update marker
+        /* Update map markers for this player. */
         dynmapLayer.updateMarker(player)
         blueMapLayer.updateMarker(player)
 
         scheduleNextTick {
-            // Register the new player as sleeping
+            /* Register the new player as sleeping. */
             addSleeping(world, player)
-            // Start a sleep check task
+            /* Schedule a sleep threshold check. */
             startCheckWorldTask(world)
         }
     }
 
+    /** Removes the player from the sleeping set and broadcasts an updated progress message. */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onPlayerBedLeave(event: PlayerBedLeaveEvent) {
-        removeSleeping(event.getPlayer())
+        removeSleeping(event.player)
     }
 
+    /** Re-evaluates the sleep threshold when a player disconnects, in case they were sleeping. */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onPlayerQuit(event: PlayerQuitEvent) {
-        // Start a sleep check task
-        startCheckWorldTask(event.getPlayer().world)
+        /* Re-check sleeping threshold after a player leaves. */
+        startCheckWorldTask(event.player.world)
     }
 
+    /** Returns the number of players currently tracked as sleeping in [world]. */
     private fun getAmountSleeping(world: World): Long {
-        // return world.getPlayers().stream()
-        //	.filter(p -> p.getGameMode() != GameMode.SPECTATOR)
-        //	.filter(p -> p.isSleeping())
-        //	.count();
-
-        val worldId = world.uid
-        val sleepers = worldSleepers[worldId] ?: return 0
-        return sleepers.size.toLong()
+        return worldSleepers[world.uid]?.size?.toLong() ?: 0L
     }
 
+    /** Returns the count of non-spectator players in [world] who are eligible to sleep. */
     private fun getPotentialSleepersInWorld(world: World): Long {
-        return world.players.stream().filter { p: Player? -> p!!.gameMode != GameMode.SPECTATOR }.count()
+        return world.players.count { it.gameMode != GameMode.SPECTATOR }.toLong()
     }
 
+    /**
+     * Returns the ratio of sleeping players to potential sleepers in [world],
+     * or `0.0` if there are no potential sleepers.
+     */
     private fun getPercentageSleeping(world: World): Double {
         val countSleeping = getAmountSleeping(world)
-        if (countSleeping == 0L) {
+        val potentialSleepers = getPotentialSleepersInWorld(world)
+        if (countSleeping == 0L || potentialSleepers == 0L) {
             return 0.0
         }
 
-        return countSleeping.toDouble() / getPotentialSleepersInWorld(world)
+        return countSleeping.toDouble() / potentialSleepers
     }
 
+    /** Returns whether sleeping players in the world meet the configured threshold. */
     private fun enoughPlayersSleeping(world: World): Boolean {
         return getPercentageSleeping(world) >= configSleepThreshold
     }
 
+    /**
+     * Adds [player] to the sleeping set for [world] and broadcasts the updated progress message.
+     */
     private fun addSleeping(world: World, player: Player) {
-        // Add player to sleepers
-        val worldId = world.uid
-        val sleepers = worldSleepers.computeIfAbsent(worldId) { _: UUID? -> HashSet<UUID?>() }
+        val sleepers = worldSleepers.getOrPut(world.uid) { mutableSetOf() }
 
         sleepers.add(player.uniqueId)
 
-        // Broadcast a sleeping message
         val percent = getPercentageSleeping(world)
         val amountSleeping = getAmountSleeping(world)
         val countRequired = ceil(getPotentialSleepersInWorld(world) * configSleepThreshold).toInt()
         broadcastSleepingMessage(langPlayerBedEnter, world, player, percent, amountSleeping, countRequired)
     }
 
+    /**
+     * Removes [player] from the sleeping set and broadcasts the updated progress message,
+     * if the player was actually registered as sleeping.
+     */
     private fun removeSleeping(player: Player) {
         val world = player.world
-        val worldId = world.uid
-
-        // Remove player from sleepers
-        val sleepers = worldSleepers[worldId] ?: // No sleepers in this world. Abort.
-        return
+        val sleepers = worldSleepers[world.uid] ?: return
 
         if (sleepers.remove(player.uniqueId)) {
-            // Broadcast a sleeping message
             val percent = getPercentageSleeping(world)
             val countSleeping = getAmountSleeping(world)
             val countRequired = ceil(getPotentialSleepersInWorld(world) * configSleepThreshold).toInt()
@@ -178,20 +189,20 @@ class Bedtime : Module<Bedtime?>() {
         }
     }
 
+    /** Clears all sleeping players tracked for [world]. */
     private fun resetSleepers(world: World) {
-        val worldId = world.uid
-        val sleepers = worldSleepers[worldId] ?: return
+        val sleepers = worldSleepers[world.uid] ?: return
 
         sleepers.clear()
     }
 
+    /** Utility functions for bedtime formatting. */
     companion object {
-        private fun percentageStr(percentage: Double): String {
-            return String.format("§6%.2f", 100.0 * percentage) + "%"
-        }
+        /** Formats [percentage] (0.0–1.0) as a gold-coloured percentage string, e.g. `§650.00%`. */
+        private fun percentageStr(percentage: Double): String = String.format("§6%.2f", 100.0 * percentage) + "%"
     }
 
-    // New function to eliminate duplication in the construction/sending of the action message
+    /** Broadcasts the shared action-bar sleep progress message for a world. */
     private fun broadcastSleepingMessage(
         message: TranslatedMessage?,
         world: World,
@@ -200,7 +211,7 @@ class Bedtime : Module<Bedtime?>() {
         amountSleeping: Long,
         countRequired: Int
     ) {
-        message!!.broadcastWorldActionBar(
+        requireNotNull(message).broadcastWorldActionBar(
             world,
             "§6" + player.name,
             "§6" + percentageStr(percent),
