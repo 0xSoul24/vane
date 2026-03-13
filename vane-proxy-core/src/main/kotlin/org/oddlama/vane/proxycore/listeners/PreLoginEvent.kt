@@ -10,25 +10,38 @@ import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
 import java.io.IOException
 import java.net.URISyntaxException
-import java.util.*
+import java.util.UUID
 import java.util.logging.Level
 import java.util.logging.Logger
 
+/**
+ * Handles pre-login authentication multiplexing for configured ports.
+ *
+ * @property plugin owning plugin instance.
+ */
 abstract class PreLoginEvent(@JvmField var plugin: VaneProxyPlugin) : ProxyEvent, ProxyCancellableEvent {
+    /**
+     * Unused default fire entry point. Use [fire] with [PreLoginDestination] instead.
+     */
     override fun fire() {
         // Not applicable
         assert(false)
     }
 
+    /**
+     * Executes multiplex authentication flow and stores resolved multiplex data in [destination].
+     *
+     * @param destination target storage for multiplexed player mappings.
+     */
     fun fire(destination: PreLoginDestination) {
-        val connection = connection
+        val connection = connection ?: return
 
         // Multiplex authentication if the connection is to a multiplexing port
-        val port = connection!!.port
+        val port = connection.port
         val multiplexer: MutableMap.MutableEntry<Int?, AuthMultiplex?> =
             plugin.config.getMultiplexerForPort(port) ?: return
 
-        val multiplexerId: Int? = multiplexer.key
+        val multiplexerId = multiplexer.key ?: return
 
         // This is pre-authentication, so we need to resolve the uuid ourselves.
         val playerName = connection.name ?: return
@@ -49,13 +62,14 @@ abstract class PreLoginEvent(@JvmField var plugin: VaneProxyPlugin) : ProxyEvent
             return
         }
 
-        if (!multiplexer.value!!.uuidIsAllowed(uuid)) {
+        val authMultiplex = multiplexer.value ?: return
+        if (!authMultiplex.uuidIsAllowed(uuid)) {
             this.cancel(MESSAGE_MULTIPLEX_MOJANG_AUTH_NO_PERMISSION_KICK)
             return
         }
 
-        val name = connection.name
-        val newUuid: UUID = Util.addUuid(uuid, multiplexerId!!.toLong())
+        val name = connection.name ?: return
+        val newUuid: UUID = Util.addUuid(uuid, multiplexerId.toLong())
         val newUuidStr: String = newUuid.toString()
         val newName: String = newUuidStr.substring(newUuidStr.length - 16).replace("-", "_")
 
@@ -63,33 +77,52 @@ abstract class PreLoginEvent(@JvmField var plugin: VaneProxyPlugin) : ProxyEvent
             .getLogger()
             .log(
                 Level.INFO,
-                "auth multiplex request from player " +
-                        name +
-                        " connecting from " +
-                        connection.socketAddress.toString()
+                "auth multiplex request from player $name connecting from ${connection.socketAddress}"
             )
 
-        val multiplexedPlayer = MultiplexedPlayer(multiplexerId, name!!, newName, uuid, newUuid)
+        val multiplexedPlayer = MultiplexedPlayer(multiplexerId, name, newName, uuid, newUuid)
         if (!implementationSpecificAuth(multiplexedPlayer)) {
             return
         }
 
         when (destination) {
-            PreLoginDestination.MULTIPLEXED_UUIDS -> plugin
-                .multiplexedUuids[multiplexedPlayer.newUuid] = multiplexedPlayer.originalUuid
+            PreLoginDestination.MULTIPLEXED_UUIDS ->
+                plugin.multiplexedUuids[multiplexedPlayer.newUuid] = multiplexedPlayer.originalUuid
 
-            PreLoginDestination.PENDING_MULTIPLEXED_LOGINS -> plugin.pendingMultiplexerLogins[uuid] = multiplexedPlayer
+            PreLoginDestination.PENDING_MULTIPLEXED_LOGINS ->
+                plugin.pendingMultiplexerLogins[uuid] = multiplexedPlayer
         }
     }
 
+    /**
+     * Performs implementation-specific authentication handshake for a multiplexed player.
+     *
+     * @param multiplexedPlayer generated multiplexed player details.
+     * @return `true` when authentication was successful.
+     */
     abstract fun implementationSpecificAuth(multiplexedPlayer: MultiplexedPlayer?): Boolean
 
     /** Where to send the details of a PreLoginEvent  */
+    /**
+     * Defines where generated multiplex login state should be stored.
+     */
     enum class PreLoginDestination {
+        /** Store mappings in [VaneProxyPlugin.multiplexedUuids]. */
         MULTIPLEXED_UUIDS,
+
+        /** Store pending login state in [VaneProxyPlugin.pendingMultiplexerLogins]. */
         PENDING_MULTIPLEXED_LOGINS,
     }
 
+    /**
+     * Holds original and generated identity information for auth multiplexing.
+     *
+     * @property multiplexerId configured multiplexer id.
+     * @property name original player name.
+     * @property newName generated multiplexed player name.
+     * @property originalUuid original player UUID.
+     * @property newUuid generated multiplexed UUID.
+     */
     class MultiplexedPlayer(
         @JvmField var multiplexerId: Int,
         @JvmField var name: String,
@@ -99,9 +132,16 @@ abstract class PreLoginEvent(@JvmField var plugin: VaneProxyPlugin) : ProxyEvent
     )
 
     companion object {
+        /** Kick message used when a player is not allowed to use the selected multiplexer. */
         var MESSAGE_MULTIPLEX_MOJANG_AUTH_NO_PERMISSION_KICK: String =
             "§cYou have no permission to use this auth multiplexer!"
 
+        /**
+         * Sends multiplexed player metadata to [server] via plugin messaging.
+         *
+         * @param server destination backend server.
+         * @param multiplexedPlayer multiplexed identity payload.
+         */
         @JvmStatic
         fun registerAuthMultiplexPlayer(
             server: IVaneProxyServerInfo,

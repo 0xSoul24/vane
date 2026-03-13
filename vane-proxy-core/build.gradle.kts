@@ -8,7 +8,7 @@ sourceSets {
     main {
         blossom {
             javaSources {
-                property("\$VERSION", project.version.toString())
+                property($$"$VERSION", project.version.toString())
             }
         }
     }

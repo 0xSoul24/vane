@@ -10,27 +10,51 @@ import java.io.File
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
-import java.util.*
+import java.util.LinkedHashMap
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import java.util.logging.Level
 
+/**
+ * Base plugin abstraction shared by proxy platform implementations.
+ */
 abstract class VaneProxyPlugin {
+    /** Parsed configuration manager for proxy-core features. */
     @JvmField
     var config: ConfigManager = ConfigManager(this)
+
+    /** Maintenance state controller. */
     @JvmField
     var maintenance: Maintenance = Maintenance(this)
+
+    /** Logger adapter bound by the concrete proxy implementation. */
     @JvmField
     var logger: IVaneLogger? = null
+
+    /** Runtime proxy server abstraction. */
     @JvmField
     var server: ProxyServer? = null
+
+    /** Data folder used for configuration and persistence. */
     @JvmField
     var dataFolder: File? = null
 
-    val multiplexedUuids: LinkedHashMap<UUID?, UUID?> = LinkedHashMap<UUID?, UUID?>()
+    /** Mapping of generated multiplexed UUIDs back to original UUIDs. */
+    val multiplexedUuids: LinkedHashMap<UUID?, UUID?> = LinkedHashMap()
+
+    /** Multiplexed players awaiting backend registration. */
     @JvmField
-    val pendingMultiplexerLogins: LinkedHashMap<UUID?, MultiplexedPlayer?> = LinkedHashMap<UUID?, MultiplexedPlayer?>()
+    val pendingMultiplexerLogins: LinkedHashMap<UUID?, MultiplexedPlayer?> = LinkedHashMap()
+
+    /** Guard that prevents overlapping start command attempts. */
     private var serverStarting = false
 
+    /**
+     * Checks whether a backend server is reachable by opening a short TCP connection.
+     *
+     * @param server server descriptor to probe.
+     * @return `true` when a connection can be established.
+     */
     fun isOnline(server: IVaneProxyServerInfo): Boolean {
         val addr = server.socketAddress
         if (addr !is InetSocketAddress) {
@@ -49,6 +73,12 @@ abstract class VaneProxyPlugin {
         return connected
     }
 
+    /**
+     * Builds the visible MOTD for [server], considering maintenance mode and online state.
+     *
+     * @param server target backend server.
+     * @return formatted MOTD string.
+     */
     fun getMotd(server: IVaneProxyServerInfo): String {
         // Maintenance
         if (maintenance.enabled()) {
@@ -56,33 +86,40 @@ abstract class VaneProxyPlugin {
         }
 
         val cms = config.managedServers[server.name] ?: return ""
-        val source = if (isOnline(server)) {
-            ConfigItemSource.ONLINE
-        } else {
-            ConfigItemSource.OFFLINE
-        }
+        val source = if (isOnline(server)) ConfigItemSource.ONLINE else ConfigItemSource.OFFLINE
 
         return cms.motd(source)
     }
 
+    /**
+     * Resolves the encoded favicon for [server] according to current online state.
+     *
+     * @param server target backend server.
+     * @return base64 data URL favicon or `null` when not configured.
+     */
     fun getFavicon(server: IVaneProxyServerInfo): String? {
         val cms = config.managedServers[server.name] ?: return null
-        val source = if (isOnline(server)) {
-            ConfigItemSource.ONLINE
-        } else {
-            ConfigItemSource.OFFLINE
-        }
+        val source = if (isOnline(server)) ConfigItemSource.ONLINE else ConfigItemSource.OFFLINE
 
         return cms.favicon(source)
     }
 
+    /** Proxy runtime, guaranteed to be initialized. */
     val proxy: ProxyServer
-        get() = server!!
+        get() = checkNotNull(server) { "Proxy server is not initialized" }
 
-    fun getLogger(): IVaneLogger {
-        return logger!!
-    }
+    /**
+     * Returns the configured logger.
+     *
+     * @return initialized logger instance.
+     */
+    fun getLogger(): IVaneLogger = checkNotNull(logger) { "Logger is not initialized" }
 
+    /**
+     * Attempts to start a managed backend server asynchronously.
+     *
+     * @param server managed server to start.
+     */
     fun tryStartServer(server: ManagedServer) {
         // FIXME: this is not async-safe and there might be conditions where two start commands can
         // be executed
@@ -121,14 +158,13 @@ abstract class VaneProxyPlugin {
                         Level.INFO,
                         "Running start command for server '${server.id()}': ${cmd.contentToString()}"
                     )
-                val timeout = server.commandTimeout()
-
                 val processBuilder = ProcessBuilder(*cmd)
                 processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
                 processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT)
                 val process = processBuilder.start()
 
-                if (!process.waitFor(timeout!!.toLong(), TimeUnit.SECONDS)) {
+                val commandTimeout = server.commandTimeout()?.toLong() ?: 10L
+                if (!process.waitFor(commandTimeout, TimeUnit.SECONDS)) {
                     getLogger().log(Level.SEVERE, "Server '${server.id()}'s start command timed out!")
                 }
 
@@ -146,19 +182,23 @@ abstract class VaneProxyPlugin {
         }
     }
 
-    fun canJoinMaintenance(uuid: UUID?): Boolean {
-        if (maintenance.enabled()) {
-            // Client is connecting while maintenance is on
-            // Players with a bypass_maintenance flag may join
-            return this.server!!.hasPermission(uuid, "vane_proxy.bypass_maintenance")
-        }
-
-        return true
-    }
+    /**
+     * Determines whether [uuid] is allowed to join while maintenance mode is active.
+     *
+     * @param uuid player UUID to test.
+     * @return `true` if the player can join.
+     */
+    fun canJoinMaintenance(uuid: UUID?): Boolean =
+        !maintenance.enabled() || proxy.hasPermission(uuid, "vane_proxy.bypass_maintenance")
 
     companion object {
+        /** Namespace part of the auth multiplex plugin message channel. */
         const val CHANNEL_AUTH_MULTIPLEX_NAMESPACE: String = "vane_proxy"
+
+        /** Name part of the auth multiplex plugin message channel. */
         const val CHANNEL_AUTH_MULTIPLEX_NAME: String = "auth_multiplex"
+
+        /** Full auth multiplex plugin message channel identifier. */
         const val CHANNEL_AUTH_MULTIPLEX: String = "$CHANNEL_AUTH_MULTIPLEX_NAMESPACE:$CHANNEL_AUTH_MULTIPLEX_NAME"
     }
 }

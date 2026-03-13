@@ -5,10 +5,16 @@ import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
-import java.util.*
+import java.util.Base64
+import kotlin.random.Random
 import javax.imageio.ImageIO
 
-@Suppress("unused")
+/**
+ * Represents a managed backend server and state-dependent presentation/start settings.
+ *
+ * @property id stable server identifier.
+ * @constructor Creates a managed server from parsed online/offline and start sections.
+ */
 class ManagedServer(
     private val id: String,
     displayName: String,
@@ -16,16 +22,29 @@ class ManagedServer(
     offlineConfigSection: CommentedConfig?,
     start: CommentedConfig
 ) {
+    /** Start behavior configuration for this server. */
     @JvmField
     var start: ServerStart = ServerStart(id, displayName, start)
 
+    /** Presentation config used while backend is online. */
     private val onlineConfig: StatefulConfiguration = StatefulConfiguration(id, displayName, onlineConfigSection)
+
+    /** Presentation config used while backend is offline. */
     private val offlineConfig: StatefulConfiguration = StatefulConfiguration(id, displayName, offlineConfigSection)
 
-    fun id(): String {
-        return this.id
-    }
+    /**
+     * Returns the server identifier.
+     *
+     * @return configured id.
+     */
+    fun id(): String = id
 
+    /**
+     * Returns the encoded favicon for the selected [source] state.
+     *
+     * @param source online/offline state selector.
+     * @return base64 data URL favicon or `null`.
+     */
     fun favicon(source: ConfigItemSource): String? {
         return when (source) {
             ConfigItemSource.ONLINE -> {
@@ -39,14 +58,26 @@ class ManagedServer(
         }
     }
 
-    fun startCmd(): Array<String?>? {
-        return start.cmd
-    }
+    /**
+     * Returns the configured start command tokens.
+     *
+     * @return command array or `null` when no command is configured.
+     */
+    fun startCmd(): Array<String?>? = start.cmd
 
-    fun startKickMsg(): String? {
-        return start.kickMsg
-    }
+    /**
+     * Returns the kick message used after issuing a start command.
+     *
+     * @return configured kick message or `null`.
+     */
+    fun startKickMsg(): String? = start.kickMsg
 
+    /**
+     * Picks a random quote for the selected [source] state.
+     *
+     * @param source online/offline state selector.
+     * @return selected quote or an empty string when none are available.
+     */
     private fun randomQuote(source: ConfigItemSource): String? {
         val quoteSet = when (source) {
             ConfigItemSource.ONLINE -> onlineConfig.quotes
@@ -56,43 +87,55 @@ class ManagedServer(
         if (quoteSet.isNullOrEmpty()) {
             return ""
         }
-        return quoteSet[Random().nextInt(quoteSet.size)]
+        return quoteSet[Random.nextInt(quoteSet.size)]
     }
 
+    /**
+     * Returns the state-dependent MOTD with quote placeholders resolved.
+     *
+     * @param source online/offline state selector.
+     * @return formatted MOTD or an empty string.
+     */
     fun motd(source: ConfigItemSource): String {
-        val sourcedMotd: String?
-        val quoteSource: ConfigItemSource
-        when (source) {
-            ConfigItemSource.ONLINE -> {
-                sourcedMotd = onlineConfig.motd
-                quoteSource = ConfigItemSource.ONLINE
-            }
-
-            ConfigItemSource.OFFLINE -> {
-                sourcedMotd = offlineConfig.motd
-                quoteSource = ConfigItemSource.OFFLINE
-            }
-
+        val (sourcedMotd, quoteSource) = when (source) {
+            ConfigItemSource.ONLINE -> onlineConfig.motd to ConfigItemSource.ONLINE
+            ConfigItemSource.OFFLINE -> offlineConfig.motd to ConfigItemSource.OFFLINE
         }
 
-        if (sourcedMotd == null) {
-            return ""
-        }
-        return sourcedMotd.replace("{QUOTE}", randomQuote(quoteSource)!!)
+        return sourcedMotd?.replace("{QUOTE}", randomQuote(quoteSource).orEmpty()) ?: ""
     }
 
-    fun commandTimeout(): Int? {
-        return start.timeout
-    }
+    /**
+     * Returns the timeout for the start command.
+     *
+     * @return timeout in seconds.
+     */
+    fun commandTimeout(): Int? = start.timeout
 
+    /**
+     * Selects which state-specific configuration should be used.
+     */
     enum class ConfigItemSource {
+        /** Use presentation values for online backend state. */
         ONLINE,
+
+        /** Use presentation values for offline backend state. */
         OFFLINE,
     }
 
+    /**
+     * Holds state-specific display values for MOTD, quote set, and favicon.
+     *
+     * @constructor Parses a state section and resolves placeholders.
+     */
     private class StatefulConfiguration(id: String, displayName: String, config: CommentedConfig?) {
+        /** Candidate quote lines used by `{QUOTE}` placeholder replacement. */
         var quotes: Array<String?>? = null
+
+        /** MOTD template for this state. */
         var motd: String? = null
+
+        /** Encoded `data:image/png;base64,...` favicon value. */
         var encodedFavicon: String? = null
 
         init {
@@ -102,9 +145,9 @@ class ManagedServer(
                 val quotesList = config.get<MutableList<String?>?>("quotes")
 
                 if (quotesList != null) {
-                    this.quotes = quotesList
-                        .filter { s -> !s.isNullOrBlank() }
-                        .map { s -> s!!.replace("{SERVER}", id).replace("{SERVER_DISPLAY_NAME}", displayName) }
+                    quotes = quotesList
+                        .mapNotNull { s -> s?.takeUnless { it.isBlank() } }
+                        .map { s -> s.replace("{SERVER}", id).replace("{SERVER_DISPLAY_NAME}", displayName) }
                         .toTypedArray()
                 }
 
@@ -113,7 +156,7 @@ class ManagedServer(
 
                 require(motdVal == null || motdVal is String) { "Managed server '$id' has a non-string MOTD!" }
 
-                if (motdVal is String && motdVal.isNotEmpty()) this.motd = motdVal.replace(
+                if (motdVal is String && motdVal.isNotEmpty()) motd = motdVal.replace(
                     "{SERVER_DISPLAY_NAME}",
                     displayName
                 )
@@ -123,7 +166,7 @@ class ManagedServer(
 
                 require(faviconPath == null || faviconPath is String) { "Managed server '$id' has a non-string favicon path!" }
 
-                if (faviconPath is String && faviconPath.isNotEmpty()) this.encodedFavicon = encodeFavicon(
+                if (faviconPath is String && faviconPath.isNotEmpty()) encodedFavicon = encodeFavicon(
                     id,
                     faviconPath
                 )
@@ -131,6 +174,14 @@ class ManagedServer(
         }
 
         companion object {
+            /**
+             * Loads and encodes a favicon image into a PNG data URL.
+             *
+             * @param id managed server id used for placeholder substitution.
+             * @param faviconPath path template to favicon file.
+             * @return encoded favicon data URL.
+             * @throws IOException when the image cannot be read or encoded.
+             */
             @Throws(IOException::class)
             private fun encodeFavicon(id: String, faviconPath: String): String {
                 val faviconFile = File(faviconPath.replace("{SERVER}", id))
@@ -147,7 +198,7 @@ class ManagedServer(
                 ImageIO.write(image, "PNG", stream)
                 val faviconBytes = stream.toByteArray()
 
-                val encodedFavicon = "data:image/png;base64," + Base64.getEncoder().encodeToString(faviconBytes)
+                val encodedFavicon = "data:image/png;base64,${Base64.getEncoder().encodeToString(faviconBytes)}"
 
                 require(encodedFavicon.length <= Short.MAX_VALUE) { "Favicon file too large for server to process" }
 
@@ -156,10 +207,22 @@ class ManagedServer(
         }
     }
 
+    /**
+     * Configures how a managed server should be started.
+     *
+     * @constructor Parses start command settings and validation values.
+     */
     class ServerStart(id: String, displayName: String, config: CommentedConfig) {
+        /** Command tokens used to start the backend process. */
         var cmd: Array<String?>?
+
+        /** Maximum allowed command runtime in seconds. */
         var timeout: Int?
+
+        /** Kick message shown to connecting users while startup is in progress. */
         var kickMsg: String? = null
+
+        /** Whether any player may trigger startup even without dedicated permissions. */
         @JvmField
         var allowAnyone: Boolean = false
 
@@ -169,30 +232,29 @@ class ManagedServer(
             val kickMsgVal = config.get<Any?>("kickMsg")
             val allowAnyoneVal = config.get<Any?>("allowAnyone")
 
-            if (cmdList != null) this.cmd = cmdList.map { s -> s!!.replace("{SERVER}", id) }.toTypedArray()
-            else this.cmd = null
+            cmd = cmdList?.map { it?.replace("{SERVER}", id) }?.toTypedArray()
 
             require(kickMsgVal == null || kickMsgVal is String) { "Managed server '$id' has an invalid kick message!" }
 
-            if (kickMsgVal is String) this.kickMsg = kickMsgVal.replace("{SERVER}", id).replace(
+            kickMsg = if (kickMsgVal is String) kickMsgVal.replace("{SERVER}", id).replace(
                 "{SERVER_DISPLAY_NAME}",
                 displayName
             )
-            else this.kickMsg = null
+            else null
 
-            if (allowAnyoneVal is Boolean) this.allowAnyone = allowAnyoneVal
-            else this.allowAnyone = false
+            allowAnyone = allowAnyoneVal as? Boolean ?: false
 
             if (timeoutVal == null) {
-                this.timeout = DEFAULT_TIMEOUT_SECONDS
+                timeout = DEFAULT_TIMEOUT_SECONDS
             } else {
                 require(timeoutVal is Int) { "Managed server '$id' has an invalid command timeout!" }
 
-                this.timeout = timeoutVal
+                timeout = timeoutVal
             }
         }
 
         companion object {
+            /** Default command timeout in seconds when not explicitly configured. */
             private const val DEFAULT_TIMEOUT_SECONDS = 10
         }
     }

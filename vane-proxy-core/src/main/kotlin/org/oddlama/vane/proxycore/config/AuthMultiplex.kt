@@ -1,24 +1,28 @@
 package org.oddlama.vane.proxycore.config
 
-import java.util.*
-import java.util.stream.Collectors
+import java.util.UUID
 
+/**
+ * Configuration for an authentication multiplexer endpoint.
+ *
+ * @property port external port bound to this multiplexer.
+ * @constructor Creates a multiplexer configuration from configured UUID allowlist strings.
+ */
 class AuthMultiplex(@JvmField var port: Int?, allowedUuids: MutableList<String?>?) {
-    private val allowedUuids: MutableList<UUID?>
+    /** Parsed allowlist UUIDs. Empty means unrestricted access. */
+    private val allowedUuids: MutableList<UUID?> = allowedUuids
+        ?.asSequence()
+        ?.filterNotNull()
+        ?.filter { it.isNotEmpty() }
+        ?.map { UUID.fromString(it) }
+        ?.toMutableList()
+        ?: mutableListOf()
 
-    init {
-        if (allowedUuids.isNullOrEmpty()) {
-            this.allowedUuids = mutableListOf()
-        } else {
-            this.allowedUuids = allowedUuids
-                .stream()
-                .filter { s: String? -> !s!!.isEmpty() }
-                .map { name: String? -> UUID.fromString(name) }
-                .collect(Collectors.toList())
-        }
-    }
-
-    fun uuidIsAllowed(uuid: UUID?): Boolean {
-        return allowedUuids.isEmpty() || allowedUuids.contains(uuid)
-    }
+    /**
+     * Checks whether [uuid] is allowed to use this multiplexer.
+     *
+     * @param uuid UUID to validate.
+     * @return `true` when unrestricted or present in the allowlist.
+     */
+    fun uuidIsAllowed(uuid: UUID?): Boolean = allowedUuids.isEmpty() || uuid in allowedUuids
 }

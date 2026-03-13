@@ -4,22 +4,36 @@ import org.oddlama.vane.proxycore.VaneProxyPlugin
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
-import java.util.*
 import java.util.logging.Level
 
+/**
+ * Loads, validates, and provides access to proxy-core configuration.
+ *
+ * @property plugin owning plugin context.
+ */
 class ConfigManager(private val plugin: VaneProxyPlugin) {
     // name → managed server
+    /** Managed server definitions keyed by backend name. */
     @JvmField
-    val managedServers: MutableMap<String?, ManagedServer?> = HashMap<String?, ManagedServer?>()
+    val managedServers: MutableMap<String?, ManagedServer?> = HashMap()
 
     // port → alias id (starts at 1)
+    /** Multiplexer definitions keyed by configured multiplexer id. */
     @JvmField
-    val multiplexerById: MutableMap<Int?, AuthMultiplex?> = HashMap<Int?, AuthMultiplex?>()
+    val multiplexerById: MutableMap<Int?, AuthMultiplex?> = HashMap()
 
-    private fun file(): File {
-        return File(plugin.dataFolder, "config.toml")
-    }
+    /**
+     * Returns the location of `config.toml` in the plugin data folder.
+     *
+     * @return configuration file path.
+     */
+    private fun file(): File = File(plugin.dataFolder, "config.toml")
 
+    /**
+     * Loads configuration from disk and populates in-memory maps.
+     *
+     * @return `true` when loading and validation succeeds.
+     */
     fun load(): Boolean {
         val file = file()
         if (!file.exists() && !saveDefault(file)) {
@@ -27,41 +41,59 @@ class ConfigManager(private val plugin: VaneProxyPlugin) {
             return false
         }
 
-        val parsedConfig: Config?
-        try {
-            parsedConfig = Config(file)
+        val parsedConfig = try {
+            Config(file)
         } catch (e: Exception) {
             plugin.getLogger().log(Level.SEVERE, "Error while loading config file '$file'", e)
             return false
         }
 
-        if (parsedConfig.authMultiplex!!.containsKey(0)) {
+        val authMultiplex = parsedConfig.authMultiplex
+            ?: run {
+                plugin.getLogger().log(Level.SEVERE, "Config did not contain auth multiplexer definitions")
+                return false
+            }
+        val managedServers = parsedConfig.managedServers
+            ?: run {
+                plugin.getLogger().log(Level.SEVERE, "Config did not contain managed server definitions")
+                return false
+            }
+
+        if (authMultiplex.containsKey(0)) {
             plugin.getLogger().log(Level.SEVERE, "Attempted to register a multiplexer with id 0!")
             return false
         }
 
         // Make sure there are no duplicate ports
-        val registeredPorts: MutableSet<Int?> = HashSet<Int?>()
-        for (multiplexer in parsedConfig.authMultiplex!!.values) {
-            registeredPorts.add(multiplexer!!.port)
+        val registeredPorts = mutableSetOf<Int?>()
+        for (multiplexer in authMultiplex.values) {
+            registeredPorts.add(multiplexer?.port)
         }
 
-        if (parsedConfig.authMultiplex!!.size != registeredPorts.size) {
+        if (authMultiplex.size != registeredPorts.size) {
             plugin.getLogger().log(Level.SEVERE, "Attempted to register multiple multiplexers on the same port!")
             return false
         }
 
-        multiplexerById.putAll(parsedConfig.authMultiplex!!)
-        managedServers.putAll(parsedConfig.managedServers!!)
+        multiplexerById.putAll(authMultiplex)
+        this.managedServers.putAll(managedServers)
 
         return true
     }
 
+    /**
+     * Writes the bundled default config to [file].
+     *
+     * @param file destination file.
+     * @return `true` when the file was written successfully.
+     */
     fun saveDefault(file: File): Boolean {
         try {
-            file.getParentFile().mkdirs()
+            file.parentFile.mkdirs()
             Files.copy(
-                Objects.requireNonNull(javaClass.getClassLoader().getResourceAsStream("config.toml")),
+                requireNotNull(javaClass.classLoader.getResourceAsStream("config.toml")) {
+                    "Missing bundled default config.toml"
+                },
                 file.toPath(),
                 StandardCopyOption.REPLACE_EXISTING
             )
@@ -72,10 +104,16 @@ class ConfigManager(private val plugin: VaneProxyPlugin) {
         }
     }
 
+    /**
+     * Finds the multiplexer mapping entry for a given listening [port].
+     *
+     * @param port incoming connection port.
+     * @return matching entry or `null` when no multiplexer is registered for the port.
+     */
     fun getMultiplexerForPort(port: Int?): MutableMap.MutableEntry<Int?, AuthMultiplex?>? {
         for (multiplexer in multiplexerById.entries) {
             // We already checked there are no duplicate ports when parsing
-            if (multiplexer.value!!.port == port) {
+            if (multiplexer.value?.port == port) {
                 return multiplexer
             }
         }

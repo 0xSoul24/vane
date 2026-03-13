@@ -3,24 +3,29 @@ package org.oddlama.vane.proxycore.log
 import org.slf4j.Logger
 import java.util.logging.Level
 
+/**
+ * [IVaneLogger] implementation backed by SLF4J.
+ *
+ * @property logger wrapped SLF4J logger.
+ */
 class Slf4jCompatLogger(private val logger: Logger) : IVaneLogger {
+    /** Logs [message] at [level], mapping known JUL levels to SLF4J APIs. */
     override fun log(level: Level?, message: String?) {
-        if (Level.INFO == level) {
-            logger.info(message)
-        } else if (Level.WARNING == level) {
-            logger.warn(message)
-        } else if (Level.SEVERE == level) {
-            logger.error(message)
+        when (level) {
+            Level.INFO -> logger.info(message)
+            Level.WARNING -> logger.warn(message)
+            Level.SEVERE -> logger.error(message)
+            else -> Unit
         }
     }
 
+    /** Logs [message] and [throwable] at [level], mapping known JUL levels to SLF4J APIs. */
     override fun log(level: Level?, message: String?, throwable: Throwable?) {
-        if (Level.INFO == level) {
-            logger.info(message, throwable)
-        } else if (Level.WARNING == level) {
-            logger.warn(message, throwable)
-        } else if (Level.SEVERE == level) {
-            logger.error(message, throwable)
+        when (level) {
+            Level.INFO -> logger.info(message, throwable)
+            Level.WARNING -> logger.warn(message, throwable)
+            Level.SEVERE -> logger.error(message, throwable)
+            else -> Unit
         }
     }
 }

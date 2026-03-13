@@ -2,32 +2,61 @@ package org.oddlama.vane.proxycore
 
 import org.oddlama.vane.proxycore.scheduler.ProxyScheduledTask
 import org.oddlama.vane.util.formatTime
-import java.io.*
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileReader
+import java.io.FileWriter
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 import java.util.logging.Level
 
 @Suppress("unused")
+/**
+ * Coordinates maintenance mode scheduling, persistence, and player notifications.
+ *
+ * @property plugin owning proxy plugin.
+ */
 class Maintenance(private val plugin: VaneProxyPlugin) {
+    /** Persistence file for maintenance state across restarts. */
     private val file = File("./.maintenance")
+
+    /** Task responsible for enabling maintenance at the scheduled time. */
     private val taskEnable = TaskEnable()
+
+    /** Task responsible for periodic countdown notifications. */
     private val taskNotify = TaskNotify()
+
+    /** Current maintenance activation state. */
     private var enabled = false
+
+    /** Scheduled start timestamp in epoch milliseconds. */
     private var start: Long = 0
 
+    /** Scheduled maintenance duration in milliseconds, or `null` for indefinite duration. */
     private var duration: Long? = 0L
 
-    fun start(): Long {
-        return start
-    }
+    /**
+     * Returns the scheduled maintenance start time.
+     *
+     * @return epoch milliseconds.
+     */
+    fun start(): Long = start
 
-    fun duration(): Long? {
-        return duration
-    }
+    /**
+     * Returns the configured maintenance duration.
+     *
+     * @return duration in milliseconds or `null` for indefinite.
+     */
+    fun duration(): Long? = duration
 
-    fun enabled(): Boolean {
-        return enabled
-    }
+    /**
+     * Indicates whether maintenance mode is currently active.
+     *
+     * @return `true` when maintenance mode is enabled.
+     */
+    fun enabled(): Boolean = enabled
 
+    /** Enables maintenance immediately and disconnects all connected players. */
     fun enable() {
         enabled = true
 
@@ -40,6 +69,9 @@ class Maintenance(private val plugin: VaneProxyPlugin) {
         plugin.getLogger().log(Level.INFO, "Maintenance enabled!")
     }
 
+    /**
+     * Resets maintenance state and cancels all scheduled maintenance tasks.
+     */
     fun disable() {
         start = 0
         duration = 0L
@@ -52,6 +84,9 @@ class Maintenance(private val plugin: VaneProxyPlugin) {
         file.delete()
     }
 
+    /**
+     * Aborts scheduled or active maintenance and emits cancellation broadcasts when applicable.
+     */
     fun abort() {
         if (start == 0L) {
             return
@@ -68,6 +103,12 @@ class Maintenance(private val plugin: VaneProxyPlugin) {
         plugin.getLogger().log(Level.INFO, "Maintenance disabled!")
     }
 
+    /**
+     * Schedules maintenance mode activation.
+     *
+     * @param startMillis activation timestamp in epoch milliseconds.
+     * @param durationMillis duration in milliseconds, or `null` for indefinite duration.
+     */
     fun schedule(startMillis: Long, durationMillis: Long?) {
         if (durationMillis == null && enabled) {
             plugin.getLogger().log(Level.WARNING, "Maintenance already enabled!")
@@ -90,6 +131,9 @@ class Maintenance(private val plugin: VaneProxyPlugin) {
         }
     }
 
+    /**
+     * Loads persisted maintenance state from disk and restores scheduling or active mode.
+     */
     fun load() {
         if (file.exists()) {
             // Recover maintenance times
@@ -123,7 +167,7 @@ class Maintenance(private val plugin: VaneProxyPlugin) {
             if (delta < 0) {
                 // Maintenance scheduled but not active
                 schedule(start, duration)
-            } else if (delta - duration!! < 0) {
+            } else if (duration?.let { delta - it < 0 } == true) {
                 // Maintenance still active
                 enable()
             } else {
@@ -135,14 +179,15 @@ class Maintenance(private val plugin: VaneProxyPlugin) {
         }
     }
 
+    /** Persists the current maintenance schedule to disk. */
     fun save() {
         // create and write file
         try {
             FileWriter(file).use { writer ->
                 if (duration != null) {
-                    writer.write(start.toString() + "\n" + duration)
+                    writer.write("$start\n$duration")
                 } else {
-                    writer.write(start.toString())
+                    writer.write("$start")
                 }
             }
         } catch (e: IOException) {
@@ -150,6 +195,12 @@ class Maintenance(private val plugin: VaneProxyPlugin) {
         }
     }
 
+    /**
+     * Expands placeholders in a maintenance message template.
+     *
+     * @param message template containing `%MOTD%`, `%time%`, `%duration%`, and `%remaining%` placeholders.
+     * @return formatted message.
+     */
     fun formatMessage(message: String): String {
         var timespan = start - System.currentTimeMillis()
         val time: String
@@ -165,15 +216,16 @@ class Maintenance(private val plugin: VaneProxyPlugin) {
 
         val durationString: String?
         val remainingString: String?
-        if (duration != null) {
-            var remaining = duration!! + (start - System.currentTimeMillis())
-            if (remaining > duration!!) {
-                remaining = duration!!
+        val currentDuration = duration
+        if (currentDuration != null) {
+            var remaining = currentDuration + (start - System.currentTimeMillis())
+            if (remaining > currentDuration) {
+                remaining = currentDuration
             } else if (remaining < 0) {
                 remaining = 0
             }
 
-            durationString = formatTime(duration!!)
+            durationString = formatTime(currentDuration)
             remainingString = formatTime(remaining)
         } else {
             durationString = "Indefinite"
@@ -187,10 +239,17 @@ class Maintenance(private val plugin: VaneProxyPlugin) {
             .replace("%remaining%", remainingString)
     }
 
+    /**
+     * Task that broadcasts periodic countdown updates before maintenance starts.
+     */
     inner class TaskNotify : Runnable {
+        /** Currently scheduled proxy task, if any. */
         private var task: ProxyScheduledTask? = null
+
+        /** Next countdown checkpoint in milliseconds before start. */
         private var notifyTime: Long = -1
 
+        /** Runs the notification task and schedules the next checkpoint. */
         @Synchronized
         override fun run() {
             // Broadcast message
@@ -202,16 +261,15 @@ class Maintenance(private val plugin: VaneProxyPlugin) {
             schedule()
         }
 
+        /** Cancels the current scheduled notification task and resets state. */
         @Synchronized
         fun cancel() {
-            if (task != null) {
-                task!!.cancel()
-                task = null
-
-                notifyTime = -1
-            }
+            task?.cancel()
+            task = null
+            notifyTime = -1
         }
 
+        /** Computes and schedules the next notification checkpoint. */
         @Synchronized
         fun schedule() {
             // cancel if running
@@ -241,6 +299,11 @@ class Maintenance(private val plugin: VaneProxyPlugin) {
             task = scheduler.schedule(plugin, this, timespan - notifyTime, TimeUnit.MILLISECONDS)
         }
 
+        /**
+         * Resolves the next countdown checkpoint below the current [notifyTime].
+         *
+         * @return next checkpoint in milliseconds, or `-1` when no further notification is needed.
+         */
         fun nextNotifyTime(): Long {
             if (notifyTime < 0) {
                 return -1
@@ -256,23 +319,28 @@ class Maintenance(private val plugin: VaneProxyPlugin) {
         }
     }
 
+    /**
+     * Task that enables maintenance mode once the scheduled start time is reached.
+     */
     inner class TaskEnable : Runnable {
+        /** Currently scheduled enable task, if any. */
         private var task: ProxyScheduledTask? = null
 
+        /** Executes maintenance activation. */
         @Synchronized
         override fun run() {
             this@Maintenance.enable()
             task = null
         }
 
+        /** Cancels the current scheduled activation task. */
         @Synchronized
         fun cancel() {
-            if (task != null) {
-                task!!.cancel()
-                task = null
-            }
+            task?.cancel()
+            task = null
         }
 
+        /** Schedules activation at the configured start timestamp. */
         @Synchronized
         fun schedule() {
             // Cancel if running
@@ -295,6 +363,7 @@ class Maintenance(private val plugin: VaneProxyPlugin) {
     }
 
     companion object {
+        /** Countdown points (in milliseconds) at which notifications are emitted. */
         val NOTIFY_TIMES: LongArray = longArrayOf(
             240 * 60000L,
             180 * 60000L,
@@ -316,14 +385,20 @@ class Maintenance(private val plugin: VaneProxyPlugin) {
             2000L,
             1000L,
         )
+
+        /** Threshold in milliseconds for switching to the shutdown warning message. */
         var SHUTDOWN_THRESHOLD: Long = 10000L // MESSAGE_SHUTDOWN if <= 10 seconds
+
+        /** Broadcast template used when maintenance is cancelled. */
         var MESSAGE_ABORTED: String = "§7> §cServer maintenance §l§6CANCELLED§r§c!"
 
+        /** Informational template used by maintenance status queries. */
         var MESSAGE_INFO: String = "§7>" +
                 "\n§7> §cScheduled maintenance in: §6%time%" +
                 "\n§7> §cExpected time remaining: §6%remaining%" +
                 "\n§7>"
 
+        /** Broadcast template used while maintenance is scheduled but not yet active. */
         var MESSAGE_SCHEDULED: String = "§7>" +
                 "\n§7> §e\u21af§r §6§lMaintenance active§r §e\u21af§r" +
                 "\n§7>" +
@@ -331,15 +406,19 @@ class Maintenance(private val plugin: VaneProxyPlugin) {
                 "\n§7> §cExpected duration: §6%duration%" +
                 "\n§7>"
 
+        /** Broadcast template used near activation time. */
         var MESSAGE_SHUTDOWN: String = "§7> §cShutdown in §6%time%§c!"
 
+        /** Disconnect message sent to players when maintenance activates. */
         var MESSAGE_KICK: String =
             "§e\u21af§r §6§lMaintenance active§r §e\u21af§r" + "\n§cExpected duration: §6%duration%"
 
+        /** MOTD template exposed during active maintenance. */
         @JvmField
         var MOTD: String =
             "§e\u21af§r §6§lMaintenance active§r §e\u21af§r" + "\n§cExpected time remaining: §6%remaining%"
 
+        /** Message shown when users attempt to connect during maintenance. */
         var MESSAGE_CONNECT: String = "%MOTD%" + "\n" + "\n§7Please try again later."
     }
 }

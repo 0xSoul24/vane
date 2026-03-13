@@ -4,9 +4,20 @@ import org.oddlama.vane.proxycore.Maintenance
 import org.oddlama.vane.proxycore.ProxyPlayer
 import org.oddlama.vane.proxycore.VaneProxyPlugin
 import org.oddlama.vane.util.parseTime
-import java.util.*
+import java.util.Locale
 
+/**
+ * Command handler for querying and controlling maintenance mode.
+ *
+ * @constructor Creates the maintenance command.
+ */
 class ProxyMaintenanceCommand(permission: String?, plugin: VaneProxyPlugin) : ProxyCommand(permission, plugin) {
+    /**
+     * Executes maintenance subcommands (`status`, `on`, `off`, `cancel`, `schedule`).
+     *
+     * @param sender command sender.
+     * @param args command arguments.
+     */
     override fun execute(sender: ProxyCommandSender?, args: Array<String?>?) {
         // Only check permission on players
         if (sender is ProxyPlayer && !hasPermission(sender.uniqueId)) {
@@ -15,10 +26,10 @@ class ProxyMaintenanceCommand(permission: String?, plugin: VaneProxyPlugin) : Pr
         }
 
         val maintenance = plugin.maintenance
-        val safeArgs: Array<String?> = args ?: arrayOf()
+        val safeArgs = args.orEmpty().toList()
 
         if (safeArgs.size == 1) {
-            when (safeArgs[0]?.lowercase(Locale.getDefault())) {
+            when (safeArgs.firstOrNull()?.lowercase(Locale.getDefault())) {
                 "status" -> {
                     if (maintenance.start() != 0L) {
                         sender?.sendMessage(
@@ -39,21 +50,29 @@ class ProxyMaintenanceCommand(permission: String?, plugin: VaneProxyPlugin) : Pr
                     return
                 }
             }
-        } else if (safeArgs.size == 3 && (safeArgs[0].equals("schedule", ignoreCase = true))) {
+        } else if (safeArgs.size == 3 && safeArgs[0].equals("schedule", ignoreCase = true)) {
+            val timeArg = safeArgs[1]
+            val durationArg = safeArgs[2]
+
+            if (timeArg == null || durationArg == null) {
+                sender?.sendMessage(MESSAGE_INVALID_TIME_FORMAT.replace("%time%", "null"))
+                return
+            }
+
             val time: Long
             val duration: Long
 
             try {
-                time = parseTime(safeArgs[1]!!)
+                time = parseTime(timeArg)
             } catch (_: NumberFormatException) {
-                sender?.sendMessage(MESSAGE_INVALID_TIME_FORMAT.replace("%time%", safeArgs[1]!!))
+                sender?.sendMessage(MESSAGE_INVALID_TIME_FORMAT.replace("%time%", timeArg))
                 return
             }
 
             try {
-                duration = parseTime(safeArgs[2]!!)
+                duration = parseTime(durationArg)
             } catch (_: NumberFormatException) {
-                sender?.sendMessage(MESSAGE_INVALID_TIME_FORMAT.replace("%time%", safeArgs[2]!!))
+                sender?.sendMessage(MESSAGE_INVALID_TIME_FORMAT.replace("%time%", durationArg))
                 return
             }
 
@@ -73,6 +92,7 @@ class ProxyMaintenanceCommand(permission: String?, plugin: VaneProxyPlugin) : Pr
     }
 
     companion object {
+        /** Error template used when a time argument cannot be parsed. */
         var MESSAGE_INVALID_TIME_FORMAT: String = "§cInvalid time format §6'%time%'§c!"
     }
 }

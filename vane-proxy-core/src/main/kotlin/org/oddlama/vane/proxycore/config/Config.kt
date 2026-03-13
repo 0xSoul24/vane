@@ -4,10 +4,18 @@ import com.electronwill.nightconfig.core.CommentedConfig
 import com.electronwill.nightconfig.core.file.CommentedFileConfig
 import java.io.File
 
+/**
+ * Parsed proxy-core TOML configuration model.
+ *
+ * @constructor Loads and validates the configuration from [file].
+ */
 class Config(file: File) {
     // multiplexerId, { Integer port, List<UUID> allowed_uuids }
+    /** Auth multiplexers by configured numeric identifier. */
     @JvmField
     var authMultiplex: LinkedHashMap<Int?, AuthMultiplex?>?
+
+    /** Managed backend server configurations by server id. */
     @JvmField
     var managedServers: LinkedHashMap<String?, ManagedServer?>?
 
@@ -20,25 +28,21 @@ class Config(file: File) {
 
         config.load()
 
-        val authMultiplex = LinkedHashMap<Int?, AuthMultiplex?>()
-        val managedServers = LinkedHashMap<String?, ManagedServer?>()
+        val authMultiplex = linkedMapOf<Int?, AuthMultiplex?>()
+        val managedServers = linkedMapOf<String?, ManagedServer?>()
 
-        val registeredPorts: MutableSet<Int?> = HashSet()
+        val registeredPorts = mutableSetOf<Int?>()
         val multiplexersConfig = config.get<CommentedConfig>("auth_multiplex")
         for (multiplexerConf in multiplexersConfig.entrySet()) {
             val keyString = multiplexerConf.key
-            val key: Int
-            try {
-                key = keyString.toInt()
-            } catch (ignored: Exception) {
-                throw IllegalArgumentException("Multiplexer ID '$keyString' is not an integer!")
-            }
+            val key = keyString.toIntOrNull()
+                ?: throw IllegalArgumentException("Multiplexer ID '$keyString' is not an integer!")
 
             val value = multiplexerConf.getValue<Any?>()
             require(value is CommentedConfig) { "Multiplexer '$key' has an invalid configuration!" }
 
             val port = value.getInt("port")
-            require(!registeredPorts.contains(port)) { "Multiplexer ID '$keyString' uses an already registered port!" }
+            require(port !in registeredPorts) { "Multiplexer ID '$keyString' uses an already registered port!" }
 
             val multiplexer = AuthMultiplex(port, value.get<MutableList<String?>?>("allowed_uuids"))
 

@@ -10,24 +10,33 @@ import java.net.URI
 import java.net.URISyntaxException
 import java.nio.charset.StandardCharsets
 
+/**
+ * I/O helpers used by proxy-core utility code.
+ */
 object IOUtil {
+    /**
+     * Reads all text from [rd].
+     *
+     * @param rd reader source.
+     * @return full text content.
+     * @throws IOException when reading fails.
+     */
     @Throws(IOException::class)
-    private fun readAll(rd: Reader): String {
-        val sb = StringBuilder()
-        var cp: Int
-        while ((rd.read().also { cp = it }) != -1) {
-            sb.append(cp.toChar())
-        }
-        return sb.toString()
-    }
+    private fun readAll(rd: Reader): String = rd.readText()
 
+    /**
+     * Downloads and parses JSON from [url].
+     *
+     * @param url URI string to fetch.
+     * @return parsed JSON object.
+     * @throws IOException when the resource cannot be read.
+     * @throws JSONException when JSON parsing fails.
+     * @throws URISyntaxException when [url] is not a valid URI.
+     */
     @JvmStatic
     @Throws(IOException::class, JSONException::class, URISyntaxException::class)
-    fun readJsonFromUrl(url: String): JSONObject {
+    fun readJsonFromUrl(url: String): JSONObject =
         BufferedReader(
             InputStreamReader(URI(url).toURL().openStream(), StandardCharsets.UTF_8)
-        ).use { rd ->
-            return JSONObject(readAll(rd))
-        }
-    }
+        ).use { rd -> JSONObject(readAll(rd)) }
 }

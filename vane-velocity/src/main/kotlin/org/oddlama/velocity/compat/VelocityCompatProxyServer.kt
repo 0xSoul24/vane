@@ -9,14 +9,14 @@ import org.oddlama.velocity.compat.scheduler.VelocityCompatProxyTaskScheduler
 import java.util.*
 
 class VelocityCompatProxyServer(val proxy: ProxyServer) : org.oddlama.vane.proxycore.ProxyServer {
-    override val scheduler: ProxyTaskScheduler?
+    override val scheduler: ProxyTaskScheduler
         get() = VelocityCompatProxyTaskScheduler(proxy.scheduler)
 
     override fun broadcast(message: String?) {
         proxy.sendMessage(Component.text(message.orEmpty()))
     }
 
-    override val players: MutableCollection<ProxyPlayer?>?
+    override val players: MutableCollection<ProxyPlayer?>
         get() = proxy.allPlayers.map { VelocityCompatProxyPlayer(it) as ProxyPlayer? }.toMutableList()
 
     override fun hasPermission(uuid: UUID?, vararg permission: String?): Boolean {
