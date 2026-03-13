@@ -8,6 +8,7 @@ import javax.lang.model.type.DeclaredType
 import javax.tools.Diagnostic
 
 /** Utility helpers used by annotation processors in this module. */
+
 /**
  * Verifies that the provided element is a class. Prints a compiler error message
  * via the processing environment if it is not.

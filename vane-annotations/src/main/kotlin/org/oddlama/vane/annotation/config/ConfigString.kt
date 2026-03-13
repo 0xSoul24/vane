@@ -2,9 +2,9 @@ package org.oddlama.vane.annotation.config
 
 /** String configuration field.
  *
- * @param def Default value.
- * @param desc Description used in generated docs/config.
- * @param metrics Whether this field should be recorded in metrics.
+ * @property def Default value.
+ * @property desc Description used in generated docs/config.
+ * @property metrics Whether this field should be recorded in metrics.
  */
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FIELD)

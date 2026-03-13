@@ -9,6 +9,10 @@ import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic
 
+/**
+ * Mapping of annotation type names to the expected Java type string for
+ * the annotated field. Used by the processor to validate field types.
+ */
 private val fieldTypeMapping: Map<String, String> = mapOf(
     "org.oddlama.vane.annotation.config.ConfigBoolean" to "boolean",
     "org.oddlama.vane.annotation.config.ConfigDict" to "<any>",
@@ -60,6 +64,14 @@ private val fieldTypeMapping: Map<String, String> = mapOf(
 )
 @SupportedSourceVersion(SourceVersion.RELEASE_21)
 class ConfigAndLangProcessor : AbstractProcessor() {
+    /**
+     * Processes the set of annotation types for this round and validates
+     * annotated elements against the expected types.
+     *
+     * @param annotations The set of annotation types to process.
+     * @param roundEnv The processing environment for this round.
+     * @return true to indicate annotations are claimed by this processor.
+     */
     override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
         annotations.forEach { annotation ->
             roundEnv.getElementsAnnotatedWith(annotation).forEach { verifyType(annotation, it) }
@@ -71,6 +83,9 @@ class ConfigAndLangProcessor : AbstractProcessor() {
     /**
      * Verifies that the annotated element has the expected type for the
      * given annotation. Emits an error if the mapping is missing or types do not match.
+     *
+     * @param annotation The annotation type being validated.
+     * @param element The element annotated with that annotation.
      */
     private fun verifyType(annotation: TypeElement, element: Element) {
         val type = element.asType().toString()

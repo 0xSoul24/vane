@@ -11,6 +11,16 @@ import javax.lang.model.element.TypeElement
 @SupportedAnnotationTypes("org.oddlama.vane.annotation.enchantment.VaneEnchantment")
 @SupportedSourceVersion(SourceVersion.RELEASE_21)
 class VaneEnchantmentProcessor : AbstractProcessor() {
+    /**
+     * Processes all elements annotated with `@VaneEnchantment` for this round.
+     *
+     * Validates that each annotated element is a class and that it extends the
+     * expected framework base enchantment type.
+     *
+     * @param annotations The set of annotation types requested to be processed.
+     * @param roundEnv Environment for information about the current and prior round.
+     * @return true to indicate the annotations are claimed by this processor.
+     */
     override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
         annotations.forEach { annotation ->
             val elements = roundEnv.getElementsAnnotatedWith(annotation)

@@ -10,6 +10,7 @@ import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic
 
+/** Required annotations that must be present on classes using `@VaneCommand`. */
 private val mandatoryAnnotations = listOf(Name::class.java)
 
 /**
@@ -25,6 +26,17 @@ private val mandatoryAnnotations = listOf(Name::class.java)
 )
 @SupportedSourceVersion(SourceVersion.RELEASE_21)
 class CommandAnnotationProcessor : AbstractProcessor() {
+    /**
+     * Processes command-related annotations and validates their usage.
+     *
+     * Checks that annotated elements are classes and extend the expected
+     * command base type. For `@VaneCommand` annotated classes it also verifies
+     * that mandatory annotations (like `@Name`) are present.
+     *
+     * @param annotations Annotation types to process.
+     * @param roundEnv Information about the current processing round.
+     * @return true to indicate that the annotations have been claimed.
+     */
     override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
         annotations.forEach { annotation ->
             val elements = roundEnv.getElementsAnnotatedWith(annotation)
@@ -51,6 +63,8 @@ class CommandAnnotationProcessor : AbstractProcessor() {
     /**
      * Ensures that required command annotations (like `@Name`) are present on the class.
      * Skips checks for classes that are already subclasses of the framework's generic Command.
+     *
+     * @param element The element (class) to validate for required annotations.
      */
     private fun verifyHasAnnotations(element: Element) {
         // Only check subclasses

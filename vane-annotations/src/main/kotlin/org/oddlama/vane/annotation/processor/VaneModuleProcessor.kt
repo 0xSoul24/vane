@@ -11,6 +11,14 @@ import javax.lang.model.element.TypeElement
 @SupportedAnnotationTypes("org.oddlama.vane.annotation.VaneModule")
 @SupportedSourceVersion(SourceVersion.RELEASE_21)
 class VaneModuleProcessor : AbstractProcessor() {
+    /**
+     * Processes elements annotated with `@VaneModule` and validates their
+     * conformance to being a proper module class in the framework.
+     *
+     * @param annotations The set of annotations to process.
+     * @param roundEnv The processing environment for this round.
+     * @return true to indicate annotations are claimed by this processor.
+     */
     override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
         annotations.forEach { annotation ->
             val elements = roundEnv.getElementsAnnotatedWith(annotation)
