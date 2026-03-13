@@ -1,19 +1,12 @@
 plugins {
     alias(libs.plugins.shadow)
     kotlin("jvm")
-    kotlin("kapt")
-}
-
-kapt {
-    // Explicitly disable annotation processor discovery from the compile classpath for this module
-    includeCompileClasspath = false
 }
 
 dependencies {
     compileOnly(fileTree(mapOf("dir" to "external", "include" to listOf("*.jar"))))
     compileOnly(libs.spotbugsAnnotations)
     implementation(libs.velocity)
-    kapt(libs.velocity)
     implementation(libs.bstatsVelocity)
     implementation(libs.bstatsBase)
     implementation(libs.json)
@@ -36,11 +29,14 @@ tasks.register<Copy>("copyJar") {
 }
 
 tasks {
+    val velocityPluginVersion = project.version.toString()
+
     shadowJar {
         dependencies {
             include(dependency("org.bstats:bstats-velocity"))
             include(dependency("org.bstats:bstats-base"))
             include(dependency("org.json:json"))
+            include(dependency(rootProject.project(":vane-core")))
             include(dependency(rootProject.project(":vane-proxy-core")))
             include(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
         }
@@ -52,6 +48,14 @@ tasks {
 
     build {
         dependsOn("copyJar")
+    }
+
+    processResources {
+        // Keep this config-cache friendly by passing explicit values instead of project.properties.
+        inputs.property("version", velocityPluginVersion)
+        filesMatching("velocity-plugin.json") {
+            expand(mapOf("version" to velocityPluginVersion))
+        }
     }
 }
 repositories {
