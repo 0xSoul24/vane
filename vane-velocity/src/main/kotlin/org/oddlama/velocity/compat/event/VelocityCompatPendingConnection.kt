@@ -5,35 +5,56 @@ import com.velocitypowered.api.proxy.Player
 import org.oddlama.vane.proxycore.ProxyPendingConnection
 import org.oddlama.vane.proxycore.ProxyServer
 import java.net.SocketAddress
-import java.util.*
+import java.util.UUID
 
-class VelocityCompatPendingConnection : ProxyPendingConnection {
-    val connection: InboundConnection
-    override val name: String?
+/**
+ * Velocity implementation of proxy-core pending connection abstraction.
+ *
+ * @property connection wrapped inbound connection.
+ * @property name pending username, when available.
+ * @property uniqueId player UUID, when available.
+ */
+class VelocityCompatPendingConnection private constructor(
+    private val connection: InboundConnection,
+    override val name: String?,
     override val uniqueId: UUID?
+) : ProxyPendingConnection {
+    /**
+     * Creates a pending connection wrapper from a generic inbound connection.
+     *
+     * @param connection inbound connection.
+     * @param username requested username for login.
+     */
+    constructor(connection: InboundConnection, username: String?) : this(connection, username, null)
 
-    constructor(connection: InboundConnection, username: String?) {
-        this.connection = connection
-        this.name = username
-        this.uniqueId = null
-    }
+    /**
+     * Creates a pending connection wrapper from a logged-in Velocity player.
+     *
+     * @param player Velocity player.
+     */
+    constructor(player: Player) : this(player, player.username, player.uniqueId)
 
-    constructor(player: Player) {
-        this.connection = player
-        this.name = player.username
-        this.uniqueId = player.uniqueId
-    }
-
+    /**
+     * Virtual host port used by the inbound connection.
+     */
     override val port: Int
-        get() = connection.virtualHost.get().port
+        get() = connection.virtualHost.orElseThrow().port
 
+    /**
+     * Virtual host socket address used by the inbound connection.
+     */
     override val socketAddress: SocketAddress
-        get() = connection.virtualHost.get()
+        get() = connection.virtualHost.orElseThrow()
 
+    /**
+     * Checks whether the wrapped player has any provided permission.
+     *
+     * @param server unused for Velocity permission checks.
+     * @param permission candidate permissions.
+     * @return `true` when the wrapped connection is a player with at least one permission.
+     */
     override fun hasPermission(server: ProxyServer?, vararg permission: String?): Boolean {
-        // Safe cast, we don't use this outside the case where this is constructed
-        // with a Player
-        return Arrays.stream<String?>(permission)
-            .anyMatch { perm: String? -> (connection as Player).hasPermission(perm) }
+        val player = connection as? Player ?: return false
+        return permission.filterNotNull().any(player::hasPermission)
     }
 }

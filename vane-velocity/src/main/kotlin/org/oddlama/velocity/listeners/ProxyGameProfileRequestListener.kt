@@ -9,15 +9,24 @@ import org.oddlama.velocity.Velocity
 import org.oddlama.velocity.compat.VelocityCompatServerInfo
 import java.util.logging.Level
 
-class ProxyGameProfileRequestListener(val velocity: Velocity) {
+/**
+ * Finalizes multiplexed authentication by rewriting game profiles after pre-login.
+ *
+ * @property velocity plugin instance used for config and multiplex state access.
+ */
+class ProxyGameProfileRequestListener(private val velocity: Velocity) {
+    /**
+     * Rewrites a game profile when the connection belongs to a pending multiplexed login.
+     *
+     * @param event Velocity game profile request event.
+     */
     @Subscribe(priority = 0)
     fun gameProfileRequest(event: GameProfileRequestEvent) {
         // ======= Check we even have a valid pending login =======
 
-        val virtualHost = event.connection.virtualHost
-        if (virtualHost.isEmpty) return
+        val virtualHost = event.connection.virtualHost.orElse(null) ?: return
 
-        val multiplexer = velocity.config.getMultiplexerForPort(virtualHost.get().port) ?: return
+        if (velocity.config.getMultiplexerForPort(virtualHost.port) == null) return
 
         val pendingMultiplexerLogins = velocity.pendingMultiplexerLogins
         if (pendingMultiplexerLogins.isEmpty()) return
@@ -38,7 +47,7 @@ class ProxyGameProfileRequestListener(val velocity: Velocity) {
         val tamperedProfile = GameProfile(player.newUuid, player.newName, profile.properties)
         event.setGameProfile(tamperedProfile)
 
-        val server = getServerForHost(velocity.rawProxy, virtualHost.get())
+        val server = getServerForHost(velocity.rawProxy, virtualHost)
         val serverInfo = VelocityCompatServerInfo(server)
         registerAuthMultiplexPlayer(serverInfo, player)
 

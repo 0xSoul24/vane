@@ -8,15 +8,24 @@ import org.oddlama.velocity.Velocity
 import org.oddlama.velocity.compat.VelocityCompatServerInfo
 import org.oddlama.velocity.compat.event.VelocityCompatPingEvent
 
-class ProxyPingListener(val velocity: Velocity) {
+/**
+ * Handles server list ping requests and routes them through proxy-core ping processing.
+ *
+ * @property velocity plugin instance used for proxy and config access.
+ */
+class ProxyPingListener(private val velocity: Velocity) {
+    /**
+     * Processes a Velocity ping event and applies Vane ping customizations.
+     *
+     * @param event Velocity ping event.
+     */
     @Subscribe
     fun onProxyPing(event: ProxyPingEvent) {
         val proxy = velocity.rawProxy
 
-        val virtualHost = event.connection.virtualHost
-        if (virtualHost.isEmpty) return
+        val virtualHost = event.connection.virtualHost.orElse(null) ?: return
 
-        val server = getServerForHost(proxy, virtualHost.get())
+        val server = getServerForHost(proxy, virtualHost)
 
         val serverInfo = VelocityCompatServerInfo(server)
         val proxyEvent: PingEvent = VelocityCompatPingEvent(velocity, event, serverInfo)

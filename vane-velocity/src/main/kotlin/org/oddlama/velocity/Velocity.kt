@@ -32,16 +32,30 @@ import java.util.logging.Level
     authors = ["oddlama", "Serial-ATA"],
     url = "https://github.com/oddlama/vane"
 )
+/**
+ * Velocity platform entrypoint for the Vane proxy plugin.
+ *
+ * @param server injected Velocity proxy server instance.
+ * @param logger injected platform logger.
+ * @param metricsFactory bStats factory used to initialize metrics reporting.
+ * @param dataDir plugin data directory provided by Velocity.
+ */
 class Velocity @Inject constructor(
     server: ProxyServer,
     logger: Logger,
     metricsFactory: Metrics.Factory,
     @DataDirectory dataDir: Path
 ) : VaneProxyPlugin() {
+    /**
+     * Raw Velocity proxy server used for API integrations that are not abstracted by proxy-core.
+     */
     val rawProxy: ProxyServer
 
     // bStats
     @Suppress("unused")
+    /**
+     * bStats factory retained so metrics can be initialized during plugin startup.
+     */
     private val metricsFactory: Metrics.Factory
 
     init {
@@ -54,8 +68,13 @@ class Velocity @Inject constructor(
         this.dataFolder = dataDir.toFile()
     }
 
+    /**
+     * Handles Velocity initialization and registers listeners, commands, and channels.
+     *
+     * @param event proxy initialization event.
+     */
     @Subscribe
-    fun onEnable(event: ProxyInitializeEvent?) {
+    fun onEnable(@Suppress("UNUSED_PARAMETER") event: ProxyInitializeEvent) {
         if (!config.load()) {
             disable()
             return
@@ -83,7 +102,7 @@ class Velocity @Inject constructor(
 
         rawProxy.channelRegistrar.register(CHANNEL)
 
-        if (!config.multiplexerById.isEmpty()) {
+        if (config.multiplexerById.isNotEmpty()) {
             try {
                 getLogger().log(Level.INFO, "Attempting to register auth multiplexers")
 
@@ -91,7 +110,8 @@ class Velocity @Inject constructor(
                 // So we have to take matters into our own hands :)
                 handleListeners(
                     "Registering",
-                    BiConsumer { obj: ConnectionManager?, address: InetSocketAddress? -> obj!!.bind(address) })
+                    BiConsumer { connectionManager, address -> connectionManager.bind(address) }
+                )
             } catch (e: Exception) {
                 getLogger().log(Level.SEVERE, "Failed to inject into VelocityServer!", e)
                 disable()
@@ -99,11 +119,19 @@ class Velocity @Inject constructor(
         }
     }
 
+    /**
+     * Handles Velocity shutdown and delegates to plugin cleanup.
+     *
+     * @param event proxy shutdown event.
+     */
     @Subscribe
-    fun onDisable(event: ProxyShutdownEvent?) {
+    fun onDisable(@Suppress("UNUSED_PARAMETER") event: ProxyShutdownEvent) {
         disable()
     }
 
+    /**
+     * Cleans up listeners, channels, and injected multiplexer listeners.
+     */
     private fun disable() {
         rawProxy.eventManager.unregisterListeners(this)
 
@@ -115,7 +143,8 @@ class Velocity @Inject constructor(
 
             handleListeners(
                 "Closing",
-                BiConsumer { obj: ConnectionManager?, oldBind: InetSocketAddress? -> obj!!.close(oldBind) })
+                BiConsumer { connectionManager, oldBind -> connectionManager.close(oldBind) }
+            )
         } catch (e: Exception) {
             getLogger().log(Level.SEVERE, "Failed to stop listeners!", e)
             getLogger().log(Level.SEVERE, "Shutting down the server to prevent lingering unmanaged listeners!")
@@ -126,34 +155,49 @@ class Velocity @Inject constructor(
         logger = null
     }
 
+    /**
+     * Applies an action to each configured auth multiplexer listener address.
+     *
+     * @param action human-readable action label used in logs.
+     * @param method operation to apply to the internal Velocity connection manager.
+     * @throws ClassNotFoundException when Velocity internals cannot be loaded reflectively.
+     * @throws NoSuchFieldException when the internal connection manager field changes.
+     * @throws IllegalAccessException when reflective access to Velocity internals fails.
+     */
     @Throws(ClassNotFoundException::class, NoSuchFieldException::class, IllegalAccessException::class)
     private fun handleListeners(
-        action: String?,
-        method: BiConsumer<in ConnectionManager?, in InetSocketAddress?>
+        action: String,
+        method: BiConsumer<in ConnectionManager, in InetSocketAddress>
     ) {
-        val server = this.rawProxy as VelocityServer?
+        val server = rawProxy as? VelocityServer
+            ?: throw IllegalStateException("ProxyServer is not a VelocityServer implementation")
 
         // We steal the VelocityServer's `ConnectionManager`, which (currently) has no
         // issue binding to however many addresses we give it.
         val velocityServer = Class.forName("com.velocitypowered.proxy.VelocityServer")
         val cmField = velocityServer.getDeclaredField("cm")
-        cmField.setAccessible(true)
+        cmField.isAccessible = true
 
-        val cm = cmField.get(server) as ConnectionManager?
+        val connectionManager = cmField.get(server) as ConnectionManager
 
-        for (multiplexerMap in config.multiplexerById.entries) {
-            val id = multiplexerMap.key
-            val port = multiplexerMap.value!!.port
+        for ((id, multiplexerConfig) in config.multiplexerById) {
+            val port = multiplexerConfig?.port ?: continue
 
             getLogger().log(Level.INFO, "$action multiplexer ID $id, bound to port $port")
 
-            val address = InetSocketAddress(port!!)
-            method.accept(cm, address)
+            val address = InetSocketAddress(port)
+            method.accept(connectionManager, address)
         }
     }
 
+    /**
+     * Static plugin constants.
+     */
     companion object {
         @JvmField
+        /**
+         * Plugin messaging channel used by auth multiplexing.
+         */
         val CHANNEL: MinecraftChannelIdentifier = MinecraftChannelIdentifier.create(
             CHANNEL_AUTH_MULTIPLEX_NAMESPACE,
             CHANNEL_AUTH_MULTIPLEX_NAME

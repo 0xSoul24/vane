@@ -9,20 +9,29 @@ import org.oddlama.velocity.compat.VelocityCompatServerInfo
 import org.oddlama.velocity.compat.event.VelocityCompatLoginEvent
 import org.oddlama.velocity.compat.event.VelocityCompatPendingConnection
 
-class ProxyLoginListener @Inject constructor(val velocity: Velocity) {
+/**
+ * Handles player login events and forwards them to proxy-core login checks.
+ *
+ * @property velocity plugin instance used for proxy and config access.
+ */
+class ProxyLoginListener @Inject constructor(private val velocity: Velocity) {
+    /**
+     * Processes a Velocity login event when the current login result is still allowed.
+     *
+     * @param event Velocity login event.
+     */
     @Subscribe(priority = 0)
     fun login(event: LoginEvent) {
         if (!event.result.isAllowed) return
 
         val proxy = velocity.rawProxy
 
-        val virtualHost = event.player.virtualHost
-        if (virtualHost.isEmpty) return
+        val virtualHost = event.player.virtualHost.orElse(null) ?: return
 
-        val server = getServerForHost(proxy, virtualHost.get())
+        val server = getServerForHost(proxy, virtualHost)
 
         val serverInfo = VelocityCompatServerInfo(server)
-        val proxyEvent: org.oddlama.vane.proxycore.listeners.LoginEvent = VelocityCompatLoginEvent(
+        val proxyEvent = VelocityCompatLoginEvent(
             event,
             velocity,
             serverInfo,
