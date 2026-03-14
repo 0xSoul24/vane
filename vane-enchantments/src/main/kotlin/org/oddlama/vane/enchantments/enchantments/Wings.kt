@@ -20,8 +20,17 @@ import org.oddlama.vane.util.msToTicks
 import org.oddlama.vane.util.ItemUtil
 import org.oddlama.vane.util.PlayerUtil
 
+/**
+ * Wings enchantment class that provides elytra flying boosts.
+ *
+ * @constructor Creates a new Wings enchantment instance.
+ * @param context The context for the enchantment.
+ */
 @VaneEnchantment(name = "wings", maxLevel = 4, rarity = Rarity.RARE, treasure = true, allowCustom = true)
 class Wings(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?>(context) {
+    /**
+     * Cooldown boost configuration in milliseconds for each enchantment level.
+     */
     @ConfigIntList(
         def = [7000, 5000, 3500, 2800],
         min = 0,
@@ -29,9 +38,17 @@ class Wings(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?>(
     )
     private val configBoostCooldowns: MutableList<Int?>? = null
 
+    /**
+     * Strength boost configuration for each enchantment level.
+     */
     @ConfigDoubleList(def = [0.4, 0.47, 0.54, 0.6], min = 0.0, desc = "Boost strength for each enchantment level.")
     private val configBoostStrengths: MutableList<Double?>? = null
 
+    /**
+     * Defines the default recipes for the Wings enchantment.
+     *
+     * @return A list of default recipes.
+     */
     override fun defaultRecipes(): RecipeList {
         return RecipeList.of(
             ShapedRecipeDefinition("generic")
@@ -44,6 +61,11 @@ class Wings(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?>(
         )
     }
 
+    /**
+     * Defines the default loot tables for the Wings enchantment.
+     *
+     * @return A list of default loot tables.
+     */
     override fun defaultLootTables(): LootTableList {
         return LootTableList.of(
             LootDefinition("generic")
@@ -63,34 +85,47 @@ class Wings(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?>(
         )
     }
 
+    /**
+     * Gets the cooldown boost for a given enchantment level.
+     *
+     * @param level The enchantment level.
+     * @return The cooldown boost in ticks.
+     */
     private fun getBoostCooldown(level: Int): Int {
-        if (level > 0 && level <= configBoostCooldowns!!.size) {
-            return configBoostCooldowns[level - 1]!!
-        }
-        return configBoostCooldowns!![0]!!
+        val cooldowns = requireNotNull(configBoostCooldowns)
+        val index = (level - 1).coerceAtLeast(0)
+        return cooldowns.getOrNull(index) ?: cooldowns.firstOrNull() ?: 0
     }
 
+    /**
+     * Gets the strength boost for a given enchantment level.
+     *
+     * @param level The enchantment level.
+     * @return The strength boost.
+     */
     private fun getBoostStrength(level: Int): Double {
-        if (level > 0 && level <= configBoostStrengths!!.size) {
-            return configBoostStrengths[level - 1]!!
-        }
-        return configBoostStrengths!![0]!!
+        val strengths = requireNotNull(configBoostStrengths)
+        val index = (level - 1).coerceAtLeast(0)
+        return strengths.getOrNull(index) ?: strengths.firstOrNull() ?: 0.0
     }
 
+    /**
+     * Event handler for player sneak toggling. Applies the elytra boost if conditions are met.
+     *
+     * @param event The player sneak event.
+     */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     fun onPlayerToggleSneak(event: PlayerToggleSneakEvent) {
         // Check sneaking and flying
-        val player = event.getPlayer()
+        val player = event.player
         if (!event.isSneaking || !player.isGliding) {
             return
         }
 
         // Check enchantment level
-        val chest = player.equipment.chestplate
-        val level = chest.getEnchantmentLevel(this.bukkit()!!)
-        if (level == 0) {
-            return
-        }
+        val enchantedChest = player.chestplateEnchantment(bukkit()) ?: return
+        val chest = enchantedChest.item
+        val level = enchantedChest.level
 
         // Check cooldown
         if (player.getCooldown(Material.ELYTRA) > 0) {

@@ -17,8 +17,23 @@ import org.oddlama.vane.core.enchantments.CustomEnchantment
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.enchantments.Enchantments
 
+/**
+ * Prevents damage from the FLY_INTO_WALL cause when a player is gliding with
+ * an Elytra and is wearing a helmet enchanted with HellBent. When the
+ * conditions are met (player is a gliding player, struck a wall, and the
+ * helmet has this enchantment), the damaging event is cancelled so the player
+ * does not take collision damage.
+ *
+ * @constructor Creates a new instance of the HellBent enchantment.
+ * @param context The context for the enchantment.
+ */
 @VaneEnchantment(name = "hell_bent", rarity = Rarity.COMMON, treasure = true)
 class HellBent(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?>(context) {
+    /**
+     * Defines the default recipes for the HellBent enchantment.
+     *
+     * @return A [RecipeList] containing the default recipes.
+     */
     override fun defaultRecipes(): RecipeList {
         return RecipeList.of(
             ShapedRecipeDefinition("generic")
@@ -30,6 +45,11 @@ class HellBent(context: Context<Enchantments?>) : CustomEnchantment<Enchantments
         )
     }
 
+    /**
+     * Defines the default loot tables for the HellBent enchantment.
+     *
+     * @return A [LootTableList] containing the default loot tables.
+     */
     override fun defaultLootTables(): LootTableList {
         return LootTableList.of(
             LootDefinition("generic")
@@ -41,9 +61,17 @@ class HellBent(context: Context<Enchantments?>) : CustomEnchantment<Enchantments
         )
     }
 
+    /**
+     * Cancels damage events caused by flying into a wall while gliding with
+     * an Elytra when the player is wearing a helmet that has the HellBent
+     * enchantment. Listens for [EntityDamageEvent] and cancels it when the
+     * attack matches [DamageCause.FLY_INTO_WALL] and the helmet enchants are present.
+     *
+     * @param event The [EntityDamageEvent] to inspect and possibly cancel.
+     */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     fun onPlayerDamage(event: EntityDamageEvent) {
-        val entity = event.getEntity()
+        val entity = event.entity
         if (entity !is Player || event.cause != DamageCause.FLY_INTO_WALL) {
             return
         }
@@ -53,7 +81,7 @@ class HellBent(context: Context<Enchantments?>) : CustomEnchantment<Enchantments
         val helmet = player.equipment.helmet ?: return
 
         // Check enchantment
-        if (helmet.getEnchantmentLevel(this.bukkit()!!) == 0) {
+        if (helmet.getEnchantmentLevel(requireNotNull(bukkit())) == 0) {
             return
         }
 

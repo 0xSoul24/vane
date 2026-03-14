@@ -19,6 +19,11 @@ import org.oddlama.vane.core.module.ModuleGroup
 import org.oddlama.vane.enchantments.Enchantments
 import org.oddlama.vane.util.StorageUtil
 
+/**
+ * The Tomes class is a module group that manages the different types of tomes
+ * used for crafting custom enchantments. Disabling these tomes requires
+ * corresponding adjustments to the enchantment recipes.
+ */
 class Tomes(context: Context<Enchantments?>) : ModuleGroup<Enchantments?>(
     context,
     "Tomes",
@@ -34,8 +39,15 @@ class Tomes(context: Context<Enchantments?>) : ModuleGroup<Enchantments?>(
         EnchantedAncientTomeOfTheGods(context)
     }
 
+    /**
+     * Represents the basic ancient tome item used for crafting and enchanting.
+     */
     @VaneItem(name = "ancient_tome", base = Material.BOOK, modelData = 0x770000, version = 1)
     class AncientTome(context: Context<Enchantments?>) : CustomItem<Enchantments?>(context) {
+        /**
+         * Provides the default loot tables for the ancient tome, defining where
+         * it can be found or how it can be obtained in the game.
+         */
         override fun defaultLootTables(): LootTableList {
             return LootTableList.of(
                 LootDefinition("generic")
@@ -110,11 +122,22 @@ class Tomes(context: Context<Enchantments?>) : ModuleGroup<Enchantments?>(
         }
     }
 
+    /**
+     * Represents the enchanted variant of the ancient tome item.
+     */
     @VaneItem(name = "enchanted_ancient_tome", base = Material.ENCHANTED_BOOK, modelData = 0x770001, version = 1)
     class EnchantedAncientTome(context: Context<Enchantments?>) : CustomItem<Enchantments?>(context)
 
+    /**
+     * Represents the ancient tome of knowledge item, used for crafting
+     * and enchanting with a focus on knowledge-related enchantments.
+     */
     @VaneItem(name = "ancient_tome_of_knowledge", base = Material.BOOK, modelData = 0x770002, version = 1)
     class AncientTomeOfKnowledge(context: Context<Enchantments?>) : CustomItem<Enchantments?>(context) {
+        /**
+         * Provides the default recipes for crafting the ancient tome of knowledge,
+         * using various magical and knowledge-related ingredients.
+         */
         override fun defaultRecipes(): RecipeList {
             return RecipeList.of(
                 ShapelessRecipeDefinition("generic")
@@ -126,6 +149,10 @@ class Tomes(context: Context<Enchantments?>) : ModuleGroup<Enchantments?>(
             )
         }
 
+        /**
+         * Provides the default loot tables for the ancient tome of knowledge,
+         * defining where it can be found or how it can be obtained in the game.
+         */
         override fun defaultLootTables(): LootTableList {
             return LootTableList.of(
                 LootDefinition("generic")
@@ -183,6 +210,9 @@ class Tomes(context: Context<Enchantments?>) : ModuleGroup<Enchantments?>(
         }
     }
 
+    /**
+     * Represents the enchanted variant of the ancient tome of knowledge item.
+     */
     @VaneItem(
         name = "enchanted_ancient_tome_of_knowledge",
         base = Material.ENCHANTED_BOOK,
@@ -191,8 +221,16 @@ class Tomes(context: Context<Enchantments?>) : ModuleGroup<Enchantments?>(
     )
     class EnchantedAncientTomeOfKnowledge(context: Context<Enchantments?>) : CustomItem<Enchantments?>(context)
 
+    /**
+     * Represents the ancient tome of the gods item, a powerful tome used for
+     * crafting and enchanting with divine-related enchantments.
+     */
     @VaneItem(name = "ancient_tome_of_the_gods", base = Material.BOOK, modelData = 0x770004, version = 1)
     class AncientTomeOfTheGods(context: Context<Enchantments?>) : CustomItem<Enchantments?>(context) {
+        /**
+         * Provides the default recipes for crafting the ancient tome of the gods,
+         * using various divine and magical ingredients.
+         */
         override fun defaultRecipes(): RecipeList {
             return RecipeList.of(
                 ShapedRecipeDefinition("generic")
@@ -205,6 +243,10 @@ class Tomes(context: Context<Enchantments?>) : ModuleGroup<Enchantments?>(
             )
         }
 
+        /**
+         * Provides the default loot tables for the ancient tome of the gods,
+         * defining where it can be found or how it can be obtained in the game.
+         */
         override fun defaultLootTables(): LootTableList {
             return LootTableList.of(
                 LootDefinition("generic")
@@ -225,6 +267,9 @@ class Tomes(context: Context<Enchantments?>) : ModuleGroup<Enchantments?>(
         }
     }
 
+    /**
+     * Represents the enchanted variant of the ancient tome of the gods item.
+     */
     @VaneItem(
         name = "enchanted_ancient_tome_of_the_gods",
         base = Material.ENCHANTED_BOOK,
@@ -233,6 +278,11 @@ class Tomes(context: Context<Enchantments?>) : ModuleGroup<Enchantments?>(
     )
     class EnchantedAncientTomeOfTheGods(context: Context<Enchantments?>) : CustomItem<Enchantments?>(context)
 
+    /**
+     * The GrindstoneListener class handles the grinding and disenchanting
+     * behavior for the ancient tomes, ensuring that the correct item variants
+     * are used and produced during the process.
+     */
     @VaneItem(
         name = "enchanted_ancient_tome_of_the_gods",
         base = Material.ENCHANTED_BOOK,
@@ -240,6 +290,11 @@ class Tomes(context: Context<Enchantments?>) : ModuleGroup<Enchantments?>(
         version = 1
     )
     class GrindstoneListener(context: Context<Enchantments?>?) : Listener<Enchantments?>(context) {
+        /**
+         * Listens to the PrepareGrindstoneEvent and modifies the result item
+         * if it is an enchanted tome, replacing it with the corresponding
+         * normal tome.
+         */
         @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
         fun onPrepareGrindstone(event: PrepareGrindstoneEvent) {
             // Make sure to remove the enchanted variant when disenchanting a tome
@@ -247,11 +302,14 @@ class Tomes(context: Context<Enchantments?>) : ModuleGroup<Enchantments?>(
 
             // Only if there are no enchantments on an enchanted variant, we revert to
             // non-enchanted variant
-            if (!res.enchantments.isEmpty()) {
+            if (res.enchantments.isNotEmpty()) {
                 return
             }
 
-            val customItem: org.oddlama.vane.core.item.api.CustomItem? = module!!.core!!.itemRegistry()!!.get(res)
+            val customItem = module
+                ?.core
+                ?.itemRegistry()
+                ?.get(res)
             when (customItem) {
                 is EnchantedAncientTome -> {
                     event.result = CustomItemHelper.newStack("vane_enchantments:ancient_tome")

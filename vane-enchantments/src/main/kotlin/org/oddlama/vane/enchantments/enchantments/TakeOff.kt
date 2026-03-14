@@ -19,11 +19,31 @@ import org.oddlama.vane.util.ItemUtil
 import org.oddlama.vane.util.PlayerUtil
 import org.bukkit.entity.Player
 
+/**
+ * TakeOff is a custom enchantment that provides a boost to players when they use
+ * an Elytra, based on the enchantment level. The boost strength increases with
+ * each level of the enchantment. This enchantment can be applied to items
+ * through crafting or found in loot chests.
+ *
+ * @constructor Creates a new TakeOff enchantment instance.
+ * @param context The context in which this enchantment is used.
+ */
 @VaneEnchantment(name = "take_off", maxLevel = 3, rarity = Rarity.UNCOMMON, treasure = true, allowCustom = true)
 class TakeOff(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?>(context) {
+    /**
+     * Configurable boost strengths for each level of the enchantment.
+     * The values are percentages that determine how much the player's
+     * speed is boosted when using an Elytra.
+     */
     @ConfigDoubleList(def = [0.2, 0.4, 0.6], min = 0.0, desc = "Boost strength for each enchantment level.")
     private val configBoostStrengths: MutableList<Double?>? = null
 
+    /**
+     * Defines the default recipes for this enchantment, allowing players
+     * to craft the enchanted items.
+     *
+     * @return A RecipeList containing the default recipes for this enchantment.
+     */
     override fun defaultRecipes(): RecipeList {
         return RecipeList.of(
             ShapedRecipeDefinition("generic")
@@ -36,6 +56,12 @@ class TakeOff(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?
         )
     }
 
+    /**
+     * Defines the default loot tables for this enchantment, determining
+     * where players can find the enchanted items as loot.
+     *
+     * @return A LootTableList containing the default loot tables for this enchantment.
+     */
     override fun defaultLootTables(): LootTableList {
         return LootTableList.of(
             LootDefinition("generic")
@@ -52,31 +78,40 @@ class TakeOff(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?
         )
     }
 
+    /**
+     * Retrieves the boost strength for a given enchantment level.
+     *
+     * @param level The enchantment level.
+     * @return The boost strength corresponding to the given level.
+     */
     private fun getBoostStrength(level: Int): Double {
-        if (level > 0 && level <= configBoostStrengths!!.size) {
-            return configBoostStrengths[level - 1]!!
-        }
-        return configBoostStrengths!![0]!!
+        val strengths = requireNotNull(configBoostStrengths)
+        val index = (level - 1).coerceAtLeast(0)
+        return strengths.getOrNull(index) ?: strengths.firstOrNull() ?: 0.0
     }
 
+    /**
+     * Event handler that is called when a player toggles glide.
+     * Applies the Elytra boost to the player if they have the enchantment.
+     *
+     * @param event The EntityToggleGlideEvent that contains information about the toggle glide action.
+     */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     fun onPlayerToggleGlide(event: EntityToggleGlideEvent) {
-        if (event.getEntity() !is Player || !event.isGliding) {
+        val player = event.entity as? Player ?: return
+        if (!event.isGliding) {
             return
         }
 
         // Don't apply for sneaking players
-        val player = event.getEntity() as Player
         if (player.isSneaking) {
             return
         }
 
         // Check enchantment level
-        val chest = player.equipment.chestplate
-        val level = chest.getEnchantmentLevel(this.bukkit()!!)
-        if (level == 0) {
-            return
-        }
+        val enchantedChest = player.chestplateEnchantment(bukkit()) ?: return
+        val chest = enchantedChest.item
+        val level = enchantedChest.level
 
         // Apply boost
         PlayerUtil.applyElytraBoost(player, getBoostStrength(level))

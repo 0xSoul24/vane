@@ -18,8 +18,18 @@ import org.oddlama.vane.core.enchantments.CustomEnchantment
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.enchantments.Enchantments
 
+/**
+ * The Angel class represents an enchantment that allows players to have enhanced flying abilities.
+ *
+ * @constructor Creates an instance of the Angel enchantment.
+ * @param context The context in which this enchantment is used.
+ */
 @VaneEnchantment(name = "angel", maxLevel = 5, rarity = Rarity.VERY_RARE, treasure = true, allowCustom = true)
 class Angel(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?>(context) {
+    /**
+     * The acceleration percentage configures how much the player's flying speed is increased
+     * each tick towards the target speed.
+     */
     @ConfigDouble(
         def = 0.1,
         min = 0.0,
@@ -28,6 +38,9 @@ class Angel(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?>(
     )
     private val configAccelerationPercentage = 0.0
 
+    /**
+     * The flying speed for each enchantment level.
+     */
     @ConfigDoubleList(
         def = [0.7, 1.1, 1.4, 1.7, 2.0],
         min = 0.0,
@@ -35,6 +48,11 @@ class Angel(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?>(
     )
     private val configSpeed: MutableList<Double?>? = null
 
+    /**
+     * Defines the default recipes for the Angel enchantment.
+     *
+     * @return A RecipeList containing the default recipes.
+     */
     override fun defaultRecipes(): RecipeList {
         return RecipeList.of(
             ShapedRecipeDefinition("generic")
@@ -48,6 +66,11 @@ class Angel(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?>(
         )
     }
 
+    /**
+     * Defines the default loot tables for the Angel enchantment.
+     *
+     * @return A LootTableList containing the default loot tables.
+     */
     override fun defaultLootTables(): LootTableList {
         return LootTableList.of(
             LootDefinition("generic")
@@ -61,31 +84,37 @@ class Angel(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?>(
         )
     }
 
-    private fun getSpeed(level: Int): Double {
-        if (level > 0 && level <= configSpeed!!.size) {
-            return configSpeed[level - 1]!!
-        }
-        return configSpeed!![0]!!
+    /**
+     * Retrieves the flying speed for a given enchantment level.
+     *
+     * @param level The enchantment level.
+     * @return The flying speed in blocks per second.
+     */
+    private fun speedFor(level: Int): Double {
+        val speeds = requireNotNull(configSpeed)
+        val index = (level - 1).coerceAtLeast(0)
+        return speeds.getOrNull(index) ?: speeds.firstOrNull() ?: 0.0
     }
 
+    /**
+     * Event handler for player movement. Adjusts the player's velocity and spawns particles
+     * to create the effect of enhanced flying.
+     *
+     * @param event The PlayerMoveEvent that contains information about the player's movement.
+     */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onPlayerMove(event: PlayerMoveEvent) {
         // Check sneaking and flying
-        val player = event.getPlayer()
+        val player = event.player
         if (!player.isSneaking || !player.isGliding) {
             return
         }
 
         // Check enchantment level
-        val chest = player.equipment.chestplate ?: // Can happen due to other plugins
-        return
-        val level = chest.getEnchantmentLevel(this.bukkit()!!)
-        if (level == 0) {
-            return
-        }
+        val level = player.chestplateEnchantment(bukkit())?.level ?: return
 
         val loc = player.location
-        val dir = loc.getDirection()
+        val dir = loc.direction
         if (dir.length() == 0.0) {
             return
         }
@@ -93,13 +122,13 @@ class Angel(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?>(
         // Scale the delta dependent on the angle. Higher angle -> less effect
         val vel = player.velocity
         val delta = configAccelerationPercentage * (1.0 - dir.angle(vel) / Math.PI)
-        val factor = getSpeed(level)
+        val factor = speedFor(level)
 
         // Exponential moving average between velocity and target velocity
         val newVel = vel.multiply(1.0 - delta).add(dir.normalize().multiply(delta * factor))
         player.velocity = newVel
 
         // Spawn particles
-        loc.getWorld().spawnParticle(Particle.FIREWORK, loc, 0, -newVel.getX(), -newVel.getY(), -newVel.getZ(), 0.4)
+        loc.world.spawnParticle(Particle.FIREWORK, loc, 0, -newVel.x, -newVel.y, -newVel.z, 0.4)
     }
 }

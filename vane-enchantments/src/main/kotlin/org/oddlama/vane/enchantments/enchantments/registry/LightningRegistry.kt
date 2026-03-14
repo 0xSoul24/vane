@@ -6,9 +6,15 @@ import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys
 import org.bukkit.enchantments.Enchantment
 import org.oddlama.vane.enchantments.CustomEnchantmentRegistry
 
+/**
+ * Registry for the Lightning enchantment, extending the CustomEnchantmentRegistry.
+ *
+ * @constructor Creates a new LightningRegistry instance.
+ * @param composeEvent The registry compose event to register the enchantment.
+ */
 class LightningRegistry(composeEvent: RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder>) :
     CustomEnchantmentRegistry("lightning", ItemTypeTagKeys.SWORDS, 1) {
     init {
-        this.register(composeEvent)
+        register(composeEvent)
     }
 }

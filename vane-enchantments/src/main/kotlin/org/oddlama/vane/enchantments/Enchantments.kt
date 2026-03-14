@@ -2,11 +2,27 @@ package org.oddlama.vane.enchantments
 
 import org.oddlama.vane.annotation.VaneModule
 import org.oddlama.vane.core.module.Module
-import org.oddlama.vane.enchantments.enchantments.*
+import org.oddlama.vane.enchantments.enchantments.Angel
+import org.oddlama.vane.enchantments.enchantments.GrapplingHook
+import org.oddlama.vane.enchantments.enchantments.HellBent
+import org.oddlama.vane.enchantments.enchantments.Leafchopper
+import org.oddlama.vane.enchantments.enchantments.Lightning
+import org.oddlama.vane.enchantments.enchantments.Rake
+import org.oddlama.vane.enchantments.enchantments.Seeding
+import org.oddlama.vane.enchantments.enchantments.Soulbound
+import org.oddlama.vane.enchantments.enchantments.TakeOff
+import org.oddlama.vane.enchantments.enchantments.Unbreakable
+import org.oddlama.vane.enchantments.enchantments.Wings
 import org.oddlama.vane.enchantments.items.Tomes
 
+/**
+ * The main class for the Enchantments module.
+ */
 @VaneModule(name = "enchantments", bstats = 8640, configVersion = 1, langVersion = 4, storageVersion = 1)
 class Enchantments : Module<Enchantments?>() {
+    /**
+     * Initializes the Enchantments module, registering all enchantments and related items.
+     */
     init {
         Tomes(this)
 

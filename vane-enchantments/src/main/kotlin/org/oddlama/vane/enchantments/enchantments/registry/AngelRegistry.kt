@@ -9,19 +9,24 @@ import net.kyori.adventure.key.Key
 import org.bukkit.enchantments.Enchantment
 import org.oddlama.vane.enchantments.CustomEnchantmentRegistry
 
+/**
+ * Registry for the Angel enchantment, which is exclusive with the Wings enchantment.
+ *
+ * @constructor Creates an AngelRegistry instance.
+ * @param composeEvent The registry compose event to register the enchantment.
+ */
 class AngelRegistry(composeEvent: RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder>) :
-    CustomEnchantmentRegistry("angel", mutableListOf(ItemTypeKeys.ELYTRA), 5) {
+    CustomEnchantmentRegistry("angel", listOf(ItemTypeKeys.ELYTRA), 5) {
     init {
-        this.exclusiveWith(
-            mutableListOf(
+        exclusiveWith(
+            listOf(
                 TypedKey.create(
-                    RegistryKey.ENCHANTMENT, Key.key(
+                    RegistryKey.ENCHANTMENT,
+                    Key.key(
                         NAMESPACE, "wings"
                     )
                 )
             )
-        ).register(
-            composeEvent
-        )
+        ).register(composeEvent)
     }
 }

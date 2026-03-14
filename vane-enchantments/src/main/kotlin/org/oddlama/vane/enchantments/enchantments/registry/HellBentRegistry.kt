@@ -6,9 +6,15 @@ import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys
 import org.bukkit.enchantments.Enchantment
 import org.oddlama.vane.enchantments.CustomEnchantmentRegistry
 
+/**
+ * Registry for the Hell Bent enchantment, which is applicable to head armor.
+ *
+ * @constructor Creates a new HellBentRegistry instance.
+ * @param composeEvent The registry compose event to register the enchantment.
+ */
 class HellBentRegistry(composeEvent: RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder>) :
     CustomEnchantmentRegistry("hell_bent", ItemTypeTagKeys.ENCHANTABLE_HEAD_ARMOR, 1) {
     init {
-        this.register(composeEvent)
+        register(composeEvent)
     }
 }

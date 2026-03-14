@@ -16,8 +16,17 @@ import org.oddlama.vane.core.enchantments.CustomEnchantment
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.enchantments.Enchantments
 
+/**
+ * Unbreakable is a custom enchantment that makes items unbreakable and allows them to
+ * bypass normal durability loss. It can be applied to items through crafting or found in
+ * loot chests.
+ */
 @VaneEnchantment(name = "unbreakable", rarity = Rarity.RARE, treasure = true, allowCustom = true)
 class Unbreakable(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?>(context) {
+    /**
+     * Defines the default recipes for the Unbreakable enchantment, allowing players to
+     * craft enchanted books of the gods using various rare ingredients.
+     */
     override fun defaultRecipes(): RecipeList {
         return RecipeList.of(
             ShapedRecipeDefinition("generic")
@@ -32,6 +41,10 @@ class Unbreakable(context: Context<Enchantments?>) : CustomEnchantment<Enchantme
         )
     }
 
+    /**
+     * Defines the default loot tables for the Unbreakable enchantment, allowing players to
+     * find enchanted books of the gods in various loot chests around the world.
+     */
     override fun defaultLootTables(): LootTableList {
         return LootTableList.of(
             LootDefinition("generic")
@@ -43,11 +56,16 @@ class Unbreakable(context: Context<Enchantments?>) : CustomEnchantment<Enchantme
         )
     }
 
+    /**
+     * Event handler that is called when a player item damage event occurs. If the item has
+     * the Unbreakable enchantment, the event will be cancelled and the item will not take
+     * durability damage.
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
     fun onPlayerItemDamage(event: PlayerItemDamageEvent) {
         // Check enchantment
         val item = event.item
-        if (item.getEnchantmentLevel(this.bukkit()!!) == 0) {
+        if (item.getEnchantmentLevel(requireNotNull(bukkit())) == 0) {
             return
         }
 

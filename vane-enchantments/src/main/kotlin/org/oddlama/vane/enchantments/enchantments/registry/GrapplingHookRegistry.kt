@@ -6,9 +6,17 @@ import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys
 import org.bukkit.enchantments.Enchantment
 import org.oddlama.vane.enchantments.CustomEnchantmentRegistry
 
+/**
+ * Registers the grappling hook enchantment in the Paper enchantment registry.
+ *
+ * @param composeEvent compose callback used to register custom enchantment entries.
+ */
 class GrapplingHookRegistry(composeEvent: RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder>) :
     CustomEnchantmentRegistry("grappling_hook", ItemTypeTagKeys.ENCHANTABLE_FISHING, 3) {
+    /**
+     * Initializes and performs the registration for this enchantment.
+     */
     init {
-        this.register(composeEvent)
+        register(composeEvent)
     }
 }

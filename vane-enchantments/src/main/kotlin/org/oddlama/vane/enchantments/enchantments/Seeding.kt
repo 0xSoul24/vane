@@ -17,8 +17,20 @@ import org.oddlama.vane.util.ItemUtil
 import org.oddlama.vane.util.MaterialUtil
 import org.oddlama.vane.util.PlayerUtil
 
+/**
+ * Right-click a seed with a hoe to sow nearby blocks with the same plant.
+ * Repeated right-clicks on the same field will expand the sown area outward in a circle.
+ *
+ * @constructor Creates a new Seeding enchantment instance.
+ * @param context The context for the enchantment.
+ */
 @VaneEnchantment(name = "seeding", maxLevel = 4, rarity = Rarity.COMMON, treasure = true)
 class Seeding(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?>(context) {
+    /**
+     * Defines the default recipes for the Seeding enchantment.
+     *
+     * @return A list of default recipes for the enchantment.
+     */
     override fun defaultRecipes(): RecipeList {
         return RecipeList.of(
             ShapedRecipeDefinition("generic")
@@ -35,35 +47,43 @@ class Seeding(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?
         )
     }
 
+    /**
+     * Event handler for player right-clicking on a plant.
+     *
+     * @param event The PlayerInteractEvent triggered when a player interacts with a block.
+     */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     fun onPlayerRightClickPlant(event: PlayerInteractEvent) {
         if (!event.hasBlock() || event.action != Action.RIGHT_CLICK_BLOCK) {
             return
         }
 
+        val clickedBlock = event.clickedBlock ?: return
+        val hand = event.hand ?: return
+
         // Only seed when right-clicking a plant
-        val plantType = event.clickedBlock!!.type
+        val plantType = clickedBlock.type
         if (!MaterialUtil.isSeededPlant(plantType)) {
             return
         }
 
         // Get enchantment level
-        val player = event.getPlayer()
-        val item = player.equipment.getItem(event.hand!!)
-        val level = item.getEnchantmentLevel(this.bukkit()!!)
+        val player = event.player
+        val item = player.equipment.getItem(hand)
+        val level = item.getEnchantmentLevel(requireNotNull(bukkit()))
         if (level == 0) {
             return
         }
 
         // Get seedable block
-        val seedType = MaterialUtil.seedFor(plantType)
-        val farmlandType = MaterialUtil.farmlandFor(seedType!!)
-        val seedable = BlockUtil.nextSeedableBlock(event.clickedBlock!!, farmlandType, level) ?: return
+        val seedType = MaterialUtil.seedFor(plantType) ?: return
+        val farmlandType = MaterialUtil.farmlandFor(seedType)
+        val seedable = BlockUtil.nextSeedableBlock(clickedBlock, farmlandType, level) ?: return
 
         // Seed block
         if (PlayerUtil.seedBlock(player, item, seedable, plantType, seedType)) {
             ItemUtil.damageItem(player, item, 1)
-            PlayerUtil.swingArm(player, event.hand!!)
+            PlayerUtil.swingArm(player, hand)
         }
     }
 }

@@ -6,9 +6,15 @@ import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys
 import org.bukkit.enchantments.Enchantment
 import org.oddlama.vane.enchantments.CustomEnchantmentRegistry
 
+/**
+ * Registry for the Leafchopper enchantment, which is applicable to axes.
+ *
+ * @constructor Creates a new LeafchopperRegistry instance.
+ * @param composeEvent The registry compose event to register the enchantment.
+ */
 class LeafchopperRegistry(composeEvent: RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder>) :
     CustomEnchantmentRegistry("leafchopper", ItemTypeTagKeys.AXES, 1) {
     init {
-        this.register(composeEvent)
+        register(composeEvent)
     }
 }

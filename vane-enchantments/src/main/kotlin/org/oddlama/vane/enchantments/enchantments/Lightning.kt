@@ -17,20 +17,40 @@ import org.oddlama.vane.core.enchantments.CustomEnchantment
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.enchantments.Enchantments
 
+/**
+ * The [Lightning] class represents a lightning enchantment that can be applied to weapons.
+ *
+ * @constructor Creates a new instance of the [Lightning] enchantment.
+ * @param context The context in which this enchantment is used.
+ */
 @VaneEnchantment(name = "lightning", maxLevel = 1, rarity = Rarity.RARE, treasure = true)
 class Lightning(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?>(context, false) {
+    /**
+     * Configurable option to toggle lightning protection.
+     */
     @ConfigBoolean(
         def = true,
         desc = "Toggle lightning enchantment to cancel lightning damage for wielders of the enchant"
     )
     private val configLightningProtection = false
 
+    /**
+     * Configurable damage modifier for the lightning enchantment.
+     */
     @ConfigInt(def = 4, min = 0, max = 20, desc = "Damage modifier for the lightning enchant")
     private val configLightningDamage = 0
 
+    /**
+     * Configurable option to enable lightning to work in rainstorms.
+     */
     @ConfigBoolean(def = true, desc = "Enable lightning to work in rainstorms as well")
     private val configLightningRain = false
 
+    /**
+     * Defines the default recipes for the lightning enchantment.
+     *
+     * @return A [RecipeList] containing the default recipes.
+     */
     override fun defaultRecipes(): RecipeList {
         return RecipeList.of(
             ShapedRecipeDefinition("generic")
@@ -43,10 +63,15 @@ class Lightning(context: Context<Enchantments?>) : CustomEnchantment<Enchantment
         )
     }
 
+    /**
+     * Event handler for when a player with the lightning enchantment is attacked by lightning.
+     *
+     * @param event The [EntityDamageEvent] containing the event details.
+     */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     fun onLightningAttack(event: EntityDamageEvent) {
         // Check if an entity is a player
-        if (event.getEntity() !is Player) return
+        val player = event.entity as? Player ?: return
 
         // Check to see if they were struck by lightning
         if (event.cause != DamageCause.LIGHTNING) return
@@ -54,9 +79,8 @@ class Lightning(context: Context<Enchantments?>) : CustomEnchantment<Enchantment
         // Check to see if lightning protection is off
         if (!configLightningProtection) return
 
-        val player = event.getEntity() as Player
         val item = player.equipment.itemInMainHand
-        val level = item.getEnchantmentLevel(this.bukkit()!!)
+        val level = item.getEnchantmentLevel(requireNotNull(bukkit()))
 
         // If they are not holding a lightning sword, they still take the damage
         if (level == 0) return
@@ -65,6 +89,11 @@ class Lightning(context: Context<Enchantments?>) : CustomEnchantment<Enchantment
         event.isCancelled = true
     }
 
+    /**
+     * Event handler for when a player attacks another entity with a weapon imbued with the lightning enchantment.
+     *
+     * @param event The [EntityDamageByEntityEvent] containing the event details.
+     */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     fun onSwordAttack(event: EntityDamageByEntityEvent) {
         // Only strike when an entity is a player
@@ -74,10 +103,10 @@ class Lightning(context: Context<Enchantments?>) : CustomEnchantment<Enchantment
         if (event.cause != DamageCause.ENTITY_ATTACK) return
 
         val damager = event.damager as Player
-        val damagee = event.getEntity()
+        val damagee = event.entity
         val world = damager.world
         val item = damager.equipment.itemInMainHand
-        val level = item.getEnchantmentLevel(this.bukkit()!!)
+        val level = item.getEnchantmentLevel(requireNotNull(bukkit()))
 
         // Get enchantment level
         if (level == 0) return

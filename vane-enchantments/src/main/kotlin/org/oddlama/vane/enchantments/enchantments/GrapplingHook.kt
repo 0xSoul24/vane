@@ -17,8 +17,17 @@ import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.enchantments.Enchantments
 import kotlin.math.exp
 
+/**
+ * GrapplingHook is an enchantment that allows players to grapple towards their fishing hook.
+ *
+ * @constructor Creates a new GrapplingHook instance.
+ * @param context The context for the enchantment, providing access to configuration and other utilities.
+ */
 @VaneEnchantment(name = "grappling_hook", maxLevel = 3, rarity = Rarity.UNCOMMON, treasure = true)
 class GrapplingHook(context: Context<Enchantments?>) : CustomEnchantment<Enchantments?>(context) {
+    /**
+     * Ideal grappling distance for maximum grapple strength. Strength increases rapidly before, and falls off slowly after.
+     */
     @ConfigDouble(
         def = 16.0,
         min = 2.0,
@@ -27,9 +36,17 @@ class GrapplingHook(context: Context<Enchantments?>) : CustomEnchantment<Enchant
     )
     private val configIdealDistance = 0.0
 
+    /**
+     * Grappling strength for each enchantment level.
+     */
     @ConfigDoubleList(def = [1.6, 2.1, 2.7], min = 0.0, desc = "Grappling strength for each enchantment level.")
     private val configStrength: MutableList<Double?>? = null
 
+    /**
+     * Defines the default recipes for the grappling hook enchantment.
+     *
+     * @return A RecipeList containing the default recipes for this enchantment.
+     */
     override fun defaultRecipes(): RecipeList {
         return RecipeList.of(
             ShapedRecipeDefinition("generic")
@@ -41,26 +58,33 @@ class GrapplingHook(context: Context<Enchantments?>) : CustomEnchantment<Enchant
         )
     }
 
-    private fun getStrength(level: Int): Double {
-        if (level > 0 && level <= configStrength!!.size) {
-            return configStrength[level - 1]!!
-        }
-        return configStrength!![0]!!
+    /**
+     * Gets the grappling strength for the given enchantment level.
+     *
+     * @param level The enchantment level.
+     * @return The grappling strength for the given level.
+     */
+    private fun strengthFor(level: Int): Double {
+        val strengths = requireNotNull(configStrength)
+        val index = (level - 1).coerceAtLeast(0)
+        return strengths.getOrNull(index) ?: strengths.firstOrNull() ?: 0.0
     }
 
+    /**
+     * Handles the PlayerFishEvent to implement the grappling hook behavior.
+     *
+     * @param event The PlayerFishEvent that contains information about the fishing action.
+     */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     fun onPlayerFishEvent(event: PlayerFishEvent) {
         // Get enchantment level
-        val player = event.getPlayer()
-        var item = player.equipment.itemInMainHand
-        var level = item.getEnchantmentLevel(this.bukkit()!!)
-        if (level == 0) {
-            item = player.equipment.itemInOffHand
-            level = item.getEnchantmentLevel(this.bukkit()!!)
-            if (level == 0) {
-                return
-            }
-        }
+        val player = event.player
+        val level = listOf(player.equipment.itemInMainHand, player.equipment.itemInOffHand)
+            .firstNotNullOfOrNull { heldItem ->
+                heldItem
+                    .getEnchantmentLevel(requireNotNull(bukkit()))
+                    .takeIf { enchantmentLevel -> enchantmentLevel > 0 }
+            } ?: return
 
         when (event.state) {
             PlayerFishEvent.State.IN_GROUND -> {}
@@ -92,7 +116,7 @@ class GrapplingHook(context: Context<Enchantments?>) : CustomEnchantment<Enchant
         // Reset fall distance
         player.fallDistance = 0.0f
 
-        val vectorMultiplier = getStrength(level) * exp(1.0 - attenuation) * attenuation
+        val vectorMultiplier = strengthFor(level) * exp(1.0 - attenuation) * attenuation
         val adjustedVector = direction.normalize().multiply(vectorMultiplier).add(CONSTANT_OFFSET)
 
         // If the hook is below the player, set the Y component to 0.0 and only add the constant offset.
@@ -105,9 +129,18 @@ class GrapplingHook(context: Context<Enchantments?>) : CustomEnchantment<Enchant
         player.velocity = player.velocity.add(adjustedVector)
     }
 
+    /**
+     * Static values used by the GrapplingHook enchantment.
+     */
     companion object {
-        // Constant offset to the added velocity, so the player will always move up a little.
+        /**
+         * Constant offset to the added velocity, so the player always moves up slightly.
+         */
         private val CONSTANT_OFFSET = Vector(0.0, 0.2, 0.0)
+
+        /**
+         * Radius used for the collision bounding box around the hook.
+         */
         private const val BOUNDING_BOX_RADIUS = 0.2
     }
 }

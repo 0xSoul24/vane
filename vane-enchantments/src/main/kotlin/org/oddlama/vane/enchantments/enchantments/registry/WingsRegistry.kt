@@ -6,10 +6,16 @@ import io.papermc.paper.registry.keys.ItemTypeKeys
 import org.bukkit.enchantments.Enchantment
 import org.oddlama.vane.enchantments.CustomEnchantmentRegistry
 
+/**
+ * Registry for the Wings enchantment, extending the CustomEnchantmentRegistry.
+ *
+ * @constructor Creates a new WingsRegistry.
+ * @param composeEvent The compose event for the registry entry.
+ */
 class WingsRegistry(composeEvent: RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder>) :
-    CustomEnchantmentRegistry("wings", mutableListOf(ItemTypeKeys.ELYTRA), 4) {
+    CustomEnchantmentRegistry("wings", listOf(ItemTypeKeys.ELYTRA), 4) {
     init {
-        this.exclusiveWith(mutableListOf(typedKey("wings")))
-        this.register(composeEvent)
+        exclusiveWith(listOf(typedKey("wings")))
+        register(composeEvent)
     }
 }

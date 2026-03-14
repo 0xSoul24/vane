@@ -7,10 +7,17 @@ import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys
 import org.bukkit.enchantments.Enchantment
 import org.oddlama.vane.enchantments.CustomEnchantmentRegistry
 
+/**
+ * Registry for the Unbreakable enchantment.
+ *
+ * @constructor Creates an instance of [UnbreakableRegistry].
+ * @param composeEvent The registry compose event.
+ */
 class UnbreakableRegistry(composeEvent: RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder>) :
     CustomEnchantmentRegistry("unbreakable", ItemTypeTagKeys.ENCHANTABLE_DURABILITY, 1) {
+
     init {
-        this.exclusiveWith(mutableListOf(EnchantmentKeys.UNBREAKING, EnchantmentKeys.MENDING))
-        this.register(composeEvent)
+        exclusiveWith(listOf(EnchantmentKeys.UNBREAKING, EnchantmentKeys.MENDING))
+        register(composeEvent)
     }
 }
