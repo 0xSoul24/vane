@@ -16,10 +16,13 @@ import org.oddlama.vane.core.item.api.InhibitBehavior
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.trifles.Trifles
 import java.util.*
-import java.util.function.Consumer
 
 @VaneItem(name = "north_compass", base = Material.COMPASS, modelData = 0x760013, version = 1)
+/**
+ * Compass variant that consistently points north through a synthetic lodestone target.
+ */
 class NorthCompass(context: Context<Trifles?>) : org.oddlama.vane.core.item.CustomItem<Trifles?>(context) {
+    /** Defines the north compass crafting recipe. */
     override fun defaultRecipes(): RecipeList {
         return RecipeList.of(
             ShapedRecipeDefinition("generic")
@@ -30,46 +33,44 @@ class NorthCompass(context: Context<Trifles?>) : org.oddlama.vane.core.item.Cust
         )
     }
 
+    /** Initializes lodestone metadata so the compass points north-like consistently. */
     override fun updateItemStack(itemStack: ItemStack): ItemStack {
-        // Use Kotlin properties instead of Java getter-style calls
-        val worlds: MutableList<World> = module!!.server.worlds
+        val module = module ?: return itemStack
+        val worlds: MutableList<World> = module.server.worlds
         if (worlds.isNotEmpty()) {
             val world = worlds[0]
-            itemStack.editMeta(CompassMeta::class.java, Consumer { meta: CompassMeta? ->
-                meta!!.lodestone = Location(world, 0.0, 0.0, -300000000.0)
+            itemStack.editMeta(CompassMeta::class.java) { meta ->
+                meta.lodestone = Location(world, 0.0, 0.0, -300000000.0)
                 meta.isLodestoneTracked = false
-            })
+            }
         }
         return itemStack
     }
 
+    /** Ensures existing north compass items keep valid lodestone metadata on interaction. */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onPlayerClickInventory(event: InventoryClickEvent) {
-        val item = event.getCurrentItem()
+        val item = event.currentItem
         if (item == null || item.type != Material.COMPASS) {
             return
         }
 
-        // Access core via the Kotlin property and use null-safe calls
-        val customItem: CustomItem? = module!!.core?.itemRegistry()?.get(item)
+        val customItem: CustomItem? = module?.core?.itemRegistry()?.get(item)
         if (customItem !is NorthCompass || !customItem.enabled()) {
             return
         }
 
-        // FIXME: not very performant to do this on every click, but
-        // there aren't many options if we want to support other plugins creating
-        // this item. (e.g. to allow giving it to players in kits, shops, ...)
-        item.editMeta(CompassMeta::class.java, Consumer { meta: CompassMeta? ->
-            // Only if it isn't already initialized. This allows making different
-            // compasses for different worlds. The world in which it is crafted
-            // is stored forever.
-            if (!meta!!.hasLodestone()) {
+        // Refresh metadata here so externally-created instances remain valid.
+        item.editMeta(CompassMeta::class.java) { meta ->
+            // Keep world binding immutable after first initialization.
+            if (!meta.hasLodestone()) {
                 meta.isLodestoneTracked = false
                 meta.lodestone = Location(event.whoClicked.world, 0.0, 0.0, -300000000.0)
             }
-        })
+        }
     }
 
+    /** Prevents conflicting vanilla interactions. */
     override fun inhibitedBehaviors(): EnumSet<InhibitBehavior> {
         return EnumSet.of(InhibitBehavior.USE_IN_VANILLA_RECIPE, InhibitBehavior.USE_OFFHAND)
     }

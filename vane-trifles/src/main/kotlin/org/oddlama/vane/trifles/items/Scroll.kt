@@ -11,17 +11,21 @@ import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.trifles.Trifles
 import java.util.*
 
+/**
+ * Base class for teleport scroll items with shared cooldown and inhibition logic.
+ */
 abstract class Scroll(context: Context<Trifles?>, private val defaultCooldown: Int) : CustomItem<Trifles?>(context) {
+    /** Configurable scroll-use cooldown in milliseconds. */
     @JvmField
     @ConfigInt(def = 0, min = 0, desc = "Cooldown in milliseconds until another scroll can be used.")
     var configCooldown: Int = 0
 
+    /** Controls whether mending can repair this scroll type. */
     @ConfigBoolean(def = false, desc = "Allow this scroll to be repaired via the mending enchantment.")
     private val configAllowMending = false
 
-    fun configCooldownDef(): Int {
-        return defaultCooldown
-    }
+    /** Provides the default cooldown fallback used by config injection. */
+    fun configCooldownDef(): Int = defaultCooldown
 
     /**
      * Get the teleport location for the given player. Return null to prevent teleporting. Cooldown
@@ -33,15 +37,14 @@ abstract class Scroll(context: Context<Trifles?>, private val defaultCooldown: I
      */
     abstract fun teleportLocation(scroll: ItemStack?, player: Player?, imminentTeleport: Boolean): Location?
 
-    override fun inhibitedBehaviors(): EnumSet<InhibitBehavior> {
-        val set = EnumSet.of(
+    /** Returns the behavior inhibition set shared by all scroll variants. */
+    override fun inhibitedBehaviors(): EnumSet<InhibitBehavior> = EnumSet.of(
             InhibitBehavior.USE_IN_VANILLA_RECIPE,
             InhibitBehavior.TEMPT,
             InhibitBehavior.USE_OFFHAND
-        )
-        if (!configAllowMending) {
-            set.add(InhibitBehavior.MEND)
+        ).apply {
+            if (!configAllowMending) {
+                add(InhibitBehavior.MEND)
+            }
         }
-        return set
-    }
 }

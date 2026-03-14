@@ -20,7 +20,11 @@ import org.oddlama.vane.trifles.commands.Setspawn
     modelData = 0x760010,
     version = 1
 )
+/**
+ * Teleports players to the configured global spawn world.
+ */
 class SpawnScroll(context: Context<Trifles?>) : Scroll(context, 6000) {
+    /** Defines the spawn scroll crafting recipe. */
     override fun defaultRecipes(): RecipeList {
         return RecipeList.of(
             ShapedRecipeDefinition("generic")
@@ -33,21 +37,15 @@ class SpawnScroll(context: Context<Trifles?>) : Scroll(context, 6000) {
         )
     }
 
+    /** Resolves the current spawn destination, preferring the tagged spawn world. */
     override fun teleportLocation(scroll: ItemStack?, player: Player?, imminentTeleport: Boolean): Location {
-        var loc: Location? = null
-        for (world in module!!.server.worlds) {
-            if (world
-                    .persistentDataContainer
-                    .getOrDefault(Setspawn.IS_SPAWN_WORLD, PersistentDataType.INTEGER, 0) ==
-                1
-            ) {
-                loc = world.spawnLocation
-            }
+        val module = requireNotNull(module)
+        val worlds = module.server.worlds
+        val spawnWorld = worlds.firstOrNull { world ->
+            world.persistentDataContainer.getOrDefault(Setspawn.IS_SPAWN_WORLD, PersistentDataType.INTEGER, 0) == 1
         }
-        // Fallback to spawn location of the first world
-        if (loc == null) {
-            loc = module!!.server.worlds[0].spawnLocation
-        }
-        return loc
+
+        // Fallback to the first loaded world if no spawn world marker exists.
+        return (spawnWorld ?: worlds.first()).spawnLocation
     }
 }

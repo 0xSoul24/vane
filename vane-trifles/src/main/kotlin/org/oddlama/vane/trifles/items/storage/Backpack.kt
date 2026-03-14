@@ -11,18 +11,20 @@ import org.oddlama.vane.trifles.Trifles
 import java.util.*
 
 @VaneItem(name = "backpack", base = Material.SHULKER_BOX, modelData = 0x760017, version = 1)
+/**
+ * Wearable-style storage item based on a shulker box.
+ */
 class Backpack(context: Context<Trifles?>) : StorageItem(context) {
-    override fun defaultRecipes(): RecipeList {
-        return RecipeList.of(
-            SmithingRecipeDefinition("from_shulker_box")
-                .base(Tag.SHULKER_BOXES)
-                .addition(Material.LEATHER_CHESTPLATE)
-                .copyNbt(true)
-                .result(key().toString())
-        )
-    }
+    /** Defines the backpack smithing recipe. */
+    override fun defaultRecipes(): RecipeList = RecipeList.of(
+        SmithingRecipeDefinition("from_shulker_box")
+            .base(Tag.SHULKER_BOXES)
+            .addition(Material.LEATHER_CHESTPLATE)
+            .copyNbt(true)
+            .result(key().toString())
+    )
 
-    override fun inhibitedBehaviors(): EnumSet<InhibitBehavior> {
-        return EnumSet.of(InhibitBehavior.USE_IN_VANILLA_RECIPE, InhibitBehavior.DISPENSE)
-    }
+    /** Disables conflicting vanilla behaviors for backpack items. */
+    override fun inhibitedBehaviors(): EnumSet<InhibitBehavior> =
+        EnumSet.of(InhibitBehavior.USE_IN_VANILLA_RECIPE, InhibitBehavior.DISPENSE)
 }

@@ -18,41 +18,50 @@ import org.oddlama.vane.trifles.event.PlayerTeleportScrollEvent
 import org.oddlama.vane.util.msToTicks
 import org.oddlama.vane.util.ItemUtil
 import org.oddlama.vane.util.PlayerUtil
+import org.oddlama.vane.util.StorageUtil
 
+/**
+ * Registers concrete scroll items and handles shared scroll interaction behavior.
+ */
 class Scrolls(context: Context<Trifles?>) : Listener<Trifles?>(
     context.group(
         "Scrolls",
         "Several scrolls that allow player teleportation, and related behavior."
     )
 ) {
+    /** Active scroll item implementations managed by this listener. */
     private val scrolls: MutableSet<Scroll> = HashSet()
+
+    /** Base materials that receive shared cooldown updates. */
     private val baseMaterials: MutableSet<Material> = HashSet()
 
+    /** Cooldown applied after taking damage to discourage combat logging. */
     @ConfigInt(
         def = 15000,
         min = 0,
         desc = "A cooldown in milliseconds that is applied when the player takes damage (prevents combat logging). Set to 0 to allow combat logging."
     )
+    /** Cooldown applied after taking damage to discourage combat logging. */
     private val configDamageCooldown = 0
 
+    /** Creates all scroll variants and records their base materials. */
     init {
-        scrolls.add(HomeScroll(getContext()!!))
-        scrolls.add(UnstableScroll(getContext()!!))
-        scrolls.add(SpawnScroll(getContext()!!))
-        scrolls.add(LodestoneScroll(getContext()!!))
-        scrolls.add(DeathScroll(getContext()!!))
+        val context = requireNotNull(getContext())
+        scrolls += HomeScroll(context)
+        scrolls += UnstableScroll(context)
+        scrolls += SpawnScroll(context)
+        scrolls += LodestoneScroll(context)
+        scrolls += DeathScroll(context)
 
-        // Accumulate base materials so the cooldown can be applied to all scrolls regardless of
-        // base material.
-        for (scroll in scrolls) {
-            baseMaterials.add(scroll.baseMaterial())
-        }
+        // Track base materials so shared cooldown applies across all scroll variants.
+        baseMaterials += scrolls.map { it.baseMaterial() }
     }
 
     @EventHandler(
         priority = EventPriority.LOW,
         ignoreCancelled = false
-    ) // ignoreCancelled = false to catch right-click-air events
+    ) // Keep disabled-cancel filtering to include right-click-air handling.
+    /** Handles right-click scroll usage and executes teleport flow when valid. */
     fun onPlayerRightClick(event: PlayerInteractEvent) {
         if (event.action != Action.RIGHT_CLICK_BLOCK && event.action != Action.RIGHT_CLICK_AIR) {
             return
@@ -62,21 +71,22 @@ class Scrolls(context: Context<Trifles?>) : Listener<Trifles?>(
             return
         }
 
-        // Assert this is a matching custom item
-        val player = event.getPlayer()
-        val item = player.equipment.getItem(event.hand!!)
-        val customItem: CustomItem? = module!!.core?.itemRegistry()?.get(item)
+        // Require a matching enabled custom scroll item.
+        val player = event.player
+        val hand = event.hand ?: return
+        val item = player.equipment.getItem(hand)
+        val customItem: CustomItem? = module?.core?.itemRegistry()?.get(item)
         if (customItem !is Scroll || !customItem.enabled()) {
             return
         }
 
-        // Never actually use the base item if it's custom!
+        // Prevent vanilla use of the underlying base item.
         event.setUseItemInHand(Event.Result.DENY)
 
         when (event.action) {
             Action.RIGHT_CLICK_AIR -> {}
-            Action.RIGHT_CLICK_BLOCK ->                 // Require non-canceled state (so it won't trigger for block-actions like chests, doors, etc.)
-                // The event system properly handles block interactions and sets useInteractedBlock accordingly
+            Action.RIGHT_CLICK_BLOCK ->
+                // Trigger only when block interaction has been denied by earlier handlers.
                 if (event.useInteractedBlock() != Event.Result.DENY) {
                     return
                 }
@@ -86,55 +96,71 @@ class Scrolls(context: Context<Trifles?>) : Listener<Trifles?>(
 
         val toLocation = customItem.teleportLocation(item, player, true) ?: return
 
-        // Check cooldown
+        // Respect per-material cooldown.
         if (player.getCooldown(customItem.baseMaterial()) > 0) {
             return
         }
 
         val currentLocation = player.location
         if (teleportFromScroll(player, currentLocation, toLocation)) {
-            // Set cooldown
+            // Apply cooldown to all scroll materials.
             cooldownAll(player, customItem.configCooldown)
 
-            // Damage item
+            // Consume durability on successful use.
             ItemUtil.damageItem(player, item, 1)
-            PlayerUtil.swingArm(player, event.hand!!)
+            PlayerUtil.swingArm(player, hand)
         }
     }
 
+    /**
+     * Performs a teleport initiated by a scroll and emits associated effects.
+     *
+     * @return `true` if teleport completed and was not cancelled by listeners.
+     */
     fun teleportFromScroll(player: Player, from: Location, to: Location): Boolean {
-        // Send scroll teleport event
+        val module = module ?: return false
+
+        // Allow external plugins to veto or react to scroll teleports.
         val teleportScrollEvent = PlayerTeleportScrollEvent(player, from, to)
-        module!!.server.pluginManager.callEvent(teleportScrollEvent)
+        module.server.pluginManager.callEvent(teleportScrollEvent)
         if (teleportScrollEvent.isCancelled) {
             return false
         }
 
-        // Teleport
+        // Execute teleport.
         player.teleport(to, PlayerTeleportEvent.TeleportCause.PLUGIN)
 
-        // Play sounds
+        // Store origin for unstable-scroll backtracking.
+        StorageUtil.storageSetLocation(
+            player.persistentDataContainer,
+            UnstableScroll.LAST_SCROLL_TELEPORT_LOCATION,
+            from.clone()
+        )
+
+        // Play source and destination teleport sounds.
         from.world.playSound(from, Sound.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.1f)
         to.world.playSound(to, Sound.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.1f)
         from.world.playSound(from, Sound.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.PLAYERS, 1.0f, 1.0f)
         to.world.playSound(to, Sound.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.PLAYERS, 1.0f, 1.0f)
 
-        // Create particles
+        // Spawn source and destination particles.
         from.world.spawnParticle(Particle.PORTAL, from.clone().add(0.0, 1.0, 0.0), 200, 1.0, 2.0, 1.0, 1.0)
         to.world.spawnParticle(Particle.END_ROD, to.clone().add(0.0, 1.0, 0.0), 100, 1.0, 2.0, 1.0, 1.0)
         return true
     }
 
+    /** Applies (or increases) cooldown across every tracked scroll base material. */
     fun cooldownAll(player: Player, cooldownMs: Int) {
         val cooldownTicks = msToTicks(cooldownMs.toLong()).toInt()
         for (mat in baseMaterials) {
-            // Don't ever decrease cooldown
+            // Never reduce an existing longer cooldown.
             if (player.getCooldown(mat) < cooldownTicks) {
                 player.setCooldown(mat, cooldownTicks)
             }
         }
     }
 
+    /** Applies combat cooldown when players take damage. */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onPlayerTakeDamage(event: EntityDamageEvent) {
         val entity = event.entity

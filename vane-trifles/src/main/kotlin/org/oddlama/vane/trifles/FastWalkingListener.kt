@@ -10,23 +10,31 @@ import org.bukkit.event.player.PlayerMoveEvent
 import org.oddlama.vane.annotation.config.ConfigBoolean
 import org.oddlama.vane.core.Listener
 
-class FastWalkingListener(var fastWalking: FastWalkingGroup) : Listener<Trifles?>(fastWalking) {
+/**
+ * Applies configured speed effects to players and optionally other moving entities.
+ */
+class FastWalkingListener(private val fastWalking: FastWalkingGroup) : Listener<Trifles?>(fastWalking) {
+    /** Whether hostile mobs are eligible for path speed effects. */
     @ConfigBoolean(def = false, desc = "Whether hostile mobs should be allowed to fast walk on paths.")
     var configHostileSpeedwalk: Boolean = false
 
+    /** Whether villagers are eligible for path speed effects. */
     @ConfigBoolean(def = true, desc = "Whether villagers should be allowed to fast walk on paths.")
     var configVillagerSpeedwalk: Boolean = false
 
+    /** Whether non-player entities should always be excluded from speedwalking. */
     @ConfigBoolean(
         def = false,
         desc = "Whether players should be the only entities allowed to fast walk on paths (will override other path walk settings)."
     )
+    /** Whether non-player entities should always be excluded from speedwalking. */
     var configPlayersOnlySpeedwalk: Boolean = false
 
+    /** Applies the fast-walk effect to players (or their ridden living entity). */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onPlayerMove(event: PlayerMoveEvent) {
-        // Players mustn't be flying
-        val player = event.getPlayer()
+        // Gliding movement should not receive walk-speed boosts.
+        val player = event.player
         if (player.isGliding) {
             return
         }
@@ -36,20 +44,22 @@ class FastWalkingListener(var fastWalking: FastWalkingGroup) : Listener<Trifles?
             effectEntity = player.vehicle as LivingEntity
         }
 
-        // Inspect a block type just a little below
+        // Sample the block slightly below the feet to identify the walked material.
         val block = effectEntity.location.clone().subtract(0.0, 0.1, 0.0).block
-        if (!fastWalking.configMaterials!!.contains(block.type)) {
+        val materials = fastWalking.configMaterials
+        if (block.type !in materials) {
             return
         }
 
-        // Apply potion effect
-        effectEntity.addPotionEffect(fastWalking.walkSpeedEffect!!)
+        // Apply cached movement effect.
+        val walkSpeedEffect = fastWalking.walkSpeedEffect ?: return
+        effectEntity.addPotionEffect(walkSpeedEffect)
     }
 
-    // This is fired for entities except players.
+    /** Applies the fast-walk effect to non-player entities when enabled by config. */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onEntityMove(event: EntityMoveEvent) {
-        val entity = event.getEntity()
+        val entity = event.entity
 
         // Cancel event if speedwalking is only enabled for players
         if (configPlayersOnlySpeedwalk) return
@@ -60,13 +70,15 @@ class FastWalkingListener(var fastWalking: FastWalkingGroup) : Listener<Trifles?
         // Cancel event if speedwalking is disabled for villagers
         if (entity.type == EntityType.VILLAGER && !configVillagerSpeedwalk) return
 
-        // Inspect a block type just a little below
+        // Sample the block slightly below the feet to identify the walked material.
         val block = event.to.clone().subtract(0.0, 0.1, 0.0).block
-        if (!fastWalking.configMaterials!!.contains(block.type)) {
+        val materials = fastWalking.configMaterials
+        if (block.type !in materials) {
             return
         }
 
-        // Apply potion effect
-        entity.addPotionEffect(fastWalking.walkSpeedEffect!!)
+        // Apply cached movement effect.
+        val walkSpeedEffect = fastWalking.walkSpeedEffect ?: return
+        entity.addPotionEffect(walkSpeedEffect)
     }
 }

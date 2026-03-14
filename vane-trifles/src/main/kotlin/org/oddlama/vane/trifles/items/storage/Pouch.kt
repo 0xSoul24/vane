@@ -10,18 +10,19 @@ import org.oddlama.vane.trifles.Trifles
 import java.util.*
 
 @VaneItem(name = "pouch", base = Material.DROPPER, modelData = 0x760016, version = 1)
+/**
+ * Compact storage item variant with dropper base material.
+ */
 class Pouch(context: Context<Trifles?>) : StorageItem(context) {
-    override fun defaultRecipes(): RecipeList {
-        return RecipeList.of(
-            ShapedRecipeDefinition("generic")
-                .shape("SLS", "L L", "LLL")
-                .setIngredient('S', Material.STRING)
-                .setIngredient('L', Material.RABBIT_HIDE)
-                .result(key().toString())
-        )
-    }
+    /** Defines the pouch crafting recipe. */
+    override fun defaultRecipes(): RecipeList = RecipeList.of(
+        ShapedRecipeDefinition("generic")
+            .shape("SLS", "L L", "LLL")
+            .setIngredient('S', Material.STRING)
+            .setIngredient('L', Material.RABBIT_HIDE)
+            .result(key().toString())
+    )
 
-    override fun inhibitedBehaviors(): EnumSet<InhibitBehavior> {
-        return EnumSet.of(InhibitBehavior.USE_IN_VANILLA_RECIPE)
-    }
+    /** Disables conflicting vanilla behaviors for pouch items. */
+    override fun inhibitedBehaviors(): EnumSet<InhibitBehavior> = EnumSet.of(InhibitBehavior.USE_IN_VANILLA_RECIPE)
 }

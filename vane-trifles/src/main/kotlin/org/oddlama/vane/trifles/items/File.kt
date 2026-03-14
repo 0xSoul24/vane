@@ -30,7 +30,11 @@ import org.oddlama.vane.util.PlayerUtil
 import java.util.*
 
 @VaneItem(name = "file", base = Material.WARPED_FUNGUS_ON_A_STICK, durability = 4000, modelData = 0x760003, version = 1)
+/**
+ * Utility tool that cycles block-state variants for stairs, walls, and multi-facing blocks.
+ */
 class File(context: Context<Trifles?>) : CustomItem<Trifles?>(context) {
+    /** Defines the file crafting recipe. */
     override fun defaultRecipes(): RecipeList {
         return RecipeList.of(
             ShapedRecipeDefinition("generic")
@@ -41,6 +45,7 @@ class File(context: Context<Trifles?>) : CustomItem<Trifles?>(context) {
         )
     }
 
+    /** Prevents conflicting vanilla interactions for the file item. */
     override fun inhibitedBehaviors(): EnumSet<InhibitBehavior> {
         return EnumSet.of(
             InhibitBehavior.USE_IN_VANILLA_RECIPE,
@@ -49,12 +54,15 @@ class File(context: Context<Trifles?>) : CustomItem<Trifles?>(context) {
         )
     }
 
+    /** Returns the next allowed facing from a sorted list of valid facings. */
     private fun nextFacing(allowedFaces: MutableSet<BlockFace?>, face: BlockFace?): BlockFace? {
         if (allowedFaces.isEmpty()) {
             return face
         }
-        val list = ArrayList<BlockFace?>(allowedFaces)
-        Collections.sort<BlockFace?>(list, Comparator { a: BlockFace?, b: BlockFace? -> a!!.ordinal - b!!.ordinal })
+        val list = allowedFaces.filterNotNull().sortedBy { it.ordinal }
+        if (list.isEmpty()) {
+            return face
+        }
         val index = list.indexOf(face)
         if (index == -1) {
             return face
@@ -62,28 +70,26 @@ class File(context: Context<Trifles?>) : CustomItem<Trifles?>(context) {
         return list[(index + 1) % list.size]
     }
 
+    /** Toggles stair half between top and bottom. */
     private fun changeStairHalf(stairs: Stairs): Sound? {
         // Change half
         stairs.half = if (stairs.half == Bisected.Half.BOTTOM) Bisected.Half.TOP else Bisected.Half.BOTTOM
         return Sound.UI_STONECUTTER_TAKE_RESULT
     }
 
-    private fun nextFaceCcw(face: BlockFace): BlockFace? {
+    /** Rotates a cardinal face counter-clockwise. */
+    private fun nextFaceCcw(face: BlockFace): BlockFace {
         return when (face) {
             BlockFace.NORTH -> BlockFace.WEST
             BlockFace.EAST -> BlockFace.NORTH
             BlockFace.SOUTH -> BlockFace.EAST
             BlockFace.WEST -> BlockFace.SOUTH
-            else -> null
+            else -> face
         }
     }
 
-    private fun changeStairShape(
-        player: Player,
-        block: Block?,
-        stairs: Stairs,
-        clickedFace: BlockFace?
-    ): Sound? {
+    /** Cycles stair shape based on clicked octant and current stair orientation. */
+    private fun changeStairShape(player: Player, block: Block?, stairs: Stairs): Sound? {
         // Check which eighth of the block was clicked
         val oct = BlockUtil.raytraceOct(player, block) ?: return null
 
@@ -101,7 +107,7 @@ class File(context: Context<Trifles?>) : CustomItem<Trifles?>(context) {
         val originalFacing = stairs.facing
         corner = corner.rotateToNorthReference(originalFacing)
 
-        // Determine the resulting shape, face and wether the oct got added or removed
+        // Determine resulting shape/facing and whether geometry is added or removed.
         var shape: Stairs.Shape? = null
         var face: BlockFace? = null
         var added = false
@@ -207,17 +213,18 @@ class File(context: Context<Trifles?>) : CustomItem<Trifles?>(context) {
         // Undo reference rotation
         when (face) {
             BlockFace.NORTH -> face = originalFacing
-            BlockFace.EAST -> face = nextFaceCcw(originalFacing)!!.getOppositeFace()
+            BlockFace.EAST -> face = nextFaceCcw(originalFacing).oppositeFace
             BlockFace.WEST -> face = nextFaceCcw(originalFacing)
             else -> {}
         }
 
         stairs.shape = shape
-        stairs.facing = face!!
+        stairs.facing = face ?: return null
 
         return if (added) Sound.UI_STONECUTTER_TAKE_RESULT else Sound.BLOCK_GRINDSTONE_USE
     }
 
+    /** Toggles side connections on multiple-facing blocks and returns a feedback sound. */
     private fun changeMultipleFacing(
         player: Player,
         block: Block?,
@@ -225,22 +232,16 @@ class File(context: Context<Trifles?>) : CustomItem<Trifles?>(context) {
         clickedFace: BlockFace
     ): Sound? {
         var clickedFace = clickedFace
-        val minFaces: Int
         if (mf is Fence || mf is GlassPane) {
-            // Allow fences and glass panes to have 0 faces
-            minFaces = 0
-
             // Trace which side is the dominant side
             val result = BlockUtil.raytraceDominantFace(player, block) ?: return null
 
             // Only replace facing choice if we did hit a side,
             // or if the dominance was big enough.
             if (result.dominance > .2 || (clickedFace != BlockFace.UP && clickedFace != BlockFace.DOWN)) {
-                clickedFace = result.face!!
+                clickedFace = result.face ?: return null
             }
-        } else if (mf is Tripwire) {
-            minFaces = 0
-        } else {
+        } else if (mf !is Tripwire) {
             return null
         }
 
@@ -262,6 +263,7 @@ class File(context: Context<Trifles?>) : CustomItem<Trifles?>(context) {
         return if (hasFace) Sound.BLOCK_GRINDSTONE_USE else Sound.UI_STONECUTTER_TAKE_RESULT
     }
 
+    /** Adjusts wall post/side heights based on click position and dominant hit face. */
     private fun changeWall(player: Player, block: Block?, wall: Wall, clickedFace: BlockFace?): Sound? {
         // Trace which side is the dominant side
         val result = BlockUtil.raytraceDominantFace(player, block) ?: return null
@@ -280,46 +282,38 @@ class File(context: Context<Trifles?>) : CustomItem<Trifles?>(context) {
                 wall.isUp = !wasUp
             } else if (BlockUtil.XZ_FACES.contains(adjustedClickedFace)) {
                 // click top on side -> toggle height
-                val height = wall.getHeight(adjustedClickedFace!!)
+                val sideFace = adjustedClickedFace ?: return null
+                val height = wall.getHeight(sideFace)
                 when (height) {
                     Wall.Height.NONE -> return null
-                    Wall.Height.LOW -> wall.setHeight(adjustedClickedFace, Wall.Height.TALL)
-                    Wall.Height.TALL -> wall.setHeight(adjustedClickedFace, Wall.Height.LOW)
+                    Wall.Height.LOW -> wall.setHeight(sideFace, Wall.Height.TALL)
+                    Wall.Height.TALL -> wall.setHeight(sideFace, Wall.Height.LOW)
                 }
             }
 
             return if (wasUp) Sound.BLOCK_GRINDSTONE_USE else Sound.UI_STONECUTTER_TAKE_RESULT
         } else {
             // click side -> toggle side
-            val hasFace = wall.getHeight(adjustedClickedFace!!) != Wall.Height.NONE
+            val sideFace = adjustedClickedFace ?: return null
+            val hasFace = wall.getHeight(sideFace) != Wall.Height.NONE
 
             // Set height and choose sound
             if (hasFace) {
-                wall.setHeight(adjustedClickedFace, Wall.Height.NONE)
+                wall.setHeight(sideFace, Wall.Height.NONE)
                 return Sound.BLOCK_GRINDSTONE_USE
             } else {
                 // Use opposite face's height, or low if there is nothing.
-                var targetHeight = wall.getHeight(adjustedClickedFace.getOppositeFace())
+                var targetHeight = wall.getHeight(sideFace.oppositeFace)
                 if (targetHeight == Wall.Height.NONE) {
                     targetHeight = Wall.Height.LOW
                 }
-                wall.setHeight(adjustedClickedFace, targetHeight)
+                wall.setHeight(sideFace, targetHeight)
                 return Sound.UI_STONECUTTER_TAKE_RESULT
             }
         }
     }
 
-    private fun changeDirectionalFacing(
-        player: Player?,
-        block: Block?,
-        directional: Directional,
-        clickedFace: BlockFace?
-    ): Sound? {
-        // Toggle facing
-        directional.facing = nextFacing(directional.faces, directional.facing)!!
-        return Sound.UI_STONECUTTER_TAKE_RESULT
-    }
-
+    /** Handles right-click block editing with the file tool. */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     fun onPlayerRightClick(event: PlayerInteractEvent) {
         if (!event.hasBlock() || event.action != Action.RIGHT_CLICK_BLOCK) {
@@ -330,17 +324,19 @@ class File(context: Context<Trifles?>) : CustomItem<Trifles?>(context) {
             return
         }
 
-        // Get item variant
-        val player = event.getPlayer()
-        val item = player.equipment.getItem(event.hand!!)
+        // Require this custom file item.
+        val player = event.player
+        val hand = event.hand ?: return
+        val item = player.equipment.getItem(hand)
         if (!isInstance(item)) {
             return
         }
 
-        // Create a block break event for block to transmute and check if it gets canceled
-        val block = event.clickedBlock
-        val breakEvent = BlockBreakEvent(block!!, player)
-        module!!.server.pluginManager.callEvent(breakEvent)
+        // Respect protections by simulating a block-break permission check.
+        val block = event.clickedBlock ?: return
+        val breakEvent = BlockBreakEvent(block, player)
+        val server = module?.server ?: return
+        server.pluginManager.callEvent(breakEvent)
         if (breakEvent.isCancelled) {
             return
         }
@@ -366,7 +362,7 @@ class File(context: Context<Trifles?>) : CustomItem<Trifles?>(context) {
                 }
 
                 is Stairs -> {
-                    changeStairShape(player, block, data, clickedFace)
+                    changeStairShape(player, block, data)
                 }
 
                 else -> {
@@ -375,18 +371,17 @@ class File(context: Context<Trifles?>) : CustomItem<Trifles?>(context) {
             }
         }
 
-        // Return if nothing was done
+        // Abort if no state transition was applied.
         if (sound == null) {
             return
         }
 
-        // Update block data, and don't trigger physics! (We do not want to affect surrounding
-        // blocks!)
+        // Apply without physics updates to avoid cascading neighbor state changes.
         block.setBlockData(data, false)
         block.world.playSound(block.location, sound, SoundCategory.BLOCKS, 1.0f, 1.0f)
 
-        // Damage item and swing arm
+        // Consume durability and play swing animation.
         ItemUtil.damageItem(player, item, 1)
-        PlayerUtil.swingArm(player, event.hand!!)
+        PlayerUtil.swingArm(player, hand)
     }
 }

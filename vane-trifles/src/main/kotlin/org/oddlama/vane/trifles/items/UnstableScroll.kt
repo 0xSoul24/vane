@@ -24,10 +24,15 @@ import org.oddlama.vane.util.StorageUtil
     modelData = 0x760001,
     version = 1
 )
+/**
+ * Teleports players back to their previous scroll-teleport origin.
+ */
 class UnstableScroll(context: Context<Trifles?>) : Scroll(context, 6000) {
+    /** Action-bar message shown when no previous scroll teleport is recorded. */
     @LangMessage
     var langTeleportNoPreviousTeleport: TranslatedMessage? = null
 
+    /** Defines the unstable scroll crafting recipe. */
     override fun defaultRecipes(): RecipeList {
         return RecipeList.of(
             ShapedRecipeDefinition("generic")
@@ -40,6 +45,7 @@ class UnstableScroll(context: Context<Trifles?>) : Scroll(context, 6000) {
         )
     }
 
+    /** Returns the previously stored scroll teleport origin. */
     override fun teleportLocation(scroll: ItemStack?, player: Player?, imminentTeleport: Boolean): Location? {
         val p = player ?: return null
         val loc = StorageUtil.storageGetLocation(
@@ -48,21 +54,23 @@ class UnstableScroll(context: Context<Trifles?>) : Scroll(context, 6000) {
             null
         )
         if (imminentTeleport && loc == null) {
-            langTeleportNoPreviousTeleport!!.sendActionBar(p)
+            langTeleportNoPreviousTeleport?.sendActionBar(p)
         }
         return loc
     }
 
+    /** Stores the origin of each successful scroll teleport for later unstable-scroll use. */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onPlayerTeleportScroll(event: PlayerTeleportScrollEvent) {
         StorageUtil.storageSetLocation(
-            event.getPlayer().persistentDataContainer,
+            event.player.persistentDataContainer,
             LAST_SCROLL_TELEPORT_LOCATION,
             event.from
         )
     }
 
     companion object {
+        /** Persistent key storing the last scroll teleport origin location. */
         val LAST_SCROLL_TELEPORT_LOCATION: NamespacedKey = StorageUtil.namespacedKey(
             "vane",
             "last_scroll_teleport_location"

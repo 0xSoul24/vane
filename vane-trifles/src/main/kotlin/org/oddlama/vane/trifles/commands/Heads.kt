@@ -13,25 +13,28 @@ import org.bukkit.permissions.PermissionDefault
 import org.oddlama.vane.annotation.command.Name
 import org.oddlama.vane.annotation.config.ConfigInt
 import org.oddlama.vane.annotation.config.ConfigMaterial
-import org.oddlama.vane.core.functional.Consumer1
-import org.oddlama.vane.core.functional.Function4
 import org.oddlama.vane.core.material.HeadMaterial
 import org.oddlama.vane.core.menu.Menu
 import org.oddlama.vane.core.menu.MenuFactory
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.trifles.Trifles
 import org.oddlama.vane.util.PlayerUtil
-import java.util.function.Predicate
 
 @Name("heads")
+/**
+ * Command that opens the player head library and handles optional currency payment.
+ */
 class Heads(context: Context<Trifles?>) :
     org.oddlama.vane.core.command.Command<Trifles?>(context, PermissionDefault.TRUE) {
+    /** Material used as payment when buying heads from the selector menu. */
     @ConfigMaterial(def = Material.BONE, desc = "Currency material used to buy heads.")
     var configCurrency: Material? = null
 
+    /** Price per head in the configured currency item. */
     @ConfigInt(def = 1, min = 0, desc = "Price (in currency) per head. Set to 0 for free heads.")
     var configPricePerHead: Int = 0
 
+    /** Builds the `/heads` command tree. */
     override fun getCommandBase(): LiteralArgumentBuilder<CommandSourceStack> {
         return super.getCommandBase()
             .requires { ctx: CommandSourceStack -> ctx.sender is Player }
@@ -42,13 +45,19 @@ class Heads(context: Context<Trifles?>) :
             }
     }
 
+    /** Opens the head selector menu for the given player. */
     private fun openHeadLibrary(player: Player) {
+        val context = requireNotNull(getContext())
         MenuFactory.headSelector(
-            getContext()!!,
+            context,
             player,
-            { player2: Player?, m: Menu?, t: HeadMaterial?, event: InventoryClickEvent? ->
-                val amount: Int = when (event!!.click) {
-                    ClickType.NUMBER_KEY -> event.hotbarButton + 1
+            { selectedPlayer: Player?, _: Menu?, head: HeadMaterial?, event: InventoryClickEvent? ->
+                val clickedEvent = event ?: return@headSelector Menu.ClickResult.INVALID_CLICK
+                val targetPlayer = selectedPlayer ?: return@headSelector Menu.ClickResult.ERROR
+                val selectedHead = head ?: return@headSelector Menu.ClickResult.ERROR
+
+                val amount = when (clickedEvent.click) {
+                    ClickType.NUMBER_KEY -> clickedEvent.hotbarButton + 1
                     ClickType.LEFT -> 1
                     ClickType.RIGHT -> 32
                     ClickType.MIDDLE, ClickType.SHIFT_LEFT -> 64
@@ -56,17 +65,17 @@ class Heads(context: Context<Trifles?>) :
                     else -> return@headSelector Menu.ClickResult.INVALID_CLICK
                 }
 
-                // Take currency items
+                // Charge configured currency before granting heads.
                 if (configPricePerHead > 0 &&
-                    !PlayerUtil.takeItems(player2!!, ItemStack(configCurrency!!, configPricePerHead * amount))
+                    !PlayerUtil.takeItems(targetPlayer, ItemStack(requireNotNull(configCurrency), configPricePerHead * amount))
                 ) {
                     return@headSelector Menu.ClickResult.ERROR
                 }
 
-                PlayerUtil.giveItems(player2!!, t!!.item(), amount)
+                PlayerUtil.giveItems(targetPlayer, selectedHead.item(), amount)
                 Menu.ClickResult.SUCCESS
             },
-            { player2: Player? -> }
+            { _: Player? -> }
         ).open(player)
     }
 }

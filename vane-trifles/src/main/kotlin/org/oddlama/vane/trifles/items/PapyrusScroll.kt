@@ -11,20 +11,21 @@ import org.oddlama.vane.trifles.Trifles
 import java.util.*
 
 @VaneItem(name = "papyrus_scroll", base = Material.PAPER, modelData = 0x76000f, version = 1)
+/**
+ * Crafting base item used by teleport scroll recipes.
+ */
 class PapyrusScroll(context: Context<Trifles?>) : CustomItem<Trifles?>(context) {
-    override fun defaultRecipes(): RecipeList {
-        return RecipeList.of(
-            ShapedRecipeDefinition("generic")
-                .shape("RPP", "PEP", "PPG")
-                .setIngredient('P', Material.PAPER)
-                .setIngredient('R', Material.RABBIT_HIDE)
-                .setIngredient('E', Material.ECHO_SHARD)
-                .setIngredient('G', Material.GOLD_NUGGET)
-                .result(key().toString())
-        )
-    }
+    /** Defines the papyrus scroll crafting recipe. */
+    override fun defaultRecipes(): RecipeList = RecipeList.of(
+        ShapedRecipeDefinition("generic")
+            .shape("RPP", "PEP", "PPG")
+            .setIngredient('P', Material.PAPER)
+            .setIngredient('R', Material.RABBIT_HIDE)
+            .setIngredient('E', Material.ECHO_SHARD)
+            .setIngredient('G', Material.GOLD_NUGGET)
+            .result(key().toString())
+    )
 
-    override fun inhibitedBehaviors(): EnumSet<InhibitBehavior> {
-        return EnumSet.of(InhibitBehavior.USE_IN_VANILLA_RECIPE)
-    }
+    /** Prevents papyrus scroll usage in unintended vanilla behaviors. */
+    override fun inhibitedBehaviors(): EnumSet<InhibitBehavior> = EnumSet.of(InhibitBehavior.USE_IN_VANILLA_RECIPE)
 }

@@ -22,55 +22,90 @@ import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
 import java.util.*
 
+/**
+ * Packet-level visualization helpers for item finder search matches.
+ */
 object ItemFinderPacketUtils {
-    private const val GLOW_DURATION = 20L * 8L // 8 Seconds
+    /** Duration in ticks for temporary highlight indicators. */
+    private const val GLOW_DURATION = 20L * 8L
+
+    /** Default model scale used for generic block-display container indicators. */
     private const val CONTAINER_DEFAULT_SCALE = 0.95f
+
+    /** Translation that keeps scaled block displays centered on their source block. */
     private const val CONTAINER_DEFAULT_TRANSLATION = (1 - CONTAINER_DEFAULT_SCALE) * 0.5f
+
+    /** Default model scale used for chest indicators. */
     private const val CHEST_DEFAULT_SCALE = 0.85f
 
+    /** Sends a packet to a single player through PacketEvents. */
+    private fun sendPacket(player: Player, packet: PacketWrapper<*>) {
+        PacketEvents.getAPI().playerManager.sendPacket(player, packet)
+    }
+
+    /** Builds a temporary scale attribute packet for a spawned display entity. */
+    private fun createScalePacket(displayId: Int, scale: Float): WrapperPlayServerUpdateAttributes {
+        val attributeModifier = PropertyModifier(
+            UUID.randomUUID(),
+            (scale - 1).toDouble(),
+            PropertyModifier.Operation.ADDITION
+        )
+        val attributeProperty = WrapperPlayServerUpdateAttributes.Property(
+            Attributes.SCALE,
+            1.0,
+            mutableListOf<PropertyModifier?>(attributeModifier)
+        )
+        return WrapperPlayServerUpdateAttributes(
+            displayId,
+            mutableListOf<WrapperPlayServerUpdateAttributes.Property?>(attributeProperty)
+        )
+    }
+
+    /** Highlights a matching entity by forcing a temporary glow state client-side. */
     fun indicateEntityMatch(module: Trifles, player: Player, entity: Entity) {
-        // Get base entity data
+        // Capture base metadata before applying a glowing override.
         val baseEntityData = SpigotConversionUtil.getEntityMetadata(entity)
 
-        // Generate metadata with glowing turned on
+        // Build glowing metadata payload.
         val glowingEntityData = ArrayList(baseEntityData)
         val glowData = EntityData(0, EntityDataTypes.BYTE, 0x40.toByte())
         glowingEntityData.add(glowData)
 
-        // Create packet and set glowing metadata
+        // Create glowing metadata packet.
         val glowingPacket = WrapperPlayServerEntityMetadata(
             entity.entityId,
             glowingEntityData
         )
 
-        // Send packet
-        PacketEvents.getAPI().playerManager.sendPacket(player, glowingPacket)
+        // Send immediate glow update.
+        sendPacket(player, glowingPacket)
 
-        // Schedule repeating packet b/c if the player looks away from entities, they will stop glowing
+        // Refresh glow every tick to keep client-side state stable while visible.
         val repeatingPacketTask = object : BukkitRunnable() {
             override fun run() {
                 if (!player.isOnline) {
                     this.cancel()
                 }
 
-                PacketEvents.getAPI().playerManager.sendPacket(player, glowingPacket)
+                sendPacket(player, glowingPacket)
             }
         }.runTaskTimer(module, 1, 1)
 
-        // Create non-glowing packet
+        // Prepare reset metadata packet.
         val nonGlowingEntityData = ArrayList(baseEntityData)
         val nonGlowingPacket = WrapperPlayServerEntityMetadata(
             entity.entityId,
             nonGlowingEntityData
         )
 
-        // Run task later to send packet to stop glowing
+        // Schedule reset packet after highlight duration.
         ResetGlowingPacketTask(player, nonGlowingPacket, repeatingPacketTask).runTaskLater(module, GLOW_DURATION)
     }
 
+    /** Spawns a temporary marker for non-chest container matches. */
     fun indicateContainerMatch(module: Trifles, player: Player, container: Container) {
         val displayId = SpigotReflectionUtil.generateEntityId()
-        // Check for Shulkers so we can handle them differently
+        // Use shulker entity type for shulker boxes, otherwise use block display.
         val entityType = if (container is ShulkerBox) EntityTypes.SHULKER else EntityTypes.BLOCK_DISPLAY
         val displayPacket = WrapperPlayServerSpawnEntity(
             displayId,
@@ -82,9 +117,10 @@ object ItemFinderPacketUtils {
             null
         )
 
-        // Metadata
-        val displayMetadata = ArrayList<EntityData<*>?>()
-        displayMetadata.add(EntityData(0, EntityDataTypes.BYTE, (0x20 or 0x40).toByte()))
+        // Build display metadata payload.
+        val displayMetadata = mutableListOf<EntityData<*>?>(
+            EntityData(0, EntityDataTypes.BYTE, (0x20 or 0x40).toByte())
+        )
         if (entityType === EntityTypes.BLOCK_DISPLAY) {
             displayMetadata.add(
                 EntityData(
@@ -113,44 +149,23 @@ object ItemFinderPacketUtils {
             displayMetadata
         )
 
-        // Send packets
-        PacketEvents.getAPI().playerManager.sendPacket(player, displayPacket)
-        PacketEvents.getAPI().playerManager.sendPacket(player, displayMetadataPacket)
+        // Spawn and configure temporary marker entity.
+        sendPacket(player, displayPacket)
+        sendPacket(player, displayMetadataPacket)
 
-        // Shulker specific scale attribute packet
+        // Apply scale through attribute packet for shulker marker entities.
         if (entityType === EntityTypes.SHULKER) {
-            val scaleAttribute = Attributes.SCALE
-
-            // Create scale attribute modifier
-            val attributeModifier = PropertyModifier(
-                UUID.randomUUID(),
-                (CONTAINER_DEFAULT_SCALE - 1).toDouble(),
-                PropertyModifier.Operation.ADDITION
-            )
-            // Create scale attribute base property
-            val attributeProperty = WrapperPlayServerUpdateAttributes.Property(
-                scaleAttribute,
-                1.0,
-                mutableListOf<PropertyModifier?>(attributeModifier)
-            )
-            // Create update attribute packet
-            val attributePacket = WrapperPlayServerUpdateAttributes(
-                displayId,
-                mutableListOf<WrapperPlayServerUpdateAttributes.Property?>(attributeProperty)
-            )
-
-            // Send packet
-            PacketEvents.getAPI().playerManager.sendPacket(player, attributePacket)
+            sendPacket(player, createScalePacket(displayId, CONTAINER_DEFAULT_SCALE))
         }
 
-        // Construct destroy entity packet
+        // Prepare marker cleanup packet.
         val destroyEntityPacket = WrapperPlayServerDestroyEntities(displayId)
 
-        // Run task later to remove entity
+        // Despawn marker after highlight duration.
         ResetGlowingPacketTask(player, destroyEntityPacket, null).runTaskLater(module, GLOW_DURATION)
     }
 
-    // Special function for chests
+    /** Spawns a temporary marker tuned for chest matches. */
     fun indicateChestMatch(module: Trifles, player: Player, container: Container) {
         val displayId = SpigotReflectionUtil.generateEntityId()
         val displayPacket = WrapperPlayServerSpawnEntity(
@@ -163,54 +178,43 @@ object ItemFinderPacketUtils {
             null
         )
 
-        // Metadata
-        val displayMetadata = ArrayList<EntityData<*>?>()
-        displayMetadata.add(EntityData(0, EntityDataTypes.BYTE, (0x20 or 0x40).toByte()))
+        // Build chest marker metadata payload.
+        val displayMetadata = mutableListOf<EntityData<*>?>(
+            EntityData(0, EntityDataTypes.BYTE, (0x20 or 0x40).toByte())
+        )
         val displayMetadataPacket = WrapperPlayServerEntityMetadata(
             displayId,
             displayMetadata
         )
 
-        // Send packets
-        PacketEvents.getAPI().playerManager.sendPacket(player, displayPacket)
-        PacketEvents.getAPI().playerManager.sendPacket(player, displayMetadataPacket)
+        // Spawn and configure temporary chest marker.
+        sendPacket(player, displayPacket)
+        sendPacket(player, displayMetadataPacket)
 
-        // Shulker specific scale attribute packet
-        val scaleAttribute = Attributes.SCALE
+        // Apply chest-specific scale via shulker attribute update.
+        sendPacket(player, createScalePacket(displayId, CHEST_DEFAULT_SCALE))
 
-        // Create scale attribute modifier
-        val attributeModifier = PropertyModifier(
-            UUID.randomUUID(),
-            (CHEST_DEFAULT_SCALE - 1).toDouble(),
-            PropertyModifier.Operation.ADDITION
-        )
-        // Create scale attribute base property
-        val attributeProperty = WrapperPlayServerUpdateAttributes.Property(
-            scaleAttribute,
-            1.0,
-            mutableListOf<PropertyModifier?>(attributeModifier)
-        )
-        // Create update attribute packet
-        val attributePacket = WrapperPlayServerUpdateAttributes(
-            displayId,
-            mutableListOf<WrapperPlayServerUpdateAttributes.Property?>(attributeProperty)
-        )
-
-        // Send packet
-        PacketEvents.getAPI().playerManager.sendPacket(player, attributePacket)
-
-        // Construct destroy entity packet
+        // Prepare chest marker cleanup packet.
         val destroyEntityPacket = WrapperPlayServerDestroyEntities(displayId)
 
-        // Run task later to remove entity
+        // Despawn marker after highlight duration.
         ResetGlowingPacketTask(player, destroyEntityPacket, null).runTaskLater(module, GLOW_DURATION)
     }
 
+    /**
+     * Delayed task that clears temporary visuals and optionally stops a repeating packet task.
+     */
     private class ResetGlowingPacketTask(
+        /** Player that receives the reset packet. */
         private val player: Player,
+
+        /** Packet sent when the visual indicator should be removed. */
         private val packet: PacketWrapper<*>,
+
+        /** Optional repeating task used for persistent glow refreshes. */
         private val optionalRepeatingPacketTask: BukkitTask?
     ) : BukkitRunnable() {
+        /** Sends the reset packet and cancels any repeating helper task. */
         override fun run() {
             if (!player.isOnline) {
                 this.cancel()
@@ -220,7 +224,7 @@ object ItemFinderPacketUtils {
                 optionalRepeatingPacketTask.cancel()
             }
 
-            PacketEvents.getAPI().playerManager.sendPacket(player, packet)
+            sendPacket(player, packet)
         }
     }
 }

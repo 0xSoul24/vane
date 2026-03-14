@@ -26,64 +26,66 @@ import org.oddlama.vane.trifles.items.storage.Backpack
 import org.oddlama.vane.trifles.items.storage.Pouch
 import org.oddlama.vane.util.StorageUtil
 import java.util.*
-import java.util.function.Consumer
 
+/**
+ * Coordinates storage-item inventory opening, safety checks, and persistence.
+ */
 class StorageGroup(context: Context<Trifles?>) :
     Listener<Trifles?>(context.group("Storage", "Extensions to storage related stuff will be grouped under here.")) {
-    private val openBlockStateInventories: MutableMap<Inventory?, Pair<UUID?, ItemStack?>?> =
-        Collections.synchronizedMap<Inventory?, Pair<UUID?, ItemStack?>?>(
-            HashMap<Inventory?, Pair<UUID?, ItemStack?>?>()
-        )
+    /**
+     * Open transient inventories mapped to owner UUID and backing item stack reference.
+     */
+    private val openBlockStateInventories: MutableMap<Inventory, Pair<UUID, ItemStack>> =
+        Collections.synchronizedMap(HashMap())
 
+    /** Action-bar message shown when trying to open stacked storage items. */
     @LangMessage
     var langOpenStackedItem: TranslatedMessage? = null
 
+    /**
+     * Supports right-click swap insertion of non-storage items into storage item inventories.
+     */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     fun onPlaceItemInStorageInventory(event: InventoryClickEvent) {
         if (event.whoClicked !is Player) {
             return
         }
 
-        // Only if no block state inventory is open, else we could delete items by
-        // accident
+        // Ignore managed transient inventories to avoid desynchronization and item loss.
         val ownerAndItem = openBlockStateInventories[event.inventory]
         if (ownerAndItem != null) {
             return
         }
 
-        // Put non-storage items in a right-clicked storage item
+        // Allow right-click cursor insertion into single, non-stacked storage items.
+        val currentItem = event.currentItem
         if (event.click == ClickType.RIGHT && event.action == InventoryAction.SWAP_WITH_CURSOR &&
-            isStorageItem(event.currentItem) && event.currentItem!!.amount == 1
+            isStorageItem(currentItem) && currentItem?.amount == 1
         ) {
-            // Allow putting in any items that are not a storage item.
+            // Never nest storage items within other storage items.
             if (!isStorageItem(event.cursor)) {
-                val customItem: CustomItem? = module!!.core?.itemRegistry()?.get(event.currentItem)
+                val customItem: CustomItem? = module?.core?.itemRegistry()?.get(currentItem)
 
-                // Only if the clicked storage item is a custom item
+                // Only custom storage items support this swap-in behavior.
                 if (customItem != null) {
-                    event
-                        .currentItem!!
-                        .editMeta(BlockStateMeta::class.java, Consumer { meta: BlockStateMeta? ->
-                            val blockState = meta!!.blockState
-                            if (blockState is Container) {
-                                val leftovers = blockState.inventory.addItem(event.cursor)
-                                if (leftovers.isEmpty()) {
-                                    event.view.setCursor(null)
-                                } else {
-                                    event.view.setCursor(leftovers[0])
-                                }
-                                meta.blockState = blockState
-                            }
-                        })
+                    currentItem.editMeta(BlockStateMeta::class.java) { meta ->
+                        val blockState = meta.blockState
+                        if (blockState is Container) {
+                            val leftovers = blockState.inventory.addItem(event.cursor)
+                            event.view.setCursor(leftovers.values.firstOrNull())
+                            meta.blockState = blockState
+                        }
+                    }
                 }
             }
 
-            // right-clicking a storage item to swap is never "allowed".
+            // Always cancel this click path because we handled cursor state manually.
             event.isCancelled = true
             return
         }
     }
 
+    /** Restricts inventory interactions while a storage container inventory is open. */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onInventoryClick(event: InventoryClickEvent) {
         val player = event.whoClicked as? Player ?: return
@@ -130,13 +132,16 @@ class StorageGroup(context: Context<Trifles?>) :
         }
     }
 
+    /**
+     * Prevents dropping the currently open storage item without closing its transient inventory.
+     */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onDropItem(event: PlayerDropItemEvent) {
         if (!isStorageItem(event.itemDrop.itemStack)) {
             return
         }
 
-        // Close the inventory if the player drops the currently open storage item
+        // Close managed inventory when its backing item gets dropped.
         val storageItemIsOpenState = isCurrentlyOpen(event.itemDrop.itemStack)
         if (storageItemIsOpenState) {
             val isKnownCustomInventory =
@@ -144,16 +149,17 @@ class StorageGroup(context: Context<Trifles?>) :
             if (isKnownCustomInventory) {
                 event.player.closeInventory(InventoryCloseEvent.Reason.CANT_USE)
             } else {
-                // Item shouldn't be tagged as open if a custom inventory is not open, fix open tag
-                event.itemDrop.itemStack.editMeta(Consumer { meta: ItemMeta? ->
-                    meta!!.persistentDataContainer.set(
+                // Repair stale open tag on legacy/bugged items.
+                event.itemDrop.itemStack.editMeta { meta: ItemMeta ->
+                    meta.persistentDataContainer.set(
                         STORAGE_IS_OPEN, PersistentDataType.BOOLEAN, false
                     )
-                })
+                }
             }
         }
     }
 
+    /** Ensures picked-up storage items are always marked as closed. */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onPickupItem(event: EntityPickupItemEvent) {
         if (event.entity !is Player) {
@@ -164,20 +170,21 @@ class StorageGroup(context: Context<Trifles?>) :
             return
         }
 
-        // Ensure bugged/old storage items are set to closed when picked up just in case
-        event.item.itemStack.editMeta(Consumer { meta: ItemMeta? ->
-            meta!!.persistentDataContainer.set(
+        // Normalize stale metadata on pickup.
+        event.item.itemStack.editMeta { meta: ItemMeta ->
+            meta.persistentDataContainer.set(
                 STORAGE_IS_OPEN, PersistentDataType.BOOLEAN, false
             )
-        })
+        }
     }
 
+    /** Prevents dragging storage items into an opened storage inventory. */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onInventoryDrag(event: InventoryDragEvent) {
         val player = event.whoClicked as? Player ?: return
         getOwnerAndItemIfValid(event.inventory, player) ?: return
 
-        // Prevent putting storage items in other storage items
+        // Disallow storage-in-storage nesting through drag operations.
         for (itemStack in event.newItems.values) {
             if (isStorageItem(itemStack)) {
                 event.isCancelled = true
@@ -186,16 +193,19 @@ class StorageGroup(context: Context<Trifles?>) :
         }
     }
 
+    /** Persists managed inventory changes after click interactions. */
     @EventHandler(priority = EventPriority.MONITOR)
     fun saveAfterClick(event: InventoryClickEvent) {
         saveInventoryChanges(event.whoClicked, event.inventory)
     }
 
+    /** Persists managed inventory changes after drag interactions. */
     @EventHandler(priority = EventPriority.MONITOR)
     fun saveAfterDrag(event: InventoryDragEvent) {
         saveInventoryChanges(event.whoClicked, event.inventory)
     }
 
+    /** Writes current transient inventory content back into the backing storage item. */
     private fun saveInventoryChanges(whoClicked: org.bukkit.entity.HumanEntity, inventory: Inventory) {
         if (whoClicked !is Player) {
             return
@@ -206,9 +216,10 @@ class StorageGroup(context: Context<Trifles?>) :
             return
         }
 
-        updateStorageItem(ownerAndItem.right!!, inventory, whoClicked)
+        updateStorageItem(ownerAndItem.right, inventory, whoClicked)
     }
 
+    /** Final persistence and cleanup when a managed transient inventory is closed. */
     @EventHandler(priority = EventPriority.MONITOR)
     fun saveAfterClose(event: InventoryCloseEvent) {
         val ownerAndItem = openBlockStateInventories[event.inventory]
@@ -216,37 +227,39 @@ class StorageGroup(context: Context<Trifles?>) :
             return
         }
 
-        // Set the storage item to closed
-        ownerAndItem.right!!.editMeta(Consumer { meta: ItemMeta? ->
-            meta!!.persistentDataContainer.set(
+        // Mark backing item as closed before writing inventory content.
+        ownerAndItem.right.editMeta { meta: ItemMeta ->
+            meta.persistentDataContainer.set(
                 STORAGE_IS_OPEN, PersistentDataType.BOOLEAN, false
             )
-        })
-        updateStorageItem(ownerAndItem.right!!, event.inventory, event.player as Player)
+        }
+        updateStorageItem(ownerAndItem.right, event.inventory, event.player as Player)
         openBlockStateInventories.remove(event.inventory)
     }
 
-    private fun getOwnerAndItemIfValid(inventory: Inventory, player: Player): Pair<UUID?, ItemStack?>? {
+    /** Returns owner/item mapping only when the player owns the tracked inventory session. */
+    private fun getOwnerAndItemIfValid(inventory: Inventory, player: Player): Pair<UUID, ItemStack>? {
         val ownerAndItem = openBlockStateInventories[inventory] ?: return null
         return if (ownerAndItem.left == player.uniqueId) ownerAndItem else null
     }
 
+    /** Returns whether an item is treated as a storage item by this module. */
     private fun isStorageItem(item: ItemStack?): Boolean {
         if (item == null) {
             return false
         }
 
-        val customItem: CustomItem? = module!!.core?.itemRegistry()?.get(item)
+        val customItem: CustomItem? = module?.core?.itemRegistry()?.get(item)
         if (customItem != null && (customItem is Backpack || customItem is Pouch)) {
             return true
         }
 
-        // Any item that has a container block state as the meta is a container to us.
-        // If the item has no meta (i.e., is empty), it doesn't count.
+        // Treat shulker-like block-state containers as storage items as well.
         val itemMeta = item.itemMeta
         return itemMeta is BlockStateMeta && itemMeta.blockState is ShulkerBox
     }
 
+    /** Returns whether a storage item is currently flagged as open. */
     private fun isCurrentlyOpen(item: ItemStack?): Boolean {
         if (item == null || !item.hasItemMeta()) {
             return false
@@ -255,80 +268,87 @@ class StorageGroup(context: Context<Trifles?>) :
             .getOrDefault(STORAGE_IS_OPEN, PersistentDataType.BOOLEAN, false)
     }
 
+    /**
+     * Updates the backing storage item with transient inventory contents and handles moved items.
+     */
     private fun updateStorageItem(item: ItemStack, inventory: Inventory, player: Player) {
-        // Find the correct storage item if it was moved from inventory slot and is no longer valid
+        // Recover backing item reference if the tracked stack moved during interaction.
         var currentItem = item
         if (currentItem.type.isAir && inventory.holder is Player) {
-            // Check cursor item first
+            // Check cursor item first.
             val cursorItem: ItemStack = player.openInventory.cursor
             if (cursorItem.hasItemMeta() && isCurrentlyOpen(cursorItem)) {
-                currentItem = cursorItem // Found the storage item that is currently open
-                openBlockStateInventories[inventory] =
-                    Pair.of<UUID?, ItemStack?>(player.uniqueId, currentItem) // Update Map
-            } else { // else check inventory slots
+                currentItem = cursorItem
+                openBlockStateInventories[inventory] = Pair.of(player.uniqueId, currentItem)
+            } else {
+                // Fallback: scan inventory slots for the active open marker.
                 for (checkedItem in player.inventory.contents) {
                     if (checkedItem == null || !checkedItem.hasItemMeta()) {
                         continue
                     }
                     if (isCurrentlyOpen(checkedItem)) {
-                        currentItem = checkedItem // Found the storage item that is currently open
-                        openBlockStateInventories[inventory] =
-                            Pair.of<UUID?, ItemStack?>(player.uniqueId, currentItem) // Update Map
+                        currentItem = checkedItem
+                        openBlockStateInventories[inventory] = Pair.of(player.uniqueId, currentItem)
                         break
                     }
                 }
             }
         }
-        currentItem.editMeta(BlockStateMeta::class.java, Consumer { meta: BlockStateMeta? ->
-            val blockState = meta!!.blockState
+        currentItem.editMeta(BlockStateMeta::class.java) { meta ->
+            val blockState = meta.blockState
             if (blockState is Container) {
                 blockState.inventory.contents = inventory.contents
                 meta.blockState = blockState
             }
-        })
+        }
     }
 
+    /**
+     * Opens a transient inventory view for the item-backed container.
+     *
+     * @return `true` when opening succeeded.
+     */
     fun openBlockStateInventory(player: Player, item: ItemStack): Boolean {
-        // Require correct block state meta
+        // Require container-backed block-state metadata.
         val itemMeta = item.itemMeta
         if (itemMeta !is BlockStateMeta || itemMeta.blockState !is Container) {
             return false
         }
 
-        // Only if the stack size is 1.
+        // Managed storage inventories only support single-item stacks.
         if (item.amount != 1) {
-            langOpenStackedItem!!.sendActionBar(player)
+            langOpenStackedItem?.sendActionBar(player)
             return false
         }
 
         val blockStateMeta: BlockStateMeta = itemMeta
         val container = blockStateMeta.blockState as Container
 
-        // Transfer item name to block-state
+        // Reuse item naming for the opened transient inventory title.
         var name: Component?
         name = if (blockStateMeta.hasDisplayName()) blockStateMeta.displayName() else if (blockStateMeta.hasItemName()) blockStateMeta.itemName() else null
 
-        // if the item has neither custom name nor item name (an old item with custom
-        // name reset), get the name from registry if possible
+        // Fallback to registered custom item display name for unnamed legacy items.
         if (name == null) {
-            val customItem: CustomItem? = module!!.core?.itemRegistry()?.get(item)
+            val customItem: CustomItem? = module?.core?.itemRegistry()?.get(item)
             name = if (customItem != null) customItem.displayName() else Component.text("")
         }
         (container as Nameable).customName(name)
 
-        // Create transient inventory
-        val transientInventory: Inventory = module!!
-            .server
-            .createInventory(player, container.inventory.type, name ?: Component.text(""))
+        // Create transient inventory and copy persisted container contents.
+        val server = module?.server ?: return false
+        val transientInventory: Inventory =
+            server.createInventory(player, container.inventory.type, name ?: Component.text(""))
         transientInventory.contents = container.inventory.contents
 
-        // Open inventory
-        openBlockStateInventories[transientInventory] = Pair.of<UUID?, ItemStack?>(player.uniqueId, item)
+        // Track open session and show inventory to player.
+        openBlockStateInventories[transientInventory] = Pair.of(player.uniqueId, item)
         player.openInventory(transientInventory)
         return true
     }
 
     companion object {
+        /** Boolean metadata key indicating whether a storage item is currently open. */
         val STORAGE_IS_OPEN: NamespacedKey = StorageUtil.namespacedKey("vane_trifles", "currently_opened_storage")
     }
 }

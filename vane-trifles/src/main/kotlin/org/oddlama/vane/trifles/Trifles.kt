@@ -9,14 +9,26 @@ import org.oddlama.vane.trifles.commands.Setspawn
 import org.oddlama.vane.trifles.items.*
 import org.oddlama.vane.trifles.items.storage.Backpack
 import org.oddlama.vane.trifles.items.storage.Pouch
-import java.util.*
+import java.util.UUID
 
 @VaneModule(name = "trifles", bstats = 8644, configVersion = 4, langVersion = 4, storageVersion = 1)
+/**
+ * Main entry point for the `vane-trifles` module.
+ */
 class Trifles : Module<Trifles?>() {
-    val lastXpBottleConsumeTime: HashMap<UUID, Long> = HashMap()
+    /** Tracks the latest XP bottle consume timestamp per player UUID. */
+    val lastXpBottleConsumeTime: MutableMap<UUID, Long> = mutableMapOf()
+
+    /** Registry holder for XP bottle custom items. */
     var xpBottles: XpBottles?
+
+    /** Listener and search backend for the item finder feature. */
     var itemFinder: ItemFinder?
+
+    /** Shared storage-item behavior group. */
     var storageGroup: StorageGroup
+
+    /** Indicates whether PacketEvents integration is available and enabled. */
     var packetEventsEnabled: Boolean = false
 
     init {
@@ -46,16 +58,21 @@ class Trifles : Module<Trifles?>() {
         SlimeBucket(this)
 
         storageGroup = StorageGroup(this)
-        Pouch(storageGroup.getContext()!!)
-        Backpack(storageGroup.getContext()!!)
+        val storageContext = requireNotNull(storageGroup.getContext())
+        Pouch(storageContext)
+        Backpack(storageContext)
     }
 
+    /**
+     * Enables optional integrations after the server has fully initialized plugins.
+     */
     override fun onModuleEnable() {
-        module!!.scheduleNextTick {
-            val packetEventsPlugin: Plugin? = module!!.server.pluginManager.getPlugin("PacketEvents")
-            if (packetEventsPlugin != null && packetEventsPlugin.isEnabled) {
+        val module = module ?: return
+        module.scheduleNextTick {
+            val packetEventsPlugin: Plugin? = module.server.pluginManager.getPlugin("PacketEvents")
+            if (packetEventsPlugin?.isEnabled == true) {
                 packetEventsEnabled = true
-                module!!.log.info("Enabling PacketEvents integration")
+                module.log.info("Enabling PacketEvents integration")
             }
         }
     }

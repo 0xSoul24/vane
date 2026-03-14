@@ -41,7 +41,6 @@ import org.oddlama.vane.util.Nms
 import org.oddlama.vane.util.PlayerUtil
 import org.oddlama.vane.util.StorageUtil
 import java.util.*
-import java.util.function.Consumer
 
 @VaneItem(
     name = "trowel",
@@ -50,29 +49,40 @@ import java.util.function.Consumer
     modelData = 0x76000e,
     version = 1
 )
+/**
+ * Places random block items from a selected inventory feed range.
+ *
+ * @param context module context used for registration.
+ */
 class Trowel(context: Context<Trifles?>) : org.oddlama.vane.core.item.CustomItem<Trifles?>(context) {
-    enum class FeedSource(private val displayName: String, private val slots: IntArray) {
+    /**
+     * Selectable inventory ranges used as block feed sources.
+     *
+     * @property displayName user-facing label for the feed source.
+     * @property slots inventory slot indices included in this source.
+     */
+    enum class FeedSource(val displayName: String, val slots: IntArray) {
         HOTBAR("Hotbar", intArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8)),
         FIRST_ROW("First Inventory Row", intArrayOf(9, 10, 11, 12, 13, 14, 15, 16, 17)),
         SECOND_ROW("Second Inventory Row", intArrayOf(18, 19, 20, 21, 22, 23, 24, 25, 26)),
         THIRD_ROW("Third Inventory Row", intArrayOf(27, 28, 29, 30, 31, 32, 33, 34, 35));
 
-        fun displayName(): String {
-            return displayName
-        }
-
+        /** Returns the next feed source in cyclic order. */
         fun next(): FeedSource {
             return entries[(this.ordinal + 1) % entries.size]
         }
 
-        fun slots(): IntArray {
-            return slots
+        /** Returns the user-facing feed source name. */
+        override fun toString(): String {
+            return displayName
         }
     }
 
+    /** Lore template displayed with the currently selected feed source. */
     @LangMessageArray
     var langLore: TranslatedMessageArray? = null
 
+    /** Defines the trowel crafting recipe. */
     override fun defaultRecipes(): RecipeList {
         return RecipeList.of(
             ShapedRecipeDefinition("generic")
@@ -83,6 +93,7 @@ class Trowel(context: Context<Trifles?>) : org.oddlama.vane.core.item.CustomItem
         )
     }
 
+    /** Reads persisted feed source selection from item metadata. */
     private fun feedSource(itemStack: ItemStack): FeedSource {
         val meta = itemStack.itemMeta ?: return FeedSource.HOTBAR
         val ord = meta.persistentDataContainer.getOrDefault(FEED_SOURCE, PersistentDataType.INTEGER, 0)
@@ -92,51 +103,51 @@ class Trowel(context: Context<Trifles?>) : org.oddlama.vane.core.item.CustomItem
         return FeedSource.entries[ord]
     }
 
+    /** Writes feed source selection to item metadata. */
     private fun feedSource(itemStack: ItemStack, feedSource: FeedSource) {
-        itemStack.editMeta(Consumer { meta: ItemMeta? ->
-            meta!!.persistentDataContainer.set(FEED_SOURCE, PersistentDataType.INTEGER, feedSource.ordinal)
-        })
+        itemStack.editMeta { meta: ItemMeta ->
+            meta.persistentDataContainer.set(FEED_SOURCE, PersistentDataType.INTEGER, feedSource.ordinal)
+        }
     }
 
+    /** Rebuilds lore lines to show the active feed source selection. */
     private fun updateLore(itemStack: ItemStack) {
-        var lore = itemStack.lore()
-        if (lore == null) {
-            lore = ArrayList()
-        }
+        val lore = itemStack.lore()?.toMutableList() ?: mutableListOf()
 
-        // Remove old lore, add updated lore
+        // Remove previous trowel-generated lore and append updated state line.
         lore.removeIf { component: Component? -> isTrowelLore(component) }
 
         val feedSource = feedSource(itemStack)
-        lore.addAll(
-            langLore!!.format("§a$feedSource").stream()
-                .map { x: Component? -> ItemUtil.addSentinel(x!!, SENTINEL) }.toList()
-        )
+        val langLore = langLore ?: return
+        lore += langLore.format("§a$feedSource").mapNotNull { line ->
+            line?.let { ItemUtil.addSentinel(it, SENTINEL) }
+        }
 
         itemStack.lore(lore)
     }
 
+    /** Cycles feed source when right-clicking the trowel in inventory. */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onPlayerClickInventory(event: InventoryClickEvent) {
         if (event.whoClicked !is Player) {
             return
         }
 
-        // Only on right-click item, when nothing is on the cursor
+        // Only handle right-click pickup-half with empty cursor.
         if (event.action != InventoryAction.PICKUP_HALF ||
             (event.cursor.type != Material.AIR)
         ) {
             return
         }
 
-        val item = event.getCurrentItem()
-        val customItem: CustomItem? = module!!.core?.itemRegistry()?.get(item)
+        val item = event.currentItem ?: return
+        val customItem: CustomItem? = module?.core?.itemRegistry()?.get(item)
         if (customItem !is Trowel || !customItem.enabled()) {
             return
         }
 
-        // Use next feed source
-        val feedSource = feedSource(item!!)
+        // Rotate to next configured feed source and persist lore.
+        val feedSource = feedSource(item)
         feedSource(item, feedSource.next())
         updateLore(item)
 
@@ -145,87 +156,90 @@ class Trowel(context: Context<Trifles?>) : org.oddlama.vane.core.item.CustomItem
         event.isCancelled = true
     }
 
+    /** Attempts to place a random block from selected feed source on right-click block. */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     fun onPlayerInteractBlock(event: PlayerInteractEvent) {
-        // Skip if no block was right-clicked or hand isn't main hand
+        // Require right-click block with main hand.
         if (!event.hasBlock() || event.action != Action.RIGHT_CLICK_BLOCK || event.hand != EquipmentSlot.HAND
         ) {
             return
         }
 
-        // With a trowel in main hand
-        val player = event.getPlayer()
+        // Require trowel in main hand.
+        val player = event.player
         val itemInHand = player.equipment.getItem(EquipmentSlot.HAND)
-        val customItem: CustomItem? = module!!.core?.itemRegistry()?.get(itemInHand)
+        val customItem: CustomItem? = module?.core?.itemRegistry()?.get(itemInHand)
         if (customItem !is Trowel || !customItem.enabled()) {
             return
         }
 
-        // Prevent offhand from triggering (e.g., placing torches)
+        // Prevent follow-up offhand interaction on same click.
         event.setUseInteractedBlock(Event.Result.DENY)
         event.setUseItemInHand(Event.Result.DENY)
 
-        // Select a random block from the feed source and place it
+        // Select random placeable block from configured source and attempt placement.
         val block = event.clickedBlock
         val inventory = player.inventory
         val fedSource = feedSource(itemInHand)
-        val possibleSlots = fedSource.slots().clone()
+        val possibleSlots = fedSource.slots.clone()
+        val module = module ?: return
+        val itemRegistry = module.core?.itemRegistry()
         var count = possibleSlots.size
         while (count > 0) {
             val index: Int = random.nextInt(count)
             val itemStack = inventory.getItem(possibleSlots[index])
-            // Skip empty slots and items that are not placeable blocks
+            // Skip empty/non-block/shulker slots.
             if (itemStack == null || !itemStack.type.isBlock ||
                 Tag.SHULKER_BOXES.isTagged(itemStack.type)
             ) {
-                // Eliminate the end of list, so copy item at the end of list to the index (<
-                // count).
+                // Remove rejected slot from random pool by swapping with active tail.
                 possibleSlots[index] = possibleSlots[--count]
                 continue
             }
-            val customItemSlot: CustomItem? = module!!.core?.itemRegistry()
-                ?.get(itemStack)
-            // if the item is a custom item, don't place it
+            val customItemSlot: CustomItem? = itemRegistry?.get(itemStack)
+            // Never place custom items.
             if (customItemSlot != null) {
                 possibleSlots[index] = possibleSlots[--count]
                 continue
             }
 
             val nmsItem = Nms.itemHandle(itemStack)
-            val nmsPlayer = Nms.playerHandle(player)
+            val nmsPlayer = Nms.playerHandle(player) ?: return
             val nmsWorld = Nms.worldHandle(player.world)
 
-            // Prepare context to place the item via NMS
+            // Build NMS placement context to preserve vanilla placement rules.
             val direction = CraftBlock.blockFaceToNotch(event.blockFace)
-            val blockPos = BlockPos(block!!.x, block.y, block.z)
-            val interactionPoint = event.getInteractionPoint()
-            val hitPos = Vec3(interactionPoint!!.x, interactionPoint.y, interactionPoint.z)
+            val clickedBlock = block ?: return
+            val blockPos = BlockPos(clickedBlock.x, clickedBlock.y, clickedBlock.z)
+            val interactionPoint = event.interactionPoint ?: return
+            val hitPos = Vec3(interactionPoint.x, interactionPoint.y, interactionPoint.z)
             val blockHitResult = BlockHitResult(hitPos, direction, blockPos, false)
-            val amountPre = nmsItem!!.count
+            val itemHandle = nmsItem ?: return
+            val amountPre = itemHandle.count
             val actionContext = UseOnContext(
                 nmsWorld,
                 nmsPlayer,
                 InteractionHand.MAIN_HAND,
-                nmsItem,
+                itemHandle,
                 blockHitResult
             )
 
-            // Get sound now, otherwise the itemstack might be consumed afterward
+            // Resolve placement sound before possible item consumption.
             var soundType: SoundType? = null
-            if (nmsItem.item is BlockItem) {
-                val blockItem = nmsItem.item as BlockItem
+            if (itemHandle.item is BlockItem) {
+                val blockItem = itemHandle.item as BlockItem
                 val placeState: BlockState? = blockItem
                     .block
                     .getStateForPlacement(BlockPlaceContext(actionContext))
-                soundType = placeState!!.soundType
+                soundType = placeState?.soundType
             }
 
-            // Place the item by calling NMS to get correct placing behavior
-            val result = nmsItem.useOn(actionContext)
+            // Execute placement through NMS for full vanilla behavior parity.
+            val result = itemHandle.useOn(actionContext)
 
-            // Don't consume item in creative mode
+            // Creative mode should not consume source stacks.
             if (player.gameMode == GameMode.CREATIVE) {
-                nmsItem.count = amountPre
+                itemHandle.count = amountPre
             }
 
             if (result.consumesAction()) {
@@ -241,33 +255,40 @@ class Trowel(context: Context<Trifles?>) : org.oddlama.vane.core.item.CustomItem
                         soundType.getPitch() * 0.8f
                     )
                 }
-                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(nmsPlayer!!, blockPos, nmsItem)
+                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(nmsPlayer, blockPos, itemHandle)
             }
 
-            nmsPlayer!!.connection.send(ClientboundBlockUpdatePacket(nmsWorld, blockPos))
+            nmsPlayer.connection.send(ClientboundBlockUpdatePacket(nmsWorld, blockPos))
             nmsPlayer.connection.send(ClientboundBlockUpdatePacket(nmsWorld, blockPos.relative(direction)))
             return
         }
 
-        // No item found in any possible slot.
+        // No eligible block item found in the selected feed source.
         player.playSound(player, Sound.UI_STONECUTTER_SELECT_RECIPE, SoundCategory.MASTER, 1.0f, 2.0f)
     }
 
+    /** Updates lore whenever the trowel stack is rebuilt. */
     override fun updateItemStack(itemStack: ItemStack): ItemStack {
         updateLore(itemStack)
         return itemStack
     }
 
+    /** Prevents conflicting vanilla interactions for the trowel item. */
     override fun inhibitedBehaviors(): EnumSet<InhibitBehavior> {
         return EnumSet.of(InhibitBehavior.USE_IN_VANILLA_RECIPE, InhibitBehavior.USE_OFFHAND)
     }
 
     companion object {
+        /** Sentinel key used to identify lore lines generated by the trowel. */
         private val SENTINEL = StorageUtil.namespacedKey("vane", "trowel_lore")
+
+        /** Metadata key storing the selected feed source ordinal. */
         val FEED_SOURCE: NamespacedKey = StorageUtil.namespacedKey("vane", "feed_source")
+
+        /** Deterministic random source used for slot selection. */
         private val random = Random(23584982345L)
 
-        /** Returns true if the given component is associated to the trowel.  */
+        /** Returns whether the given component belongs to trowel-generated lore. */
         private fun isTrowelLore(component: Component?): Boolean {
             return ItemUtil.hasSentinel(component, SENTINEL)
         }
