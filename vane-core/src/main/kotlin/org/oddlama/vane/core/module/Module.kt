@@ -49,52 +49,72 @@ import java.util.logging.Logger
 import java.util.regex.Pattern
 import kotlin.math.max
 
+/**
+ * Base class for all vane Bukkit modules.
+ *
+ * @param T concrete module type.
+ */
 abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
+    /** Module annotation metadata. */
     val annotation: VaneModule = javaClass.getAnnotation(VaneModule::class.java)!!
+    /** Reference to vane-core module. */
     var core: Core? = null
+    /** Java util logger for this module. */
     var log: Logger = logger
+    /** Adventure component logger for this module. */
     var clog: ComponentLogger = componentLogger
+    /** Resource-pack namespace of this module. */
     private val namespace = "vane_" + annotation.name.replace("[^a-zA-Z0-9_]".toRegex(), "_")
 
-    // Managers
+    /** Configuration manager. */
     var configManager: ConfigManager = ConfigManager(this)
+    /** Localization manager. */
     var langManager: LangManager = LangManager(this)
+    /** Persistent storage manager. */
     var persistentStorageManager: PersistentStorageManager = PersistentStorageManager(this)
+    /** Whether persistent storage should be saved at next flush interval. */
     private var persistentStorageDirty = false
 
-    // Per module catch-all permissions
+    /** Per-module catch-all command permission. */
     var permissionCommandCatchallModule: Permission?
+    /** Module-scoped random source. */
     var random: Random = Random()
 
-    // Permission attachment for console
+    /** Console permissions queued until attachment creation. */
     private val pendingConsolePermissions: MutableList<String> = mutableListOf()
+    /** Console permission attachment. */
     var consoleAttachment: PermissionAttachment? = null
 
-    // Version fields for config, lang, storage
+    /** Config file version. */
     @ConfigVersion
     var configVersion: Long = 0
 
+    /** Localization file version. */
     @LangVersion
     var langVersion: Long = 0
 
+    /** Persistent storage version. */
     @Persistent
     var storageVersion: Long = 0
 
-    // Base configuration
+    /** Active language code for this module. */
     @ConfigString(
         def = "inherit",
         desc = "The language for this module. The corresponding language file must be named lang-{lang}.yml. Specifying 'inherit' will load the value set for vane-core.",
         metrics = true
     )
+    /** Configured language code for this module. */
     var configLang: String? = null
 
+    /** Whether bStats metrics are enabled for this module. */
     @ConfigBoolean(
         def = true,
         desc = "Enable plugin metrics via bStats. You can opt-out here or via the global bStats configuration. All collected information is completely anonymous and publicly available."
     )
+    /** Whether bStats metrics are enabled. */
     var configMetricsEnabled: Boolean = false
 
-    // Context<T> interface proxy
+    /** Root context group for this module. */
     private val contextGroup: ModuleGroup<T?> = ModuleGroup<T?>(
         this,
         "",
@@ -102,8 +122,10 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
         false
     )
 
+    /** Compiles a component into the root context. */
     override fun compile(component: ModuleComponent<T?>?) { contextGroup.compile(component) }
 
+    /** Adds a child context to the root context while preventing self-cycles. */
     override fun addChild(subcontext: Context<T?>?) {
         // Prevent adding the module's root group as a child of itself which would create
         // a self-referential cycle leading to infinite recursion on enable/disable.
@@ -111,71 +133,75 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
         contextGroup.addChild(subcontext)
     }
 
+    /** Parent context of the module root context. */
     override val context: Context<T?>? get() = this
 
+    /** Module instance as generic type. */
     @Suppress("UNCHECKED_CAST")
     override val module: T? get() = this as T
 
+    /** Root YAML path of this module context. */
     override fun yamlPath(): String? = ""
+    /** Resolves variable YAML paths for the root context. */
     override fun variableYamlPath(variable: String?): String? = variable
+    /** Whether this module is logically enabled. */
     override fun enabled(): Boolean = contextGroup.enabled()
 
-    // Callbacks for derived classes
+    /** Hook called during plugin load phase. */
     protected fun onModuleLoad() {}
+    /** Hook called when the module is enabled. */
     override fun onModuleEnable() {}
+    /** Hook called when the module is disabled. */
     override fun onModuleDisable() {}
+    /** Hook called after config reload. */
     override fun onConfigChange() {}
+    /** Hook called during resource-pack generation. */
     @Throws(IOException::class) fun onGenerateResourcePack() {}
 
+    /** Iterates over all compiled module components. */
     override fun forEachModuleComponent(f: Consumer1<ModuleComponent<*>?>?) {
         contextGroup.forEachModuleComponent(f)
     }
 
-    // Loot modification
+    /** Additional loot-table injections keyed by target loot table key. */
     private val additionalLootTables: MutableMap<NamespacedKey?, LootTable?> = mutableMapOf()
 
-    // bStats
+    /** bStats metrics handle, if enabled. */
     var metrics: Metrics? = null
 
     init {
-        // Get core plugin reference, important for inherited configuration
-        // and shared state between vane modules
         core = if (this.name == "vane-core") this as Core
                else server.pluginManager.getPlugin("vane-core") as Core?
 
-        // Create per module command catch-all permission
         permissionCommandCatchallModule = Permission(
             "vane.${annotationName}.commands.*",
             "Allow access to all vane-$annotationName commands",
             PermissionDefault.FALSE
         ).also { registerPermission(it) }
 
-        // Compile the context group now that the Module initialization has finished
         contextGroup.compileSelf()
     }
 
-    /** The namespace used in resource packs  */
+    /** Returns the namespace used in generated resource packs. */
     override fun namespace(): String = namespace
 
+    /** Bukkit plugin load entrypoint. */
     override fun onLoad() {
-        // Create data directory
         if (!dataFolder.exists()) dataFolder.mkdirs()
         onModuleLoad()
     }
 
+    /** Bukkit plugin enable entrypoint. */
     override fun onEnable() {
-        // Create console permission attachment
         consoleAttachment = server.consoleSender.addAttachment(this).also { attachment ->
             pendingConsolePermissions.forEach { attachment.setPermission(it, true) }
             pendingConsolePermissions.clear()
         }
 
-        // Register in core
         core!!.registerModule(this)
         loadPersistentStorage()
         reloadConfiguration()
 
-        // Schedule persistent storage saving every minute
         scheduleTaskTimer(
             { if (persistentStorageDirty) { savePersistentStorage(); persistentStorageDirty = false } },
             (60 * 20).toLong(),
@@ -183,14 +209,14 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
         )
     }
 
+    /** Bukkit plugin disable entrypoint. */
     override fun onDisable() {
         disable()
-        // Save persistent storage
         savePersistentStorage()
-        // Unregister in core
         core!!.unregisterModule(this)
     }
 
+    /** Enables module internals and component tree. */
     override fun enable() {
         if (configMetricsEnabled) {
             val id = annotation.bstats
@@ -204,6 +230,7 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
         registerListener(this)
     }
 
+    /** Disables module internals and component tree. */
     override fun disable() {
         unregisterListener(this)
         contextGroup.disable()
@@ -211,11 +238,13 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
         metrics = null
     }
 
+    /** Dispatches configuration-change callbacks. */
     override fun configChange() {
         onConfigChange()
         contextGroup.configChange()
     }
 
+    /** Generates module resource-pack contributions. */
     @Throws(IOException::class)
     override fun generateResourcePack(pack: ResourcePackGenerator?) {
         if (pack == null) return
@@ -254,14 +283,14 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
         contextGroup.generateResourcePack(pack)
     }
 
+    /** Tries to reload module configuration from disk. */
     private fun tryReloadConfiguration(): Boolean {
-        // Generate new file if not existing
         val file = configManager.standardFile()
         if (!file.exists() && !configManager.generateFile(file, null)) return false
-        // Reload automatic variables
         return configManager.reload(file)
     }
 
+    /** Updates a localized language file from embedded resources when newer. */
     private fun updateLangFile(langFile: String) {
         val file = File(dataFolder, langFile)
         val fileVersion = YamlConfiguration.loadConfiguration(file).getLong("Version", -1)
@@ -288,6 +317,7 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
         }
     }
 
+    /** Tries to reload localization files for this module. */
     private fun tryReloadLocalization(): Boolean {
         ResourceList.getResources(javaClass, Pattern.compile("lang-.*\\.yml"))
             .forEach { updateLangFile(it) }
@@ -306,6 +336,7 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
         return langManager.reload(file)
     }
 
+    /** Reloads module configuration and localization and reapplies enable state. */
     fun reloadConfiguration(): Boolean {
         val wasEnabled = enabled()
 
@@ -333,34 +364,37 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
         return true
     }
 
+    /** Returns the persistent storage file path. */
     val persistentStorageFile: File
-        get() = // Generate new file if not existing
-            File(dataFolder, "storage.json")
+        get() = File(dataFolder, "storage.json")
 
+    /** Loads persistent storage from disk. */
     fun loadPersistentStorage() {
-        // Load automatic persistent variables
         val file: File = this.persistentStorageFile
         if (!persistentStorageManager.load(file)) {
-            // Force stop server, we encountered an invalid persistent storage file.
-            // This prevents further corruption.
             log.severe("Invalid persistent storage. Shutting down to prevent further corruption.")
             server.shutdown()
         }
     }
 
+    /** Marks persistent storage as dirty for deferred save. */
     override fun markPersistentStorageDirty() { persistentStorageDirty = true }
 
+    /** Saves persistent storage to disk. */
     fun savePersistentStorage() {
-        // Save automatic persistent variables
         val file: File = this.persistentStorageFile
         persistentStorageManager.save(file)
     }
 
+    /** Registers a Bukkit listener with this module plugin instance. */
     fun registerListener(listener: Listener) = server.pluginManager.registerEvents(listener, this)
+    /** Unregisters a Bukkit listener. */
     fun unregisterListener(listener: Listener) = HandlerList.unregisterAll(listener)
 
+    /** Returns module annotation short name. */
     val annotationName: String get() = annotation.name
 
+    /** Registers a brigadier-backed command during lifecycle command registration. */
     fun registerCommand(command: Command<*>) {
         val manager: LifecycleEventManager<Plugin> = lifecycleManager
         manager.registerEventHandler(LifecycleEvents.COMMANDS) { event ->
@@ -368,18 +402,22 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
         }
     }
 
+    /** Unregisters a Bukkit command from the command map. */
     fun unregisterCommand(command: Command<*>) {
         val bukkitCommand = command.getBukkitCommand()
         server.commandMap.knownCommands.values.remove(bukkitCommand)
         bukkitCommand.unregister(server.commandMap)
     }
 
+    /** Grants a permission to the console attachment. */
     fun addConsolePermission(permission: Permission) = addConsolePermission(permission.name)
 
+    /** Grants a permission node to console, deferred until attachment exists if needed. */
     fun addConsolePermission(permission: String) {
         consoleAttachment?.setPermission(permission, true) ?: pendingConsolePermissions.add(permission)
     }
 
+    /** Registers a permission with Bukkit's plugin manager. */
     fun registerPermission(permission: Permission) {
         try {
             server.pluginManager.addPermission(permission)
@@ -388,16 +426,21 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
         }
     }
 
+    /** Unregisters a permission from Bukkit's plugin manager. */
     fun unregisterPermission(permission: Permission) = server.pluginManager.removePermission(permission)
 
+    /** Returns loot-table injector for a Bukkit [LootTables] enum value. */
     fun lootTable(table: LootTables): LootTable = lootTable(table.key)
 
+    /** Returns offline players that have a non-null name. */
     val offlinePlayersWithValidName: List<OfflinePlayer>
         get() = server.offlinePlayers.filter { it.name != null }
 
+    /** Returns or creates additional loot table data for a key. */
     fun lootTable(key: NamespacedKey?): LootTable =
         additionalLootTables.getOrPut(key) { LootTable() }!!
 
+    /** Injects additional module loot into generated loot events. */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onModuleLootGenerate(event: LootGenerateEvent) {
         val additionalLootTable = additionalLootTables[event.lootTable.key] ?: return
@@ -411,6 +454,7 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
         additionalLootTable.generateLoot(event.loot, localRandom)
     }
 
+    /** Overrides caught fishing loot with module-injected loot pools. */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onModulePlayerCaughtFish(event: PlayerFishEvent) {
         if (event.state != PlayerFishEvent.State.CAUGHT_FISH) return

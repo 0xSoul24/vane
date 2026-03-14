@@ -15,10 +15,17 @@ import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.util.ItemUtil
 import org.oddlama.vane.util.StorageUtil.namespacedKey
 
+/**
+ * Normalizes lore and metadata for enchanted items.
+ *
+ * @param context listener context.
+ */
 class EnchantmentManager(context: Context<Core?>?) : Listener<Core?>(context) {
+    /** Updates enchanted item metadata and lore. */
     fun updateEnchantedItem(itemStack: ItemStack, onlyIfEnchanted: Boolean): ItemStack =
         updateEnchantedItem(itemStack, HashMap(), onlyIfEnchanted)
 
+    /** Updates enchanted item metadata and lore with optional additional enchantments. */
     @JvmOverloads
     fun updateEnchantedItem(
         itemStack: ItemStack,
@@ -29,12 +36,14 @@ class EnchantmentManager(context: Context<Core?>?) : Listener<Core?>(context) {
         return itemStack
     }
 
+    /** Removes previously generated enchantment lore lines. */
     private fun removeOldLore(itemStack: ItemStack) {
         val lore = itemStack.lore() ?: return
         lore.removeIf { isEnchantmentLore(it) }
         itemStack.lore(lore.ifEmpty { null })
     }
 
+    /** Returns whether a component line is recognized as enchantment lore. */
     private fun isEnchantmentLore(component: Component?): Boolean {
         if (component is TranslatableComponent && component.key().startsWith("vane_enchantments.")) {
             return true
@@ -42,25 +51,20 @@ class EnchantmentManager(context: Context<Core?>?) : Listener<Core?>(context) {
         return ItemUtil.hasSentinel(component, SENTINEL)
     }
 
-    // Triggers on Anvils, grindstones, and smithing tables.
+    /** Normalizes result item lore after result-producing inventory edits. */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onPrepareEnchantedEdit(event: PrepareResultEvent) {
         val result = event.result ?: return
         event.result = updateEnchantedItem(result.clone())
     }
 
+    /** Normalizes item lore when enchanting table enchants are applied. */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onEnchantItem(event: EnchantItemEvent) {
         updateEnchantedItem(event.item, HashMap(event.enchantsToAdd))
     }
 
-    // @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    // public void on_loot_generate(final LootGenerateEvent event) {
-    // 	for (final var item : event.getLoot()) {
-    // 		// Update all item lore in case they are enchanted
-    // 		updateEnchantedItem(item, true);
-    // 	}
-    // }
+    /** Builds a merchant recipe with normalized enchanted result metadata. */
     private fun processRecipe(recipe: MerchantRecipe): MerchantRecipe =
         MerchantRecipe(
             updateEnchantedItem(recipe.result.clone(), true),
@@ -70,27 +74,9 @@ class EnchantmentManager(context: Context<Core?>?) : Listener<Core?>(context) {
             recipe.priceMultiplier
         ).also { newRecipe -> recipe.ingredients.forEach { newRecipe.addIngredient(it) } }
 
-    // @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    // public void on_acquire_trade(final VillagerAcquireTradeEvent event) {
-    // 	event.setRecipe(processRecipe(event.getRecipe()));
-    // }
-    // @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    // public void on_right_click_villager(final PlayerInteractEntityEvent event) {
-    // 	final var entity = event.getRightClicked();
-    // 	if (!(entity instanceof Merchant)) {
-    // 		return;
-    // 	}
-    // 	final var merchant = (Merchant) entity;
-    // 	final var recipes = new ArrayList<MerchantRecipe>();
-    // 	// Check all recipes
-    // 	for (final var r : merchant.getRecipes()) {
-    // 		recipes.add(processRecipe(r));
-    // 	}
-    // 	// Update recipes
-    // 	merchant.setRecipes(recipes);
-    // }
-
+    /** Static constants for enchantment lore sentinel tagging. */
     companion object {
+        /** Hover sentinel used to identify generated enchantment lore lines. */
         private val SENTINEL = namespacedKey("vane", "enchantment_lore")
     }
 }

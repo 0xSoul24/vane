@@ -15,14 +15,20 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import java.util.concurrent.CompletableFuture
 
+/**
+ * Brigadier argument type for enchantments with sender-item-aware completion filtering.
+ */
 class EnchantmentFilterArgumentType : CustomArgumentType.Converted<Enchantment, Enchantment> {
 
+    /** Returns the native brigadier argument type. */
     override fun getNativeType(): ArgumentType<Enchantment> =
         ArgumentTypes.resource(RegistryKey.ENCHANTMENT)
 
+    /** Returns the already parsed native enchantment value. */
     @Throws(CommandSyntaxException::class)
     override fun convert(nativeType: Enchantment): Enchantment = nativeType
 
+    /** Suggests enchantments applicable to the sender's held item. */
     override fun <S : Any> listSuggestions(
         context: CommandContext<S>,
         builder: SuggestionsBuilder
@@ -41,8 +47,10 @@ class EnchantmentFilterArgumentType : CustomArgumentType.Converted<Enchantment, 
         return builder.buildFuture()
     }
 
+    /** Factory methods for [EnchantmentFilterArgumentType]. */
     companion object {
         @JvmStatic
+        /** Creates a new enchantment filter argument type. */
         fun enchantmentFilter(): EnchantmentFilterArgumentType = EnchantmentFilterArgumentType()
     }
 }

@@ -12,24 +12,48 @@ import java.io.File
 import java.lang.reflect.Field
 import java.util.logging.Level
 
+/**
+ * Discovers, validates, and loads language fields for a module.
+ *
+ * @param module the module whose language entries are managed.
+ */
 class LangManager(var module: Module<*>) {
+    /**
+     * All compiled language field handlers.
+     */
     private val langFields: MutableList<LangField<*>> = mutableListOf()
+
+    /**
+     * The compiled `@LangVersion` field, if discovered.
+     */
     var fieldVersion: LangVersionField? = null
 
     init {
         compile(module) { it ?: "" }
     }
 
+    /**
+     * Returns the expected language file version from module metadata.
+     */
     fun expectedVersion(): Long = module.annotation.langVersion
 
+    /**
+     * Returns whether a field has any supported language annotation.
+     */
     private fun hasLangAnnotation(field: Field): Boolean =
         field.annotations.any { it.annotationClass.java.name.startsWith("org.oddlama.vane.annotation.lang.Lang") }
 
+    /**
+     * Ensures language fields follow the required `lang` prefix convention.
+     */
     private fun assertFieldPrefix(field: Field) {
         if (!field.name.startsWith("lang"))
             throw RuntimeException("Language fields must be prefixed lang. This is a bug.")
     }
 
+    /**
+     * Compiles a reflected language field into a concrete [LangField] handler.
+     */
     private fun compileField(owner: Any?, field: Field, mapName: (String?) -> String): LangField<*> {
         assertFieldPrefix(field)
 
@@ -50,6 +74,9 @@ class LangManager(var module: Module<*>) {
         }
     }
 
+    /**
+     * Verifies a language file version against the expected module version.
+     */
     private fun verifyVersion(file: File, version: Long): Boolean {
         if (version == expectedVersion()) return true
 
@@ -73,6 +100,12 @@ class LangManager(var module: Module<*>) {
         return false
     }
 
+    /**
+     * Discovers and compiles language fields from an owner instance.
+     *
+     * @param owner the object containing language fields.
+     * @param mapName maps Java field names to YAML paths.
+     */
     fun compile(owner: Any, mapName: (String?) -> String) {
         langFields.addAll(
             ReflectionUtils.getAllFields(owner.javaClass)
@@ -83,10 +116,19 @@ class LangManager(var module: Module<*>) {
             throw RuntimeException("There must be exactly one @LangVersion field! (found none). This is a bug.")
     }
 
+    /**
+     * Returns a compiled language field by mapped name.
+     */
     fun getField(name: String?): LangField<*> =
         langFields.firstOrNull { it.name == name }
             ?: throw RuntimeException("Missing lang field lang$name")
 
+    /**
+     * Reloads language values from a language file.
+     *
+     * @param file the language YAML file.
+     * @return `true` on success.
+     */
     fun reload(file: File): Boolean {
         val yaml = YamlConfiguration.loadConfiguration(file)
         val version = yaml.getLong("Version", -1)
@@ -102,6 +144,13 @@ class LangManager(var module: Module<*>) {
         return true
     }
 
+    /**
+     * Adds translatable entries from a language file to a resource pack generator.
+     *
+     * @param pack the target resource pack generator.
+     * @param yaml the loaded language configuration.
+     * @param langFile the source language file.
+     */
     fun generateResourcePack(pack: ResourcePackGenerator?, yaml: YamlConfiguration, langFile: File) {
         val langCode = yaml.getString("ResourcePackLangCode")
             ?: throw RuntimeException("Missing yaml key: ResourcePackLangCode")

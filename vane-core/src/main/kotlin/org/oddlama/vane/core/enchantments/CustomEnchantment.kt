@@ -22,20 +22,31 @@ import org.oddlama.vane.core.module.Module
 import org.oddlama.vane.util.StorageUtil.namespacedKey
 import org.oddlama.vane.util.snakeCaseToPascalCase
 
+/**
+ * Base class for vane custom enchantments.
+ *
+ * @param T owning module type.
+ * @param context enchantment context.
+ * @param defaultEnabled default enabled state of this enchantment group.
+ */
 open class CustomEnchantment<T : Module<T?>?> @JvmOverloads constructor(
     context: Context<T?>,
     defaultEnabled: Boolean = true
 ) : Listener<T?>(null) {
+    /** Resolved enchantment annotation metadata. */
     private val annotation: VaneEnchantment = javaClass.getAnnotation(VaneEnchantment::class.java)
 
-    /** Only for internal use.  */
+    /** Internal enchantment name from annotation metadata. */
     val name: String
+    /** Namespaced key used to register and resolve this enchantment. */
     private val key: NamespacedKey
 
+    /** Recipe configuration for this enchantment. */
     var recipes: Recipes<T?>?
+    /** Loot configuration for this enchantment. */
     var lootTables: LootTables<T?>?
 
-    // Language
+    /** Localized enchantment display name. */
     @LangMessage
     var langName: TranslatedMessage? = null
 
@@ -57,10 +68,10 @@ open class CustomEnchantment<T : Module<T?>?> @JvmOverloads constructor(
         lootTables = LootTables(getContext(), key, { defaultLootTables() })
     }
 
-    /** Returns the bukkit wrapper for this enchantment.  */
+    /** Returns the Bukkit enchantment instance for this custom enchantment key. */
     fun bukkit(): Enchantment? = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT)[key]
 
-    /** Returns the namespaced key for this enchantment.  */
+    /** Returns the namespaced key of this enchantment. */
     fun key(): NamespacedKey = key
 
     /**
@@ -90,7 +101,7 @@ open class CustomEnchantment<T : Module<T?>?> @JvmOverloads constructor(
         return displayName
     }
 
-    /** The minimum level this enchantment can have. Always fixed to 1.  */
+    /** Returns the minimum level of this enchantment (always 1). */
     fun minLevel(): Int = 1
 
     /**
@@ -110,6 +121,7 @@ open class CustomEnchantment<T : Module<T?>?> @JvmOverloads constructor(
      */
     fun maxCost(level: Int): Int = minCost(level) + 5
 
+    /** Whether this enchantment is marked as treasure-only. */
     val isTreasure: Boolean
         /**
          * Determines if this enchantment can be obtained with the enchanting table. Always reflects the
@@ -117,6 +129,7 @@ open class CustomEnchantment<T : Module<T?>?> @JvmOverloads constructor(
          */
         get() = annotation.treasure
 
+    /** Whether this enchantment can be offered in villager trades. */
     val isTradeable: Boolean
         /**
          * Determines if this enchantment is tradeable with villagers. Always reflects the annotation
@@ -124,6 +137,7 @@ open class CustomEnchantment<T : Module<T?>?> @JvmOverloads constructor(
          */
         get() = annotation.tradeable
 
+    /** Whether this enchantment is marked as a curse. */
     val isCurse: Boolean
         /**
          * Determines if this enchantment is a curse. Always reflects the annotation value [ ][VaneEnchantment.curse].
@@ -141,7 +155,7 @@ open class CustomEnchantment<T : Module<T?>?> @JvmOverloads constructor(
      */
     fun rarity(): Rarity = annotation.rarity
 
-    /** Weather custom items are allowed to be enchanted with this enchantment.  */
+    /** Returns whether custom items may receive this enchantment. */
     fun allowCustom(): Boolean = annotation.allowCustom
 
     /**
@@ -157,15 +171,20 @@ open class CustomEnchantment<T : Module<T?>?> @JvmOverloads constructor(
      */
     fun canEnchant(itemStack: ItemStack): Boolean = true
 
+    /** Returns default recipe definitions associated with this enchantment. */
     open fun defaultRecipes(): RecipeList? = RecipeList.of()
+    /** Returns default loot definitions associated with this enchantment. */
     open fun defaultLootTables(): LootTableList? = LootTableList.of()
 
-    /** Applies this enchantment to the given string item definition.  */
+    /** Appends this enchantment descriptor to an item definition string. */
     @JvmOverloads
     protected fun on(itemDefinition: String?, level: Int = 1): String = "$itemDefinition#enchants{$key*$level}"
 
+    /**
+     * Static instance tracking for custom enchantments.
+     */
     companion object {
-        // Track instances
+        /** Created custom enchantment instances keyed by class. */
         private val instances = mutableMapOf<Class<*>, CustomEnchantment<*>>()
     }
 }

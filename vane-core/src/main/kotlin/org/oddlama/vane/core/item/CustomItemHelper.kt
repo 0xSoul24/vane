@@ -10,21 +10,25 @@ import org.oddlama.vane.core.Core
 import org.oddlama.vane.core.item.api.CustomItem
 import org.oddlama.vane.util.StorageUtil.namespacedKey
 
+/**
+ * Utilities for creating, tagging, and converting custom item stacks.
+ */
 object CustomItemHelper {
-    /** Used in persistent item storage to identify custom items.  */
+    /**
+     * Persistent-data key used to store a custom item identifier.
+     */
     val CUSTOM_ITEM_IDENTIFIER: NamespacedKey = namespacedKey(
         "vane",
         "custom_item_identifier"
     )
 
-    /** Used in persistent item storage to store a custom item version.  */
+    /**
+     * Persistent-data key used to store the custom item version.
+     */
     val CUSTOM_ITEM_VERSION: NamespacedKey = namespacedKey("vane", "custom_item_version")
 
     /**
-     * Internal function. Acts as a dispatcher that updates internal metadata on the provided
-     * ItemStack (persistent-data tags, model data, durability) and then calls the
-     * CustomItem-specific update method so subclasses can apply any additional changes.
-     * This prevents information de-sync in case a subclass forgets to call super.
+     * Updates stack metadata for a custom item and delegates to item-specific updates.
      */
     fun updateItemStack(customItem: CustomItem, itemStack: ItemStack): ItemStack {
         itemStack.editMeta { meta: ItemMeta ->
@@ -41,8 +45,7 @@ object CustomItemHelper {
     }
 
     /**
-     * Returns the resourceKey key and version number of the stored custom item tag on the given
-     * item, if any. Returns null if none was found or the given item stack was null.
+     * Reads custom-item identifier and version tags from an item stack.
      */
     @JvmStatic
     fun customItemTagsFromItemStack(itemStack: ItemStack?): Pair<NamespacedKey?, Int?>? {
@@ -62,13 +65,17 @@ object CustomItemHelper {
         return Pair.of<NamespacedKey?, Int?>(namespacedKey(parts[0]!!, parts[1]!!), version)
     }
 
-    /** Creates a new item stack with a single item of this custom item.  */
+    /**
+     * Creates a single-item stack for a custom item key.
+     */
     @JvmStatic
     fun newStack(customItemKey: String): ItemStack {
         return newStack(customItemKey, 1)
     }
 
-    /** Creates a new item stack with the given number of items of this custom item.  */
+    /**
+     * Creates a stack for a custom item key with a specific amount.
+     */
     fun newStack(customItemKey: String, amount: Int): ItemStack {
         val registry = Core.instance()?.itemRegistry()
             ?: throw IllegalStateException("CustomItemRegistry is not initialized")
@@ -79,13 +86,17 @@ object CustomItemHelper {
         return newStack(ci, amount)
     }
 
-    /** Creates a new item stack with a single item of this custom item.  */
+    /**
+     * Creates a single-item stack for a custom item.
+     */
     @JvmStatic
     fun newStack(customItem: CustomItem): ItemStack {
         return newStack(customItem, 1)
     }
 
-    /** Creates a new item stack with the given number of items of this custom item.  */
+    /**
+     * Creates a stack for a custom item with a specific amount.
+     */
     @JvmStatic
     fun newStack(customItem: CustomItem, amount: Int): ItemStack {
         val itemStack = ItemStack(customItem.baseMaterial(), amount)
@@ -94,10 +105,7 @@ object CustomItemHelper {
     }
 
     /**
-     * This function is called to convert an existing item stack of any form to this custom item
-     * type, without losing metadata such as name, enchantments, etc. This is for example useful to
-     * convert a diamond something into a netherite something, when those two items are different
-     * CustomItem definitions but otherwise share attributes and functionality.
+     * Converts an existing stack to the target custom item while preserving stack metadata.
      */
     @JvmStatic
     fun convertExistingStack(customItem: CustomItem, itemStack: ItemStack): ItemStack {

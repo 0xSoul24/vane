@@ -13,13 +13,28 @@ import org.oddlama.vane.core.functional.GenericsFinder
 import java.lang.reflect.Method
 import java.util.logging.LogRecord
 
+/**
+ * Sentinel parameter that executes a bound functor when argument parsing is complete.
+ *
+ * @param T executor functor type.
+ * @param command the owning command.
+ * @param function bound execution functor.
+ * @param checkRequirements predicate evaluated before invocation.
+ * @param skipArgumentCheck predicate to skip runtime argument-type checks by index.
+ */
 class SentinelExecutorParam<T> @JvmOverloads constructor(
     command: Command<*>?,
+    /** Bound executor functor instance. */
     private val function: T?,
+    /** Predicate checked before invocation. */
     private val checkRequirements: Function1<CommandSender?, Boolean?> = Function1 { true },
+    /** Predicate deciding which argument indices skip strict type checks. */
     private val skipArgumentCheck: Function1<Int?, Boolean?> = Function1 { false }
 ) : BaseParam(command), Executor {
 
+    /**
+     * Validates that parsed arguments match the functor signature.
+     */
     private fun checkSignature(method: Method, args: List<Any?>) {
         if (args.size != method.parameters.size) {
             throw RuntimeException(
@@ -42,8 +57,14 @@ class SentinelExecutorParam<T> @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Sentinel parameters are executor nodes.
+     */
     override val isExecutor: Boolean get() = true
 
+    /**
+     * Invokes the bound functor with parsed command arguments.
+     */
     override fun execute(command: Command<*>?, sender: CommandSender?, parsedArgs: MutableList<Any?>): Boolean {
         val cmd = requireNotNull(command) { "command must not be null" }
         parsedArgs[0] = sender
@@ -69,15 +90,27 @@ class SentinelExecutorParam<T> @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Sentinel executors do not accept child parameters.
+     */
     override fun addParam(param: Param) {
         throw RuntimeException("Cannot add element to sentinel executor! This is a bug.")
     }
 
+    /**
+     * Sentinel executors are never parsed directly as regular parameters.
+     */
     override fun checkParse(sender: CommandSender?, args: Array<String?>?, offset: Int): CheckResult? = null
 
+    /**
+     * Sentinel executors provide no completions.
+     */
     override fun completionsFor(sender: CommandSender?, args: Array<String?>?, offset: Int): MutableList<String?> =
         mutableListOf()
 
+    /**
+     * Accepts only when argument count exactly matches expected parse depth.
+     */
     override fun checkAccept(sender: CommandSender?, args: Array<String?>?, offset: Int): CheckResult {
         val safeArgs = requireNotNull(args) { "args must not be null" }
         return when {

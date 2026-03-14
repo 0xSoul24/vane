@@ -1,5 +1,10 @@
 package org.oddlama.vane.core.command.enums
 
+/**
+ * Named world-time presets mapped to Minecraft tick values.
+ *
+ * @param ticks the world time in ticks.
+ */
 enum class TimeValue(val ticks: Int) {
     Dawn(23000),
     Day(1000),
@@ -9,6 +14,8 @@ enum class TimeValue(val ticks: Int) {
     Night(14000),
     Midnight(18000);
 
-    /** The lowercase name used in-game (tab-complete suggestions, argument parsing). */
+    /**
+     * Lowercase identifier used for command parsing and completions.
+     */
     val displayName: String get() = name.lowercase()
 }

@@ -10,17 +10,30 @@ import java.lang.reflect.Field
 import java.util.Comparator.nullsFirst
 import java.util.Comparator.naturalOrder
 
+/**
+ * Config field handler for nested string-to-string-to-string-to-material maps.
+ *
+ * @param owner object containing the reflected config field.
+ * @param field reflected config field.
+ * @param mapName maps Java field names to YAML paths.
+ * @param annotation source annotation metadata.
+ */
 class ConfigMaterialMapMapMapField(
     owner: Any?,
     field: Field,
     mapName: (String?) -> String?,
+    /** Annotation metadata for this field. */
     var annotation: ConfigMaterialMapMapMap
 ) : ConfigField<MutableMap<String?, MutableMap<String?, MutableMap<String?, Material?>?>?>?>(
     owner, field, mapName, "map of string to (map of string to (map of string to material))", annotation.desc
 ) {
+    /** Formats a material as a quoted namespaced key. */
     private fun Material.keyString() = "\"${escapeYaml(key.namespace)}:${escapeYaml(key.key)}\""
+
+    /** Sorts map entries by nullable keys with nulls first and natural ordering. */
     private val nullsFirstNatural = compareBy(nullsFirst(naturalOrder<String>())) { it: Map.Entry<String?, *> -> it.key }
 
+    /** Appends a nested map definition block. */
     private fun appendMapDefinition(builder: StringBuilder, indent: String?, prefix: String?, def: MutableMap<String?, MutableMap<String?, MutableMap<String?, Material?>?>?>) {
         def.entries.sortedWith(nullsFirstNatural).forEach { e1 ->
             builder.append("$indent$prefix  ${escapeYaml(e1.key)}:\n")
@@ -33,6 +46,7 @@ class ConfigMaterialMapMapMapField(
         }
     }
 
+    /** Returns the default value for this config field. */
     override fun def(): MutableMap<String?, MutableMap<String?, MutableMap<String?, Material?>?>?> =
         overriddenDef() ?: annotation.def.associateTo(mutableMapOf()) { e1 ->
             e1.key to e1.value.associateTo(mutableMapOf()) { e2 ->
@@ -40,8 +54,10 @@ class ConfigMaterialMapMapMapField(
             }
         }
 
+    /** Returns whether metrics collection is enabled for this field. */
     override fun metrics(): Boolean = overriddenMetrics() ?: annotation.metrics
 
+    /** Generates YAML for this field. */
     override fun generateYaml(builder: StringBuilder, indent: String, existingCompatibleConfig: YamlConfiguration?) {
         appendDescription(builder, indent)
         builder.append("$indent# Default:\n")
@@ -52,6 +68,7 @@ class ConfigMaterialMapMapMapField(
         appendMapDefinition(builder, indent, "", def)
     }
 
+    /** Validates that this field is loadable from YAML. */
     @Throws(YamlLoadException::class)
     override fun checkLoadable(yaml: YamlConfiguration) {
         checkYamlPath(yaml)
@@ -78,6 +95,7 @@ class ConfigMaterialMapMapMapField(
         }
     }
 
+    /** Loads this field value from YAML. */
     fun loadFromYaml(yaml: YamlConfiguration): MutableMap<String?, MutableMap<String?, MutableMap<String?, Material?>?>?> =
         yaml.getConfigurationSection(yamlPath())!!.getKeys(false).associateTo(mutableMapOf()) { key1 ->
             val key1Path = "${yamlPath()}.$key1"
@@ -91,6 +109,7 @@ class ConfigMaterialMapMapMapField(
             }
         }
 
+    /** Writes the loaded value into the reflected field. */
     override fun load(yaml: YamlConfiguration) {
         try {
             field.set(owner, loadFromYaml(yaml))

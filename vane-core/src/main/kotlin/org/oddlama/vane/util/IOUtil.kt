@@ -7,7 +7,13 @@ import java.net.URI
 import java.net.URISyntaxException
 import java.nio.charset.StandardCharsets
 
+/**
+ * I/O helpers.
+ */
 object IOUtil {
+    /**
+     * Fetches JSON content from a URL and parses it as a [JSONObject].
+     */
     @JvmStatic
     @Throws(IOException::class, JSONException::class, URISyntaxException::class)
     fun readJsonFromUrl(url: String): JSONObject =

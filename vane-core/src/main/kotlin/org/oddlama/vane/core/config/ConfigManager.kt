@@ -16,26 +16,54 @@ import java.nio.file.StandardCopyOption
 import java.util.logging.Level
 import kotlin.math.max
 
+/**
+ * Discovers, validates, loads, and regenerates module configuration fields.
+ *
+ * @param module the module whose config is managed.
+ */
 class ConfigManager(var module: Module<*>) {
+    /**
+     * Compiled config field handlers.
+     */
     private val configFields: MutableList<ConfigField<*>> = mutableListOf()
+
+    /**
+     * Optional section descriptions keyed by YAML path.
+     */
     private val sectionDescriptions: MutableMap<String?, String?> = mutableMapOf()
+
+    /**
+     * The compiled `@ConfigVersion` field, if present.
+     */
     var fieldVersion: ConfigVersionField? = null
 
     init {
         compile(module) { it }
     }
 
+    /**
+     * Returns the expected config version from module metadata.
+     */
     fun expectedVersion(): Long = module.annotation.configVersion
 
+    /**
+     * Returns whether a reflected field has a config annotation.
+     */
     private fun hasConfigAnnotation(field: Field): Boolean =
         field.annotations.any { it.annotationClass.java.name.startsWith("org.oddlama.vane.annotation.config.Config") }
 
+    /**
+     * Verifies config fields use the required `config` prefix.
+     */
     private fun assertFieldPrefix(field: Field) {
         if (!field.name.startsWith("config")) {
             throw RuntimeException("Configuration fields must be prefixed config. This is a bug.")
         }
     }
 
+    /**
+     * Compiles a reflected config field into a concrete [ConfigField] implementation.
+     */
     private fun compileField(owner: Any?, field: Field, mapName: (String?) -> String?): ConfigField<*> {
         assertFieldPrefix(field)
 
@@ -69,6 +97,9 @@ class ConfigManager(var module: Module<*>) {
         }
     }
 
+    /**
+     * Verifies a config version and logs actionable upgrade/downgrade guidance.
+     */
     private fun verifyVersion(file: File, version: Long): Boolean {
         if (version == expectedVersion()) return true
 
@@ -95,10 +126,19 @@ class ConfigManager(var module: Module<*>) {
         return false
     }
 
+    /**
+     * Registers a YAML section description.
+     */
     fun addSectionDescription(yamlPath: String?, description: String?) {
         sectionDescriptions[yamlPath] = description
     }
 
+    /**
+     * Discovers and compiles config fields on an owner object.
+     *
+     * @param owner object containing config annotations.
+     * @param mapName maps Java field names to YAML paths.
+     */
     fun compile(owner: Any, mapName: (String?) -> String?) {
         configFields.addAll(
             ReflectionUtils.getAllFields(owner.javaClass)
@@ -112,8 +152,17 @@ class ConfigManager(var module: Module<*>) {
         }
     }
 
+    /**
+     * Returns indentation spaces for a YAML depth level.
+     */
     private fun indentStr(level: Int): String = "  ".repeat(level)
 
+    /**
+     * Generates YAML content for all compiled config fields.
+     *
+     * @param builder output builder.
+     * @param existingCompatibleConfig existing config values to retain where possible.
+     */
     fun generateYaml(builder: StringBuilder, existingCompatibleConfig: YamlConfiguration?) {
         builder.append("# vim: set tabstop=2 softtabstop=0 expandtab shiftwidth=2:\n")
         builder.append("# This config file will automatically be updated, as long\n")
@@ -154,8 +203,18 @@ class ConfigManager(var module: Module<*>) {
         }
     }
 
+    /**
+     * Returns the module's canonical `config.yml` path.
+     */
     fun standardFile(): File = File(module.dataFolder, "config.yml")
 
+    /**
+     * Generates a config file atomically.
+     *
+     * @param file destination file.
+     * @param existingCompatibleConfig existing config values to retain where possible.
+     * @return `true` if file generation succeeded.
+     */
     fun generateFile(file: File, existingCompatibleConfig: YamlConfiguration?): Boolean {
         val content = buildString { generateYaml(this, existingCompatibleConfig) }
         val tmpFile = File("${file.absolutePath}.tmp")
@@ -174,6 +233,12 @@ class ConfigManager(var module: Module<*>) {
         return true
     }
 
+    /**
+     * Reloads and normalizes configuration from disk.
+     *
+     * @param file source config file.
+     * @return `true` when reload and field population succeed.
+     */
     fun reload(file: File): Boolean {
         var yaml = YamlConfiguration.loadConfiguration(file)
 
@@ -205,6 +270,9 @@ class ConfigManager(var module: Module<*>) {
         return true
     }
 
+    /**
+     * Registers metrics charts for opted-in config fields.
+     */
     fun registerMetrics(metrics: Metrics?) {
         configFields.forEach { it.registerMetrics(metrics) }
     }

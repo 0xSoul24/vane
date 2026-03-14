@@ -16,11 +16,18 @@ import org.oddlama.vane.util.BlockUtil.textureFromSkull
 import java.io.IOException
 import java.util.logging.Level
 
+/**
+ * Loads the bundled head library and optionally normalizes dropped player heads.
+ *
+ * @param context listener context.
+ */
 class HeadLibrary(context: Context<Core?>?) : Listener<Core?>(context) {
+    /** Whether matching player-head block drops should be replaced with library items. */
     @ConfigBoolean(
         def = true,
         desc = "When a player head is broken by a player that exists in /heads, drop the correctly named item as seen in /heads. You can disable this if it interferes with similarly textured heads from other plugins."
     )
+    /** Whether matching player-head drops should be replaced with head-library entries. */
     var configPlayerHeadDrops: Boolean = false
 
     init {
@@ -37,6 +44,7 @@ class HeadLibrary(context: Context<Core?>?) : Listener<Core?>(context) {
         }
     }
 
+    /** Replaces broken player-head block drops with matching head-library items. */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onBlockBreak(event: BlockBreakEvent) {
         if (!configPlayerHeadDrops) return

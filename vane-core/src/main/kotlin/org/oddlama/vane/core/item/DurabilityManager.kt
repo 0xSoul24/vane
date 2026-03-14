@@ -15,31 +15,65 @@ import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.util.ItemUtil.hasSentinel
 import org.oddlama.vane.util.StorageUtil.namespacedKey
 
+/**
+ * Manages durability metadata synchronization for custom items.
+ *
+ * @param context listener context.
+ */
 class DurabilityManager(context: Context<Core?>?) : Listener<Core?>(context) {
+    /**
+     * Synchronizes custom durability data when an item takes damage.
+     */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     fun onItemDamage(event: PlayerItemDamageEvent) {
         val customItem = module!!.itemRegistry()?.get(event.item) ?: return
         updateDamage(customItem, event.item)
     }
 
+    /**
+     * Static durability helpers and persistent-data keys.
+     */
     companion object {
+        /**
+         * Persistent-data key for maximum durability.
+         */
         val ITEM_DURABILITY_MAX: NamespacedKey = namespacedKey("vane", "durability.max")
+
+        /**
+         * Persistent-data key for current durability damage.
+         */
         val ITEM_DURABILITY_DAMAGE: NamespacedKey = namespacedKey("vane", "durability.damage")
+
+        /**
+         * Lore sentinel key for durability override entries.
+         */
         private val SENTINEL = namespacedKey("vane", "durability_override_lore")
 
+        /**
+         * Returns whether a lore component is durability metadata lore.
+         */
         private fun isDurabilityLore(component: Component?): Boolean = hasSentinel(component, SENTINEL)
 
+        /**
+         * Removes durability lore entries from an item.
+         */
         private fun removeLore(itemStack: ItemStack) {
             val lore = itemStack.lore() ?: return
             lore.removeIf { isDurabilityLore(it) }
             itemStack.lore(lore.ifEmpty { null })
         }
 
+        /**
+         * Applies effective damage while respecting unbreakable items.
+         */
         private fun setDamageAndUpdateItem(customItem: CustomItem, itemStack: ItemStack, damage: Int) {
             val actualDamage = if (itemStack.itemMeta?.isUnbreakable == true) 0 else damage
             setDamageAndMaxDamage(customItem, itemStack, actualDamage)
         }
 
+        /**
+         * Initializes or recalculates max durability state on an item.
+         */
         fun initializeOrUpdateMax(customItem: CustomItem, itemStack: ItemStack): Boolean {
             val pdc = itemStack.itemMeta?.persistentDataContainer ?: return false
             val oldDamage = pdc.getOrDefault(ITEM_DURABILITY_DAMAGE, PersistentDataType.INTEGER, -1)
@@ -69,6 +103,9 @@ class DurabilityManager(context: Context<Core?>?) : Listener<Core?>(context) {
             return true
         }
 
+        /**
+         * Reconciles durability metadata when an item changes durability source.
+         */
         fun updateDamage(customItem: CustomItem, itemStack: ItemStack) {
             val meta = itemStack.itemMeta as? Damageable ?: return
 
@@ -94,10 +131,16 @@ class DurabilityManager(context: Context<Core?>?) : Listener<Core?>(context) {
             setDamageAndMaxDamage(customItem, itemStack, scaleDamage(oldDamage, oldMaxDamage, newMaxDamage))
         }
 
+        /**
+         * Scales damage from one max-durability domain to another.
+         */
         fun scaleDamage(oldDamage: Int, oldMaxDamage: Int, newMaxDamage: Int): Int =
             if (oldMaxDamage == newMaxDamage) oldDamage
             else (newMaxDamage * (oldDamage.toFloat() / oldMaxDamage.toFloat())).toInt()
 
+        /**
+         * Writes max damage and current damage to item meta.
+         */
         fun setDamageAndMaxDamage(customItem: CustomItem, item: ItemStack, damage: Int): Boolean =
             item.editMeta(Damageable::class.java) { meta ->
                 meta.setMaxDamage(if (customItem.durability() != 0) customItem.durability() else item.type.maxDurability.toInt())

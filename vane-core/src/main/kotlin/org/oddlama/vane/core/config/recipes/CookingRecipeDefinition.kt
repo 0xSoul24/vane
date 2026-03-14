@@ -6,10 +6,20 @@ import org.bukkit.Tag
 import org.bukkit.inventory.*
 import org.oddlama.vane.util.ItemUtil
 
+/**
+ * Recipe definition for furnace-like cooking recipes.
+ *
+ * @param name logical recipe name.
+ * @param type cooking recipe type (`blasting`, `furnace`, `campfire`, `smoking`).
+ */
 class CookingRecipeDefinition(name: String?, private val type: String) : RecipeDefinition(name) {
+    /** Input ingredient definition. */
     private var input: String? = null
+    /** Result item definition. */
     private var result: String? = null
+    /** Experience awarded by the recipe. */
     private var experience = 0.0f
+    /** Cooking time in ticks. */
     private var cookingTime = 10
 
     init {
@@ -19,24 +29,29 @@ class CookingRecipeDefinition(name: String?, private val type: String) : RecipeD
         }
     }
 
+    /** Sets input ingredient definition. */
     fun input(input: String?): CookingRecipeDefinition {
         this.input = input
         return this
     }
 
+    /** Sets input ingredient by Bukkit tag. */
     fun input(tag: Tag<*>): CookingRecipeDefinition {
         return input("#" + tag.key())
     }
 
+    /** Sets input ingredient by material key. */
     fun input(material: Material): CookingRecipeDefinition {
         return input(material.key().toString())
     }
 
+    /** Sets result item definition. */
     fun result(result: String?): CookingRecipeDefinition {
         this.result = result
         return this
     }
 
+    /** Serializes this recipe definition to dictionary form. */
     override fun toDict(): Any {
         val dict = mutableMapOf<String?, Any?>()
         dict["CookingTime"] = this.cookingTime
@@ -47,6 +62,7 @@ class CookingRecipeDefinition(name: String?, private val type: String) : RecipeD
         return dict
     }
 
+    /** Loads this recipe definition from dictionary form. */
     override fun fromDict(dict: Any?): RecipeDefinition {
         require(dict is MutableMap<*, *>) { "Invalid $type recipe dictionary: Argument must be a Map<String, Object>!" }
         val inputObj = if (dict.containsKey("Input")) dict["Input"] else dict["input"]
@@ -82,6 +98,7 @@ class CookingRecipeDefinition(name: String?, private val type: String) : RecipeD
         return this
     }
 
+    /** Converts this definition into a concrete Bukkit cooking recipe. */
     override fun toRecipe(baseKey: NamespacedKey?): Recipe? {
         val bk = baseKey ?: throw IllegalArgumentException("baseKey cannot be null")
         val out = ItemUtil.itemstackFromString(this.result!!).getLeft()!!

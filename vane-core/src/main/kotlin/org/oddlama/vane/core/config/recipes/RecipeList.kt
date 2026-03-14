@@ -3,13 +3,21 @@ package org.oddlama.vane.core.config.recipes
 import org.oddlama.vane.core.config.ConfigDictSerializable
 import java.util.*
 
+/**
+ * Config-serializable list wrapper for recipe definitions.
+ *
+ * @param recipes initial recipe definitions.
+ */
 class RecipeList(private var recipes: MutableList<RecipeDefinition?> = mutableListOf()) : ConfigDictSerializable {
 
+    /** Returns the mutable list of recipe definitions. */
     fun recipes(): MutableList<RecipeDefinition?> = recipes
 
+    /** Serializes this recipe list to dictionary form. */
     override fun toDict(): MutableMap<String, Any> =
         recipes.filterNotNull().associateTo(LinkedHashMap()) { r -> toYamlName(r.name)!! to (r.toDict() as Any) }
 
+    /** Loads recipe definitions from dictionary form. */
     override fun fromDict(dict: MutableMap<String, Any>) {
         recipes.clear()
         dict.entries.forEach { (key, value) ->
@@ -18,10 +26,15 @@ class RecipeList(private var recipes: MutableList<RecipeDefinition?> = mutableLi
         }
     }
 
+    /**
+     * Construction and name-mapping helpers.
+     */
     companion object {
         @JvmStatic
+        /** Creates a [RecipeList] from vararg definitions. */
         fun of(vararg defs: RecipeDefinition?): RecipeList = RecipeList(defs.toMutableList())
 
+        /** Maps internal recipe names to preferred YAML display names. */
         private fun toYamlName(s: String?): String? {
             if (s.isNullOrEmpty()) return s
             val low = s.lowercase(Locale.getDefault())
@@ -36,6 +49,7 @@ class RecipeList(private var recipes: MutableList<RecipeDefinition?> = mutableLi
             }
         }
 
+        /** Maps YAML display names back to internal recipe names. */
         private fun fromYamlName(s: String?): String? {
             if (s.isNullOrEmpty()) return s
             val low = s.lowercase(Locale.getDefault()).replace("[_\\s]".toRegex(), "")

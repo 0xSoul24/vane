@@ -7,9 +7,20 @@ import java.util.*
 import kotlin.math.PI
 import kotlin.math.cos
 
+/**
+ * World-related utility helpers.
+ */
 object WorldUtil {
+    /**
+     * Running smooth-time tasks keyed by world UUID.
+     */
     private val runningTimeChangeTasks = mutableMapOf<UUID, BukkitTask>()
 
+    /**
+     * Smoothly interpolates world time to a target tick value.
+     *
+     * @return false when a smooth-time task is already running for the world.
+     */
     @JvmStatic
     fun changeTimeSmoothly(
         world: World,

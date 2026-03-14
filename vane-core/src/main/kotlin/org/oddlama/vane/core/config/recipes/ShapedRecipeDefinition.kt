@@ -7,34 +7,48 @@ import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.ShapedRecipe
 import org.oddlama.vane.util.ItemUtil
 
+/**
+ * Recipe definition for shaped crafting recipes.
+ *
+ * @param name logical recipe name.
+ */
 class ShapedRecipeDefinition(name: String?) : RecipeDefinition(name) {
+    /** Recipe shape rows. */
     private var shape: MutableList<String> = mutableListOf()
+    /** Ingredient mapping from shape symbols to ingredient definitions. */
     private var ingredients: MutableMap<String?, String?> = mutableMapOf()
+    /** Result item definition string. */
     private var result: String? = null
 
+    /** Sets the recipe shape rows. */
     fun shape(vararg shape: String): ShapedRecipeDefinition {
         this.shape = mutableListOf(*shape)
         return this
     }
 
+    /** Sets ingredient definition for a shape symbol. */
     fun setIngredient(id: Char, ingredient: String?): ShapedRecipeDefinition {
         this.ingredients[id.toString()] = ingredient
         return this
     }
 
+    /** Sets ingredient definition from a Bukkit tag. */
     fun setIngredient(id: Char, tag: Tag<*>): ShapedRecipeDefinition {
         return setIngredient(id, "#" + tag.key())
     }
 
+    /** Sets ingredient definition from a material key. */
     fun setIngredient(id: Char, material: Material): ShapedRecipeDefinition {
         return setIngredient(id, material.key().toString())
     }
 
+    /** Sets result item definition string. */
     fun result(result: String?): ShapedRecipeDefinition {
         this.result = result
         return this
     }
 
+    /** Serializes this recipe definition to dictionary form. */
     override fun toDict(): Any {
         val dict = mutableMapOf<String?, Any?>()
         dict["Type"] = "shaped"
@@ -44,6 +58,7 @@ class ShapedRecipeDefinition(name: String?) : RecipeDefinition(name) {
         return dict
     }
 
+    /** Loads this recipe definition from dictionary form. */
     override fun fromDict(dict: Any?): RecipeDefinition {
         require(dict is MutableMap<*, *>) { "Invalid shaped recipe dictionary: Argument must be a Map<String, Object>!" }
         val shapeObj = if (dict.containsKey("Shape")) dict["Shape"] else dict["shape"]
@@ -76,6 +91,7 @@ class ShapedRecipeDefinition(name: String?) : RecipeDefinition(name) {
         return this
     }
 
+    /** Converts this definition into a Bukkit [ShapedRecipe]. */
     override fun toRecipe(baseKey: NamespacedKey?): Recipe {
         val bk = baseKey ?: throw IllegalArgumentException("baseKey cannot be null")
         val recipe = ShapedRecipe(key(bk), ItemUtil.itemstackFromString(this.result!!).getLeft()!!)

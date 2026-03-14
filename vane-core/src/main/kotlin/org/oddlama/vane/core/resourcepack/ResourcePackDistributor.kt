@@ -28,30 +28,76 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CountDownLatch
 import java.util.logging.Level
 
+/**
+ * Distributes the configured resource pack to connecting players.
+ *
+ * @param context the module context.
+ */
 class ResourcePackDistributor(context: Context<Core?>) :
     Listener<Core?>(context.group("ResourcePack", "Enable resource pack distribution.")) {
 
+    /**
+     * If enabled, players must accept the resource pack.
+     */
     @ConfigBoolean(def = true, desc = "Kick players if they deny to use the specified resource pack (if set).")
     var configForce: Boolean = false
 
+    /**
+     * Prompt message used when the pack is required.
+     */
     @LangMessage
     var langPackRequired: TranslatedMessage? = null
 
+    /**
+     * Prompt message used when the pack is optional.
+     */
     @LangMessage
     var langPackSuggested: TranslatedMessage? = null
 
+    /**
+     * URL of the resource pack to distribute.
+     */
     var packUrl: String? = null
+
+    /**
+     * SHA-1 checksum of the resource pack.
+     */
     var packSha1: String? = null
+
+    /**
+     * UUID used for the distributed resource pack.
+     */
     var packUuid: UUID = UUID.fromString("fbba121a-8f87-4e97-922d-2059777311bf")
+
+    /**
+     * Cache-busting counter used in local development mode.
+     */
     @JvmField
     var counter: Int = 0
 
+    /**
+     * Optional custom resource pack configuration.
+     */
     var customResourcePackConfig: CustomResourcePackConfig = CustomResourcePackConfig(requireNotNull(getContext()))
+
+    /**
+     * Watches the pack file and triggers refreshes in local development mode.
+     */
     private var fileWatcher: ResourcePackFileWatcher? = null
+
+    /**
+     * Local HTTP server used in local development mode.
+     */
     private var devServer: ResourcePackDevServer? = null
 
+    /**
+     * Synchronization latches used to block player configuration until pack status is known.
+     */
     private val latches = ConcurrentHashMap<UUID, CountDownLatch>()
 
+    /**
+     * Initializes the active resource pack source and enables distribution listeners.
+     */
     public override fun onEnable() {
         val mod = requireNotNull(module)
         when {
@@ -103,14 +149,14 @@ class ResourcePackDistributor(context: Context<Core?>) :
         }
 
         val sha1 = requireNotNull(packSha1)
-        // Check sha1 sum validity
+        // Validate SHA-1 format before enabling distribution.
         if (sha1.length != 40) {
             mod.log.warning("Invalid resource pack SHA-1 sum '$sha1', should be 40 characters long but has ${sha1.length} characters")
             mod.log.warning("Disabling resource pack serving and message delaying")
             packUrl = ""
         }
 
-        // Propagate enable after determining whether the player message delayer is active
+        // Enable listeners only after the active distribution mode has been resolved.
         super.onEnable()
 
         packSha1 = sha1.lowercase()
@@ -127,6 +173,9 @@ class ResourcePackDistributor(context: Context<Core?>) :
         }
     }
 
+    /**
+     * Stops all pending waits and shuts down local development helpers.
+     */
     public override fun onDisable() {
         latches.values.forEach { it.countDown() }
         latches.clear()
@@ -139,6 +188,11 @@ class ResourcePackDistributor(context: Context<Core?>) :
         super.onDisable()
     }
 
+    /**
+     * Sends the resource pack during async player configuration and waits for completion.
+     *
+     * @param event the async configure event.
+     */
     @EventHandler
     fun onPlayerAsyncConnectionConfigure(event: AsyncPlayerConnectionConfigureEvent) {
         val profileUuid = event.connection.profile.id ?: return
@@ -158,16 +212,31 @@ class ResourcePackDistributor(context: Context<Core?>) :
         event.connection.completeReconfiguration()
     }
 
+    /**
+     * Re-sends the resource pack after a player reconfiguration request.
+     *
+     * @param event the reconfigure event.
+     */
     @EventHandler
     fun onPlayerConnectionReconfigure(event: PlayerConnectionReconfigureEvent) {
         sendResourcePackDuringConfiguration(event.connection)
     }
 
+    /**
+     * Releases pending waits when a player connection closes.
+     *
+     * @param event the close event.
+     */
     @EventHandler
     fun onPlayerConnectionClose(event: PlayerConnectionCloseEvent) {
         latches.remove(event.playerUniqueId)?.countDown()
     }
 
+    /**
+     * Sends the resource pack request on the configuration connection.
+     *
+     * @param connection the player configuration connection.
+     */
     fun sendResourcePackDuringConfiguration(connection: PlayerConfigurationConnection) {
         val info = ResourcePackInfo.resourcePackInfo(packUuid, URI.create(requireNotNull(packUrl)), requireNotNull(packSha1))
         val promptLang = requireNotNull(if (configForce) langPackRequired else langPackSuggested)
@@ -186,6 +255,11 @@ class ResourcePackDistributor(context: Context<Core?>) :
         connection.audience.sendResourcePacks(request)
     }
 
+    /**
+     * Sends the configured resource pack request to an audience.
+     *
+     * @param audience the target audience.
+     */
     fun sendResourcePack(audience: Audience) {
         var url = packUrl
         if (localDev) {
@@ -200,6 +274,11 @@ class ResourcePackDistributor(context: Context<Core?>) :
         }
     }
 
+    /**
+     * Recomputes and updates [packSha1] from the given file in local development mode.
+     *
+     * @param file the resource pack file.
+     */
     fun updateSha1(file: File) {
         if (!localDev) return
         try {
@@ -208,9 +287,16 @@ class ResourcePackDistributor(context: Context<Core?>) :
         } catch (_: IOException) {}
     }
 
+    /**
+     * Holds static helpers for development-mode detection.
+     */
     companion object {
-        // Assume debug environment if both add-plugin and vane-debug are defined, until run-paper adds
-        // a better way. https://github.com/jpenilla/run-paper/issues/14
+        /**
+         * Whether the server appears to run in a local development environment.
+         *
+         * This relies on current `run-paper` flags until upstream provides a dedicated signal:
+         * https://github.com/jpenilla/run-paper/issues/14
+         */
         private val localDev =
             serverHandle().options.hasArgument("add-plugin") && System.getProperty("disable.watchdog") != null
     }

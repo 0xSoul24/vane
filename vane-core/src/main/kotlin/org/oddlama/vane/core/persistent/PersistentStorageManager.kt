@@ -13,27 +13,47 @@ import java.nio.file.StandardCopyOption
 import java.util.function.Consumer
 import java.util.logging.Level
 
+/**
+ * Manages discovery, migration, loading, and saving of persistent module fields.
+ *
+ * @param module module whose persistent fields are managed.
+ */
 class PersistentStorageManager(var module: Module<*>) {
+    /**
+     * Describes a storage migration step.
+     *
+     * @param to target storage version this migration upgrades to.
+     * @param name human-readable migration name.
+     * @param migrator migration function that mutates storage JSON.
+     */
     class Migration(val to: Long, val name: String?, val migrator: Consumer<JSONObject?>)
 
+    /** Compiled persistent fields discovered through reflection. */
     private val persistentFields: MutableList<PersistentField> = mutableListOf()
+
+    /** Registered storage migrations. */
     private val migrations: MutableList<Migration> = mutableListOf()
+
+    /** Whether persistent data has been loaded successfully. */
     var isLoaded: Boolean = false
 
     init {
         compile(module) { it }
     }
 
+    /** Returns whether a field has a persistent annotation. */
     private fun hasPersistentAnnotation(field: Field): Boolean =
         field.annotations.any {
             it.annotationClass.java.name.startsWith("org.oddlama.vane.annotation.persistent.Persistent")
         }
 
+    /** Verifies that persistent fields use the required `storage` prefix. */
     private fun assertFieldPrefix(field: Field) {
         if (!field.name.startsWith("storage"))
             throw RuntimeException("Configuration fields must be prefixed storage. This is a bug.")
     }
 
+    /** Compiles a reflected field into a [PersistentField] handler. */
     private fun compileField(owner: Any?, field: Field, mapName: (String?) -> String?): PersistentField {
         assertFieldPrefix(field)
 
@@ -48,6 +68,7 @@ class PersistentStorageManager(var module: Module<*>) {
         }
     }
 
+    /** Discovers and compiles persistent fields on the given owner object. */
     fun compile(owner: Any, mapName: (String?) -> String?) {
         persistentFields.addAll(
             ReflectionUtils.getAllFields(owner.javaClass)
@@ -56,10 +77,12 @@ class PersistentStorageManager(var module: Module<*>) {
         )
     }
 
+    /** Registers a migration that upgrades storage to a target version. */
     fun addMigrationTo(to: Long, name: String?, migrator: Consumer<JSONObject?>) {
         migrations.add(Migration(to, name, migrator))
     }
 
+    /** Loads persistent data from disk and applies pending migrations. */
     fun load(file: File): Boolean {
         if (!file.exists() && isLoaded) {
             module.log.severe("Cannot reload persistent storage from nonexistent file '${file.name}'")
@@ -111,6 +134,7 @@ class PersistentStorageManager(var module: Module<*>) {
         return true
     }
 
+    /** Saves current persistent data to disk atomically. */
     fun save(file: File) {
         if (!isLoaded) return
 

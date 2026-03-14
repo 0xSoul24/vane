@@ -33,9 +33,14 @@ import org.oddlama.vane.util.Nms.playerHandle
 import org.oddlama.vane.util.Nms.worldHandle
 import java.util.*
 
+/**
+ * Utility helpers for item creation, naming, parsing, and comparison.
+ */
 object ItemUtil {
+    /** Stable synthetic owner UUID used for generated skull textures. */
     private val SKULL_OWNER: UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
 
+    /** Damages an item in hand using NMS break handling. */
     @JvmStatic
     fun damageItem(player: Player, itemStack: ItemStack, amount: Int) {
         if (player.gameMode == GameMode.CREATIVE) return
@@ -47,6 +52,7 @@ object ItemUtil {
         }
     }
 
+    /** Extracts plain-text display name from an item stack. */
     fun nameOf(item: ItemStack?): String {
         if (item == null || !item.hasItemMeta()) return ""
         val meta = item.itemMeta
@@ -54,6 +60,7 @@ object ItemUtil {
         return PlainTextComponentSerializer.plainText().serialize(meta.displayName()!!)
     }
 
+    /** Applies a single-line lore while naming an item. */
     @JvmStatic
     fun nameItem(item: ItemStack, name: Component, lore: Component): ItemStack {
         var lore = lore
@@ -61,6 +68,7 @@ object ItemUtil {
         return nameItem(item, name, mutableListOf(lore))
     }
 
+    /** Replaces lore on an item stack and removes italic styling from each line. */
     fun setLore(item: ItemStack, lore: MutableList<Component?>): ItemStack {
         item.editMeta(ItemMeta::class.java) { meta ->
             meta.lore(lore.map { it!!.decoration(TextDecoration.ITALIC, false) })
@@ -68,6 +76,7 @@ object ItemUtil {
         return item
     }
 
+    /** Sets display name and optional lore on an item stack. */
     @JvmStatic
     @JvmOverloads
     fun nameItem(
@@ -90,6 +99,7 @@ object ItemUtil {
         return item
     }
 
+    /** Compares enchantment sets for deterministic ordering. */
     fun compareEnchantments(itemA: ItemStack, itemB: ItemStack): Int {
         var aE = itemA.enchantments
         var bE = itemB.enchantments
@@ -153,6 +163,7 @@ object ItemUtil {
         return 0
     }
 
+    /** Creates a player-head stack for an offline player, optionally skipping menu-head rendering. */
     @JvmStatic
     fun skullForPlayer(player: OfflinePlayer?, isForMenu: Boolean): ItemStack {
         val item = ItemStack(Material.PLAYER_HEAD)
@@ -162,6 +173,7 @@ object ItemUtil {
         return item
     }
 
+    /** Creates a player head item from a base64 texture payload. */
     fun skullWithTexture(name: String, base64Texture: String): ItemStack {
         val profile = Bukkit.createProfileExact(SKULL_OWNER, "-")
         profile.setProperty(ProfileProperty("textures", base64Texture))
@@ -177,7 +189,7 @@ object ItemUtil {
         return item
     }
 
-    /** Returns true if the given component is guarded by the given sentinel.  */
+    /** Returns whether the given component is guarded by a hover sentinel. */
     @JvmStatic
     fun hasSentinel(component: Component?, sentinel: NamespacedKey): Boolean {
         if (component == null) {
@@ -194,16 +206,15 @@ object ItemUtil {
         }
     }
 
+    /** Adds a hover sentinel marker to a component. */
     @JvmStatic
     fun addSentinel(component: Component, sentinel: NamespacedKey): Component {
         return component.hoverEvent(HoverEvent.showText(Component.text(sentinel.toString())))
     }
 
     /**
-     * Applies enchantments to the item given in the form
-     * "{<namespace:enchant>[*<level>][,<namespace:enchant>[*<level>]]...}". Throws
-     * IllegalArgumentException if an enchantment cannot be found.
-    </level></namespace:enchant></level></namespace:enchant> */
+     * Applies enchantments to an item from a compact definition string.
+     */
     private fun applyEnchants(itemStack: ItemStack, enchants: String?): ItemStack {
         var enchants = enchants ?: return itemStack
 
@@ -245,7 +256,9 @@ object ItemUtil {
         return itemStack
     }
 
-    /** Returns the itemstack and a boolean indicating whether it was just as simlpe material.  */
+    /**
+     * Parses an item definition string into an [ItemStack] and simple-material flag.
+     */
     fun itemstackFromString(definition: String): Pair<ItemStack?, Boolean?> {
         // NOTE: Override to allow seamless migration from pre 1.21.9 to 1.21.9+
         var definition = definition
@@ -301,7 +314,11 @@ object ItemUtil {
         }
     }
 
+    /**
+     * Comparator for stable ordering of item stacks in selectors.
+     */
     class ItemStackComparator : Comparator<ItemStack?> {
+        /** Compares two item stacks by creative tab, id, damage, count, and enchantments. */
         override fun compare(a: ItemStack?, b: ItemStack?): Int {
             if (a == null && b == null) {
                 return 0

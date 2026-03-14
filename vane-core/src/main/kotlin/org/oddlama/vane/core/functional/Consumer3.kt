@@ -1,8 +1,11 @@
 package org.oddlama.vane.core.functional
 
+/** Erased three-argument consumer functor. */
 fun interface Consumer3<T1, T2, T3> : ErasedFunctor, GenericsFinder {
+    /** Applies this consumer. */
     fun apply(t1: T1?, t2: T2?, t3: T3?)
 
+    /** Invokes this consumer with erased arguments. */
     @Suppress("UNCHECKED_CAST")
     override fun invoke(args: List<Any?>): Any? {
         require(args.size == 3) { "Functor needs 3 arguments but got ${args.size} arguments" }

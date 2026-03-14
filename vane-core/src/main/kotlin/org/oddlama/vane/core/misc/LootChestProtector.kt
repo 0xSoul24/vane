@@ -13,19 +13,28 @@ import org.oddlama.vane.core.lang.TranslatedMessage
 import org.oddlama.vane.core.module.Context
 import java.util.*
 
+/**
+ * Adds a two-step confirmation window before breaking loot-table blocks.
+ *
+ * @param context listener context.
+ */
 class LootChestProtector(context: Context<Core?>?) : Listener<Core?>(context) {
-    // Tracks first-break attempts: block -> (playerUUID -> timestamp)
+    /** First break attempts by block and player UUID with timestamp. */
     private val lootBreakAttempts: MutableMap<Block, MutableMap<UUID, Long>> = mutableMapOf()
 
+    /** Whether loot-table block break confirmation is enabled. */
     @ConfigBoolean(
         def = true,
         desc = "Prevent players from breaking blocks with loot-tables (like treasure chests) when they first attempt to destroy it. They still can break it, but must do so within a short timeframe."
     )
+    /** Whether loot-table block break protection warning is enabled. */
     var configWarnBreakingLootBlocks: Boolean = false
 
+    /** Message sent when initial break attempt is blocked. */
     @LangMessage
     var langBreakLootBlockPrevented: TranslatedMessage? = null
 
+    /** Handles loot-table block break confirmation timing logic. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onBreakLootChest(event: BlockBreakEvent) {
         if (!configWarnBreakingLootBlocks) return
@@ -42,7 +51,7 @@ class LootChestProtector(context: Context<Core?>?) : Listener<Core?>(context) {
 
         if (previousAttempt != null) {
             val elapsed = now - previousAttempt
-            if (elapsed in 5001L until 30000L) return  // Allow break within the window
+            if (elapsed in 5001L until 30000L) return
         }
 
         blockAttempts[player.uniqueId] = now

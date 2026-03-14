@@ -7,21 +7,40 @@ import org.oddlama.vane.core.YamlLoadException
 import java.lang.reflect.Field
 import java.lang.reflect.InvocationTargetException
 
+/**
+ * Config field handler for dictionary-like structured values.
+ *
+ * @param owner object containing the reflected config field.
+ * @param field reflected config field.
+ * @param mapName maps Java field names to YAML paths.
+ * @param annotation source annotation metadata.
+ */
 class ConfigDictField(
     owner: Any?,
     field: Field,
     mapName: (String?) -> String?,
+    /** Annotation metadata for this field. */
     var annotation: ConfigDict
 ) : ConfigField<ConfigDictSerializable?>(owner, field, mapName, "dict", annotation.desc) {
 
+    /**
+     * Empty default dictionary implementation when no explicit default is provided.
+     */
     private class EmptyDict : ConfigDictSerializable {
+        /** Returns an empty dictionary. */
         override fun toDict(): MutableMap<String, Any> = mutableMapOf()
+
+        /** Applies no values. */
         override fun fromDict(dict: MutableMap<String, Any>) = Unit
     }
 
+    /** Returns the default value for this config field. */
     override fun def(): ConfigDictSerializable = overriddenDef() ?: EmptyDict()
+
+    /** Returns whether metrics collection is enabled for this field. */
     override fun metrics(): Boolean = overriddenMetrics() ?: annotation.metrics
 
+    /** Appends a YAML list definition for dictionary values. */
     private fun appendList(builder: StringBuilder, indent: String?, listKey: String?, list: MutableList<Any?>) {
         builder.append("$indent$listKey")
         if (list.isEmpty()) {
@@ -42,6 +61,7 @@ class ConfigDictField(
         }
     }
 
+    /** Appends a YAML dictionary definition recursively. */
     private fun appendDict(builder: StringBuilder, indent: String?, dictKey: String?, dict: MutableMap<String, Any>, isListEntry: Boolean) {
         builder.append(indent)
         if (isListEntry) builder.append("-") else builder.append("$dictKey:")
@@ -67,11 +87,13 @@ class ConfigDictField(
         }
     }
 
+    /** Appends either default or effective dictionary output block. */
     private fun appendDict(builder: StringBuilder, indent: String?, defaultDefinition: Boolean, ser: ConfigDictSerializable) {
         if (defaultDefinition) appendDict(builder, "$indent# ", "Default", ser.toDict(), false)
         else appendDict(builder, indent, basename(), ser.toDict(), false)
     }
 
+    /** Generates YAML for this field. */
     override fun generateYaml(builder: StringBuilder, indent: String, existingCompatibleConfig: YamlConfiguration?) {
         appendDescription(builder, indent)
         appendDict(builder, indent, true, def())
@@ -80,6 +102,7 @@ class ConfigDictField(
         appendDict(builder, indent, false, def)
     }
 
+    /** Validates that this field is loadable from YAML. */
     @Throws(YamlLoadException::class)
     override fun checkLoadable(yaml: YamlConfiguration) {
         checkYamlPath(yaml)
@@ -87,11 +110,13 @@ class ConfigDictField(
             throw YamlLoadException("Invalid type for yaml path '${yamlPath()}', expected configuration section")
     }
 
+    /** Loads a nested list from YAML, recursively decoding dictionary entries. */
     fun loadListFromYaml(rawList: MutableList<*>): MutableList<Any?> =
         rawList.mapTo(mutableListOf()) { e ->
             if (e is ConfigurationSection) loadDictFromYaml(e) else e
         }
 
+    /** Loads a nested dictionary from a YAML section. */
     fun loadDictFromYaml(section: ConfigurationSection): MutableMap<String, Any> =
         section.getKeys(false).associateWithTo(mutableMapOf()) { subkey ->
             when {
@@ -106,6 +131,7 @@ class ConfigDictField(
             }
         }
 
+    /** Loads this field value from YAML. */
     fun loadFromYaml(yaml: YamlConfiguration): ConfigDictSerializable {
         try {
             val dict = annotation.cls.java.getDeclaredConstructor().newInstance() as ConfigDictSerializable
@@ -121,6 +147,7 @@ class ConfigDictField(
         }
     }
 
+    /** Writes the loaded value into the reflected field. */
     override fun load(yaml: YamlConfiguration) {
         try {
             field.set(owner, loadFromYaml(yaml))

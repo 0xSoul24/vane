@@ -19,14 +19,21 @@ import java.net.URISyntaxException
 import java.util.*
 import java.util.logging.Level
 
+/**
+ * Synchronizes multiplexed authentication identities and skins from proxy messages.
+ *
+ * @param context listener context.
+ */
 class AuthMultiplexer(context: Context<Core?>?) : Listener<Core?>(context), PluginMessageListener {
-    // Persistent storage
+    /** Mapping from multiplexed UUID to original player UUID. */
     @Persistent
     var storageAuthMultiplex: MutableMap<UUID?, UUID?> = mutableMapOf()
 
+    /** Mapping from multiplexed UUID to multiplex slot identifier. */
     @Persistent
     var storageAuthMultiplexerId: MutableMap<UUID?, Int?> = mutableMapOf()
 
+    /** Registers incoming plugin message channel. */
     override fun onEnable() {
         super.onEnable()
         try {
@@ -37,6 +44,7 @@ class AuthMultiplexer(context: Context<Core?>?) : Listener<Core?>(context), Plug
         }
     }
 
+    /** Unregisters incoming plugin message channel. */
     override fun onDisable() {
         super.onDisable()
         try {
@@ -47,6 +55,7 @@ class AuthMultiplexer(context: Context<Core?>?) : Listener<Core?>(context), Plug
         }
     }
 
+    /** Resolves display name for a multiplexed player UUID. */
     @Synchronized
     fun authMultiplexPlayerName(uuid: UUID?): String? {
         val originalPlayerId = storageAuthMultiplex[uuid] ?: return null
@@ -55,6 +64,7 @@ class AuthMultiplexer(context: Context<Core?>?) : Listener<Core?>(context), Plug
         return "§7[$multiplexerId]§r ${originalPlayer.name}"
     }
 
+    /** Applies multiplexed display name and skin to a player if mapping exists. */
     private fun tryInitMultiplexedPlayerName(player: Player) {
         val id = player.uniqueId
         val displayName = authMultiplexPlayerName(id) ?: return
@@ -81,11 +91,13 @@ class AuthMultiplexer(context: Context<Core?>?) : Listener<Core?>(context), Plug
         }
     }
 
+    /** Applies multiplexed profile state on join. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
     fun onPlayerJoin(event: PlayerJoinEvent) {
         tryInitMultiplexedPlayerName(event.player)
     }
 
+    /** Receives multiplex registration payloads from proxy and updates mappings. */
     @Synchronized
     override fun onPluginMessageReceived(channel: String, player: Player, bytes: ByteArray) {
         if (channel != CHANNEL_AUTH_MULTIPLEX) return
@@ -116,8 +128,9 @@ class AuthMultiplexer(context: Context<Core?>?) : Listener<Core?>(context), Plug
         }
     }
 
+    /** Channel constants for auth multiplex messaging. */
     companion object {
-        // Channel for proxy messages to multiplex connections
+        /** Plugin message channel used by vane proxy auth multiplexing. */
         const val CHANNEL_AUTH_MULTIPLEX: String = "vane_proxy:auth_multiplex"
     }
 }

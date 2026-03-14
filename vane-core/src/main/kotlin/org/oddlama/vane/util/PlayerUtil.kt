@@ -14,7 +14,11 @@ import org.oddlama.vane.util.BlockUtil.dropNaturally
 import java.util.concurrent.ThreadLocalRandom
 
 
+/**
+ * Player-oriented inventory and interaction utility helpers.
+ */
 object PlayerUtil {
+    /** Spawns particles used for elytra boost effects. */
     @JvmStatic
     fun spawnElytraBoostParticles(player: Player) {
         val loc = player.location
@@ -32,6 +36,7 @@ object PlayerUtil {
         }
     }
 
+    /** Applies an elytra directional velocity boost to a player. */
     @JvmStatic
     fun applyElytraBoost(player: Player, factor: Double) {
         val v = player.location.direction.normalize().multiply(factor)
@@ -39,6 +44,7 @@ object PlayerUtil {
         player.world.playSound(player.location, Sound.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 0.4f, 2.0f)
     }
 
+    /** Removes exactly one item from the specified hand slot. */
     @JvmStatic
     fun removeOneItemFromHand(player: Player, hand: EquipmentSlot) {
         val item = player.equipment.getItem(hand)
@@ -50,8 +56,9 @@ object PlayerUtil {
         }
     }
 
-    // ItemStack amounts are discarded, only the mapped value counts.
-    // CAUTION: There must not be duplicate item keys that could stack.
+    /**
+     * Returns whether a player owns at least the required quantities for each item key.
+     */
     @JvmStatic
     fun hasItems(player: Player, items: Map<ItemStack?, Int>): Boolean {
         if (player.gameMode == GameMode.CREATIVE) return true
@@ -61,10 +68,12 @@ object PlayerUtil {
         }
     }
 
+    /** Removes the amount specified by an item's own amount field. */
     @JvmStatic
     fun takeItems(player: Player, item: ItemStack): Boolean =
         takeItems(player, mutableMapOf(item to item.amount))
 
+    /** Removes multiple item requirements from a player's inventory. */
     @JvmStatic
     fun takeItems(player: Player, items: Map<ItemStack?, Int>): Boolean {
         if (player.gameMode == GameMode.CREATIVE) return true
@@ -84,12 +93,13 @@ object PlayerUtil {
         return true
     }
 
+    /** Gives a single item stack to a player. */
     @JvmStatic
     fun giveItem(player: Player, item: ItemStack?) {
         item?.let { giveItems(player, arrayOf(it)) }
     }
 
-    // Ignores item.amount; creates properly-sized stacks.
+    /** Splits an amount into legal stack sizes for the given item type. */
     fun createLawfulStacks(item: ItemStack, amount: Int): Array<ItemStack> {
         val maxStack = item.maxStackSize
         val stacks = (maxStack - 1 + amount) / maxStack
@@ -103,11 +113,13 @@ object PlayerUtil {
         }
     }
 
+    /** Gives a certain amount of an item by creating lawful stacks. */
     @JvmStatic
     fun giveItems(player: Player, item: ItemStack, amount: Int) {
         giveItems(player, createLawfulStacks(item, amount))
     }
 
+    /** Gives stacks to a player and drops leftovers at their location. */
     fun giveItems(player: Player, items: Array<ItemStack>) {
         val leftovers = player.inventory.addItem(*items)
         leftovers.values.forEach { item ->
@@ -115,6 +127,7 @@ object PlayerUtil {
         }
     }
 
+    /** Attempts to till a block into farmland while honoring break events. */
     @JvmStatic
     fun tillBlock(player: Player, block: Block): Boolean {
         val breakEvent = BlockBreakEvent(block, player)
@@ -126,6 +139,7 @@ object PlayerUtil {
         return true
     }
 
+    /** Attempts to plant a crop block and consume one seed item when needed. */
     @JvmStatic
     fun seedBlock(
         player: Player,
@@ -156,6 +170,7 @@ object PlayerUtil {
         return true
     }
 
+    /** Harvests a mature plant, resets growth age, and drops produce. */
     @JvmStatic
     fun harvestPlant(player: Player, block: Block): Boolean {
         val drops = when (block.type) {
@@ -180,6 +195,7 @@ object PlayerUtil {
         return true
     }
 
+    /** Plays the arm swing animation for a chosen hand slot. */
     @JvmStatic
     fun swingArm(player: Player, hand: EquipmentSlot) {
         when (hand) {

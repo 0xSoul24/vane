@@ -17,17 +17,37 @@ import org.oddlama.vane.core.functional.Consumer2
 import org.oddlama.vane.core.module.Context
 import java.util.*
 
+/**
+ * Tracks open menus, routes inventory events, and provides shared menu resources.
+ *
+ * @param context listener context.
+ */
 class MenuManager(context: Context<Core?>) : Listener<Core?>(context.namespace("Menus")) {
+    /**
+     * Currently open menus keyed by player UUID.
+     */
     private val openMenus = mutableMapOf<UUID, Menu>()
+
+    /**
+     * Active menus keyed by their top inventory.
+     */
     private val menus = mutableMapOf<Inventory, Menu>()
 
+    /** Shared translated item used for accept actions in selectors. */
     @JvmField var itemSelectorAccept: TranslatedItemStack<*>?
+    /** Shared translated item used for cancel actions in selectors. */
     @JvmField var itemSelectorCancel: TranslatedItemStack<*>?
+    /** Shared translated item representing selected entries. */
     @JvmField var itemSelectorSelected: TranslatedItemStack<*>?
+    /** Shared translated item used for generic selector page buttons. */
     @JvmField var genericSelectorPage: TranslatedItemStack<*>?
+    /** Shared translated item indicating the current selector page. */
     @JvmField var genericSelectorCurrentPage: TranslatedItemStack<*>?
+    /** Shared translated item used for generic selector filtering. */
     @JvmField var genericSelectorFilter: TranslatedItemStack<*>?
+    /** Shared translated item used to cancel generic selection. */
     @JvmField var genericSelectorCancel: TranslatedItemStack<*>?
+    /** Shared head selector configuration group. */
     @JvmField var headSelector: HeadSelectorGroup?
 
     init {
@@ -47,8 +67,10 @@ class MenuManager(context: Context<Core?>) : Listener<Core?>(context.namespace("
         genericSelectorCancel      = TranslatedItemStack<Core?>(ctxGenericSelector, "Cancel",      Material.PRISMARINE_SHARD, 1, "Used to cancel selection.")
     }
 
+    /** Resolves the open menu for a player from an inventory view. */
     fun menuFor(player: Player, view: InventoryView): Menu? = menuFor(player, view.topInventory)
 
+    /** Resolves the open menu for a player from a top inventory reference. */
     fun menuFor(player: Player, inventory: Inventory?): Menu? {
         val menu = menus[inventory]
         val open = openMenus[player.uniqueId]
@@ -62,16 +84,19 @@ class MenuManager(context: Context<Core?>) : Listener<Core?>(context.namespace("
         return menu ?: open
     }
 
+    /** Registers a menu as open for a player. */
     fun add(player: Player, menu: Menu) {
         openMenus[player.uniqueId] = menu
         menus[menu.inventory()!!] = menu
     }
 
+    /** Unregisters a menu for a player and removes global mapping when no viewer remains. */
     fun remove(player: Player, menu: Menu) {
         openMenus.remove(player.uniqueId)
         if (openMenus.values.none { it === menu }) menus.remove(menu.inventory())
     }
 
+    /** Iterates over each currently open menu and its owning player. */
     fun forEachOpen(functor: Consumer2<Player?, Menu?>) {
         module!!.server.onlinePlayers.forEach { player ->
             val open = openMenus[player.uniqueId] ?: return@forEach
@@ -79,12 +104,14 @@ class MenuManager(context: Context<Core?>) : Listener<Core?>(context.namespace("
         }
     }
 
+    /** Requests inventory refresh for all viewers of a menu. */
     fun update(menu: Menu?) {
         module!!.server.onlinePlayers
             .filter { openMenus[it.uniqueId] === menu }
             .forEach { it.updateInventory() }
     }
 
+    /** Routes inventory clicks to the active menu and prevents vanilla handling. */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onInventoryClick(event: InventoryClickEvent) {
         val clicker = event.whoClicked as? Player ?: return
@@ -94,18 +121,21 @@ class MenuManager(context: Context<Core?>) : Listener<Core?>(context.namespace("
         menu.click(clicker, event.currentItem, slot, event)
     }
 
+    /** Cancels inventory drag events for managed menus. */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onInventoryDrag(event: InventoryDragEvent) {
         val clicker = event.whoClicked as? Player ?: return
         if (menuFor(clicker, event.view) != null) event.isCancelled = true
     }
 
+    /** Notifies menus when their inventory is closed. */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onInventoryClose(event: InventoryCloseEvent) {
         val human = event.player as? Player ?: return
         menuFor(human, event.view)?.closed(human, event.reason)
     }
 
+    /** Prevents anvil repair-cost display for managed menu anvils. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPrepareAnvilEvent(event: PrepareAnvilEvent) {
         if (menus[event.view.topInventory] != null) event.view.repairCost = 0

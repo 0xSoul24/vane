@@ -6,14 +6,24 @@ import org.oddlama.vane.core.YamlLoadException
 import java.lang.reflect.Field
 import java.util.Locale
 
+/**
+ * Config field handler for mappings of string keys to string lists.
+ *
+ * @param owner object containing the reflected config field.
+ * @param field reflected config field.
+ * @param mapName maps Java field names to YAML paths.
+ * @param annotation source annotation metadata.
+ */
 class ConfigStringListMapField(
     owner: Any?,
     field: Field,
     mapName: (String?) -> String?,
+    /** Annotation metadata for this field. */
     var annotation: ConfigStringListMap
 ) : ConfigField<MutableMap<String?, MutableList<String?>?>?>(
     owner, field, mapName, "map of string to string list", annotation.desc
 ) {
+    /** Appends the string-list-map definition block to YAML output. */
     private fun appendStringListMapDefinition(builder: StringBuilder, indent: String?, prefix: String?, def: MutableMap<String?, MutableList<String?>?>) {
         def.forEach { (k, list) ->
             builder.append("$indent$prefix  ${escapeYaml(toPascalCase(k))}:\n")
@@ -21,11 +31,14 @@ class ConfigStringListMapField(
         }
     }
 
+    /** Returns the default value for this config field. */
     override fun def(): MutableMap<String?, MutableList<String?>?> =
         overriddenDef() ?: annotation.def.associate { e -> e.key to e.list.toMutableList<String?>() }.toMutableMap()
 
+    /** Returns whether metrics collection is enabled for this field. */
     override fun metrics(): Boolean = overriddenMetrics() ?: annotation.metrics
 
+    /** Generates YAML for this field. */
     override fun generateYaml(builder: StringBuilder, indent: String, existingCompatibleConfig: YamlConfiguration?) {
         appendDescription(builder, indent)
         builder.append("$indent# Default:\n")
@@ -36,6 +49,7 @@ class ConfigStringListMapField(
         appendStringListMapDefinition(builder, indent, "", def)
     }
 
+    /** Validates that this field is loadable from YAML. */
     @Throws(YamlLoadException::class)
     override fun checkLoadable(yaml: YamlConfiguration) {
         checkYamlPath(yaml)
@@ -52,12 +66,14 @@ class ConfigStringListMapField(
         }
     }
 
+    /** Loads this field value from YAML. */
     fun loadFromYaml(yaml: YamlConfiguration): MutableMap<String?, MutableList<String?>?> =
         yaml.getConfigurationSection(yamlPath())!!.getKeys(false).associateTo(mutableMapOf()) { listKey ->
             val listPath = "${yamlPath()}.$listKey"
             normalizeKey(listKey) to yaml.getList(listPath)!!.map { it as String? }.toMutableList()
         }
 
+    /** Writes the loaded value into the reflected field. */
     override fun load(yaml: YamlConfiguration) {
         try {
             field.set(owner, loadFromYaml(yaml))
@@ -66,7 +82,9 @@ class ConfigStringListMapField(
         }
     }
 
+    /** Static key transformation helpers for map serialization. */
     companion object {
+        /** Converts internal snake/case keys to PascalCase YAML headings. */
         private fun toPascalCase(key: String?): String? {
             if (key.isNullOrEmpty()) return key
             return key.split("[^A-Za-z0-9]+".toRegex())
@@ -74,6 +92,7 @@ class ConfigStringListMapField(
                 .joinToString("") { it[0].uppercaseChar() + it.substring(1) }
         }
 
+        /** Normalizes YAML headings back to lowercase snake_case keys. */
         private fun normalizeKey(key: String?): String? =
             key?.lowercase(Locale.getDefault())?.replace("[^a-z0-9]+".toRegex(), "_")
     }

@@ -7,28 +7,40 @@ import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.StonecuttingRecipe
 import org.oddlama.vane.util.ItemUtil
 
+/**
+ * Recipe definition for stonecutting recipes.
+ *
+ * @param name logical recipe name.
+ */
 class StonecuttingRecipeDefinition(name: String?) : RecipeDefinition(name) {
+    /** Input ingredient definition. */
     private var input: String? = null
+    /** Result item definition string. */
     private var result: String? = null
 
+    /** Sets input ingredient definition. */
     fun input(input: String?): StonecuttingRecipeDefinition {
         this.input = input
         return this
     }
 
+    /** Sets input ingredient from a Bukkit tag. */
     fun input(tag: Tag<*>): StonecuttingRecipeDefinition {
         return input("#" + tag.key())
     }
 
+    /** Sets input ingredient from a material key. */
     fun input(material: Material): StonecuttingRecipeDefinition {
         return input(material.key().toString())
     }
 
+    /** Sets result item definition string. */
     fun result(result: String?): StonecuttingRecipeDefinition {
         this.result = result
         return this
     }
 
+    /** Serializes this recipe definition to dictionary form. */
     override fun toDict(): Any {
         val dict = mutableMapOf<String?, Any?>()
         dict["Input"] = this.input
@@ -37,6 +49,7 @@ class StonecuttingRecipeDefinition(name: String?) : RecipeDefinition(name) {
         return dict
     }
 
+    /** Loads this recipe definition from dictionary form. */
     override fun fromDict(dict: Any?): RecipeDefinition {
         require(dict is MutableMap<*, *>) { "Invalid stonecutting recipe dictionary: Argument must be a Map<String, Object>!" }
         val inputObj = if (dict.containsKey("Input")) dict["Input"] else dict["input"]
@@ -56,6 +69,7 @@ class StonecuttingRecipeDefinition(name: String?) : RecipeDefinition(name) {
         return this
     }
 
+    /** Converts this definition into a Bukkit [StonecuttingRecipe]. */
     override fun toRecipe(baseKey: NamespacedKey?): Recipe {
         val bk = baseKey ?: throw IllegalArgumentException("baseKey cannot be null")
         val inputDef = input ?: throw IllegalArgumentException("Invalid stonecutting recipe: input must be set")

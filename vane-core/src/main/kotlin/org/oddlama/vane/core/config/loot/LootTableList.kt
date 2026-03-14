@@ -3,15 +3,21 @@ package org.oddlama.vane.core.config.loot
 import org.oddlama.vane.core.config.ConfigDictSerializable
 import java.util.Locale
 
+/**
+ * Config-serializable list wrapper for [LootDefinition] entries.
+ */
 class LootTableList : ConfigDictSerializable {
+    /** Stored loot definitions. */
     private var tables: MutableList<LootDefinition?> = mutableListOf()
 
+    /** Returns the mutable loot definition list. */
     fun tables(): MutableList<LootDefinition?> = tables
 
-    // Map special internal names to PascalCase names for YAML generation
+    /** Serializes loot definitions to dictionary form. */
     override fun toDict(): MutableMap<String, Any> =
         tables.filterNotNull().associateTo(mutableMapOf()) { t -> toYamlName(t.name)!! to (t.serialize() as Any) }
 
+    /** Loads loot definitions from dictionary form. */
     override fun fromDict(dict: MutableMap<String, Any>) {
         tables.clear()
         dict.entries.forEach { (name, raw) ->
@@ -20,11 +26,16 @@ class LootTableList : ConfigDictSerializable {
         }
     }
 
+    /**
+     * Construction and name-mapping helpers.
+     */
     companion object {
         @JvmStatic
+        /** Creates a [LootTableList] from vararg definitions. */
         fun of(vararg defs: LootDefinition?): LootTableList =
             LootTableList().also { it.tables = defs.toMutableList() }
 
+        /** Maps internal loot names to preferred YAML display names. */
         private fun toYamlName(s: String?): String? {
             if (s.isNullOrEmpty()) return s
             return when (s.lowercase(Locale.getDefault())) {
@@ -37,6 +48,7 @@ class LootTableList : ConfigDictSerializable {
             }
         }
 
+        /** Maps YAML display names back to internal loot names. */
         private fun fromYamlName(s: String?): String? {
             if (s.isNullOrEmpty()) return s
             return when (s.lowercase(Locale.getDefault()).replace("[_\\s]".toRegex(), "")) {

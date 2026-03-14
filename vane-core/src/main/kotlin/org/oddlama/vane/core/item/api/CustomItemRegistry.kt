@@ -49,6 +49,7 @@ interface CustomItemRegistry {
     /** Returns the custom model data registry.  */
     fun dataRegistry(): CustomModelDataRegistry
 
+    /** Global registry access helpers. */
     companion object {
         /** Retrieves the global registry instance from the running vane-core instance, if any.  */
         @JvmStatic

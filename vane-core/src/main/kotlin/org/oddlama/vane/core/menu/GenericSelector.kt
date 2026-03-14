@@ -15,19 +15,44 @@ import org.oddlama.vane.core.module.Context
 import kotlin.math.abs
 import kotlin.math.max
 
+/**
+ * State and widget helpers for paged generic selector menus.
+ *
+ * @param T selectable element type.
+ * @param F filter type used for narrowing entries.
+ * @param menuManager menu manager providing shared selector resources.
+ * @param toItem renderer from element to item stack.
+ * @param onClick selection click callback.
+ * @param things source elements.
+ * @param filter active filter implementation.
+ * @param pageSize number of elements shown per page.
+ */
 class GenericSelector<T, F : Filter<T?>?> private constructor(
+    /** Shared menu manager resources. */
     val menuManager: MenuManager,
+    /** Converts entries to display item stacks. */
     val toItem: Function1<T?, ItemStack?>,
+    /** Handles selection clicks for entries. */
     val onClick: Function4<Player?, Menu?, T?, InventoryClickEvent?, Menu.ClickResult?>,
+    /** Source entries before filtering. */
     val things: MutableList<T?>,
+    /** Active selector filter. */
     val filter: F,
+    /** Number of entries shown per page. */
     val pageSize: Int
 ) {
+    /** Whether filter output should be recomputed on next update. */
     var updateFilter = true
+    /** Current page index. */
     var page = 0
+    /** Last valid page index. */
     var lastPage = 0
+    /** Filtered elements currently shown by the selector. */
     var filteredThings: MutableList<T?> = mutableListOf()
 
+    /**
+     * Widget rendering and handling page navigation controls.
+     */
     class PageSelector<T, F : Filter<T?>?>(
         private val gs: GenericSelector<T, F>,
         private val slotFrom: Int,
@@ -39,6 +64,7 @@ class GenericSelector<T, F : Filter<T?>?> private constructor(
             require(((slotTo - slotFrom) % 2) != 0) { "PageSelector needs an uneven number of assigned slots!" }
         }
 
+        /** Updates page control items for the current page window. */
         override fun update(menu: Menu?): Boolean {
             if (menu == null) return false
             for (slot in slotFrom until slotTo) {
@@ -59,15 +85,18 @@ class GenericSelector<T, F : Filter<T?>?> private constructor(
             return true
         }
 
+        /** Returns the logical page offset represented by a control index. */
         private fun buttonOffset(i: Int): Int = when {
             i <= 0 -> -BIG_JUMP_SIZE
             i >= (slotTo - slotFrom) - 1 -> BIG_JUMP_SIZE
             else -> i - (slotTo - slotFrom) / 2
         }
 
+        /** Resolves a bounded page index for an offset. */
         private fun pageForOffset(offset: Int): Int =
             (gs.page + offset).coerceIn(0, gs.lastPage)
 
+        /** Handles clicks on page controls. */
         override fun click(player: Player?, menu: Menu?, item: ItemStack?, slot: Int, event: InventoryClickEvent?): Menu.ClickResult {
             if (menu == null) return Menu.ClickResult.IGNORE
             if (slot !in slotFrom until slotTo) return Menu.ClickResult.IGNORE
@@ -78,16 +107,22 @@ class GenericSelector<T, F : Filter<T?>?> private constructor(
             return Menu.ClickResult.SUCCESS
         }
 
+        /** Page-selector constants. */
         companion object {
+            /** Large step size used by edge page buttons. */
             private const val BIG_JUMP_SIZE = 5
         }
     }
 
+    /**
+     * Widget rendering selectable elements for the current page.
+     */
     class SelectionArea<T, F : Filter<T?>?>(
         private val gs: GenericSelector<T, F>,
         private val firstSlot: Int
     ) : MenuWidget {
 
+        /** Updates displayed entries for the current page. */
         override fun update(menu: Menu?): Boolean {
             if (menu == null) return false
             for (i in 0 until gs.pageSize) {
@@ -98,6 +133,7 @@ class GenericSelector<T, F : Filter<T?>?> private constructor(
             return true
         }
 
+        /** Handles clicks inside the paged selection area. */
         override fun click(player: Player?, menu: Menu?, item: ItemStack?, slot: Int, event: InventoryClickEvent?): Menu.ClickResult? {
             if (menu == null) return Menu.ClickResult.IGNORE
             if (slot < firstSlot || slot >= firstSlot + gs.pageSize) return Menu.ClickResult.IGNORE
@@ -107,7 +143,11 @@ class GenericSelector<T, F : Filter<T?>?> private constructor(
         }
     }
 
+    /**
+     * Factory entry point for constructing generic selector menus.
+     */
     companion object {
+        /** Creates a generic selector menu with paging and filtering support. */
         fun <T, F : Filter<T?>?> create(
             context: Context<*>,
             player: Player?,

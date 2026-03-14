@@ -14,7 +14,15 @@ import org.oddlama.vane.core.item.CustomItemHelper.customItemTagsFromItemStack
 import org.oddlama.vane.core.item.api.CustomItem
 import org.oddlama.vane.core.module.Context
 
+/**
+ * Converts legacy or outdated item stacks in inventories to current custom-item formats.
+ *
+ * @param context listener context.
+ */
 class ExistingItemConverter(context: Context<Core?>) : Listener<Core?>(context.namespace("existing_item_converter")) {
+    /**
+     * Resolves legacy model data ids to currently registered custom items.
+     */
     private fun fromOldItem(itemStack: ItemStack): CustomItem? {
         val modelDataInt = itemStack.itemMeta.customModelDataComponent.floats.firstOrNull()?.toInt()
             ?: return null
@@ -46,6 +54,9 @@ class ExistingItemConverter(context: Context<Core?>) : Listener<Core?>(context.n
         return module!!.itemRegistry()?.get(NamespacedKey.fromString(newItemKey) ?: return null)
     }
 
+    /**
+     * Processes and migrates all item stacks in an inventory.
+     */
     private fun processInventory(inventory: Inventory) {
         val contents = inventory.contents
         var changed = 0
@@ -107,9 +118,15 @@ class ExistingItemConverter(context: Context<Core?>) : Listener<Core?>(context.n
         if (changed > 0) inventory.contents = contents
     }
 
+    /**
+     * Converts items in player inventory on join.
+     */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onPlayerJoin(event: PlayerJoinEvent) = processInventory(event.player.inventory)
 
+    /**
+     * Converts items in opened inventories.
+     */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onInventoryOpen(event: InventoryOpenEvent) = processInventory(event.inventory)
 }

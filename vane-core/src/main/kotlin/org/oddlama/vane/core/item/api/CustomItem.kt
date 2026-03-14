@@ -59,6 +59,7 @@ interface CustomItem {
      */
     fun baseMaterial(): Material
 
+    /** Returns the custom model data value applied to this item. */
     fun customModelData(): Int
 
     /**
@@ -118,12 +119,16 @@ interface CustomItem {
     fun updateItemStack(itemStack: ItemStack): ItemStack = itemStack
 
     /** Returns true if the given itemstack is an "instance" of this custom item.  */
+    /** Returns whether this item stack belongs to this custom item definition. */
     fun isInstance(itemStack: ItemStack?): Boolean =
         instance()?.get(itemStack) === this
 
+    /** Creates a new stack of this custom item with amount 1. */
     fun newStack(): ItemStack? = newStack(this)
 
+    /** Creates a new stack of this custom item with the given amount. */
     fun newStack(amount: Int): ItemStack? = newStack(this, amount)
 
+    /** Converts an existing stack to this custom item while preserving compatible metadata. */
     fun convertExistingStack(itemStack: ItemStack): ItemStack? = convertExistingStack(this, itemStack)
 }

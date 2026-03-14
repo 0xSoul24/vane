@@ -5,22 +5,36 @@ import org.oddlama.vane.annotation.config.ConfigStringList
 import org.oddlama.vane.core.YamlLoadException
 import java.lang.reflect.Field
 
+/**
+ * Config field handler for string list values.
+ *
+ * @param owner object containing the reflected config field.
+ * @param field reflected config field.
+ * @param mapName maps Java field names to YAML paths.
+ * @param annotation source annotation metadata.
+ */
 class ConfigStringListField(
     owner: Any?,
     field: Field,
     mapName: (String?) -> String?,
+    /** Annotation metadata for this field. */
     var annotation: ConfigStringList
 ) : ConfigField<MutableList<String?>?>(owner, field, mapName, "list of strings", annotation.desc) {
 
+    /** Appends a quoted string list definition block. */
     private fun appendStringListDefinition(builder: StringBuilder?, indent: String?, prefix: String?, def: MutableList<String?>) {
         appendListDefinition<String?>(builder, indent, prefix, def) { b, s ->
             b!!.append("\"${escapeYaml(s)}\"")
         }
     }
 
+    /** Returns the default value for this config field. */
     override fun def(): MutableList<String?> = overriddenDef() ?: annotation.def.map { it as String? }.toMutableList()
+
+    /** Returns whether metrics collection is enabled for this field. */
     override fun metrics(): Boolean = overriddenMetrics() ?: annotation.metrics
 
+    /** Generates YAML for this field. */
     override fun generateYaml(builder: StringBuilder, indent: String, existingCompatibleConfig: YamlConfiguration?) {
         appendDescription(builder, indent)
         builder.append("$indent# Default:\n")
@@ -31,6 +45,7 @@ class ConfigStringListField(
         appendStringListDefinition(builder, indent, "", def)
     }
 
+    /** Validates that this field is loadable from YAML. */
     @Throws(YamlLoadException::class)
     override fun checkLoadable(yaml: YamlConfiguration) {
         checkYamlPath(yaml)
@@ -42,9 +57,11 @@ class ConfigStringListField(
         }
     }
 
+    /** Loads this field value from YAML. */
     fun loadFromYaml(yaml: YamlConfiguration): MutableList<String?> =
         yaml.getList(yamlPath())!!.map { it as String? }.toMutableList()
 
+    /** Writes the loaded value into the reflected field. */
     override fun load(yaml: YamlConfiguration) {
         try {
             field.set(owner, loadFromYaml(yaml))

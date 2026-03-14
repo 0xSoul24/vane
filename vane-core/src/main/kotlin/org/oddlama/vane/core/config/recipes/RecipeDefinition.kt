@@ -12,16 +12,31 @@ import org.oddlama.vane.util.MaterialUtil.materialFrom
 import org.oddlama.vane.util.StorageUtil.namespacedKey
 import java.lang.reflect.Modifier
 
+/**
+ * Base representation of a configurable recipe definition.
+ *
+ * @param name logical recipe name within its owning recipe list.
+ */
 abstract class RecipeDefinition(val name: String?) {
+    /** Builds a fully namespaced recipe key from a base key and this definition name. */
     fun key(baseKey: NamespacedKey): NamespacedKey =
         namespacedKey(baseKey.namespace(), "${baseKey.value()}.$name")
 
+    /** Creates a Bukkit recipe from this definition. */
     abstract fun toRecipe(baseKey: NamespacedKey?): Recipe?
+
+    /** Serializes this recipe definition to dictionary form. */
     abstract fun toDict(): Any?
+
+    /** Loads this recipe definition from dictionary data. */
     abstract fun fromDict(dict: Any?): RecipeDefinition?
 
+    /**
+     * Static factory and parsing helpers.
+     */
     companion object {
         @JvmStatic
+        /** Creates a concrete recipe definition from dictionary data. */
         fun fromDict(name: String?, dict: Any): RecipeDefinition {
             require(dict is Map<*, *>) {
                 "Invalid recipe dictionary: Argument must be a Map<String, Object>, but is ${dict.javaClass}!"
@@ -40,6 +55,7 @@ abstract class RecipeDefinition(val name: String?) {
         }
 
         @JvmStatic
+        /** Parses a recipe ingredient definition into a Bukkit [RecipeChoice]. */
         fun recipeChoice(definition: String): RecipeChoice {
             val trimmed = definition.trim()
 

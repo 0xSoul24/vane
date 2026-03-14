@@ -6,13 +6,26 @@ import org.oddlama.vane.core.LootTable
 import org.oddlama.vane.util.ItemUtil
 import org.oddlama.vane.util.StorageUtil.namespacedKey
 
+/**
+ * Config definition for additional entries injected into vanilla loot tables.
+ *
+ * @param name logical loot-definition name.
+ */
 class LootDefinition(val name: String?) {
+    /**
+     * Internal serializable loot entry representation.
+     */
     private data class Entry(
+        /** Drop chance in percent-like units used by vane loot table processing. */
         val chance: Double,
+        /** Minimum amount for generated stack size. */
         val amountMin: Int,
+        /** Maximum amount for generated stack size. */
         val amountMax: Int,
+        /** Item definition string parsed via [ItemUtil.itemstackFromString]. */
         val itemDefinition: String?
     ) {
+        /** Serializes this entry to dictionary form. */
         fun serialize(): Map<String, Any?> = mapOf(
             "Chance" to chance,
             "AmountMin" to amountMin,
@@ -20,7 +33,11 @@ class LootDefinition(val name: String?) {
             "Item" to itemDefinition
         )
 
+        /**
+         * Entry deserialization helpers.
+         */
         companion object {
+            /** Deserializes an [Entry] from map data. */
             fun deserialize(map: Map<String?, Any?>): Entry {
                 val chance = when (val v = map["Chance"]) {
                     is Double -> v
@@ -47,25 +64,36 @@ class LootDefinition(val name: String?) {
         }
     }
 
+    /** Loot tables affected by this definition. */
     val affectedTables: MutableList<NamespacedKey?> = mutableListOf()
+
+    /** Serialized loot entries belonging to this definition. */
     private val entries: MutableList<Entry> = mutableListOf()
 
+    /** Builds a unique key for this definition under a base key. */
     fun key(baseKey: NamespacedKey): NamespacedKey =
         namespacedKey(baseKey.namespace(), "${baseKey.value()}.$name")
 
+    /** Adds an affected loot table by namespaced key. */
     fun `in`(table: NamespacedKey?): LootDefinition = apply { affectedTables.add(table) }
+
+    /** Adds an affected loot table from Bukkit [LootTables]. */
     fun `in`(table: LootTables): LootDefinition = `in`(table.key)
 
+    /** Adds a prebuilt entry. */
     private fun add(entry: Entry): LootDefinition = apply { entries.add(entry) }
 
+    /** Adds a loot entry from primitives and item definition string. */
     fun add(chance: Double, amountMin: Int, amountMax: Int, itemDefinition: String?): LootDefinition =
         add(Entry(chance, amountMin, amountMax, itemDefinition))
 
+    /** Serializes this loot definition to dictionary form. */
     fun serialize(): Map<String, Any> = mapOf(
         "Tables" to affectedTables.map { it.toString() },
         "Items"  to entries.map { it.serialize() }
     )
 
+    /** Converts serialized entries into runtime loot-table entries. */
     fun entries(): List<LootTable.LootTableEntry> = entries.map { e ->
         LootTable.LootTableEntry(
             e.chance,
@@ -75,7 +103,11 @@ class LootDefinition(val name: String?) {
         )
     }
 
+    /**
+     * Deserialization helpers.
+     */
     companion object {
+        /** Deserializes a [LootDefinition] from dictionary form. */
         fun deserialize(name: String?, rawDict: Any): LootDefinition {
             require(rawDict is Map<*, *>) {
                 "Invalid loot table: Argument must be a Map<String, Object>, but is ${rawDict.javaClass}!"

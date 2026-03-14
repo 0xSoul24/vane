@@ -8,15 +8,23 @@ import org.oddlama.vane.core.lang.TranslatedMessage
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.core.module.ModuleComponent
 
+/**
+ * Configuration group for head selector menu resources.
+ *
+ * @param context component context.
+ */
 class HeadSelectorGroup(context: Context<Core?>) :
     ModuleComponent<Core?>(context.namespace("HeadSelector", "Menu configuration for the head selector menu.")) {
 
+    /** Localized head selector menu title. */
     @LangMessage
     lateinit var langTitle: TranslatedMessage
 
+    /** Localized filter input title used by the head selector. */
     @LangMessage
     lateinit var langFilterTitle: TranslatedMessage
 
+    /** Translated item used to represent a selectable head entry. */
     @JvmField
     var itemSelectHead: TranslatedItemStack<*> = TranslatedItemStack<Core?>(
         getContext()!!,
@@ -26,7 +34,9 @@ class HeadSelectorGroup(context: Context<Core?>) :
         "Used to represent a head in the head library."
     )
 
+    /** Enables this component. */
     override fun onEnable() {}
 
+    /** Disables this component. */
     override fun onDisable() {}
 }

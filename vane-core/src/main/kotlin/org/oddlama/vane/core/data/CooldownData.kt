@@ -4,7 +4,14 @@ import org.bukkit.NamespacedKey
 import org.bukkit.persistence.PersistentDataHolder
 import org.bukkit.persistence.PersistentDataType
 
+/**
+ * Persistent-data based cooldown helper.
+ *
+ * @param key persistent data key used to store last-use timestamp.
+ * @param cooldownTime cooldown duration in milliseconds.
+ */
 class CooldownData(private val key: NamespacedKey, private val cooldownTime: Long) {
+    /** Returns elapsed milliseconds since last recorded usage. */
     private fun PersistentDataHolder.elapsedSinceLast(): Long =
         System.currentTimeMillis() - persistentDataContainer.getOrDefault(key, PersistentDataType.LONG, 0L)
 
@@ -24,5 +31,6 @@ class CooldownData(private val key: NamespacedKey, private val cooldownTime: Lon
      */
     fun peekCooldown(holder: PersistentDataHolder): Boolean = holder.elapsedSinceLast() >= cooldownTime
 
+    /** Clears stored cooldown timestamp. */
     fun clear(holder: PersistentDataHolder) = holder.persistentDataContainer.remove(key)
 }

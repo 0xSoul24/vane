@@ -8,48 +8,66 @@ import org.bukkit.inventory.RecipeChoice.MaterialChoice
 import org.bukkit.inventory.SmithingTransformRecipe
 import org.oddlama.vane.util.ItemUtil
 
+/**
+ * Recipe definition for smithing transform recipes.
+ *
+ * @param name logical recipe name.
+ */
 class SmithingRecipeDefinition(name: String?) : RecipeDefinition(name) {
+    /** Base ingredient definition. */
     private var base: String? = null
+    /** Addition ingredient definition. */
     private var addition: String? = null
+    /** Whether smithing should copy NBT from base item to result. */
     private var copyNbt = false
+    /** Result item definition string. */
     private var result: String? = null
 
+    /** Sets base ingredient definition. */
     fun base(base: String?): SmithingRecipeDefinition {
         this.base = base
         return this
     }
 
+    /** Sets base ingredient from a Bukkit tag. */
     fun base(tag: Tag<*>): SmithingRecipeDefinition {
         return base("#" + tag.key())
     }
 
+    /** Sets base ingredient from a material key. */
     fun base(material: Material): SmithingRecipeDefinition {
         return base(material.key().toString())
     }
 
+    /** Sets addition ingredient definition. */
     fun addition(addition: String?): SmithingRecipeDefinition {
         this.addition = addition
         return this
     }
 
+    /** Sets whether NBT should be copied from base input. */
     fun copyNbt(copyNbt: Boolean): SmithingRecipeDefinition {
         this.copyNbt = copyNbt
         return this
     }
 
+    /** Sets addition ingredient from a Bukkit tag. */
     fun addition(tag: Tag<*>): SmithingRecipeDefinition {
         return addition("#" + tag.key())
     }
 
+    /** Sets addition ingredient from a material key. */
     fun addition(material: Material): SmithingRecipeDefinition {
         return addition(material.key().toString())
     }
 
+    /** Sets result item definition string. */
     fun result(result: String?): SmithingRecipeDefinition {
         this.result = result
         return this
     }
 
+    /** Serializes this recipe definition to dictionary form. */
     override fun toDict(): Any {
         val dict = mutableMapOf<String?, Any?>()
         dict["Base"] = this.base
@@ -60,6 +78,7 @@ class SmithingRecipeDefinition(name: String?) : RecipeDefinition(name) {
         return dict
     }
 
+    /** Loads this recipe definition from dictionary form. */
     override fun fromDict(dict: Any?): RecipeDefinition {
         require(dict is MutableMap<*, *>) { "Invalid smithing recipe dictionary: Argument must be a Map<String, Object>!" }
         val baseObj = if (dict.containsKey("Base")) dict["Base"] else dict["base"]
@@ -93,6 +112,7 @@ class SmithingRecipeDefinition(name: String?) : RecipeDefinition(name) {
         return this
     }
 
+    /** Converts this definition into a Bukkit [SmithingTransformRecipe]. */
     override fun toRecipe(baseKey: NamespacedKey?): Recipe {
         val bk = baseKey ?: throw IllegalArgumentException("baseKey cannot be null")
         val baseDef = base ?: throw IllegalArgumentException("Invalid smithing recipe: base must be set")

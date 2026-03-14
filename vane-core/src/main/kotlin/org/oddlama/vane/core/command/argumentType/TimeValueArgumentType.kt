@@ -10,12 +10,18 @@ import io.papermc.paper.command.brigadier.argument.CustomArgumentType
 import org.oddlama.vane.core.command.enums.TimeValue
 import java.util.concurrent.CompletableFuture
 
+/**
+ * Brigadier argument type for [TimeValue] presets.
+ */
 class TimeValueArgumentType : CustomArgumentType.Converted<TimeValue, String> {
+    /** Returns the native brigadier argument type. */
     override fun getNativeType(): ArgumentType<String> = StringArgumentType.word()
 
+    /** Converts a string token into a [TimeValue]. */
     @Throws(CommandSyntaxException::class)
     override fun convert(nativeType: String): TimeValue = TimeValue.valueOf(nativeType.replaceFirstChar { it.uppercaseChar() })
 
+    /** Builds completion suggestions from [TimeValue] display names. */
     override fun <S : Any> listSuggestions(
         context: CommandContext<S>,
         builder: SuggestionsBuilder
@@ -27,7 +33,9 @@ class TimeValueArgumentType : CustomArgumentType.Converted<TimeValue, String> {
         return builder.buildFuture()
     }
 
+    /** Factory methods for [TimeValueArgumentType]. */
     companion object {
+        /** Creates a new time-value argument type. */
         fun timeValue() = TimeValueArgumentType()
     }
 }

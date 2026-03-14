@@ -4,7 +4,11 @@ import java.io.Serializable
 import java.lang.invoke.SerializedLambda
 import java.lang.reflect.Method
 
+/**
+ * Utility interface for resolving backing method metadata of Kotlin lambdas.
+ */
 interface GenericsFinder : Serializable {
+    /** Resolves this lambda to a serialized lambda payload. */
     fun serialized(): SerializedLambda =
         runCatching {
             javaClass.getDeclaredMethod("writeReplace")
@@ -12,11 +16,13 @@ interface GenericsFinder : Serializable {
                 .invoke(this) as SerializedLambda
         }.getOrElse { throw RuntimeException(it) }
 
+    /** Resolves the containing implementation class of this lambda. */
     val containingClass: Class<*>
         get() = runCatching {
             Class.forName(serialized().implClass.replace("/", "."))
         }.getOrElse { throw RuntimeException(it) }
 
+    /** Resolves the implementation method backing this lambda. */
     fun method(): Method {
         val lambda = serialized()
         return containingClass.declaredMethods

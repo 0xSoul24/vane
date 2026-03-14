@@ -14,11 +14,18 @@ import org.oddlama.vane.core.Core
 import org.oddlama.vane.core.module.Module
 import java.util.concurrent.CompletableFuture
 
+/**
+ * Brigadier argument type that resolves loaded vane modules by annotation name.
+ *
+ * @param core core module used to access loaded modules.
+ */
 class ModuleArgumentType private constructor(private val core: Core) :
     CustomArgumentType.Converted<Module<*>, String> {
 
+    /** Returns the native brigadier argument type. */
     override fun getNativeType(): ArgumentType<String> = StringArgumentType.word()
 
+    /** Converts a module name into a loaded module instance. */
     @Throws(CommandSyntaxException::class)
     override fun convert(nativeType: String): Module<*> =
         core.modules
@@ -31,6 +38,7 @@ class ModuleArgumentType private constructor(private val core: Core) :
                 )
             ).create()
 
+    /** Builds completion suggestions from loaded module names. */
     override fun <S : Any> listSuggestions(
         context: CommandContext<S>,
         builder: SuggestionsBuilder
@@ -45,8 +53,10 @@ class ModuleArgumentType private constructor(private val core: Core) :
         return builder.buildFuture()
     }
 
+    /** Factory methods for [ModuleArgumentType]. */
     companion object {
         @JvmStatic
+        /** Creates a module argument type for the given core module. */
         fun module(core: Core): ModuleArgumentType = ModuleArgumentType(core)
     }
 }

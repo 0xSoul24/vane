@@ -1,5 +1,8 @@
 package org.oddlama.vane.core.item.api
 
+/**
+ * Enumerates vanilla behaviors that can be disabled for custom items.
+ */
 enum class InhibitBehavior {
     /**
      * Prevents the item from being used as an ingredient in any (recognized) vanilla crafting
@@ -13,7 +16,7 @@ enum class InhibitBehavior {
      */
     TEMPT,
 
-    /** Prevents the item from burning.  */
+    /** Prevents the item from burning. */
     ITEM_BURN,
 
     /** Prevents hoes from creating farmland.  */
@@ -27,9 +30,9 @@ enum class InhibitBehavior {
      */
     MEND,
 
-    /** Prevents players from adding new enchantments via the anvil.  */
+    /** Prevents players from adding new enchantments via the anvil. */
     NEW_ENCHANTS,
 
-    /** Prevents dispensers from dispense this item  */
+    /** Prevents dispensers from dispensing this item. */
     DISPENSE,
 }

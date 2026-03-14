@@ -7,14 +7,27 @@ import org.oddlama.vane.core.module.Module
 import org.oddlama.vane.core.resourcepack.ResourcePackGenerator
 import java.lang.reflect.Field
 
+/**
+ * Handles loading and validation for the language file version entry.
+ *
+ * @param module the owning module.
+ * @param owner the target object instance.
+ * @param field the reflected target field.
+ * @param mapName maps Java field names to YAML paths.
+ * @param annotation the source annotation metadata.
+ */
 class LangVersionField(
     module: Module<*>,
     owner: Any?,
     field: Field,
     mapName: (String?) -> String,
+    /** Annotation metadata for this field. */
     var annotation: LangVersion?
 ) : LangField<Long?>(module, owner, field, mapName) {
 
+    /**
+     * Validates that the YAML version entry exists and is a positive number.
+     */
     @Throws(YamlLoadException::class)
     override fun checkLoadable(yaml: YamlConfiguration?) {
         if (yaml == null) throw YamlLoadException.Lang("yaml is null", this)
@@ -26,6 +39,9 @@ class LangVersionField(
             throw YamlLoadException.Lang("Entry '${yamlPath()}' has an invalid value: Value must be >= 1", this)
     }
 
+    /**
+     * Loads the version value into the reflected field.
+     */
     override fun load(namespace: String?, yaml: YamlConfiguration?) {
         if (yaml == null) throw YamlLoadException.Lang("yaml is null", this)
         try {
@@ -35,6 +51,9 @@ class LangVersionField(
         }
     }
 
+    /**
+     * Language version entries are not exported as resource pack translations.
+     */
     @Throws(YamlLoadException::class)
     override fun addTranslations(pack: ResourcePackGenerator?, yaml: YamlConfiguration?, langCode: String?) = Unit
 }

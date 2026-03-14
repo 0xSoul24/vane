@@ -10,15 +10,30 @@ import java.net.InetSocketAddress
 import java.security.MessageDigest
 import java.util.logging.Level
 
+/**
+ * Hosts a local HTTP server that serves a generated resource pack during development.
+ *
+ * @param resourcePackDistributor the distributor whose URL and SHA-1 are kept in sync.
+ * @param file the resource pack zip file to serve.
+ */
 class ResourcePackDevServer(private val resourcePackDistributor: ResourcePackDistributor, private val file: File) :
     HttpHandler {
+    /**
+     * The running HTTP server instance, if active.
+     */
     private var httpServer: HttpServer? = null
 
+    /**
+     * Stops the HTTP server if it is running.
+     */
     fun stop() {
         httpServer?.stop(0)
         httpServer = null
     }
 
+    /**
+     * Starts the HTTP server and updates the distributor URL and SHA-1 hash.
+     */
     fun serve() {
         try {
             val server = HttpServer.create(InetSocketAddress(9000), 0)
@@ -41,6 +56,14 @@ class ResourcePackDevServer(private val resourcePackDistributor: ResourcePackDis
         }
     }
 
+    /**
+     * Handles HTTP requests for the resource pack file.
+     *
+     * Supports `HEAD` and `GET`; returns `404` when the zip file is missing.
+     *
+     * @param he the incoming HTTP exchange.
+     * @throws IOException if request handling fails.
+     */
     @Throws(IOException::class)
     override fun handle(he: HttpExchange) {
         val method = he.requestMethod

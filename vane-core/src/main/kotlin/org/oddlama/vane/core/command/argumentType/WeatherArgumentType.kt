@@ -10,12 +10,18 @@ import io.papermc.paper.command.brigadier.argument.CustomArgumentType
 import org.oddlama.vane.core.command.enums.WeatherValue
 import java.util.concurrent.CompletableFuture
 
+/**
+ * Brigadier argument type for [WeatherValue] presets.
+ */
 class WeatherArgumentType : CustomArgumentType.Converted<WeatherValue, String> {
+    /** Returns the native brigadier argument type. */
     override fun getNativeType(): ArgumentType<String> = StringArgumentType.word()
 
+    /** Converts a string token into a [WeatherValue]. */
     @Throws(CommandSyntaxException::class)
     override fun convert(nativeType: String): WeatherValue = WeatherValue.valueOf(nativeType.replaceFirstChar { it.uppercaseChar() })
 
+    /** Builds completion suggestions from [WeatherValue] display names. */
     override fun <S : Any> listSuggestions(
         context: CommandContext<S>,
         builder: SuggestionsBuilder
@@ -27,7 +33,9 @@ class WeatherArgumentType : CustomArgumentType.Converted<WeatherValue, String> {
         return builder.buildFuture()
     }
 
+    /** Factory methods for [WeatherArgumentType]. */
     companion object {
+        /** Creates a new weather argument type. */
         fun weather() = WeatherArgumentType()
     }
 }

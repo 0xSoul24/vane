@@ -1,8 +1,11 @@
 package org.oddlama.vane.core.functional
 
+/** Erased six-argument function functor. */
 fun interface Function6<T1, T2, T3, T4, T5, T6, R> : ErasedFunctor, GenericsFinder {
+    /** Applies this function. */
     fun apply(t1: T1?, t2: T2?, t3: T3?, t4: T4?, t5: T5?, t6: T6?): R?
 
+    /** Invokes this function with erased arguments. */
     @Suppress("UNCHECKED_CAST")
     override fun invoke(args: List<Any?>): Any? {
         require(args.size == 6) { "Functor needs 6 arguments but got ${args.size} arguments" }

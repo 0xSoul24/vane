@@ -29,10 +29,21 @@ import org.oddlama.vane.core.item.api.InhibitBehavior
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.util.MaterialUtil.isTillable
 
+/**
+ * Cancels vanilla behaviors for custom items based on their inhibited behavior flags.
+ *
+ * @param context listener context.
+ */
 class VanillaFunctionalityInhibitor(context: Context<Core?>?) : Listener<Core?>(context) {
+    /**
+     * Returns whether a custom item should inhibit a specific behavior.
+     */
     private fun inhibit(customItem: CustomItem?, behavior: InhibitBehavior?): Boolean =
         customItem != null && customItem.enabled() && customItem.inhibitedBehaviors().contains(behavior)
 
+    /**
+     * Prevents tempting pathfinding when matching custom items inhibit `TEMPT`.
+     */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     fun onPathfind(event: EntityTargetEvent) {
         if (event.reason != EntityTargetEvent.TargetReason.TEMPT) return
@@ -44,6 +55,9 @@ class VanillaFunctionalityInhibitor(context: Context<Core?>?) : Listener<Core?>(
         }
     }
 
+    /**
+     * Prevents tilling with custom items that inhibit `HOE_TILL`.
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerHoeRightClickBlock(event: PlayerInteractEvent) {
         if (!event.hasBlock() || event.action != Action.RIGHT_CLICK_BLOCK) return
@@ -54,6 +68,9 @@ class VanillaFunctionalityInhibitor(context: Context<Core?>?) : Listener<Core?>(
         }
     }
 
+    /**
+     * Blocks vanilla crafting recipes when inhibited custom items are used as ingredients.
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPrepareItemCraft(event: PrepareItemCraftEvent) {
         val recipe = event.recipe
@@ -63,6 +80,9 @@ class VanillaFunctionalityInhibitor(context: Context<Core?>?) : Listener<Core?>(
         }
     }
 
+    /**
+     * Blocks vanilla smithing recipes when inhibited custom items are used as input.
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPrepareSmithing(event: PrepareSmithingEvent) {
         val recipe = event.inventory.recipe
@@ -72,6 +92,9 @@ class VanillaFunctionalityInhibitor(context: Context<Core?>?) : Listener<Core?>(
         }
     }
 
+    /**
+     * Reapplies custom-item metadata after smithing recipes that copy NBT.
+     */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onPrepareSmithingCopyNbt(event: PrepareSmithingEvent) {
         val result = event.result ?: return
@@ -84,6 +107,9 @@ class VanillaFunctionalityInhibitor(context: Context<Core?>?) : Listener<Core?>(
         event.result = customItemResult.convertExistingStack(CraftItemStack.asCraftMirror(nmsResult))
     }
 
+    /**
+     * Restricts invalid anvil combinations and disallowed anvil enchant modifications.
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPrepareAnvil(event: PrepareAnvilEvent) {
         val a = event.inventory.firstItem
@@ -110,6 +136,9 @@ class VanillaFunctionalityInhibitor(context: Context<Core?>?) : Listener<Core?>(
         event.result = r
     }
 
+    /**
+     * Cancels mending for items that inhibit `MEND`.
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onItemMend(event: PlayerItemMendEvent) {
         if (inhibit(module!!.itemRegistry()?.get(event.item), InhibitBehavior.MEND)) {
@@ -117,6 +146,9 @@ class VanillaFunctionalityInhibitor(context: Context<Core?>?) : Listener<Core?>(
         }
     }
 
+    /**
+     * Prevents fire and lava destruction for items that inhibit `ITEM_BURN`.
+     */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onItemBurn(event: EntityDamageEvent) {
         if (event.entity.type != EntityType.ITEM) return
@@ -130,6 +162,9 @@ class VanillaFunctionalityInhibitor(context: Context<Core?>?) : Listener<Core?>(
         }
     }
 
+    /**
+     * Denies off-hand usage when the main-hand custom item inhibits `USE_OFFHAND`.
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerRightClick(event: PlayerInteractEvent) {
         if (event.hand != EquipmentSlot.OFF_HAND) return
@@ -139,6 +174,9 @@ class VanillaFunctionalityInhibitor(context: Context<Core?>?) : Listener<Core?>(
         }
     }
 
+    /**
+     * Cancels dispenser usage for items that inhibit `DISPENSE`.
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onDispense(event: BlockDispenseEvent) {
         if (event.block.type != Material.DISPENSER) return

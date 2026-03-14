@@ -8,24 +8,39 @@ import org.oddlama.vane.util.MaterialUtil.materialFrom
 import org.oddlama.vane.util.StorageUtil.namespacedKey
 import java.lang.reflect.Field
 
+/**
+ * Config field handler for item stack values.
+ *
+ * @param owner object containing the reflected config field.
+ * @param field reflected config field.
+ * @param mapName maps Java field names to YAML paths.
+ * @param annotation source annotation metadata.
+ */
 class ConfigItemStackField(
     owner: Any?,
     field: Field,
     mapName: (String?) -> String?,
+    /** Annotation metadata for this field. */
     var annotation: ConfigItemStack
 ) : ConfigField<ItemStack?>(owner, field, mapName, "item stack", annotation.desc) {
 
+    /** Formats an item stack material as a quoted namespaced key. */
     private fun ItemStack.materialKeyString() =
         "\"${escapeYaml(type.key.namespace)}:${escapeYaml(type.key.key)}\""
 
+    /** Appends an item stack definition block. */
     private fun appendItemStackDefinition(builder: StringBuilder, indent: String?, prefix: String?, def: ItemStack) {
         builder.append("$indent$prefix  material: ${def.materialKeyString()}\n")
         if (def.amount != 1) builder.append("$indent$prefix  amount: ${def.amount}\n")
     }
 
+    /** Returns the default value for this config field. */
     override fun def(): ItemStack = overriddenDef() ?: ItemStack(annotation.def.type, annotation.def.amount)
+
+    /** Returns whether metrics collection is enabled for this field. */
     override fun metrics(): Boolean = overriddenMetrics() ?: annotation.metrics
 
+    /** Generates YAML for this field. */
     override fun generateYaml(builder: StringBuilder, indent: String, existingCompatibleConfig: YamlConfiguration?) {
         appendDescription(builder, indent)
         builder.append("$indent# Default:\n")
@@ -36,6 +51,7 @@ class ConfigItemStackField(
         appendItemStackDefinition(builder, indent, "", def)
     }
 
+    /** Validates that this field is loadable from YAML. */
     @Throws(YamlLoadException::class)
     override fun checkLoadable(yaml: YamlConfiguration) {
         checkYamlPath(yaml)
@@ -62,6 +78,7 @@ class ConfigItemStackField(
         }
     }
 
+    /** Loads this field value from YAML. */
     fun loadFromYaml(yaml: YamlConfiguration): ItemStack {
         var materialStr = ""
         var amount = 1
@@ -76,6 +93,7 @@ class ConfigItemStackField(
         return ItemStack(materialFrom(namespacedKey(ns, key))!!, amount)
     }
 
+    /** Writes the loaded value into the reflected field. */
     override fun load(yaml: YamlConfiguration) {
         try {
             field.set(owner, loadFromYaml(yaml))

@@ -15,11 +15,18 @@ import org.oddlama.vane.core.Core
 import org.oddlama.vane.core.item.api.CustomItem
 import java.util.concurrent.CompletableFuture
 
+/**
+ * Brigadier argument type that resolves vane custom items by namespaced key.
+ *
+ * @param module core module providing the custom item registry.
+ */
 class CustomItemArgumentType private constructor(private val module: Core) :
     CustomArgumentType.Converted<CustomItem, NamespacedKey> {
 
+    /** Returns the native brigadier argument type. */
     override fun getNativeType(): ArgumentType<NamespacedKey> = ArgumentTypes.namespacedKey()
 
+    /** Converts a namespaced key into a registered custom item. */
     @Throws(CommandSyntaxException::class)
     override fun convert(nativeType: NamespacedKey): CustomItem =
         module.itemRegistry()?.all()
@@ -30,6 +37,7 @@ class CustomItemArgumentType private constructor(private val module: Core) :
                 )
             ).create()
 
+    /** Builds completion suggestions for registered custom items. */
     override fun <S : Any> listSuggestions(
         context: CommandContext<S>,
         builder: SuggestionsBuilder
@@ -47,7 +55,9 @@ class CustomItemArgumentType private constructor(private val module: Core) :
         return builder.buildFuture()
     }
 
+    /** Factory methods for [CustomItemArgumentType]. */
     companion object {
+        /** Creates a custom item argument type for the given core module. */
         fun customItem(module: Core): CustomItemArgumentType = CustomItemArgumentType(module)
     }
 }

@@ -16,7 +16,13 @@ import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.util.ItemUtil
 import kotlin.random.Random
 
+/**
+ * Factory helpers for constructing common menu patterns.
+ */
 object MenuFactory {
+    /**
+     * Creates an anvil-based string input menu.
+     */
     @JvmStatic
     fun anvilStringInput(
         context: Context<*>,
@@ -47,6 +53,9 @@ object MenuFactory {
         return anvil
     }
 
+    /**
+     * Creates a one-row randomized confirm/cancel menu.
+     */
     @JvmStatic
     fun confirm(
         context: Context<*>,
@@ -84,6 +93,9 @@ object MenuFactory {
         return confirmationMenu
     }
 
+    /**
+     * Creates an item selector menu with optional item post-processing.
+     */
     @JvmStatic
     @JvmOverloads
     fun itemSelector(
@@ -194,6 +206,9 @@ object MenuFactory {
         return itemSelectorMenu
     }
 
+    /**
+     * Creates a generic selector with left-click-only item selection.
+     */
     @JvmStatic
     fun <T, F : Filter<T?>?> genericSelector(
         context: Context<*>,
@@ -214,6 +229,9 @@ object MenuFactory {
         onCancel
     )
 
+    /**
+     * Creates a generic selector with full click-event callback access.
+     */
     @JvmStatic
     fun <T, F : Filter<T?>?> genericSelector(
         context: Context<*>,
@@ -237,6 +255,9 @@ object MenuFactory {
         onCancel ?: Consumer1 { }
     )
 
+    /**
+     * Creates a head selector menu with left-click-only selection callback.
+     */
     @JvmStatic
     fun headSelector(
         context: Context<*>,
@@ -252,6 +273,9 @@ object MenuFactory {
         onCancel
     )
 
+    /**
+     * Creates a head selector menu with full click-event callback access.
+     */
     @JvmStatic
     fun headSelector(
         context: Context<*>,

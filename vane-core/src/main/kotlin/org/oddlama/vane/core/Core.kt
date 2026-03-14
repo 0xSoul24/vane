@@ -40,59 +40,79 @@ import java.net.URISyntaxException
 import java.util.*
 import java.util.logging.Level
 
+/**
+ * Core vane module that initializes shared managers, registries, and base commands.
+ */
 @VaneModule(name = "core", bstats = 8637, configVersion = 6, langVersion = 5, storageVersion = 1)
 class Core : Module<Core?>() {
+    /** Enchantment manager. */
     var enchantmentManager: EnchantmentManager?
+    /** Registry of reserved custom model data ranges. */
     private val modelDataRegistry: CustomModelDataRegistry?
+    /** Registry of custom items. */
     private val itemRegistry: CustomItemRegistry?
 
+    /** Whether player heads should render full skins in menus. */
     @ConfigBoolean(
         def = true,
         desc = "Allow loading of player heads in relevant menus. Disabling this will show all player heads using the Steve skin, which may perform better on low-performance servers and clients."
     )
+    /** Whether player heads should load profile textures in menus. */
     var configPlayerHeadsInMenus: Boolean = false
 
+    /** Message used when a command requires a player sender. */
     @LangMessage var langCommandNotAPlayer: TranslatedMessage? = null
+    /** Message used when command permission checks fail. */
     @LangMessage var langCommandPermissionDenied: TranslatedMessage? = null
+    /** Message used for invalid time format parsing. */
     @LangMessage var langInvalidTimeFormat: TranslatedMessage? = null
 
-    // Module registry
+    /** Loaded vane modules ordered by annotation name. */
     private val vaneModules: SortedSet<Module<*>> = TreeSet(compareBy { it.annotationName })
 
+    /** Resource-pack distribution manager. */
     val resourcePackDistributor: ResourcePackDistributor
 
+    /** Registers a module with the core module set. */
     fun registerModule(module: Module<*>) {
         vaneModules.add(module)
     }
 
+    /** Unregisters a module from the core module set. */
     fun unregisterModule(module: Module<*>) {
         vaneModules.remove(module)
     }
 
+    /** Immutable view of loaded modules. */
     val modules: SortedSet<Module<*>?>
         get() = Collections.unmodifiableSortedSet(vaneModules)
 
-    // Vane global command catch-all permission
+    /** Global vane command catch-all permission. */
     var permissionCommandCatchall: Permission = Permission(
         "vane.*.commands.*",
         "Allow access to all vane commands (ONLY FOR ADMINS!)",
         PermissionDefault.FALSE
     )
 
+    /** Menu manager shared by menu systems. */
     @JvmField
     var menuManager: MenuManager?
 
-    // core-config
+    /** Whether client-side translation via resource pack is enabled. */
     @ConfigBoolean(
         def = true,
         desc = "Let the client translate messages using the generated resource pack. This allows every player to select their preferred language, and all plugin messages will also be translated. Disabling this won't allow you to skip generating the resource pack, as it will be needed for custom item textures."
     )
+    /** Whether client-side translation keys should be used in outgoing messages. */
     var configClientSideTranslations: Boolean = false
 
+    /** Whether update notices are sent to operators. */
     @ConfigBoolean(def = true, desc = "Send update notices to OPed player when a new version of vane is available.")
     var configUpdateNotices: Boolean = false
 
+    /** Current running vane version string. */
     var currentVersion: String? = null
+    /** Latest version string fetched from GitHub releases. */
     var latestVersion: String? = null
 
     init {
@@ -123,32 +143,27 @@ class Core : Module<Core?>() {
         ExistingItemConverter(this)
     }
 
+    /** Schedules periodic update checks when configured. */
     override fun onModuleEnable() {
         if (configUpdateNotices) {
-            // Now, and every hour after that, check if a new version is available.
-            // OPs will get a message about this when they join.
             scheduleTaskTimer(::checkForUpdate, 1L, msToTicks(2 * 60L * 60L * 1000L))
         }
     }
 
+    /** Unfreezes relevant registries to allow custom enchantment/entity registration. */
     fun unfreezeRegistries() {
-        // NOTE: MAGIC VALUES! Introduced for 1.18.2 when registries were frozen. Sad, no workaround
-        // at the time.
         try {
-            // Make relevant fields accessible
             val frozen = MappedRegistry::class.java.getDeclaredField("frozen" /* frozen */)
                 .also { it.isAccessible = true }
             val intrusiveHolderCache = MappedRegistry::class.java.getDeclaredField(
                 "unregisteredIntrusiveHolders" /* unregisteredIntrusiveHolders (1.19.3+), intrusiveHolderCache (until 1.19.2) */
             ).also { it.isAccessible = true }
 
-            // Unfreeze required registries
             frozen.set(BuiltInRegistries.ENTITY_TYPE, false)
             intrusiveHolderCache.set(
                 BuiltInRegistries.ENTITY_TYPE,
                 IdentityHashMap<EntityType<*>?, Holder.Reference<EntityType<*>?>?>()
             )
-            // Since 1.20.2 this is also needed for enchantments:
         } catch (e: Exception) {
             when (e) {
                 is NoSuchFieldException, is SecurityException, is IllegalArgumentException, is IllegalAccessException ->
@@ -158,8 +173,10 @@ class Core : Module<Core?>() {
         }
     }
 
+    /** Core has no additional disable hook behavior. */
     override fun onModuleDisable() = Unit
 
+    /** Generates the combined vane resource pack zip file. */
     fun generateResourcePack(): File? =
         runCatching {
             File("VaneResourcePack.zip").also { file ->
@@ -170,14 +187,18 @@ class Core : Module<Core?>() {
             }
         }.onFailure { log.log(Level.SEVERE, "Error while generating resourcepack", it) }.getOrNull()
 
+    /** Iterates over all module components across loaded modules. */
     fun forAllModuleComponents(f: Consumer1<ModuleComponent<*>?>?) {
         vaneModules.forEach { it.forEachModuleComponent(f) }
     }
 
+    /** Returns the custom item registry. */
     fun itemRegistry(): CustomItemRegistry? = itemRegistry
 
+    /** Returns the custom model data registry. */
     fun modelDataRegistry(): CustomModelDataRegistry? = modelDataRegistry
 
+    /** Checks GitHub for newer releases and updates cached version state. */
     fun checkForUpdate() {
         if (currentVersion == null) {
             try {
@@ -207,15 +228,13 @@ class Core : Module<Core?>() {
         }
     }
 
+    /** Sends update notices to operators when a newer version is known. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
     fun onPlayerJoinSendUpdateNotice(event: PlayerJoinEvent) {
         if (!configUpdateNotices) return
 
         val player = event.player
-        // Send an update message if a new version is available and player is OP.
         if (latestVersion != null && latestVersion != currentVersion && player.isOp) {
-            // This message is intentionally not translated to ensure it will
-            // be displayed correctly and so that everyone understands it.
             player.sendMessage(
                 Component.text("A new version of vane ", NamedTextColor.GREEN)
                     .append(Component.text("($latestVersion)", NamedTextColor.AQUA))
@@ -229,10 +248,14 @@ class Core : Module<Core?>() {
         }
     }
 
+    /**
+     * Static core instance access.
+     */
     companion object {
         /** Use sparingly. */
         private var INSTANCE: Core? = null
 
+        /** Returns the active core instance, if initialized. */
         fun instance(): Core? = INSTANCE
     }
 }

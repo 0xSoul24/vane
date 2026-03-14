@@ -7,8 +7,7 @@ import java.util.regex.Pattern
 import java.util.zip.ZipFile
 
 /**
- * List resources available from the jar file of the given class.
- * from: forums.devx.com/showthread.php?t=153784
+ * Lists resources available from the code source of a given class.
  */
 object ResourceList {
     /**
@@ -27,6 +26,7 @@ object ResourceList {
         }
     }
 
+    /** Resolves resources from either a directory or jar path. */
     private fun getResources(path: String, pattern: Pattern): List<String> {
         val file = java.io.File(path)
         return when {
@@ -35,6 +35,7 @@ object ResourceList {
         }
     }
 
+    /** Collects matching resource names from a jar file. */
     private fun getResourcesFromJarFile(file: java.io.File, pattern: Pattern): List<String> {
         return try {
             ZipFile(file).use { zf ->
@@ -48,6 +49,7 @@ object ResourceList {
         }
     }
 
+    /** Recursively collects matching resource paths from a directory tree. */
     private fun getResourcesFromDirectory(directory: java.io.File, pattern: Pattern): List<String> {
         return buildList {
             directory.listFiles()?.forEach { file ->

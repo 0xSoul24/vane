@@ -6,7 +6,13 @@ import java.io.IOException
 import java.net.URISyntaxException
 import java.util.*
 
+/**
+ * Mojang profile resolution helpers.
+ */
 object Resolve {
+    /**
+     * Resolves signed skin texture data for a player UUID.
+     */
     @JvmStatic
     @Throws(IOException::class, JSONException::class, URISyntaxException::class)
     fun resolveSkin(id: UUID?): Skin {
@@ -18,6 +24,9 @@ object Resolve {
         )
     }
 
+    /**
+     * Resolves a player name to a Mojang UUID.
+     */
     @JvmStatic
     @Throws(IOException::class, JSONException::class, URISyntaxException::class)
     fun resolveUuid(name: String): UUID {
@@ -30,6 +39,12 @@ object Resolve {
         return UUID.fromString(uuidStr)
     }
 
+    /**
+     * Skin texture payload returned by Mojang profile endpoints.
+     *
+     * @param texture base64 texture payload.
+     * @param signature Mojang signature for the texture payload.
+     */
     data class Skin(
         @JvmField var texture: String? = null,
         @JvmField var signature: String? = null

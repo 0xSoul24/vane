@@ -2,12 +2,17 @@ package org.oddlama.vane.core.item.api
 
 import org.bukkit.NamespacedKey
 
+/**
+ * Contract for reserving and resolving custom model data ids.
+ */
 interface CustomModelDataRegistry {
     /** A range of custom model data ids.  */
     @JvmRecord
     data class Range(val from: Int, val to: Int) {
+        /** Returns whether the range contains the given data id. */
         fun contains(data: Int): Boolean = data in from..<to
 
+        /** Returns whether this range overlaps another range. */
         fun overlaps(range: Range): Boolean = to > range.from && from < range.to
 
         init {

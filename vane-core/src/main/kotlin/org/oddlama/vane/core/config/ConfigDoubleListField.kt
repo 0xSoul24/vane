@@ -6,20 +6,34 @@ import org.oddlama.vane.annotation.config.ConfigDoubleList
 import org.oddlama.vane.core.YamlLoadException
 import java.lang.reflect.Field
 
+/**
+ * Config field handler for double list values.
+ *
+ * @param owner object containing the reflected config field.
+ * @param field reflected config field.
+ * @param mapName maps Java field names to YAML paths.
+ * @param annotation source annotation metadata.
+ */
 class ConfigDoubleListField(
     owner: Any?,
     field: Field,
     mapName: (String?) -> String?,
+    /** Annotation metadata for this field. */
     var annotation: ConfigDoubleList
 ) : ConfigField<MutableList<Double?>?>(owner, field, mapName, "double list", annotation.desc) {
 
+    /** Appends a double list definition block. */
     private fun appendDoubleListDefinition(builder: StringBuilder?, indent: String?, prefix: String?, def: MutableList<Double?>) {
         appendListDefinition<Double?>(builder, indent, prefix, def) { b, d -> b!!.append(d!!) }
     }
 
+    /** Returns the default value for this config field. */
     override fun def(): MutableList<Double?> = overriddenDef() ?: ArrayUtils.toObject(annotation.def).toMutableList()
+
+    /** Returns whether metrics collection is enabled for this field. */
     override fun metrics(): Boolean = overriddenMetrics() ?: annotation.metrics
 
+    /** Generates YAML for this field. */
     override fun generateYaml(builder: StringBuilder, indent: String, existingCompatibleConfig: YamlConfiguration?) {
         appendDescription(builder, indent)
         appendValueRange(builder, indent, annotation.min, annotation.max, Double.NaN, Double.NaN)
@@ -31,6 +45,7 @@ class ConfigDoubleListField(
         appendDoubleListDefinition(builder, indent, "", def)
     }
 
+    /** Validates that this field is loadable from YAML. */
     @Throws(YamlLoadException::class)
     override fun checkLoadable(yaml: YamlConfiguration) {
         checkYamlPath(yaml)
@@ -43,9 +58,11 @@ class ConfigDoubleListField(
         }
     }
 
+    /** Loads this field value from YAML. */
     fun loadFromYaml(yaml: YamlConfiguration): MutableList<Double?> =
         yaml.getList(yamlPath())!!.map { (it as Number).toDouble() as Double? }.toMutableList()
 
+    /** Writes the loaded value into the reflected field. */
     override fun load(yaml: YamlConfiguration) {
         try {
             field.set(owner, loadFromYaml(yaml))

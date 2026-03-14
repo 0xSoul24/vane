@@ -22,29 +22,64 @@ import org.oddlama.vane.util.StorageUtil.namespacedKey
 import org.oddlama.vane.util.snakeCaseToPascalCase
 import java.util.*
 
+/**
+ * Base implementation for vane custom items.
+ *
+ * @param T the owning module type.
+ * @param context item context.
+ * @param nameOverride optional runtime name override.
+ * @param customModelDataOverride optional runtime custom model data override.
+ */
 open class CustomItem<T : Module<T?>?> @JvmOverloads constructor(
     context: Context<T?>,
     nameOverride: String? = null,
     customModelDataOverride: Int? = null
 ) : Listener<T?>(null), CustomItem {
+    /**
+     * Resolved `@VaneItem` annotation.
+     */
     private var annotation: VaneItem? = null
+
+    /**
+     * Namespaced key of this custom item.
+     */
     var key: NamespacedKey
 
+    /**
+     * Recipe configuration container for this item.
+     */
     var recipes: Recipes<T?>?
+
+    /**
+     * Loot table configuration container for this item.
+     */
     var lootTables: LootTables<T?>?
 
-    // Language
+    /**
+     * Localized item display name.
+     */
     @LangMessage
     var langName: TranslatedMessage? = null
 
+    /**
+     * Configured durability override for this item.
+     */
     @ConfigInt(
         def = 0,
         min = 0,
         desc = "The durability of this item. Set to 0 to use the durability properties of whatever base material the item is made of."
     )
+    /** Effective configured durability value. */
     private var configDurability = 0
 
+    /**
+     * Optional runtime item name override.
+     */
     private val nameOverride: String?
+
+    /**
+     * Optional runtime model data override.
+     */
     private val customModelDataOverride: Int?
 
     init {
@@ -59,7 +94,6 @@ open class CustomItem<T : Module<T?>?> @JvmOverloads constructor(
         this.nameOverride = nameOverride
         this.customModelDataOverride = customModelDataOverride
 
-        // Set namespace delayed, as we need to access instance methods to do so.
         context = context.group("Item" + snakeCaseToPascalCase(name()), "Enable item " + name())
         setContext(context)
 
@@ -67,42 +101,79 @@ open class CustomItem<T : Module<T?>?> @JvmOverloads constructor(
         recipes = Recipes(getContext(), this.key, { this.defaultRecipes() })
         lootTables = LootTables(getContext(), this.key, { this.defaultLootTables() })
 
-        // Register item (use safe-call in case the item registry isn't initialized yet)
         module!!.core?.itemRegistry()?.register(this)
     }
 
+    /**
+     * Returns the item key.
+     */
     override fun key(): NamespacedKey = key
 
+    /**
+     * Returns the configured item name.
+     */
     fun name(): String = nameOverride ?: annotation!!.name
 
+    /**
+     * Returns whether this item is enabled.
+     */
     override fun enabled(): Boolean {
-        // Explicitly stated to not be forgotten, as enabled() is also part of Listener<T>.
         return annotation!!.enabled && super.enabled()
     }
 
+    /**
+     * Returns the item definition version.
+     */
     override fun version(): Int = annotation!!.version
 
+    /**
+     * Returns the base material for newly created stacks.
+     */
     override fun baseMaterial(): Material = annotation!!.base
 
+    /**
+     * Returns the custom model data id.
+     */
     override fun customModelData(): Int = customModelDataOverride ?: annotation!!.modelData
 
+    /**
+     * Returns the translated display name component.
+     */
     override fun displayName(): Component? =
         langName!!.format().decoration(TextDecoration.ITALIC, false)
 
+    /**
+     * Returns the default durability used by config override hooks.
+     */
     fun configDurabilityDef(): Int = annotation!!.durability
 
+    /**
+     * Returns the active durability value.
+     */
     override fun durability(): Int = configDurability
 
+    /**
+     * Applies item-specific stack updates.
+     */
     override fun updateItemStack(itemStack: ItemStack): ItemStack = itemStack
 
+    /**
+     * Returns behaviors that should be inhibited for this item.
+     */
     override fun inhibitedBehaviors(): EnumSet<InhibitBehavior> {
         return EnumSet.of(InhibitBehavior.USE_IN_VANILLA_RECIPE)
     }
 
+    /**
+     * Returns default recipe definitions.
+     */
     open fun defaultRecipes(): RecipeList? {
         return RecipeList.of()
     }
 
+    /**
+     * Returns default loot table definitions.
+     */
     open fun defaultLootTables(): LootTableList? {
         return LootTableList.of()
     }

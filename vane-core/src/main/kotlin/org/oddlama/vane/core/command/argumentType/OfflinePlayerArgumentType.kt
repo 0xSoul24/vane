@@ -11,15 +11,21 @@ import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import java.util.concurrent.CompletableFuture
 
+/**
+ * Brigadier argument type that resolves offline players by name.
+ */
 class OfflinePlayerArgumentType : CustomArgumentType.Converted<OfflinePlayer, String> {
 
+    /** Returns the native brigadier argument type. */
     override fun getNativeType(): ArgumentType<String> = StringArgumentType.word()
 
+    /** Converts a player name into an offline player entry. */
     @Throws(CommandSyntaxException::class)
     override fun convert(nativeType: String): OfflinePlayer =
         Bukkit.getOfflinePlayers().firstOrNull { nativeType.equals(it.name, ignoreCase = true) }
             ?: throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownArgument().create()
 
+    /** Builds completion suggestions from known offline player names. */
     override fun <S : Any> listSuggestions(
         context: CommandContext<S>,
         builder: SuggestionsBuilder
@@ -33,8 +39,10 @@ class OfflinePlayerArgumentType : CustomArgumentType.Converted<OfflinePlayer, St
         return builder.buildFuture()
     }
 
+    /** Factory methods for [OfflinePlayerArgumentType]. */
     companion object {
         @JvmStatic
+        /** Creates a new offline-player argument type. */
         fun offlinePlayer(): OfflinePlayerArgumentType = OfflinePlayerArgumentType()
     }
 }

@@ -17,13 +17,28 @@ import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.core.module.Module
 import java.util.Random
 
+/**
+ * Core administrative command for vane reload and resource-pack operations.
+ *
+ * @param context command context.
+ */
 @Name("vane")
 class Vane(context: Context<Core?>) : org.oddlama.vane.core.command.Command<Core?>(context) {
+    /** Message shown when module reload succeeds. */
     @LangMessage private val langReloadSuccess: TranslatedMessage? = null
+
+    /** Message shown when module reload fails. */
     @LangMessage private val langReloadFail: TranslatedMessage? = null
+
+    /** Message shown when resource-pack generation succeeds. */
     @LangMessage private val langResourcePackGenerateSuccess: TranslatedMessage? = null
+
+    /** Message shown when resource-pack generation fails. */
     @LangMessage private val langResourcePackGenerateFail: TranslatedMessage? = null
 
+    /**
+     * Builds the brigadier command tree for `/vane`.
+     */
     override fun getCommandBase(): LiteralArgumentBuilder<CommandSourceStack> =
         super.getCommandBase()
             .then(help())
@@ -59,15 +74,24 @@ class Vane(context: Context<Core?>) : org.oddlama.vane.core.command.Command<Core
                     }
             )
 
+    /**
+     * Reloads configuration for a single module and reports the result.
+     */
     private fun reloadModule(sender: CommandSender?, module: Module<*>) {
         val msg = if (module.reloadConfiguration()) langReloadSuccess else langReloadFail
         msg!!.send(sender, "§bvane-${module.annotationName}")
     }
 
+    /**
+     * Reloads configuration for all loaded modules.
+     */
     private fun reloadAll(sender: CommandSender?) {
         module!!.core?.modules?.filterNotNull()?.forEach { reloadModule(sender, it) }
     }
 
+    /**
+     * Generates and optionally redistributes the resource pack.
+     */
     private fun generateResourcePack(sender: CommandSender?) {
         val file = module!!.generateResourcePack()
         if (file != null) {
@@ -82,6 +106,9 @@ class Vane(context: Context<Core?>) : org.oddlama.vane.core.command.Command<Core
         }
     }
 
+    /**
+     * Developer-only simulation used to test ancient tome generation frequency.
+     */
     private fun testTomeGeneration() {
         val lootTable = LootTables.ABANDONED_MINESHAFT.lootTable
         val inventory = module!!.server.createInventory(null, 3 * 9)
@@ -120,5 +147,8 @@ class Vane(context: Context<Core?>) : org.oddlama.vane.core.command.Command<Core
         }
     }
 
+    /**
+     * Entry point for developer test subcommand.
+     */
     private fun test(sender: CommandSender?) = testTomeGeneration()
 }

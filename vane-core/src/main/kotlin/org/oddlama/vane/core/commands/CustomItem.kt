@@ -12,8 +12,16 @@ import org.oddlama.vane.core.item.api.CustomItem
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.util.PlayerUtil.giveItem
 
+/**
+ * Command that gives registered custom items to the executing player.
+ *
+ * @param context command context.
+ */
 @Name("customitem")
 class CustomItem(context: Context<Core?>) : org.oddlama.vane.core.command.Command<Core?>(context) {
+    /**
+     * Builds the brigadier command tree for `/customitem`.
+     */
     override fun getCommandBase(): LiteralArgumentBuilder<CommandSourceStack> =
         super.getCommandBase()
             .executes { stack ->

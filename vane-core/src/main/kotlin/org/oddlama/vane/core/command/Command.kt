@@ -22,38 +22,59 @@ import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.core.module.Module
 import org.oddlama.vane.core.module.ModuleComponent
 
+/**
+ * Base class for vane commands integrating Bukkit command handling and brigadier nodes.
+ *
+ * @param T the owning module type.
+ * @param context the component context.
+ * @param permissionDefault the default permission state for the command permission.
+ */
 @VaneCommand
 abstract class Command<T : Module<T?>?> @JvmOverloads constructor(
     context: Context<T?>,
     permissionDefault: PermissionDefault? = PermissionDefault.OP
 ) : ModuleComponent<T?>(null) {
+    /**
+     * Bukkit command wrapper delegating execution and completion to the parameter tree.
+     *
+     * @param name the command name.
+     */
     inner class BukkitCommand(name: String) : org.bukkit.command.Command(name), PluginIdentifiableCommand {
         init {
             permission = this@Command.permission.name
         }
 
+        /**
+         * Returns the localized usage string.
+         */
         override fun getUsage(): String = this@Command.langUsage.str("§7/§3$name")
+
+        /**
+         * Returns the localized command description.
+         */
         override fun getDescription(): String = this@Command.langDescription.str()
+
+        /**
+         * Returns the owning plugin.
+         */
         override fun getPlugin(): Plugin = this@Command.module!!
 
-        // Adapted to match org.bukkit.command.Command: execute(CommandSender, String, Array<String>)
+        /**
+         * Executes this command for a sender.
+         */
         @Throws(IllegalArgumentException::class)
         override fun execute(sender: CommandSender, commandLabel: String, args: Array<String>): Boolean {
             println("exec $commandLabel from $sender")
-            // Pre-check permission
             if (!sender.hasPermission(this@Command.permission)) {
                 module!!.core?.langCommandPermissionDenied?.send(sender)
                 println("no perms!")
                 return true
             }
 
-            // Combine label and args into a nullable array expected by rootParam
             val combined = arrayOfNulls<String>(args.size + 1)
             combined[0] = commandLabel
             args.forEachIndexed { i, arg -> combined[i + 1] = arg }
 
-            // Ambiguous matches will always execute the
-            // first chain based on definition order.
             return try {
                 rootParam.checkAccept(sender, combined, 0)?.apply(this@Command, sender) ?: false
             } catch (e: Exception) {
@@ -62,18 +83,18 @@ abstract class Command<T : Module<T?>?> @JvmOverloads constructor(
             }
         }
 
+        /**
+         * Builds tab-completion suggestions for the current command input.
+         */
         @Throws(IllegalArgumentException::class)
         override fun tabComplete(sender: CommandSender, alias: String, args: Array<String>): MutableList<String> {
-            // Don't allow information exfiltration!
             if (!sender.hasPermission(permission!!)) return mutableListOf()
 
-            // Combine label and args into a nullable array expected by rootParam
             val combined = arrayOfNulls<String>(args.size + 1)
             combined[0] = alias
             args.forEachIndexed { i, arg -> combined[i + 1] = arg }
 
             return try {
-                // rootParam.buildCompletions may return MutableList<String?>; convert to non-nullable list
                 rootParam.buildCompletions(sender, combined, 0)
                     ?.filterNotNull()
                     ?.toMutableList()
@@ -85,36 +106,63 @@ abstract class Command<T : Module<T?>?> @JvmOverloads constructor(
         }
     }
 
-    // Language
+    /**
+     * Localized usage line.
+     */
     @LangMessage lateinit var langUsage: TranslatedMessage
+
+    /**
+     * Localized command description.
+     */
     @LangMessage lateinit var langDescription: TranslatedMessage
+
+    /**
+     * Localized help text body.
+     */
     @LangMessage lateinit var langHelp: TranslatedMessage
 
-    // Variables
+    /**
+     * Command name from the `@Name` annotation.
+     */
     val name: String
+
+    /**
+     * Permission required to execute this command.
+     */
     private val permission: Permission
+
+    /**
+     * Bukkit command instance registered for this command.
+     */
     private var bukkitCommand: BukkitCommand
 
-    // Root parameter
+    /**
+     * Root parameter node for command parsing and execution.
+     */
     private val rootParam: AnyParam<String?>
 
-    // Backing field for command base to avoid generating a conflicting JVM getter
+    /**
+     * Backing brigadier literal node used by [getCommandBase].
+     */
     private var commandBaseField: LiteralArgumentBuilder<CommandSourceStack>? = null
+
+    /**
+     * Optional additional aliases from `@Aliases`.
+     */
     private var aliases: Aliases?
 
-    // Backwards-compatible getter for subclasses that override getCommandBase()
+    /**
+     * Returns the brigadier literal root builder for this command.
+     */
     open fun getCommandBase(): LiteralArgumentBuilder<CommandSourceStack> = commandBaseField!!
 
     init {
         var context = context
-        // Make namespace
         name = javaClass.getAnnotation(Name::class.java).value
-        // Convert name to PascalCase for the group name
         val groupName = "Command${name.replaceFirstChar { it.uppercase() }}"
         context = context.group(groupName, "Enable command $name")
         setContext(context)
 
-        // Register permission
         permission = Permission(
             "vane.${module!!.annotationName}.commands.$name",
             "Allow access to /$name",
@@ -124,13 +172,10 @@ abstract class Command<T : Module<T?>?> @JvmOverloads constructor(
         module!!.permissionCommandCatchallModule?.let { permission.addParent(it, true) }
         module!!.core?.let { permission.addParent(it.permissionCommandCatchall, true) }
 
-        // Always allow the console to execute commands
         module!!.addConsolePermission(permission)
 
-        // Initialize root parameter
         rootParam = AnyParam(this, "/$name", Function1 { it })
 
-        // Create bukkit command
         bukkitCommand = BukkitCommand(name).also {
             it.setLabel(name)
             it.setName(name)
@@ -141,13 +186,29 @@ abstract class Command<T : Module<T?>?> @JvmOverloads constructor(
         aliases?.let { bukkitCommand.setAliases(it.value.toMutableList()) }
     }
 
+    /**
+     * Returns the registered Bukkit command instance.
+     */
     fun getBukkitCommand(): BukkitCommand = bukkitCommand
+
+    /**
+     * Returns the command permission node.
+     */
     fun getPermission(): String = permission.name
 
+    /**
+     * Returns the brigadier command namespace prefix.
+     */
     val prefix: String get() = "vane:${module!!.annotationName}"
 
+    /**
+     * Returns the root command parameter.
+     */
     fun params(): Param = rootParam
 
+    /**
+     * Returns a brigadier command node with permission requirements applied.
+     */
     val command: LiteralCommandNode<CommandSourceStack>
         get() {
             val cmd = getCommandBase()
@@ -157,23 +218,42 @@ abstract class Command<T : Module<T?>?> @JvmOverloads constructor(
             }.build()
         }
 
+    /**
+     * Returns configured aliases.
+     */
     fun getAliases(): MutableList<String> =
         aliases?.value?.toMutableList() ?: mutableListOf()
 
+    /**
+     * Registers this command with the owning module.
+     */
     override fun onEnable() { module!!.registerCommand(this) }
+
+    /**
+     * Unregisters this command from the owning module.
+     */
     override fun onDisable() { module!!.unregisterCommand(this) }
 
+    /**
+     * Sends command usage/help lines to a sender.
+     */
     fun printHelp(sender: CommandSender?) {
         langUsage.send(sender, "§7/§3$name")
         langHelp.send(sender)
     }
 
+    /**
+     * Brigadier handler that sends command help.
+     */
     fun printHelp2(ctx: CommandContext<CommandSourceStack>): Int {
         langUsage.send(ctx.source.sender, "§7/§3$name")
         langHelp.send(ctx.source.sender)
         return Command.SINGLE_SUCCESS
     }
 
+    /**
+     * Returns a `help` literal that prints command help.
+     */
     fun help(): LiteralArgumentBuilder<CommandSourceStack> =
         Commands.literal("help").executes { ctx ->
             printHelp2(ctx)

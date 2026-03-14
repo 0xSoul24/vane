@@ -31,16 +31,23 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
+/**
+ * Bridges Bukkit/Paper APIs to internal NMS handles.
+ */
 object Nms {
+    /** Returns the NMS handle for a player. */
     @JvmStatic
     fun getPlayer(player: Player): ServerPlayer = (player as CraftPlayer).handle
 
+    /** Returns the NMS handle for a Bukkit entity. */
     @JvmStatic
     fun entityHandle(entity: org.bukkit.entity.Entity): Entity = (entity as CraftEntity).handle
 
+    /** Converts an NMS item stack to a Bukkit mirror stack. */
     fun bukkitItemStack(stack: net.minecraft.world.item.ItemStack?): ItemStack =
         CraftItemStack.asCraftMirror(stack)
 
+    /** Returns or creates the NMS handle for a Bukkit item stack. */
     @JvmStatic
     fun itemHandle(itemStack: ItemStack?): net.minecraft.world.item.ItemStack? {
         itemStack ?: return null
@@ -53,15 +60,21 @@ object Nms {
           catch (_: IllegalAccessException) { null }
     }
 
+    /** Returns the NMS handle for a player, or null when incompatible. */
     @JvmStatic
     fun playerHandle(player: Player?): ServerPlayer? = (player as? CraftPlayer)?.handle
 
+    /** Returns the NMS handle for a world. */
     @JvmStatic
     fun worldHandle(world: World): ServerLevel = (world as CraftWorld).handle
 
+    /** Returns the dedicated server handle. */
     @JvmStatic
     fun serverHandle(): DedicatedServer = (Bukkit.getServer() as CraftServer).server
 
+    /**
+     * Registers a custom entity type by cloning datafixer mappings from a base entity.
+     */
     @JvmStatic
     fun registerEntity(
         baseEntityType: NamespacedKey,
@@ -83,19 +96,23 @@ object Nms {
         Registry.register(BuiltInRegistries.ENTITY_TYPE, id, builder.build(rk))
     }
 
+    /** Spawns an NMS entity into a Bukkit world. */
     @JvmStatic
     fun spawn(world: World, entity: Entity) = worldHandle(world).addFreshEntity(entity)
 
+    /** Unlocks all known recipes for a player. */
     @JvmStatic
     fun unlockAllRecipes(player: Player?): Int {
         val recipes: MutableCollection<RecipeHolder<*>> = serverHandle().recipeManager.getRecipes()
         return playerHandle(player)!!.awardRecipes(recipes)
     }
 
+    /** Returns a sortable creative-tab index for an NMS item stack. */
     @JvmStatic
     fun creativeTabId(itemStack: net.minecraft.world.item.ItemStack): Int =
         CreativeModeTabs.allTabs().takeWhile { it.contains(itemStack) }.count()
 
+    /** Sets a block to air without dropping loot. */
     @JvmStatic
     fun setAirNoDrops(block: Block) {
         worldHandle(block.world).getBlockEntity(BlockPos(block.x, block.y, block.z))
