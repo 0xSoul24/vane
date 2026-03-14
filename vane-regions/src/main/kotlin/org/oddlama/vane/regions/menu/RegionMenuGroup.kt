@@ -4,29 +4,64 @@ import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.core.module.ModuleComponent
 import org.oddlama.vane.regions.Regions
 
+/**
+ * Groups all region-related menu components under one namespace component.
+ */
 class RegionMenuGroup(context: Context<Regions?>) : ModuleComponent<Regions?>(context.namespace("Menus")) {
-    @JvmField
-    var enterRegionNameMenu: EnterRegionNameMenu? = EnterRegionNameMenu(getContext()!!)
+    /**
+     * Shared context used to create all menu components.
+     */
+    private val menuContext = requireNotNull(getContext())
 
     @JvmField
-    var enterRegionGroupNameMenu: EnterRegionGroupNameMenu? = EnterRegionGroupNameMenu(getContext()!!)
+    /**
+     * Name input menu for new regions.
+     */
+    val enterRegionNameMenu = EnterRegionNameMenu(menuContext)
 
     @JvmField
-    var enterRoleNameMenu: EnterRoleNameMenu? = EnterRoleNameMenu(getContext()!!)
+    /**
+     * Name input menu for new region groups.
+     */
+    val enterRegionGroupNameMenu = EnterRegionGroupNameMenu(menuContext)
 
     @JvmField
-    var mainMenu: MainMenu? = MainMenu(getContext()!!)
+    /**
+     * Name input menu for new roles.
+     */
+    val enterRoleNameMenu = EnterRoleNameMenu(menuContext)
 
     @JvmField
-    var regionGroupMenu: RegionGroupMenu? = RegionGroupMenu(getContext()!!)
+    /**
+     * Root regions menu.
+     */
+    val mainMenu = MainMenu(menuContext)
 
     @JvmField
-    var regionMenu: RegionMenu? = RegionMenu(getContext()!!)
+    /**
+     * Region-group detail menu.
+     */
+    val regionGroupMenu = RegionGroupMenu(menuContext)
 
     @JvmField
-    var roleMenu: RoleMenu? = RoleMenu(getContext()!!)
+    /**
+     * Region detail menu.
+     */
+    val regionMenu = RegionMenu(menuContext)
 
-    public override fun onEnable() {}
+    @JvmField
+    /**
+     * Role detail menu.
+     */
+    val roleMenu = RoleMenu(menuContext)
 
-    public override fun onDisable() {}
+    /**
+     * No-op lifecycle hook.
+     */
+    override fun onEnable() {}
+
+    /**
+     * No-op lifecycle hook.
+     */
+    override fun onDisable() {}
 }

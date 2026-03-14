@@ -13,7 +13,6 @@ import org.oddlama.vane.core.menu.MenuItem
 import org.oddlama.vane.regions.Regions
 import org.oddlama.vane.regions.region.RegionGroup
 import java.util.*
-import java.util.stream.Collectors
 
 /**
  * Creates a [Filter.StringFilter] that matches items whose name (obtained via [nameOf])
@@ -31,14 +30,16 @@ internal fun <T> nameFilter(nameOf: (T?) -> String?): Filter.StringFilter<T?> =
 internal fun Regions.administrableRegionGroups(
     player: Player
 ): Pair<MutableList<RegionGroup?>, Filter.StringFilter<RegionGroup?>> {
-    val allRegionGroups: MutableList<RegionGroup?> = allRegionGroups()
-        .stream()
-        .filter { g: RegionGroup? -> g != null && mayAdministrate(player, g) }
-        .map { g: RegionGroup? -> g!! }
-        .sorted { a: RegionGroup, b: RegionGroup -> a.name()!!.compareTo(b.name()!!, ignoreCase = true) }
-        .collect(Collectors.toList())
+    /** Filtered, sorted list of administrable region groups. */
+    val allRegionGroups = allRegionGroups()
+        .asSequence()
+        .filterNotNull()
+        .filter { mayAdministrate(player, it) }
+        .sortedBy { it.name()?.lowercase(Locale.getDefault()) ?: "" }
+        .map { it as RegionGroup? }
+        .toMutableList()
 
-    return Pair(allRegionGroups, nameFilter { r: RegionGroup? -> r?.name() })
+    return allRegionGroups to nameFilter { it?.name() }
 }
 
 /**
@@ -57,14 +58,18 @@ internal fun menuItemSettingToggle(
 ): MenuItem = object : MenuItem(2 * 9 + col, null, Function3 { _: Player?, menu: Menu?, _: MenuItem? ->
     if (hasOverride()) return@Function3 Menu.ClickResult.ERROR
     onToggle()
-    menu!!.update()
+    requireNotNull(menu).update()
     Menu.ClickResult.SUCCESS
 }) {
+    /**
+     * Rebuilds toggle item based on current value and forced-override state.
+     */
     override fun item(item: ItemStack?) {
         val maybeAddForcedHint: (MutableList<Component?>?) -> Unit = { lore ->
             if (hasOverride()) {
-                lore!!.add(Component.empty())
-                lore.add(Component.text("FORCED BY SERVER"))
+                val loreList = requireNotNull(lore)
+                loreList.add(Component.empty())
+                loreList.add(Component.text("FORCED BY SERVER"))
             }
         }
         if (getSetting()) {
@@ -80,7 +85,8 @@ internal fun menuItemSettingToggle(
  * together with a [Filter.StringFilter] on their names.
  */
 internal fun sortedOfflinePlayers(): Pair<MutableList<OfflinePlayer?>, Filter.StringFilter<OfflinePlayer?>> {
-    val allPlayers: MutableList<OfflinePlayer?> = Bukkit.getOfflinePlayers()
+    val allPlayers = Bukkit.getOfflinePlayers()
+        .asSequence()
         .filter { it.name != null }
         .sortedWith(
             compareByDescending<OfflinePlayer> { it.isOnline }
@@ -89,5 +95,5 @@ internal fun sortedOfflinePlayers(): Pair<MutableList<OfflinePlayer?>, Filter.St
         .map { it as OfflinePlayer? }
         .toMutableList()
 
-    return Pair(allPlayers, nameFilter { p: OfflinePlayer? -> p?.name })
+    return allPlayers to nameFilter { it?.name }
 }

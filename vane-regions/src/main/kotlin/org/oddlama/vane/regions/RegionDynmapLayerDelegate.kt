@@ -10,56 +10,83 @@ import org.oddlama.vane.regions.region.Region
 import java.util.*
 import java.util.logging.Level
 
+/**
+ * Low-level dynmap API delegate used by `RegionDynmapLayer`.
+ */
 class RegionDynmapLayerDelegate(private val parent: RegionDynmapLayer) {
+    /**
+     * Active dynmap API instance when integration is enabled.
+     */
     private var dynmapApi: DynmapCommonAPI? = null
+    /**
+     * Dynmap marker API handle.
+     */
     private var markerApi: MarkerAPI? = null
+    /**
+     * Whether dynmap integration is currently active.
+     */
     private var dynmapEnabled = false
 
+    /**
+     * Marker set used for all region overlays.
+     */
     private var markerSet: MarkerSet? = null
 
-    val module: Regions
-        get() = parent.module!!
+    /**
+     * Owning regions module instance.
+     */
+    private val module: Regions
+        get() = requireNotNull(parent.module)
 
+    /**
+     * Registers dynmap listeners and creates/loads the region marker layer.
+     */
     fun onEnable(@Suppress("UNUSED_PARAMETER") plugin: Plugin?) {
         try {
             DynmapCommonAPIListener.register(
                 object : DynmapCommonAPIListener() {
                     override fun apiEnabled(api: DynmapCommonAPI?) {
                         dynmapApi = api
-                        markerApi = dynmapApi!!.markerAPI
+                        markerApi = dynmapApi?.markerAPI
                     }
                 }
             )
         } catch (e: Exception) {
-            this.module.log.log(Level.WARNING, "Error while enabling dynmap integration!", e)
+            module.log.log(Level.WARNING, "Error while enabling dynmap integration!", e)
             return
         }
 
-        if (markerApi == null) {
-            return
-        }
+        if (markerApi == null) return
 
-        this.module.log.info("Enabling dynmap integration")
+        module.log.info("Enabling dynmap integration")
         dynmapEnabled = true
         createOrLoadLayer()
     }
 
+    /**
+     * Disables dynmap integration state.
+     */
     fun onDisable() {
         if (!dynmapEnabled) {
             return
         }
 
-        this.module.log.info("Disabling dynmap integration")
+        module.log.info("Disabling dynmap integration")
         dynmapEnabled = false
         dynmapApi = null
         markerApi = null
     }
 
+    /**
+     * Creates or updates the dynmap marker set and applies current style settings.
+     */
     private fun createOrLoadLayer() {
+        val api = markerApi ?: return
+
         // Create or retrieve layer
-        markerSet = markerApi!!.getMarkerSet(RegionDynmapLayer.LAYER_ID)
+        markerSet = api.getMarkerSet(RegionDynmapLayer.LAYER_ID)
         if (markerSet == null) {
-            markerSet = markerApi!!.createMarkerSet(
+            markerSet = api.createMarkerSet(
                 RegionDynmapLayer.LAYER_ID,
                 // Use safe call with fallback for nullable TranslatedMessage
                 parent.langLayerLabel?.str() ?: "",
@@ -69,7 +96,7 @@ class RegionDynmapLayerDelegate(private val parent: RegionDynmapLayer) {
         }
 
         if (markerSet == null) {
-            this.module.log.severe("Failed to create dynmap region marker set!")
+            module.log.severe("Failed to create dynmap region marker set!")
             return
         }
 
@@ -82,72 +109,92 @@ class RegionDynmapLayerDelegate(private val parent: RegionDynmapLayer) {
         updateAllMarkers()
     }
 
+    /**
+     * Converts a region UUID to dynmap marker id.
+     */
     private fun idFor(regionId: UUID): String {
         return regionId.toString()
     }
 
-    private fun idFor(region: Region): String {
-        return idFor(region.id()!!)
-    }
+    /**
+     * Resolves marker id for a region object.
+     */
+    private fun idFor(region: Region): String? = region.id()?.let(::idFor)
 
+    /**
+     * Recreates a dynmap marker for the given region.
+     */
     fun updateMarker(region: Region) {
         if (!dynmapEnabled) {
             return
         }
 
         // Area markers can't be updated.
-        removeMarker(region.id()!!)
+        val regionId = region.id() ?: return
+        val extent = region.extent() ?: return
+        removeMarker(regionId)
 
-        val min = region.extent()!!.min()
-        val max = region.extent()!!.max()
-        val worldName = min!!.world.name
-        val markerId = idFor(region)
+        val min = extent.min() ?: return
+        val max = extent.max() ?: return
+        val worldName = min.world.name
+        val markerId = idFor(region) ?: return
         // Use safe call with fallback for nullable TranslatedMessage
         val markerLabel = parent.langMarkerLabel?.str(region.name()) ?: region.name()
 
-        val xs = doubleArrayOf(min.x.toDouble(), (max!!.x + 1).toDouble())
+        val markerSetRef = markerSet ?: return
+        val xs = doubleArrayOf(min.x.toDouble(), (max.x + 1).toDouble())
         val zs = doubleArrayOf(min.z.toDouble(), (max.z + 1).toDouble())
-        val area = markerSet!!.createAreaMarker(markerId, markerLabel, false, worldName, xs, zs, false)
+        val area = markerSetRef.createAreaMarker(markerId, markerLabel, false, worldName, xs, zs, false)
         area.setRangeY((max.y + 1).toDouble(), min.y.toDouble())
         area.setLineStyle(parent.configLineWeight, parent.configLineOpacity, parent.configLineColor)
         area.setFillStyle(parent.configFillOpacity, parent.configFillColor)
     }
 
+    /**
+     * Removes marker by region id.
+     */
     fun removeMarker(regionId: UUID) {
         removeMarker(idFor(regionId))
     }
 
+    /**
+     * Removes marker by marker id.
+     */
     fun removeMarker(markerId: String?) {
-        if (!dynmapEnabled || markerId == null) {
-            return
-        }
+        if (!dynmapEnabled || markerId == null) return
 
-        removeMarker(markerSet!!.findMarker(markerId))
+        removeMarker(markerSet?.findMarker(markerId))
     }
 
+    /**
+     * Removes a concrete marker instance.
+     */
     fun removeMarker(marker: Marker?) {
-        if (!dynmapEnabled || marker == null) {
-            return
-        }
+        if (!dynmapEnabled || marker == null) return
 
         marker.deleteMarker()
     }
 
+    /**
+     * Synchronizes all region markers and prunes orphaned entries.
+     */
     fun updateAllMarkers() {
         if (!dynmapEnabled) {
             return
         }
 
         // Update all existing
-        val idSet = HashSet<String?>()
-        for (region in this.module.allRegions()) {
+        val markerSetRef = markerSet ?: return
+        val idSet = HashSet<String>()
+        for (region in module.allRegions()) {
             val r = region ?: continue
-            idSet.add(idFor(r))
+            val regionId = idFor(r) ?: continue
+            idSet.add(regionId)
             updateMarker(r)
         }
 
         // Remove orphaned
-        for (marker in markerSet!!.markers) {
+        for (marker in markerSetRef.markers) {
             val id = marker.markerID
             if (id != null && !idSet.contains(id)) {
                 removeMarker(marker)

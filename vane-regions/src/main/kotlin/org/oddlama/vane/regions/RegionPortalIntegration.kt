@@ -7,7 +7,11 @@ import org.oddlama.vane.portals.portal.Portal
 import org.oddlama.vane.regions.event.RegionPortalRoleSettingEnforcer
 import org.oddlama.vane.regions.region.RoleSetting
 
+/**
+ * Wires regions permissions into vane-portals callbacks.
+ */
 class RegionPortalIntegration(context: Regions, portalsPlugin: Plugin?) {
+    /** Registers portal-region callbacks and portal-related setting enforcers. */
     init {
         RegionPortalRoleSettingEnforcer(context)
 
@@ -15,8 +19,14 @@ class RegionPortalIntegration(context: Regions, portalsPlugin: Plugin?) {
             // Register callback to portals module so portals
             // can find out if two portals are in the same region group
             portalsPlugin.setIsInSameRegionGroupCallback { a: Portal?, b: Portal? ->
-                val regA = context.regionAt(a!!.spawn())
-                val regB = context.regionAt(b!!.spawn())
+                /** First portal to compare. */
+                val portalA = a ?: return@setIsInSameRegionGroupCallback false
+                /** Second portal to compare. */
+                val portalB = b ?: return@setIsInSameRegionGroupCallback false
+                /** Region containing `portalA`, if any. */
+                val regA = context.regionAt(portalA.spawn())
+                /** Region containing `portalB`, if any. */
+                val regB = context.regionAt(portalB.spawn())
                 if (regA == null || regB == null) {
                     return@setIsInSameRegionGroupCallback regA == regB
                 }
@@ -24,10 +34,16 @@ class RegionPortalIntegration(context: Regions, portalsPlugin: Plugin?) {
             }
 
             portalsPlugin.setPlayerCanUsePortalsInRegionGroupOfCallback { player: Player?, portal: Portal? ->
-                val region = context.regionAt(portal!!.spawn()) ?: // No region -> no restriction.
+                /** Player attempting to use the portal. */
+                val user = player ?: return@setPlayerCanUsePortalsInRegionGroupOfCallback false
+                /** Target portal being evaluated. */
+                val portalRef = portal ?: return@setPlayerCanUsePortalsInRegionGroupOfCallback false
+                /** Region containing the portal destination, if one exists. */
+                val region = context.regionAt(portalRef.spawn()) ?: // No region -> no restriction.
                 return@setPlayerCanUsePortalsInRegionGroupOfCallback true
-                val group = region.regionGroup(context.module!!)
-                group!!.getRole(player!!.uniqueId)!!.getSetting(RoleSetting.PORTAL)
+                /** Region group owning the portal region. */
+                val group = region.regionGroup(context) ?: return@setPlayerCanUsePortalsInRegionGroupOfCallback true
+                group.getRole(user.uniqueId)?.getSetting(RoleSetting.PORTAL) ?: true
             }
         }
     }

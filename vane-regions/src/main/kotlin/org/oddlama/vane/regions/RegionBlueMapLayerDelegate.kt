@@ -12,37 +12,59 @@ import org.oddlama.vane.regions.region.Region
 import java.util.*
 import java.util.function.Consumer
 
+/**
+ * Low-level BlueMap API delegate used by `RegionBlueMapLayer`.
+ */
 class RegionBlueMapLayerDelegate(private val parent: RegionBlueMapLayer) {
+    /**
+     * Whether BlueMap integration is currently active.
+     */
     private var bluemapEnabled = false
 
-    val module: Regions
-        get() = parent.module!!
+    /**
+     * Owning regions module instance.
+     */
+    private val module: Regions
+        get() = requireNotNull(parent.module)
 
+    /**
+     * Registers BlueMap hooks, creates marker sets, and performs initial marker sync.
+     */
     fun onEnable(@Suppress("UNUSED_PARAMETER") plugin: Plugin?) {
         BlueMapAPI.onEnable { api: BlueMapAPI? ->
-            this.module.log.info("Enabling BlueMap integration")
+            val blueMapApi = api ?: return@onEnable
+            module.log.info("Enabling BlueMap integration")
             bluemapEnabled = true
 
             // Create marker sets
-            for (world in this.module.server.worlds) {
-                createMarkerSet(api!!, world)
+            for (world in module.server.worlds) {
+                createMarkerSet(blueMapApi, world)
             }
             updateAllMarkers()
         }
     }
 
+    /**
+     * Disables BlueMap integration state.
+     */
     fun onDisable() {
         if (!bluemapEnabled) {
             return
         }
 
-        this.module.log.info("Disabling BlueMap integration")
+        module.log.info("Disabling BlueMap integration")
         bluemapEnabled = false
     }
 
-    // worldId -> MarkerSet
-    private val markerSets = HashMap<UUID?, MarkerSet>()
+    // worldId -> marker set
+    /**
+     * Marker sets keyed by world UUID.
+     */
+    private val markerSets = mutableMapOf<UUID, MarkerSet>()
 
+    /**
+     * Creates and registers a BlueMap marker set for a world if missing.
+     */
     private fun createMarkerSet(api: BlueMapAPI, world: World) {
         if (markerSets.containsKey(world.uid)) {
             return
@@ -57,22 +79,27 @@ class RegionBlueMapLayerDelegate(private val parent: RegionBlueMapLayer) {
         api
             .getWorld(world)
             .ifPresent(Consumer { bmWorld: BlueMapWorld? ->
-                for (map in bmWorld!!.maps) {
+                for (map in bmWorld?.maps.orEmpty()) {
                     map.markerSets[MARKER_SET_ID] = markerSet
                 }
             })
 
-        markerSets[world.uid] = markerSet!!
+        markerSets[world.uid] = markerSet
     }
 
+    /**
+     * Creates or replaces the marker for one region.
+     */
     fun updateMarker(region: Region) {
-        removeMarker(region.id()!!)
-        val min = region.extent()!!.min()
-        val max = region.extent()!!.max()
+        val regionId = region.id() ?: return
+        val extent = region.extent() ?: return
+        val min = extent.min() ?: return
+        val max = extent.max() ?: return
+        removeMarker(regionId)
         val shape = Shape.createRect(
-            min!!.x.toDouble(),
+            min.x.toDouble(),
             min.z.toDouble(),
-            (max!!.x + 1).toDouble(),
+            (max.x + 1).toDouble(),
             (max.z + 1).toDouble()
         )
 
@@ -87,23 +114,32 @@ class RegionBlueMapLayerDelegate(private val parent: RegionBlueMapLayer) {
             .build()
 
         // Existing markers will be overwritten.
-        markerSets[min.world.uid]!!.markers[region.id().toString()] = marker
+        markerSets[min.world.uid]?.markers?.set(regionId.toString(), marker)
     }
 
+    /**
+     * Removes a region marker from every world marker set.
+     */
     fun removeMarker(regionId: UUID) {
         for (markerSet in markerSets.values) {
             markerSet.markers.remove(regionId.toString())
         }
     }
 
+    /**
+     * Synchronizes all BlueMap markers for loaded regions.
+     */
     fun updateAllMarkers() {
-        for (region in this.module.allRegions()) {
+        for (region in module.allRegions()) {
             val r = region ?: continue
             updateMarker(r)
         }
     }
 
     companion object {
+        /**
+         * Stable marker-set id used across all BlueMap worlds.
+         */
         const val MARKER_SET_ID: String = "vane_regions.regions"
     }
 }

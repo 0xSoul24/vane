@@ -19,27 +19,63 @@ import org.oddlama.vane.regions.region.RegionSelection
 import org.oddlama.vane.util.PlayerUtil
 import org.oddlama.vane.util.StorageUtil
 
+/**
+ * Menu for managing one region, including rename, deletion, and group assignment.
+ */
 class RegionMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.namespace("Region")) {
     @LangMessage
+    /**
+     * Localized region menu title.
+     */
     var langTitle: TranslatedMessage? = null
 
     @LangMessage
+    /**
+     * Localized confirmation title for region deletion.
+     */
     var langDeleteConfirmTitle: TranslatedMessage? = null
 
     @LangMessage
+    /**
+     * Localized title for region-group selector menu.
+     */
     var langSelectRegionGroupTitle: TranslatedMessage? = null
 
     @LangMessage
+    /**
+     * Localized title for region-group filter input.
+     */
     var langFilterRegionGroupsTitle: TranslatedMessage? = null
 
+    /**
+     * Item for renaming the region.
+     */
     var itemRename: TranslatedItemStack<*>
+    /**
+     * Item for deleting the region.
+     */
     var itemDelete: TranslatedItemStack<*>
+    /**
+     * Item confirming region deletion.
+     */
     var itemDeleteConfirmAccept: TranslatedItemStack<*>
+    /**
+     * Item cancelling region deletion.
+     */
     var itemDeleteConfirmCancel: TranslatedItemStack<*>
+    /**
+     * Item opening region-group assignment flow.
+     */
     var itemAssignRegionGroup: TranslatedItemStack<*>
+    /**
+     * Item template for one region-group entry in assignment selectors.
+     */
     var itemSelectRegionGroup: TranslatedItemStack<*>
 
     init {
+        /**
+         * Shared menu context used to create translated item stacks.
+         */
         val ctx = getContext()!!
         itemRename = TranslatedItemStack<Regions?>(ctx, "Rename", Material.NAME_TAG, 1, "Used to rename the region.")
         itemDelete = TranslatedItemStack<Regions?>(
@@ -79,6 +115,9 @@ class RegionMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context
         )
     }
 
+    /**
+     * Creates and populates the region menu.
+     */
     fun create(region: Region, player: Player): Menu {
         val columns = 9
         val title = langTitle!!.strComponent("§5§l" + region.name())
@@ -98,6 +137,9 @@ class RegionMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context
         return regionMenu
     }
 
+    /**
+     * Builds the widget for renaming the region.
+     */
     private fun menuItemRename(region: Region): MenuWidget {
         return MenuItem(0, itemRename.item(), Function3 { player: Player?, menu: Menu?, _: MenuItem? ->
             val p = player!!
@@ -125,6 +167,9 @@ class RegionMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context
         })
     }
 
+    /**
+     * Builds the widget for deleting the region and refunding cost.
+     */
     private fun menuItemDelete(region: Region): MenuWidget {
         return MenuItem(1, itemDelete.item()) { player: Player?, menu: Menu?, _: MenuItem? ->
             menu!!.close(player!!)
@@ -177,6 +222,9 @@ class RegionMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context
         }
     }
 
+    /**
+     * Builds the widget for assigning the region to another region group.
+     */
     private fun menuItemAssignRegionGroup(region: Region): MenuWidget {
         return MenuItem(2, itemAssignRegionGroup.item()) { player: Player?, menu: Menu?, _: MenuItem? ->
             menu!!.close(player!!)
@@ -205,7 +253,13 @@ class RegionMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context
         }
     }
 
-    public override fun onEnable() {}
+    /**
+     * No-op lifecycle hook.
+     */
+    override fun onEnable() {}
 
-    public override fun onDisable() {}
+    /**
+     * No-op lifecycle hook.
+     */
+    override fun onDisable() {}
 }

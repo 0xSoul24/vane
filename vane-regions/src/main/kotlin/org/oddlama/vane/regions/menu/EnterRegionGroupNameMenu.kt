@@ -13,36 +13,64 @@ import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.core.module.ModuleComponent
 import org.oddlama.vane.regions.Regions
 
+/**
+ * Anvil-based prompt menu for entering a region-group name.
+ */
 class EnterRegionGroupNameMenu(context: Context<Regions?>) :
     ModuleComponent<Regions?>(context.namespace("EnterRegionGroupName")) {
     @LangMessage
+    /**
+     * Localized title shown in the anvil input UI.
+     */
     var langTitle: TranslatedMessage? = null
 
     @ConfigMaterial(def = Material.GLOBE_BANNER_PATTERN, desc = "The item used to name region groups.")
+    /**
+     * Icon material used in the anvil input UI.
+     */
     var configMaterial: Material? = null
 
+    /**
+     * Non-null context for creating child menus.
+     */
+    private val menuContext get() = requireNotNull(getContext())
+    /**
+     * Resolved anvil UI title.
+     */
+    private val title get() = requireNotNull(langTitle).str()
+    /**
+     * Resolved anvil icon item.
+     */
+    private val icon get() = ItemStack(requireNotNull(configMaterial))
+
+    /**
+     * Creates a name-input menu with default region-group name seed.
+     */
     fun create(player: Player, onClick: Function2<Player?, String?, Menu.ClickResult?>): Menu {
         return create(player, "Group", onClick)
     }
 
+    /**
+     * Creates a name-input menu using the provided default value.
+     */
     fun create(
         player: Player,
         defaultName: String,
         onClick: Function2<Player?, String?, Menu.ClickResult?>
-    ): Menu {
-        return MenuFactory.anvilStringInput(
-            getContext()!!,
-            player,
-            langTitle!!.str(),
-            ItemStack(configMaterial!!),
-            defaultName
-        ) { p: Player?, menu: Menu?, name: String? ->
-            menu!!.close(p!!)
-            onClick.apply(p, name)
-        }
+    ): Menu = MenuFactory.anvilStringInput(menuContext, player, title, icon, defaultName) { p, menu, name ->
+        /** Player passed by menu callback. */
+        val playerRef = p ?: return@anvilStringInput null
+        menu?.close(playerRef)
+        onClick.apply(playerRef, name)
     }
 
-    public override fun onEnable() {}
+    /**
+     * No-op lifecycle hook.
+     */
+    override fun onEnable() {}
 
-    public override fun onDisable() {}
+    /**
+     * No-op lifecycle hook.
+     */
+    override fun onDisable() {}
 }

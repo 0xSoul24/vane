@@ -18,38 +18,104 @@ import org.oddlama.vane.util.StorageUtil
 import java.util.stream.Collectors
 
 @Suppress("UNUSED_PARAMETER")
+/**
+ * Menu for managing one region group, its roles, and environment settings.
+ */
 class RegionGroupMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.namespace("RegionGroup")) {
     @LangMessage
+    /**
+     * Localized region-group menu title.
+     */
     var langTitle: TranslatedMessage? = null
 
     @LangMessage
+    /**
+     * Localized confirmation title for region-group deletion.
+     */
     var langDeleteConfirmTitle: TranslatedMessage? = null
 
     @LangMessage
+    /**
+     * Localized title for role selector menu.
+     */
     var langSelectRoleTitle: TranslatedMessage? = null
 
     @LangMessage
+    /**
+     * Localized title for role filter input.
+     */
     var langFilterRolesTitle: TranslatedMessage? = null
 
+    /**
+     * Item for renaming the region group.
+     */
     var itemRename: TranslatedItemStack<*>
+    /**
+     * Item for deleting the region group.
+     */
     var itemDelete: TranslatedItemStack<*>
+    /**
+     * Item confirming region-group deletion.
+     */
     var itemDeleteConfirmAccept: TranslatedItemStack<*>
+    /**
+     * Item cancelling region-group deletion.
+     */
     var itemDeleteConfirmCancel: TranslatedItemStack<*>
+    /**
+     * Item opening role-creation flow.
+     */
     var itemCreateRole: TranslatedItemStack<*>
+    /**
+     * Item opening role list.
+     */
     var itemListRoles: TranslatedItemStack<*>
+    /**
+     * Item template for one role entry in selectors.
+     */
     var itemSelectRole: TranslatedItemStack<*>
 
+    /**
+     * Item shown for enabled setting toggle state.
+     */
     var itemSettingToggleOn: TranslatedItemStack<*>
+    /**
+     * Item shown for disabled setting toggle state.
+     */
     var itemSettingToggleOff: TranslatedItemStack<*>
+    /**
+     * Info item for the animals setting.
+     */
     var itemSettingInfoAnimals: TranslatedItemStack<*>
+    /**
+     * Info item for the monsters setting.
+     */
     var itemSettingInfoMonsters: TranslatedItemStack<*>
+    /**
+     * Info item for the explosions setting.
+     */
     var itemSettingInfoExplosions: TranslatedItemStack<*>
+    /**
+     * Info item for the fire setting.
+     */
     var itemSettingInfoFire: TranslatedItemStack<*>
+    /**
+     * Info item for the PVP setting.
+     */
     var itemSettingInfoPvp: TranslatedItemStack<*>
+    /**
+     * Info item for the trample setting.
+     */
     var itemSettingInfoTrample: TranslatedItemStack<*>
+    /**
+     * Info item for the vine-growth setting.
+     */
     var itemSettingInfoVineGrowth: TranslatedItemStack<*>
 
     init {
+        /**
+         * Shared menu context used to create translated item stacks.
+         */
         val ctx = getContext()!!
         itemRename = TranslatedItemStack<Regions?>(
             ctx,
@@ -166,6 +232,9 @@ class RegionGroupMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(co
         )
     }
 
+    /**
+     * Creates and populates the region-group menu.
+     */
     fun create(group: RegionGroup, player: Player): Menu {
         val columns = 9
         val rows = 3
@@ -206,6 +275,9 @@ class RegionGroupMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(co
         return regionGroupMenu
     }
 
+    /**
+     * Builds the widget for renaming the region group.
+     */
     private fun menuItemRename(group: RegionGroup): MenuWidget {
         return MenuItem(0, itemRename.item()) { player: Player?, menu: Menu?, self: MenuItem? ->
             val p = player!!
@@ -227,6 +299,9 @@ class RegionGroupMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(co
         }
     }
 
+    /**
+     * Builds the widget for deleting the region group.
+     */
     private fun menuItemDelete(group: RegionGroup): MenuWidget {
         val orphanCheckbox = if (group.isOrphan(module!!)) "§a✓" else "§c✕"
         return MenuItem(1, itemDelete.item(orphanCheckbox), Function3 { player: Player?, menu: Menu?, self: MenuItem? ->
@@ -261,6 +336,9 @@ class RegionGroupMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(co
         })
     }
 
+    /**
+     * Builds the widget for creating a new role.
+     */
     private fun menuItemCreateRole(group: RegionGroup): MenuWidget {
         return MenuItem(7, itemCreateRole.item()) { player: Player?, menu: Menu?, self: MenuItem? ->
             val p = player!!
@@ -278,6 +356,9 @@ class RegionGroupMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(co
          }
     }
 
+    /**
+     * Builds the widget for listing and selecting roles.
+     */
     private fun menuItemListRoles(group: RegionGroup): MenuWidget {
         return MenuItem(8, itemListRoles.item()) { player: Player?, menu: Menu?, self: MenuItem? ->
             val p = player!!
@@ -311,6 +392,9 @@ class RegionGroupMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(co
         }
     }
 
+    /**
+     * Adds a setting-info item and its associated toggle widget to the menu.
+     */
     private fun addMenuItemSetting(
         regionGroupMenu: Menu,
         group: RegionGroup,
@@ -340,7 +424,13 @@ class RegionGroupMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(co
         )
     }
 
-    public override fun onEnable() {}
+    /**
+     * No-op lifecycle hook.
+     */
+    override fun onEnable() {}
 
-    public override fun onDisable() {}
+    /**
+     * No-op lifecycle hook.
+     */
+    override fun onDisable() {}
 }

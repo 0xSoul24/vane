@@ -19,35 +19,89 @@ import org.oddlama.vane.regions.Regions
 import java.util.stream.Collectors
 import kotlin.math.abs
 
+/**
+ * Root regions menu for selection, creation, and navigation to region/group views.
+ */
 class MainMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.namespace("Main")) {
     @LangMessage
+    /**
+     * Localized main menu title.
+     */
     var langTitle: TranslatedMessage? = null
 
     @LangMessage
+    /**
+     * Localized title for the region selector menu.
+     */
     var langSelectRegionTitle: TranslatedMessage? = null
 
     @LangMessage
+    /**
+     * Localized title for region filter input.
+     */
     var langFilterRegionsTitle: TranslatedMessage? = null
 
     @LangMessage
+    /**
+     * Localized title for the region-group selector menu.
+     */
     var langSelectRegionGroupTitle: TranslatedMessage? = null
 
     @LangMessage
+    /**
+     * Localized title for region-group filter input.
+     */
     var langFilterRegionGroupsTitle: TranslatedMessage? = null
 
+    /**
+     * Item shown to start region selection mode.
+     */
     var itemCreateRegionStartSelection: TranslatedItemStack<*>
+    /**
+     * Item shown when the current selection is invalid.
+     */
     var itemCreateRegionInvalidSelection: TranslatedItemStack<*>
+    /**
+     * Item shown when the current selection is valid and purchasable.
+     */
     var itemCreateRegionValidSelection: TranslatedItemStack<*>
+    /**
+     * Item shown to cancel selection mode.
+     */
     var itemCancelSelection: TranslatedItemStack<*>
+    /**
+     * Item shown to open the region at the player's location.
+     */
     var itemCurrentRegion: TranslatedItemStack<*>
+    /**
+     * Item shown to list administrable regions.
+     */
     var itemListRegions: TranslatedItemStack<*>
+    /**
+     * Item template for one region entry in selector menus.
+     */
     var itemSelectRegion: TranslatedItemStack<*>
+    /**
+     * Item shown to create a new region group.
+     */
     var itemCreateRegionGroup: TranslatedItemStack<*>
+    /**
+     * Item shown to open the current region's group.
+     */
     var itemCurrentRegionGroup: TranslatedItemStack<*>
+    /**
+     * Item shown to list administrable region groups.
+     */
     var itemListRegionGroups: TranslatedItemStack<*>
+    /**
+     * Item template for one region-group entry in selector menus.
+     */
     var itemSelectRegionGroup: TranslatedItemStack<*>
 
     init {
+        /**
+         * Shared context used to create translated item stacks.
+         */
         val ctx = getContext()!!
         itemCreateRegionStartSelection = TranslatedItemStack<Regions?>(
             ctx,
@@ -128,6 +182,9 @@ class MainMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.n
         )
     }
 
+    /**
+     * Creates and populates the main menu for the given player.
+     */
     fun create(player: Player): Menu {
         val columns = 9
         val title = langTitle!!.strComponent()
@@ -164,6 +221,9 @@ class MainMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.n
         return mainMenu
     }
 
+    /**
+     * Creates the menu widget that starts selection mode.
+     */
     private fun menuItemStartSelection(): MenuWidget {
         return MenuItem(
             0,
@@ -176,6 +236,9 @@ class MainMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.n
         }
     }
 
+    /**
+     * Creates the menu widget that cancels selection mode.
+     */
     private fun menuItemCancelSelection(): MenuWidget {
         return MenuItem(1, itemCancelSelection.item()) { player: Player?, menu: Menu?, _: MenuItem? ->
             val p = requireNotNull(player)
@@ -185,6 +248,9 @@ class MainMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.n
         }
     }
 
+    /**
+     * Creates the widget used to validate and confirm region creation.
+     */
     private fun menuItemCreateRegion(finalPlayer: Player, selection: RegionSelection): MenuWidget {
         return object : MenuItem(0, null, Function3 { player: Player?, menu: Menu?, _: MenuItem? ->
             if (selection.isValid(finalPlayer)) {
@@ -302,6 +368,9 @@ class MainMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.n
         }
     }
 
+    /**
+     * Creates the widget that opens the administrable-region list.
+     */
     private fun menuItemListRegions(): MenuWidget {
         return MenuItem(1, itemListRegions.item()) { player: Player?, menu: Menu?, _: MenuItem? ->
             val p = player!!
@@ -335,6 +404,9 @@ class MainMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.n
         }
     }
 
+    /**
+     * Creates the widget opening the region currently under the player.
+     */
     private fun menuItemCurrentRegion(region: Region): MenuWidget {
         return MenuItem(
             2,
@@ -347,6 +419,9 @@ class MainMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.n
         }
     }
 
+    /**
+     * Creates the widget that prompts for a new region-group name.
+     */
     private fun menuItemCreateRegionGroup(): MenuWidget {
         return MenuItem(7, itemCreateRegionGroup.item()) { player: Player?, menu: Menu?, _: MenuItem? ->
             val p = requireNotNull(player)
@@ -365,6 +440,9 @@ class MainMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.n
         }
     }
 
+    /**
+     * Creates the widget that opens the administrable region-group list.
+     */
     private fun menuItemListRegionGroups(): MenuWidget {
         return MenuItem(8, itemListRegionGroups.item()) { player: Player?, menu: Menu?, _: MenuItem? ->
             val p = player!!
@@ -390,6 +468,9 @@ class MainMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.n
         }
     }
 
+    /**
+     * Creates the widget opening the current region's region group.
+     */
     private fun menuItemCurrentRegionGroup(regionGroup: RegionGroup): MenuWidget {
         return MenuItem(
             6,
@@ -402,8 +483,14 @@ class MainMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.n
         }
     }
 
-    public override fun onEnable() {}
+    /**
+     * No-op lifecycle hook.
+     */
+    override fun onEnable() {}
 
-    public override fun onDisable() {}
+    /**
+     * No-op lifecycle hook.
+     */
+    override fun onDisable() {}
 }
 

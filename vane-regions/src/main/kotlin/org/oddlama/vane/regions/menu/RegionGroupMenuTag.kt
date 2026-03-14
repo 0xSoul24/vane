@@ -2,8 +2,12 @@ package org.oddlama.vane.regions.menu
 
 import java.util.*
 
+/**
+ * Lightweight menu tag carrying a selected region-group id.
+ */
 class RegionGroupMenuTag(private val regionGroupId: UUID?) {
-    fun regionGroupId(): UUID? {
-        return regionGroupId
-    }
+    /**
+     * Returns the associated region-group id.
+     */
+    fun regionGroupId(): UUID? = regionGroupId
 }

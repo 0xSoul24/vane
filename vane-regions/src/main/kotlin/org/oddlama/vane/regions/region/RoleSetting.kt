@@ -2,6 +2,9 @@ package org.oddlama.vane.regions.region
 
 import org.oddlama.vane.regions.Regions
 
+/**
+ * Permission switches available on region roles.
+ */
 enum class RoleSetting(private val def: Boolean, private val defAdmin: Boolean) {
     ADMIN(false, true),
     BUILD(false, true),
@@ -9,17 +12,19 @@ enum class RoleSetting(private val def: Boolean, private val defAdmin: Boolean) 
     CONTAINER(false, true),
     PORTAL(false, true);
 
-    fun defaultValue(admin: Boolean): Boolean {
-        if (admin) {
-            return defAdmin
-        }
-        return def
-    }
+    /**
+     * Returns the default value for normal users or admins.
+     */
+    fun defaultValue(admin: Boolean): Boolean = if (admin) defAdmin else def
 
-    fun hasOverride(): Boolean {
-        return this.override != 0
-    }
+    /**
+     * Returns whether a global override currently applies to this role setting.
+     */
+    fun hasOverride(): Boolean = override != 0
 
+    /**
+     * Global override value from `Regions.roleOverrides`.
+     */
     val override: Int
         get() = Regions.roleOverrides?.getOverride(this) ?: 0
 }

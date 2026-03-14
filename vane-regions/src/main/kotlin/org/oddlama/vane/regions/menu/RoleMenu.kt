@@ -18,39 +18,102 @@ import org.oddlama.vane.util.ItemUtil
 import org.oddlama.vane.util.StorageUtil
 
 @Suppress("UNUSED_PARAMETER")
+/**
+ * Menu for managing one role, its members, and role-level permission settings.
+ */
 class RoleMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.namespace("Role")) {
     @LangMessage
+    /**
+     * Localized role menu title.
+     */
     var langTitle: TranslatedMessage? = null
 
     @LangMessage
+    /**
+     * Localized confirmation title for role deletion.
+     */
     var langDeleteConfirmTitle: TranslatedMessage? = null
 
     @LangMessage
+    /**
+     * Localized title for assign-player selector.
+     */
     var langSelectAssignPlayerTitle: TranslatedMessage? = null
 
     @LangMessage
+    /**
+     * Localized title for remove-player selector.
+     */
     var langSelectRemovePlayerTitle: TranslatedMessage? = null
 
     @LangMessage
+    /**
+     * Localized title for player filter input.
+     */
     var langFilterPlayersTitle: TranslatedMessage? = null
 
+    /**
+     * Item for renaming the role.
+     */
     var itemRename: TranslatedItemStack<*>
+    /**
+     * Item for deleting the role.
+     */
     var itemDelete: TranslatedItemStack<*>
+    /**
+     * Item confirming role deletion.
+     */
     var itemDeleteConfirmAccept: TranslatedItemStack<*>
+    /**
+     * Item cancelling role deletion.
+     */
     var itemDeleteConfirmCancel: TranslatedItemStack<*>
+    /**
+     * Item opening player-assignment flow.
+     */
     var itemAssignPlayer: TranslatedItemStack<*>
+    /**
+     * Item opening player-removal flow.
+     */
     var itemRemovePlayer: TranslatedItemStack<*>
+    /**
+     * Item template for one player entry in selectors.
+     */
     var itemSelectPlayer: TranslatedItemStack<*>
 
+    /**
+     * Item shown for enabled setting toggle state.
+     */
     var itemSettingToggleOn: TranslatedItemStack<*>
+    /**
+     * Item shown for disabled setting toggle state.
+     */
     var itemSettingToggleOff: TranslatedItemStack<*>
+    /**
+     * Info item for the admin setting.
+     */
     var itemSettingInfoAdmin: TranslatedItemStack<*>
+    /**
+     * Info item for the build setting.
+     */
     var itemSettingInfoBuild: TranslatedItemStack<*>
+    /**
+     * Info item for the use setting.
+     */
     var itemSettingInfoUse: TranslatedItemStack<*>
+    /**
+     * Info item for the container setting.
+     */
     var itemSettingInfoContainer: TranslatedItemStack<*>
+    /**
+     * Info item for the portal setting.
+     */
     var itemSettingInfoPortal: TranslatedItemStack<*>
 
     init {
+        /**
+         * Shared menu context used to create translated item stacks.
+         */
         val ctx = getContext()!!
         itemRename = TranslatedItemStack<Regions?>(ctx, "Rename", Material.NAME_TAG, 1, "Used to rename the role.")
         itemDelete = TranslatedItemStack<Regions?>(
@@ -148,6 +211,9 @@ class RoleMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.n
         )
     }
 
+    /**
+     * Creates and populates the role menu.
+     */
     fun create(group: RegionGroup, role: Role, player: Player): Menu {
         val columns = 9
         val rows = 3
@@ -184,6 +250,9 @@ class RoleMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.n
         return roleMenu
     }
 
+    /**
+     * Builds the widget for renaming a role.
+     */
     private fun menuItemRename(group: RegionGroup, role: Role): MenuWidget {
         return MenuItem(0, itemRename.item()) { player: Player?, menu: Menu?, self: MenuItem? ->
             val p = player!!
@@ -202,6 +271,9 @@ class RoleMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.n
         }
     }
 
+    /**
+     * Builds the widget for deleting a role.
+     */
     private fun menuItemDelete(group: RegionGroup, role: Role): MenuWidget {
         return MenuItem(1, itemDelete.item()) { player: Player?, menu: Menu?, self: MenuItem? ->
             menu!!.close(player!!)
@@ -221,6 +293,9 @@ class RoleMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.n
         }
     }
 
+    /**
+     * Builds the widget for assigning players to this role.
+     */
     private fun menuItemAssignPlayer(group: RegionGroup, role: Role): MenuWidget {
         return MenuItem(7, itemAssignPlayer.item()) { player: Player?, menu: Menu?, self: MenuItem? ->
             menu!!.close(player!!)
@@ -250,6 +325,9 @@ class RoleMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.n
         }
     }
 
+    /**
+     * Builds the widget for removing players from this role.
+     */
     private fun menuItemRemovePlayer(group: RegionGroup, role: Role): MenuWidget {
         return MenuItem(8, itemRemovePlayer.item()) { player: Player?, menu: Menu?, self: MenuItem? ->
             menu!!.close(player!!)
@@ -279,6 +357,9 @@ class RoleMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.n
         }
     }
 
+    /**
+     * Adds a setting-info item and its associated toggle widget to the menu.
+     */
     private fun addMenuItemSetting(
         roleMenu: Menu,
         role: Role,
@@ -308,7 +389,13 @@ class RoleMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.n
         )
     }
 
-    public override fun onEnable() {}
+    /**
+     * No-op lifecycle hook.
+     */
+    override fun onEnable() {}
 
-    public override fun onDisable() {}
+    /**
+     * No-op lifecycle hook.
+     */
+    override fun onDisable() {}
 }
