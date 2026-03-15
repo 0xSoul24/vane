@@ -22,47 +22,78 @@ import org.oddlama.vane.portals.portal.Portal
 import org.oddlama.vane.portals.portal.Portal.TargetSelectionComparator
 import org.oddlama.vane.util.StorageUtil
 import java.util.*
-import java.util.stream.Collectors
 
+/**
+ * Main portal console menu with actions for target selection, settings, unlinking, and destroy.
+ */
 class ConsoleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(context.namespace("Console")) {
+    /** Title template for the main console menu. */
     @LangMessage
     var langTitle: TranslatedMessage? = null
 
+    /** Title used for unlink confirmation dialogs. */
     @LangMessage
     var langUnlinkConsoleConfirmTitle: TranslatedMessage? = null
 
+    /** Title used for portal destruction confirmation dialogs. */
     @LangMessage
     var langDestroyPortalConfirmTitle: TranslatedMessage? = null
 
+    /** Title used by target selection selector menus. */
     @LangMessage
     var langSelectTargetTitle: TranslatedMessage? = null
 
+    /** Prompt used by target-selector filter input. */
     @LangMessage
     var langFilterPortalsTitle: TranslatedMessage? = null
 
+    /** Visibility label for public portals in selectors. */
     @LangMessage
     var langSelectTargetPortalVisibilityPublic: TranslatedMessage? = null
 
+    /** Visibility label for private portals in selectors. */
     @LangMessage
     var langSelectTargetPortalVisibilityPrivate: TranslatedMessage? = null
 
+    /** Visibility label for group portals in selectors. */
     @LangMessage
     var langSelectTargetPortalVisibilityGroup: TranslatedMessage? = null
 
+    /** Visibility label for group-internal portals in selectors. */
     @LangMessage
     var langSelectTargetPortalVisibilityGroupInternal: TranslatedMessage? = null
 
+    /** Menu item opening portal settings. */
     var itemSettings: TranslatedItemStack<*>
+
+    /** Menu item opening target selection. */
     var itemSelectTarget: TranslatedItemStack<*>
+
+    /** Menu item representation for a selectable target portal. */
     var itemSelectTargetPortal: TranslatedItemStack<*>
+
+    /** Disabled/locked variant of target selection item. */
     var itemSelectTargetLocked: TranslatedItemStack<*>
+
+    /** Menu item opening unlink-console confirmation. */
     var itemUnlinkConsole: TranslatedItemStack<*>
+
+    /** Accept item for unlink-console confirmation. */
     var itemUnlinkConsoleConfirmAccept: TranslatedItemStack<*>
+
+    /** Cancel item for unlink-console confirmation. */
     var itemUnlinkConsoleConfirmCancel: TranslatedItemStack<*>
+
+    /** Menu item opening destroy-portal confirmation. */
     var itemDestroyPortal: TranslatedItemStack<*>
+
+    /** Accept item for destroy-portal confirmation. */
     var itemDestroyPortalConfirmAccept: TranslatedItemStack<*>
+
+    /** Cancel item for destroy-portal confirmation. */
     var itemDestroyPortalConfirmCancel: TranslatedItemStack<*>
 
+    /** Initializes all translated menu item definitions used by this component. */
     init {
         val ctx = getContext()!!
         itemSettings = TranslatedItemStack<Portals?>(
@@ -137,6 +168,7 @@ class ConsoleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(contex
         )
     }
 
+    /** Creates the main console menu for [portal] opened by [player] at [console]. */
     fun create(portal: Portal, player: Player, console: Block?): Menu {
         val columns = 9
         val title = langTitle!!.strComponent("§5§l" + portal.name())
@@ -174,6 +206,7 @@ class ConsoleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(contex
         return consoleMenu
     }
 
+    /** Builds the settings action menu item. */
     private fun menuItemSettings(portal: Portal, console: Block?): MenuWidget {
         return MenuItem(0, itemSettings.item(), Function3 { player: Player?, menu: Menu?, _: MenuItem? ->
             val settingsEvent = PortalChangeSettingsEvent(player!!, portal, false)
@@ -189,6 +222,7 @@ class ConsoleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(contex
         })
     }
 
+    /** Returns localized visibility text component for [visibility]. */
     private fun portalVisibility(visibility: Portal.Visibility): Component {
         return (when (visibility) {
             Portal.Visibility.PUBLIC -> langSelectTargetPortalVisibilityPublic
@@ -199,6 +233,7 @@ class ConsoleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(contex
                 )!!.format()
     }
 
+    /** Builds the target-selection action item and selector flow. */
     private fun menuItemSelectTarget(portal: Portal): MenuWidget {
         return object : MenuItem(4, null, Function3 { player: Player?, menu: Menu?, _: MenuItem? ->
             if (portal.targetLocked()) {
@@ -206,9 +241,10 @@ class ConsoleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(contex
             } else {
                 menu!!.close(player!!)
                 val allPortals: MutableList<Portal?> = module!!.allAvailablePortals()
-                    .stream()
-                    .filter { p: Portal? ->
-                        val vis = p!!.visibility()
+                    .asSequence()
+                    .filterNotNull()
+                    .filter { p ->
+                        val vis = p.visibility()
                         when (vis) {
                             Portal.Visibility.PUBLIC -> true
                             Portal.Visibility.GROUP -> module!!.playerCanUsePortalsInRegionGroupOf(player, p)
@@ -217,9 +253,10 @@ class ConsoleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(contex
                             null -> false
                         }
                     }
-                    .filter { p: Portal? -> p!!.id() != portal.id() }
-                    .sorted(TargetSelectionComparator(player))
-                    .collect(Collectors.toList())
+                    .filter { p -> p.id() != portal.id() }
+                    .sortedWith(TargetSelectionComparator(player))
+                    .map { p -> p as Portal? }
+                    .toMutableList()
 
                 val filter = Filter.StringFilter({ p: Portal?, str: String? ->
                     val pname = p?.name()
@@ -285,6 +322,7 @@ class ConsoleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(contex
         }
     }
 
+    /** Builds the unlink-console action item and confirmation flow. */
     private fun menuItemUnlinkConsole(portal: Portal, console: Block?): MenuWidget {
         return MenuItem(7, itemUnlinkConsole.item()) { player: Player?, menu: Menu?, _: MenuItem? ->
             menu!!.close(player!!)
@@ -318,6 +356,7 @@ class ConsoleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(contex
          }
     }
 
+    /** Builds the destroy-portal action item and confirmation flow. */
     private fun menuItemDestroyPortal(portal: Portal): MenuWidget {
         return MenuItem(8, itemDestroyPortal.item()) { player: Player?, menu: Menu?, _: MenuItem? ->
             menu!!.close(player!!)
@@ -346,7 +385,9 @@ class ConsoleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(contex
          }
      }
 
+     /** Enables this menu component. */
      public override fun onEnable() {}
 
+     /** Disables this menu component. */
      public override fun onDisable() {}
  }

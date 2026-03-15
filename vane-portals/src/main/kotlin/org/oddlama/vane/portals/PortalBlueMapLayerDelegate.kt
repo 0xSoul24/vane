@@ -10,37 +10,44 @@ import org.oddlama.vane.portals.portal.Portal
 import java.util.*
 import java.util.function.Consumer
 
+/** Internal BlueMap integration helper used by [PortalBlueMapLayer]. */
 class PortalBlueMapLayerDelegate(private val parent: PortalBlueMapLayer) {
+    /** Tracks whether BlueMap integration is currently active. */
     private var bluemapEnabled = false
 
+    /** Returns the owning portals module. */
     val module: Portals?
         get() = parent.module
 
+    /** Registers BlueMap enable hook and initializes markers when available. */
     fun onEnable() {
-        BlueMapAPI.onEnable { api: BlueMapAPI? ->
-            module!!.log.info("Enabling BlueMap integration")
+        BlueMapAPI.onEnable enabled@{ api: BlueMapAPI? ->
+            val module = module ?: return@enabled
+            val enabledApi = api ?: return@enabled
+
+            module.log.info("Enabling BlueMap integration")
             bluemapEnabled = true
 
             // Create marker sets
-            for (world in module!!.server.worlds) {
-                createMarkerSet(api!!, world)
-            }
+            module.server.worlds.forEach { world -> createMarkerSet(enabledApi, world) }
             updateAllMarkers()
         }
     }
 
+    /** Disables BlueMap integration state. */
     fun onDisable() {
         if (!bluemapEnabled) {
             return
         }
 
-        module!!.log.info("Disabling BlueMap integration")
+        module?.log?.info("Disabling BlueMap integration")
         bluemapEnabled = false
     }
 
-    // worldId -> MarkerSet
+    /** Marker sets indexed by Bukkit world id. */
     private val markerSets = HashMap<UUID?, MarkerSet>()
 
+    /** Creates and registers a BlueMap marker set for [world] if missing. */
     private fun createMarkerSet(api: BlueMapAPI, world: World) {
         if (markerSets.containsKey(world.uid)) {
             return
@@ -55,7 +62,7 @@ class PortalBlueMapLayerDelegate(private val parent: PortalBlueMapLayer) {
         api
             .getWorld(world)
             .ifPresent(Consumer { bmWorld: BlueMapWorld? ->
-                for (map in bmWorld!!.maps) {
+                bmWorld?.maps?.forEach { map ->
                     map.markerSets[MARKER_SET_ID] = markerSet
                 }
             })
@@ -63,6 +70,7 @@ class PortalBlueMapLayerDelegate(private val parent: PortalBlueMapLayer) {
         markerSets[world.uid] = markerSet
     }
 
+    /** Creates or refreshes the BlueMap marker for [portal]. */
     fun updateMarker(portal: Portal) {
         removeMarker(portal.id())
 
@@ -83,24 +91,28 @@ class PortalBlueMapLayerDelegate(private val parent: PortalBlueMapLayer) {
         markerSets[loc.world.uid]!!.markers[pid] = marker
     }
 
+    /** Removes the marker belonging to [portalId] from all worlds. */
     fun removeMarker(portalId: UUID?) {
-        for (markerSet in markerSets.values) {
+        markerSets.values.forEach { markerSet ->
             markerSet.markers.remove(portalId?.toString())
         }
     }
 
+    /** Rebuilds all BlueMap markers for visible portals. */
     fun updateAllMarkers() {
-        for (portal in module!!.allAvailablePortals().filterNotNull()) {
+        module?.allAvailablePortals()?.filterNotNull()?.forEach { portal ->
             // Don't show private portals
             if (portal.visibility() == Portal.Visibility.PRIVATE) {
-                continue
+                return@forEach
             }
 
             updateMarker(portal)
         }
     }
 
+    /** Constants used by BlueMap marker creation. */
     companion object {
+        /** BlueMap marker set id used for portal markers. */
         const val MARKER_SET_ID: String = "vane_portals.portals"
     }
 }

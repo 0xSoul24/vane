@@ -7,25 +7,29 @@ import org.oddlama.vane.util.LazyBlock
 import java.io.IOException
 import java.util.*
 
+/**
+ * Represents a typed block belonging to a portal structure.
+ *
+ * @property block lazy block reference.
+ * @property type semantic role of the block in the portal.
+ */
 class PortalBlock(private val block: LazyBlock, private val type: Type?) {
+    /** Creates a portal block from a Bukkit block instance. */
     constructor(block: Block?, type: Type?) : this(LazyBlock(block), type)
 
-    fun block(): Block? {
-        return block.block()
-    }
+    /** Resolves and returns the referenced Bukkit block. */
+    fun block() = block.block()
 
-    fun type(): Type? {
-        return type
-    }
+    /** Returns the semantic portal block type. */
+    fun type() = type
 
-    fun lookup(portalId: UUID?): PortalBlockLookup {
-        return PortalBlockLookup(portalId, type)
-    }
+    /** Creates a lightweight lookup payload for this block and [portalId]. */
+    fun lookup(portalId: UUID?) = PortalBlockLookup(portalId, type)
 
-    override fun hashCode(): Int {
-        return block().hashCode()
-    }
+    /** Returns hash code based on block identity. */
+    override fun hashCode() = block().hashCode()
 
+    /** Returns true when [other] refers to the same block position. */
     override fun equals(other: Any?): Boolean {
         if (other !is PortalBlock) {
             return false
@@ -35,6 +39,7 @@ class PortalBlock(private val block: LazyBlock, private val type: Type?) {
         return block() == other.block()
     }
 
+    /** Semantic role of a block inside portal structures. */
     enum class Type {
         ORIGIN,
         CONSOLE,
@@ -46,7 +51,9 @@ class PortalBlock(private val block: LazyBlock, private val type: Type?) {
         PORTAL,
     }
 
+    /** JSON serializer helpers for [PortalBlock]. */
     companion object {
+        /** Serializes a portal block into a JSON object. */
         @JvmStatic
         @Throws(IOException::class)
         fun serialize(o: Any): Any {
@@ -57,6 +64,7 @@ class PortalBlock(private val block: LazyBlock, private val type: Type?) {
             return json
         }
 
+        /** Deserializes a portal block from a JSON object. */
         @JvmStatic
         @Throws(IOException::class)
         fun deserialize(o: Any): PortalBlock {

@@ -161,7 +161,7 @@ configure(subprojects.filter {
 
 // All plugins with map integration
 configure(subprojects.filter {
-	listOf("vane-bedtime", "vane-portals", "vane-regions").contains(it.name)
+	listOf("vane-core", "vane-bedtime", "vane-portals", "vane-regions").contains(it.name)
 }) {
 	dependencies {
 		implementation(rootProject.libs.dynmap)

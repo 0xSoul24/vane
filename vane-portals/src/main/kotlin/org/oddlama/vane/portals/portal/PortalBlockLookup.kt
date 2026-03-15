@@ -5,16 +5,22 @@ import org.oddlama.vane.core.persistent.PersistentSerializer
 import java.io.IOException
 import java.util.*
 
+/**
+ * Lightweight lookup payload that maps a block to a portal id and block type.
+ *
+ * @property portalId id of the owning portal.
+ * @property type semantic type of the portal block.
+ */
 class PortalBlockLookup(private val portalId: UUID?, private val type: PortalBlock.Type?) {
-    fun portalId(): UUID? {
-        return portalId
-    }
+    /** Returns the owning portal id. */
+    fun portalId() = portalId
 
-    fun type(): PortalBlock.Type? {
-        return type
-    }
+    /** Returns the semantic block type. */
+    fun type() = type
 
+    /** JSON serializer helpers for [PortalBlockLookup]. */
     companion object {
+        /** Serializes a portal block lookup into a JSON object. */
         @JvmStatic
         @Throws(IOException::class)
         fun serialize(o: Any): Any {
@@ -25,6 +31,7 @@ class PortalBlockLookup(private val portalId: UUID?, private val type: PortalBlo
             return json
         }
 
+        /** Deserializes a portal block lookup from a JSON object. */
         @JvmStatic
         @Throws(IOException::class)
         fun deserialize(o: Any): PortalBlockLookup {

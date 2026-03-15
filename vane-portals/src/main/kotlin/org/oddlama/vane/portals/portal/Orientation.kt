@@ -4,6 +4,12 @@ import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.util.Vector
 
+/**
+ * Orientation of a portal plane normal.
+ *
+ * @property plane portal plane corresponding to this orientation.
+ * @property vector unit direction vector for this orientation.
+ */
 enum class Orientation(private val plane: Plane, private val vector: Vector) {
     POSITIVE_X(Plane.YZ, Vector(1, 0, 0)),
     NEGATIVE_X(Plane.YZ, Vector(-1, 0, 0)),
@@ -12,31 +18,27 @@ enum class Orientation(private val plane: Plane, private val vector: Vector) {
     POSITIVE_Z(Plane.XY, Vector(0, 0, 1)),
     NEGATIVE_Z(Plane.XY, Vector(0, 0, -1));
 
-    fun plane(): Plane {
-        return plane
+    /** Returns the portal plane corresponding to this orientation. */
+    fun plane() = plane
+
+    /** Returns a clone of the orientation unit vector. */
+    fun vector() = vector.clone()
+
+    /** Returns a component mask used for orientation projections. */
+    fun componentMask() = vector().multiply(vector)
+
+    /** Returns the opposite orientation. */
+    fun flip() = when (this) {
+        NEGATIVE_X -> POSITIVE_X
+        POSITIVE_X -> NEGATIVE_X
+        NEGATIVE_Z -> POSITIVE_Z
+        POSITIVE_Z -> NEGATIVE_Z
+        NEGATIVE_Y -> POSITIVE_Y
+        POSITIVE_Y -> NEGATIVE_Y
     }
 
-    fun vector(): Vector {
-        return vector.clone()
-    }
 
-    fun componentMask(): Vector {
-        return this.vector().multiply(this.vector)
-    }
-
-    fun flip(): Orientation {
-        return when (this) {
-            NEGATIVE_X -> POSITIVE_X
-            POSITIVE_X -> NEGATIVE_X
-            NEGATIVE_Z -> POSITIVE_Z
-            POSITIVE_Z -> NEGATIVE_Z
-            NEGATIVE_Y -> POSITIVE_Y
-            POSITIVE_Y -> NEGATIVE_Y
-        }
-
-        // Unreachable
-    }
-
+    /** Applies this orientation transform to [location] relative to [reference]. */
     fun apply(
         reference: Orientation,
         location: Location,
@@ -47,6 +49,7 @@ enum class Orientation(private val plane: Plane, private val vector: Vector) {
         return l
     }
 
+    /** Applies this orientation transform to [vector] relative to [reference]. */
     fun apply(reference: Orientation, vector: Vector, flipSourceIfNotOpposing: Boolean): Vector {
         val x = vector.getX()
         val y = vector.getY()
@@ -114,11 +117,11 @@ enum class Orientation(private val plane: Plane, private val vector: Vector) {
                 POSITIVE_Y -> Vector(-x, -y, -z)
             }
         }
-
-        // Unreachable
     }
 
+    /** Factory methods for deriving orientation from portal geometry. */
     companion object {
+        /** Derives portal orientation from plane, origin, console, and player location. */
         @JvmStatic
         fun from(
             plane: Plane,
@@ -169,8 +172,6 @@ enum class Orientation(private val plane: Plane, private val vector: Vector) {
                     }
                 }
             }
-
-            // Unreachable
         }
     }
 }

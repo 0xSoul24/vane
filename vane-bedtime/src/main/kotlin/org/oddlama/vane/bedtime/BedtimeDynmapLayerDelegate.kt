@@ -2,13 +2,12 @@ package org.oddlama.vane.bedtime
 
 import org.bukkit.OfflinePlayer
 import org.dynmap.DynmapCommonAPI
-import org.dynmap.DynmapCommonAPIListener
+import org.oddlama.vane.core.dynmap.DynmapIntegration
 import org.dynmap.markers.Marker
 import org.dynmap.markers.MarkerAPI
 import org.dynmap.markers.MarkerIcon
 import org.dynmap.markers.MarkerSet
 import java.util.UUID
-import java.util.logging.Level
 
 /**
  * Handles Dynmap API integration and bedtime marker synchronization.
@@ -34,28 +33,15 @@ class BedtimeDynmapLayerDelegate(private val parent: BedtimeDynmapLayer) {
 
     /** Registers Dynmap listeners and creates the bedtime marker layer when available. */
     fun onEnable() {
-        try {
-            DynmapCommonAPIListener.register(
-                object : DynmapCommonAPIListener() {
-                    override fun apiEnabled(api: DynmapCommonAPI?) {
-                        val dynmapApi = api ?: return
-                        this@BedtimeDynmapLayerDelegate.dynmapApi = dynmapApi
-                        markerApi = dynmapApi.markerAPI
-                    }
-                }
-            )
-        } catch (e: Exception) {
-            module?.log?.log(Level.WARNING, "Error while enabling dynmap integration!", e)
-            return
-        }
-
-        if (markerApi == null) {
-            return
-        }
-
-        module?.log?.info("Enabling dynmap integration")
-        dynmapEnabled = true
-        createOrLoadLayer()
+        val m = module ?: return
+        if (!DynmapIntegration.initialize(m.log, { d, m ->
+                dynmapApi = d
+                markerApi = m
+            }) {
+                dynmapEnabled = true
+                createOrLoadLayer()
+            }
+        ) return
     }
 
     /** Disables Dynmap integration state. */

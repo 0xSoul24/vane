@@ -1,75 +1,85 @@
 package org.oddlama.vane.portals
 
 import org.dynmap.DynmapCommonAPI
-import org.dynmap.DynmapCommonAPIListener
+// ...existing imports...
+import org.oddlama.vane.core.dynmap.DynmapIntegration
 import org.dynmap.markers.Marker
 import org.dynmap.markers.MarkerAPI
 import org.dynmap.markers.MarkerIcon
 import org.dynmap.markers.MarkerSet
 import org.oddlama.vane.portals.portal.Portal
 import java.util.*
-import java.util.logging.Level
+// ...existing imports...
 
+/** Internal Dynmap integration helper used by [PortalDynmapLayer]. */
 class PortalDynmapLayerDelegate(private val parent: PortalDynmapLayer) {
+    /** Cached Dynmap API handle. */
     private var dynmapApi: DynmapCommonAPI? = null
+
+    /** Cached Dynmap marker API handle. */
     private var markerApi: MarkerAPI? = null
+
+    /** Tracks whether Dynmap integration is currently active. */
     private var dynmapEnabled = false
 
+    /** Marker set used to store portal markers. */
     private var markerSet: MarkerSet? = null
+
+    /** Icon used when creating portal markers. */
     private var markerIcon: MarkerIcon? = null
 
+    /** Returns the owning portals module. */
     val module: Portals?
         get() = parent.module
 
+    /** Registers Dynmap listeners and initializes the portal layer. */
     fun onEnable() {
-        try {
-            DynmapCommonAPIListener.register(
-                object : DynmapCommonAPIListener() {
-                    override fun apiEnabled(api: DynmapCommonAPI?) {
-                        dynmapApi = api
-                        markerApi = dynmapApi!!.markerAPI
-                    }
-                }
-            )
-        } catch (e: Exception) {
-            module!!.log.log(Level.WARNING, "Error while enabling dynmap integration!", e)
-            return
-        }
-
-        if (markerApi == null) {
-            return
-        }
-
-        module!!.log.info("Enabling dynmap integration")
-        dynmapEnabled = true
-        createOrLoadLayer()
+        val module = module ?: return
+        if (!registerAndInitDynmap(module)) return
     }
 
+    /**
+     * Helper that registers the Dynmap listener and initializes the integration.
+     * Returns true when dynmap integration was successfully enabled and initialization
+     * (including marker API presence) completed.
+     */
+    private fun registerAndInitDynmap(module: Portals): Boolean {
+        return DynmapIntegration.initialize(module.log, { d, m ->
+            dynmapApi = d
+            markerApi = m
+        }) {
+            dynmapEnabled = true
+            createOrLoadLayer()
+        }
+    }
+
+    /** Disables Dynmap integration state. */
     fun onDisable() {
         if (!dynmapEnabled) {
             return
         }
 
-        module!!.log.info("Disabling dynmap integration")
+        module?.log?.info("Disabling dynmap integration")
         dynmapEnabled = false
         dynmapApi = null
         markerApi = null
     }
 
+    /** Creates or loads the marker layer and applies configuration. */
     private fun createOrLoadLayer() {
+        val markerApi = markerApi ?: return
+
         // Create or retrieve layer
-        markerSet = markerApi!!.getMarkerSet(PortalDynmapLayer.LAYER_ID)
-        if (markerSet == null) {
-            markerSet = markerApi!!.createMarkerSet(
+        markerSet = markerApi.getMarkerSet(PortalDynmapLayer.LAYER_ID)
+            ?: markerApi.createMarkerSet(
                 PortalDynmapLayer.LAYER_ID,
                 parent.langLayerLabel!!.str(),
                 null,
                 false
             )
-        }
 
         if (markerSet == null) {
-            module!!.log.severe("Failed to create dynmap portal marker set!")
+            module?.log?.severe("Failed to create dynmap portal marker set!")
             return
         }
 
@@ -79,9 +89,9 @@ class PortalDynmapLayerDelegate(private val parent: PortalDynmapLayer) {
         markerSet!!.hideByDefault = parent.configLayerHide
 
         // Load marker
-        markerIcon = markerApi!!.getMarkerIcon(parent.configMarkerIcon)
+        markerIcon = markerApi.getMarkerIcon(parent.configMarkerIcon)
         if (markerIcon == null) {
-            module!!.log.severe("Failed to load dynmap portal marker icon!")
+            module?.log?.severe("Failed to load dynmap portal marker icon!")
             return
         }
 
@@ -89,14 +99,13 @@ class PortalDynmapLayerDelegate(private val parent: PortalDynmapLayer) {
         updateAllMarkers()
     }
 
-    private fun idFor(portalId: UUID?): String? {
-        return portalId?.toString()
-    }
+    /** Converts a portal id into the Dynmap marker id format. */
+    private fun idFor(portalId: UUID?) = portalId?.toString()
 
-    private fun idFor(portal: Portal): String? {
-        return idFor(portal.id())
-    }
+    /** Returns the marker id for [portal]. */
+    private fun idFor(portal: Portal) = idFor(portal.id())
 
+    /** Updates or creates the Dynmap marker for [portal]. */
     fun updateMarker(portal: Portal) {
         if (!dynmapEnabled) {
             return
@@ -125,26 +134,26 @@ class PortalDynmapLayerDelegate(private val parent: PortalDynmapLayer) {
         )
     }
 
+    /** Removes a marker by portal id. */
     fun removeMarker(portalId: UUID?) {
         removeMarker(idFor(portalId))
     }
 
+    /** Removes a marker by marker id. */
     fun removeMarker(markerId: String?) {
-        if (!dynmapEnabled || markerId == null) {
-            return
-        }
+        if (!dynmapEnabled || markerId == null) return
 
         removeMarker(markerSet!!.findMarker(markerId))
     }
 
+    /** Removes the provided marker instance. */
     fun removeMarker(marker: Marker?) {
-        if (!dynmapEnabled || marker == null) {
-            return
-        }
+        if (!dynmapEnabled || marker == null) return
 
         marker.deleteMarker()
     }
 
+    /** Rebuilds all Dynmap markers and removes orphaned entries. */
     fun updateAllMarkers() {
         if (!dynmapEnabled) {
             return
@@ -152,7 +161,7 @@ class PortalDynmapLayerDelegate(private val parent: PortalDynmapLayer) {
 
         // Update all existing
         val idSet = HashSet<String?>()
-        for (portal in module!!.allAvailablePortals().filterNotNull()) {
+        for (portal in module?.allAvailablePortals().orEmpty().filterNotNull()) {
             idSet.add(idFor(portal))
             updateMarker(portal)
         }

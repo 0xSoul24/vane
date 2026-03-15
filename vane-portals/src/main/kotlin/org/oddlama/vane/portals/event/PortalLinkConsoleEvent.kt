@@ -5,6 +5,15 @@ import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.oddlama.vane.portals.portal.Portal
 
+/**
+ * Fired while validating or linking a console to a portal.
+ *
+ * @property player the acting player.
+ * @property console the console block to link.
+ * @property portalBlocks blocks that will become part of the portal.
+ * @property checkOnly whether this is a dry-run validation.
+ * @property portal existing portal when relinking, or null when creating.
+ */
 class PortalLinkConsoleEvent(
     @JvmField val player: Player,
     @JvmField val console: Block?,
@@ -12,29 +21,26 @@ class PortalLinkConsoleEvent(
     private val checkOnly: Boolean,
     @JvmField val portal: Portal?
 ) : PortalEvent() {
+    /** Controls whether non-owners are automatically denied. */
     private var cancelIfNotOwner = true
 
+    /** Sets whether linking is automatically cancelled for non-owners. */
     fun setCancelIfNotOwner(cancelIfNotOwner: Boolean) {
         this.cancelIfNotOwner = cancelIfNotOwner
     }
 
-    fun checkOnly(): Boolean {
-        return checkOnly
-    }
+    /** Returns whether this event is in validation-only mode. */
+    fun checkOnly() = checkOnly
 
-    override fun getHandlers(): HandlerList {
-        return handlerList
-    }
+    /** Returns Bukkit handlers for this event. */
+    override fun getHandlers() = handlerList
 
-    override fun isCancelled(): Boolean {
-        var cancelled = super.isCancelled()
-        if (cancelIfNotOwner && portal != null) {
-            cancelled = cancelled or (player.uniqueId != portal.owner())
-        }
-        return cancelled
-    }
+    /** Returns true when explicitly cancelled or blocked by ownership checks. */
+    override fun isCancelled() = super.isCancelled() || (cancelIfNotOwner && portal != null && player.uniqueId != portal.owner())
 
+    /** Static Bukkit handler list for this event type. */
     companion object {
+        /** Shared handler list used by Bukkit's event system. */
         @JvmStatic val handlerList: HandlerList = HandlerList()
     }
 }

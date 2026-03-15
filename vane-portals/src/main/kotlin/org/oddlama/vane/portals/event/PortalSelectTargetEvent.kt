@@ -4,21 +4,29 @@ import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.oddlama.vane.portals.portal.Portal
 
+/**
+ * Fired before a portal target is changed or selected.
+ *
+ * @property player the acting player.
+ * @property portal the source portal.
+ * @property target the requested target portal.
+ * @property checkOnly whether this is a dry-run validation.
+ */
 class PortalSelectTargetEvent(
     @JvmField val player: Player?,
     @JvmField val portal: Portal?,
     @JvmField val target: Portal?,
     private val checkOnly: Boolean
 ) : PortalEvent() {
-    fun checkOnly(): Boolean {
-        return checkOnly
-    }
+    /** Returns whether this event is in validation-only mode. */
+    fun checkOnly() = checkOnly
 
-    override fun getHandlers(): HandlerList {
-        return handlerList
-    }
+    /** Returns Bukkit handlers for this event. */
+    override fun getHandlers() = handlerList
 
+    /** Static Bukkit handler list for this event type. */
     companion object {
+        /** Shared handler list used by Bukkit's event system. */
         @JvmStatic val handlerList: HandlerList = HandlerList()
     }
 }

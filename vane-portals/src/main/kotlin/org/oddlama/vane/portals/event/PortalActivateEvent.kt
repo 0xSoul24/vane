@@ -4,12 +4,20 @@ import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.oddlama.vane.portals.portal.Portal
 
+/**
+ * Fired when a portal is activated.
+ *
+ * @property player the player that triggered the activation, if any.
+ * @property portal the source portal.
+ * @property target the connected target portal.
+ */
 class PortalActivateEvent(@JvmField val player: Player?, @JvmField val portal: Portal?, val target: Portal?) : PortalEvent() {
-    override fun getHandlers(): HandlerList {
-        return handlerList
-    }
+    /** Returns Bukkit handlers for this event. */
+    override fun getHandlers() = handlerList
 
+    /** Static Bukkit handler list for this event type. */
     companion object {
+        /** Shared handler list used by Bukkit's event system. */
         @JvmStatic val handlerList: HandlerList = HandlerList()
     }
 }

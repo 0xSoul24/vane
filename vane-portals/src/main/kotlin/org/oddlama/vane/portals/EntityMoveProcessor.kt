@@ -1,6 +1,5 @@
 package org.oddlama.vane.portals
 
-import com.google.common.collect.Sets
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.entity.Entity
@@ -12,23 +11,32 @@ import org.oddlama.vane.external.apache.commons.lang3.tuple.Pair
 import org.oddlama.vane.portals.event.EntityMoveEvent
 import java.util.*
 
+/**
+ * Tracks entity movement near active portals and emits [EntityMoveEvent] events.
+ *
+ * This exists because the default server move event coverage is incomplete for all entity types.
+ */
 class EntityMoveProcessor(context: Context<Portals?>?) : ModuleComponent<Portals?>(context) {
-    // This is the queue of entity move events that need processing.
-    // It is a linked hash map, so we can update moved entity positions
-    // without changing iteration order. Processed entries will be removed from
-    // the front, and new entities are added to the back. If an entity moves twice
-    // but wasn't processed, we don't need to update it. This ensures that no entities
-    // will be accidentally skipped when we are struggling to keep up.
-    // This stores entity_id -> (entity, old location).
+    /**
+     * Queue of movement events waiting for dispatch.
+     *
+     * This stores `entityId -> (entity, oldLocation)` and preserves FIFO order.
+     */
     private val moveEventProcessingQueue = LinkedHashMap<UUID?, Pair<Entity, Location?>>()
 
-    // Two hash maps to store old and current positions for each entity.
+    /** Snapshot map for entity positions of the current tick. */
     private var moveEventCurrentPositions = HashMap<UUID?, Pair<Entity?, Location?>?>()
+
+    /** Snapshot map for entity positions of the previous tick. */
     private var moveEventOldPositions = HashMap<UUID?, Pair<Entity?, Location?>?>()
 
+    /** Periodic task processing movement detection and dispatch. */
     private var task: BukkitTask? = null
 
+    /** Detects movements and dispatches queued [EntityMoveEvent] events with a time budget. */
     private fun processEntityMovements() {
+        val module = module ?: return
+
         // This custom event detector is necessary as PaperMC's entity move events trigger for
         // LivingEntities,
         // but we need move events for all entities. Wanna throw that potion through the portal?
@@ -52,19 +60,15 @@ class EntityMoveProcessor(context: Context<Portals?>?) : ModuleComponent<Portals
         // Phase 1 - Movement detection
         // --------------------------------------------
 
-        val activePortalWorlds = HashSet<UUID>()
-        for (portal in module!!.allAvailablePortals().filterNotNull()) {
-            if (module!!.isActivated(portal)) {
-                val worldId = portal.spawnWorld()
-                if (worldId != null) {
-                    activePortalWorlds.add(worldId)
-                }
-            }
-        }
+        val activePortalWorlds = module.allAvailablePortals()
+            .filterNotNull()
+            .filter(module::isActivated)
+            .mapNotNull { portal -> portal.spawnWorld() }
+            .toHashSet()
 
         // Store current positions for each entity
         for (worldId in activePortalWorlds) {
-            val world: World? = module!!.server.getWorld(worldId)
+            val world: World? = module.server.getWorld(worldId)
             if (world != null) {
                 for (entity in world.entities) {
                     moveEventCurrentPositions[entity.uniqueId] = Pair.of<Entity?, Location?>(entity, entity.location)
@@ -77,10 +81,7 @@ class EntityMoveProcessor(context: Context<Portals?>?) : ModuleComponent<Portals
         // has changed. If so, we add the entity to the processing queue.
         // If the processing queue already contained the entity, we remove it before iterating
         // as there is nothing to do - we simply lose information about the intermediate position.
-        for (eid in Sets.difference(
-            Sets.intersection(moveEventOldPositions.keys, moveEventCurrentPositions.keys),
-            moveEventProcessingQueue.keys
-        )) {
+        for (eid in (moveEventOldPositions.keys intersect moveEventCurrentPositions.keys) - moveEventProcessingQueue.keys) {
             val oldEntityAndLoc = moveEventOldPositions[eid]
             val newEntityAndLoc = moveEventCurrentPositions[eid]
             if (oldEntityAndLoc == null || newEntityAndLoc == null || !isMovement(
@@ -105,7 +106,7 @@ class EntityMoveProcessor(context: Context<Portals?>?) : ModuleComponent<Portals
         // Phase 2 - Event dispatching
         // --------------------------------------------
         val timeBegin = System.nanoTime()
-        val pm: PluginManager = module!!.server.pluginManager
+        val pm: PluginManager = module.server.pluginManager
         val iter: MutableIterator<MutableMap.MutableEntry<UUID?, Pair<Entity, Location?>>?> =
             moveEventProcessingQueue.entries.iterator()
         while (iter.hasNext()) {
@@ -125,22 +126,29 @@ class EntityMoveProcessor(context: Context<Portals?>?) : ModuleComponent<Portals
         }
     }
 
+    /** Starts periodic movement processing. */
     override fun onEnable() {
         // Each tick we need to recalculate whether entities moved.
         // This is using a scheduling algorithm (see function implementation) to
         // keep it lightweight and to prevent lags.
-        task = scheduleTaskTimer({ this.processEntityMovements() }, 1L, 1L)
+        task = scheduleTaskTimer({ processEntityMovements() }, 1L, 1L)
     }
 
+    /** Stops periodic movement processing. */
     override fun onDisable() {
-        task!!.cancel()
+        task?.cancel()
     }
 
+    /** Constants and helpers for movement processing. */
     companion object {
-        // Never process entity-move events for more than ~30% of a tick.
-        // We use 15ms threshold time, and 50ms would be 1 tick.
+        /**
+         * Hard upper bound for movement event processing time per tick.
+         *
+         * 15ms is roughly 30% of a 50ms server tick.
+         */
         private const val MOVE_EVENT_MAX_NANOSECONDS_PER_TICK = 15000000L
 
+        /** Returns true when two locations represent movement within the same world. */
         private fun isMovement(l1: Location, l2: Location): Boolean {
             // Different worlds = not a movement event.
             return (l1.getWorld() === l2.getWorld() &&

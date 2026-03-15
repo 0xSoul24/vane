@@ -7,8 +7,6 @@ import net.minecraft.world.entity.MobCategory
 import org.bukkit.*
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
-import org.bukkit.event.EventPriority
 import org.bukkit.event.world.*
 import org.bukkit.inventory.ItemStack
 import org.bukkit.permissions.Permission
@@ -36,11 +34,11 @@ import org.oddlama.vane.portals.portal.Style.Companion.defaultStyleKey
 import org.oddlama.vane.util.*
 import java.io.IOException
 import java.util.*
-import java.util.function.Consumer
-import java.util.stream.Collectors
 
 @VaneModule(name = "portals", bstats = 8642, configVersion = 3, langVersion = 6, storageVersion = 2)
+/** Main module managing portal lifecycle, storage, indexing, UI, and integrations. */
 class Portals : Module<Portals?>() {
+    /** Set of materials disallowed for decorative portal usage. */
     @ConfigMaterialSet(
         def = [Material.PISTON, Material.STICKY_PISTON],
         desc = "Materials which may not be used to decorate portals."
@@ -136,6 +134,7 @@ class Portals : Module<Portals?>() {
         )],
         desc = "Portal style definitions. Must provide a material for each portal block type and activation state. The default style may be overridden."
     )
+    /** Raw style config map loaded from module configuration. */
     var configStyles: MutableMap<String?, MutableMap<String?, MutableMap<String?, Material?>?>?>? = null
 
     @ConfigLong(
@@ -144,12 +143,14 @@ class Portals : Module<Portals?>() {
         max = 110000,
         desc = "Delay in milliseconds after which two connected portals will automatically be disabled. Purple end-gateway beams do not show up until the maximum value of 110 seconds."
     )
+    /** Delay before connected portals auto-deactivate. */
     var configDeactivationDelay: Long = 0
 
     @ConfigExtendedMaterial(
         def = "vane:decoration_end_portal_orb",
         desc = "The default portal icon. Also accepts heads from the head library."
     )
+    /** Default icon used when portals do not define a custom icon. */
     var configDefaultIcon: ExtendedMaterial? = null
 
     @ConfigDouble(
@@ -158,6 +159,7 @@ class Portals : Module<Portals?>() {
         max = 1.0,
         desc = "Volume for the portal activation sound effect. 0 to disable."
     )
+    /** Activation sound volume. */
     var configVolumeActivation: Double = 0.0
 
     @ConfigDouble(
@@ -166,66 +168,93 @@ class Portals : Module<Portals?>() {
         max = 1.0,
         desc = "Volume for the portal deactivation sound effect. 0 to disable."
     )
+    /** Deactivation sound volume. */
     var configVolumeDeactivation: Double = 0.0
 
+    /** Console display format for active portals. */
     @LangMessage
     var langConsoleDisplayActive: TranslatedMessage? = null
 
+    /** Console display format for inactive portals. */
     @LangMessage
     var langConsoleDisplayInactive: TranslatedMessage? = null
 
+    /** Placeholder text used when no target portal is selected. */
     @LangMessage
     var langConsoleNoTarget: TranslatedMessage? = null
 
+    /** Message shown when unlink operations are denied. */
     @LangMessage
     var langUnlinkRestricted: TranslatedMessage? = null
 
+    /** Message shown when destroy operations are denied. */
     @LangMessage
     var langDestroyRestricted: TranslatedMessage? = null
 
+    /** Message shown when settings changes are denied. */
     @LangMessage
     var langSettingsRestricted: TranslatedMessage? = null
 
+    /** Message shown when target selection is denied. */
     @LangMessage
     var langSelectTargetRestricted: TranslatedMessage? = null
 
     // This permission allows players (usually admins) to always modify settings
     // on any portal, regardless of whether other restrictions would block access.
+    /** Override permission that bypasses regular ownership restrictions. */
     val adminPermission: Permission
 
     // Primary storage for all portals (portalId → portal)
     @Persistent
+    /** Persisted portal map loaded/saved to world data. */
     private val storagePortals: MutableMap<UUID?, Portal> = HashMap<UUID?, Portal>()
 
+    /** Runtime portal map containing all currently indexed portals. */
     private val portals: MutableMap<UUID?, Portal> = HashMap<UUID?, Portal>()
 
     // Index for all portal blocks (worldId → chunk key → block key → portal block)
+    /** Runtime index mapping world/chunk/block to portal-block metadata. */
     private val portalBlocksInChunkInWorld: MutableMap<UUID?, MutableMap<Long?, MutableMap<Long?, PortalBlockLookup?>>> =
         HashMap<UUID?, MutableMap<Long?, MutableMap<Long?, PortalBlockLookup?>>>()
 
     // All loaded styles
+    /** Loaded style definitions keyed by namespaced key. */
     var styles: MutableMap<NamespacedKey?, Style> = HashMap<NamespacedKey?, Style>()
 
     // Cache possible area materials. This is fine as only predefined styles can
     // change this.
+    /** Cache of materials considered portal-area blocks for fast checks. */
     var portalAreaMaterials: MutableSet<Material?> = HashSet<Material?>()
 
     // Track console items
+    /** Floating item entities currently displayed on portal consoles. */
     private val consoleFloatingItems: MutableMap<Block, FloatingItem?> = HashMap<Block, FloatingItem?>()
 
     // Connected portals (always stores both directions!)
+    /** Bidirectional map of currently connected portals. */
     private val connectedPortals: MutableMap<UUID?, UUID?> = HashMap<UUID?, UUID?>()
 
     // Unloading ticket counter per chunk
+    /** Reference-counted chunk ticket counters for loaded portal chunks. */
     private val chunkTicketCount: MutableMap<Long?, Int> = HashMap<Long?, Int>()
 
     // Disable tasks for portals
+    /** Scheduled delayed deactivation tasks by portal id. */
     private val disableTasks: MutableMap<UUID?, BukkitTask?> = HashMap<UUID?, BukkitTask?>()
 
+    /** Aggregated menu components for portal UIs. */
     var menus: PortalMenuGroup?
+
+    /** Portal construction/listener component. */
     var constructor: PortalConstructor
+
+    /** Dynmap integration component. */
     var dynmapLayer: PortalDynmapLayer
+
+    /** BlueMap integration component. */
     var blueMapLayer: PortalBlueMapLayer
+
+    /** Registers custom entities used by this module. */
 
     private fun registerEntities() {
         core!!.unfreezeRegistries()
@@ -239,6 +268,7 @@ class Portals : Module<Portals?>() {
         )
     }
 
+    /** Rebuilds style maps and derived caches after configuration changes. */
     override fun onConfigChange() {
         styles.clear()
 
@@ -286,20 +316,34 @@ class Portals : Module<Portals?>() {
     // Lightweight callbacks to the regions module, if it is installed.
     // Lifting the callback storage into the portals module saves us
     // from having to ship regions api with this module.
+    /** Optional callback to test whether two portals share a region group. */
     private var isInSameRegionGroupCallback: Function2<Portal?, Portal?, Boolean?>? = null
 
+    /**
+     * Set a callback used to determine whether two portals are considered in the same region group.
+     * @param callback callback returning true when the two portals are in the same group
+     */
     fun setIsInSameRegionGroupCallback(callback: Function2<Portal?, Portal?, Boolean?>?) {
         isInSameRegionGroupCallback = callback
     }
 
+    /** Optional callback checking whether a player may use a portal's region group. */
     private var playerCanUsePortalsInRegionGroupOfCallback: Function2<Player?, Portal?, Boolean?>? = null
 
+    /**
+     * Set a callback used to determine whether a player may use portals in the region group of a portal.
+     * @param callback callback returning true when the player is allowed to use portals in the group
+     */
     fun setPlayerCanUsePortalsInRegionGroupOfCallback(
         callback: Function2<Player?, Portal?, Boolean?>?
     ) {
         playerCanUsePortalsInRegionGroupOfCallback = callback
     }
 
+    /**
+     * Check whether two portals are considered to be in the same region group.
+     * @return true when the two portals are considered in the same group
+     */
     fun isInSameRegionGroup(a: Portal?, b: Portal?): Boolean {
         if (isInSameRegionGroupCallback == null) {
             return true
@@ -307,6 +351,10 @@ class Portals : Module<Portals?>() {
         return isInSameRegionGroupCallback!!.apply(a, b)!!
     }
 
+    /**
+     * Return whether the specified player may use portals in the region group of the provided portal.
+     * @return true when the player is allowed to use portals in that group
+     */
     fun playerCanUsePortalsInRegionGroupOf(player: Player?, portal: Portal?): Boolean {
         if (playerCanUsePortalsInRegionGroupOfCallback == null) {
             return true
@@ -314,18 +362,23 @@ class Portals : Module<Portals?>() {
         return playerCanUsePortalsInRegionGroupOfCallback!!.apply(player, portal)!!
     }
 
+    /** True when regions integration callbacks are available. */
     val isRegionsInstalled: Boolean
         get() = isInSameRegionGroupCallback != null
 
+    /**
+     * Resolve a Style by its namespaced key from configuration or defaults.
+     * @return the resolved Style or null if not found
+     */
+
     fun style(key: NamespacedKey?): Style? {
-        val s = styles[key]
-        if (s == null) {
+        return styles[key] ?: run {
             logger.warning("Encountered invalid style $key, falling back to default style.")
-            return styles[defaultStyleKey()]
-        } else {
-            return s
+            styles[defaultStyleKey()]
         }
     }
+
+    /** Removes the given portal and all associated runtime state, blocks, and links. */
 
     fun removePortal(portal: Portal) {
         // Deactivate portal if needed
@@ -341,7 +394,7 @@ class Portals : Module<Portals?>() {
         }
 
         // Remove portal blocks
-        portal.blocks()!!.forEach(Consumer { portalBlock: PortalBlock? -> this.removePortalBlock(portalBlock!!) })
+        portal.blocks().orEmpty().forEach { portalBlock -> removePortalBlock(portalBlock) }
 
         // Replace references to the portal everywhere
         // and update all changed portal consoles.
@@ -349,11 +402,11 @@ class Portals : Module<Portals?>() {
             if (other.targetId() == portal.id()) {
                 other.targetId(null)
                 other
-                    .blocks()!!
-                    .stream()
-                    .filter { pb: PortalBlock? -> pb!!.type() == PortalBlock.Type.CONSOLE }
-                    .filter { pb: PortalBlock? -> consoleFloatingItems.containsKey(pb!!.block()) }
-                    .forEach { pb: PortalBlock? -> updateConsoleItem(other, pb!!.block()!!) }
+                    .blocks()
+                    .orEmpty()
+                    .filter { pb -> pb.type() == PortalBlock.Type.CONSOLE }
+                    .filter { pb -> consoleFloatingItems.containsKey(pb.block()) }
+                    .forEach { pb -> updateConsoleItem(other, pb.block()!!) }
             }
         }
 
@@ -380,6 +433,8 @@ class Portals : Module<Portals?>() {
             .playSound(portal.spawn(), Sound.ENTITY_ENDER_EYE_DEATH, SoundCategory.BLOCKS, 1.0f, 1.0f)
     }
 
+    /** Adds a newly created portal into runtime indices and plays feedback sound. */
+
     fun addNewPortal(portal: Portal) {
         portal.invalidated = true
 
@@ -393,17 +448,23 @@ class Portals : Module<Portals?>() {
             .playSound(portal.spawn(), Sound.ENTITY_ENDER_EYE_DEATH, SoundCategory.BLOCKS, 1.0f, 2.0f)
     }
 
+    /** Ensure a portal is indexed for fast lookup (by id, blocks, chunks). */
+
     fun indexPortal(portal: Portal) {
         portals[portal.id()] = portal
-        portal.blocks()!!.forEach(Consumer { b: PortalBlock? -> indexPortalBlock(portal, b!!) })
+        portal.blocks().orEmpty().forEach { b -> indexPortalBlock(portal, b) }
 
         // Create map marker
         updateMarker(portal)
     }
 
+    /** Returns all loaded portals whose spawn worlds are currently available. */
+
     fun allAvailablePortals(): MutableCollection<Portal?> {
-        return portals.values.stream().filter { p: Portal? -> p!!.spawn().isWorldLoaded }.collect(Collectors.toList())
+        return portals.values.filter { p -> p.spawn().isWorldLoaded }.toMutableList()
     }
+
+    /** Restores and removes a single portal block from runtime acceleration structures. */
 
     fun removePortalBlock(portalBlock: PortalBlock) {
         // Restore original block
@@ -450,6 +511,8 @@ class Portals : Module<Portals?>() {
         }
     }
 
+    /** Removes the given portalBlock from its portal and global block indices. */
+
     fun removePortalBlock(portal: Portal, portalBlock: PortalBlock) {
         // Remove from portal
         portal.blocks()!!.remove(portalBlock)
@@ -457,6 +520,8 @@ class Portals : Module<Portals?>() {
         // Remove from acceleration structure
         removePortalBlock(portalBlock)
     }
+
+    /** Adds the given portalBlock to the portal, indexes it, and spawns placement effects. */
 
     fun addNewPortalBlock(portal: Portal, portalBlock: PortalBlock?) {
         // Add to portal
@@ -482,6 +547,8 @@ class Portals : Module<Portals?>() {
         }
     }
 
+    /** Inserts the portalBlock into the world/chunk/block lookup index for the portal. */
+
     fun indexPortalBlock(portal: Portal, portalBlock: PortalBlock) {
         // Add to acceleration structure
         val block = portalBlock.block()
@@ -496,6 +563,11 @@ class Portals : Module<Portals?>() {
         blockToPortalBlock[blockKey(block)] = portalBlock.lookup(portal.id())
     }
 
+    /**
+     * Find a PortalBlockLookup for the given Block if it belongs to a known portal.
+     * @return PortalBlockLookup or null if the block is not part of a portal
+     */
+
     fun portalBlockFor(block: Block): PortalBlockLookup? {
         val portalBlocksInChunk = portalBlocksInChunkInWorld[block.world.uid] ?: return null
 
@@ -505,6 +577,11 @@ class Portals : Module<Portals?>() {
         return blockToPortalBlock[blockKey(block)]
     }
 
+    /**
+     * Lookup a portal by UUID.
+     * @return the Portal or null when not found
+     */
+
     fun portalFor(uuid: UUID?): Portal? {
         val portal = portals[uuid]
         if (portal == null || !portal.spawn().isWorldLoaded) {
@@ -513,15 +590,24 @@ class Portals : Module<Portals?>() {
         return portal
     }
 
+    /** Resolves owning portal for a [PortalBlockLookup]. */
+
     fun portalFor(block: PortalBlockLookup): Portal {
         return portalFor(block.portalId())!!
     }
+
+    /**
+     * Return the Portal owning the given block if any.
+     * @return the portal or null
+     */
 
     fun portalFor(block: Block): Portal? {
         val portalBlock = portalBlockFor(block) ?: return null
 
         return portalFor(portalBlock)
     }
+
+    /** Returns true when the block is indexed as part of any portal structure. */
 
     fun isPortalBlock(block: Block): Boolean {
         val portalBlocksInChunk = portalBlocksInChunkInWorld[block.world.uid] ?: return false
@@ -531,6 +617,10 @@ class Portals : Module<Portals?>() {
 
         return blockToPortalBlock.containsKey(blockKey(block))
     }
+
+    /**
+     * Return the portal that controls the given block (e.g., console block) or null.
+     */
 
     fun controlledPortal(block: Block): Portal? {
         val rootPortal = portalFor(block)
@@ -550,6 +640,8 @@ class Portals : Module<Portals?>() {
         return null
     }
 
+    /** Return the set of chunks that must be kept loaded for the portal. */
+
     fun chunksFor(portal: Portal?): MutableSet<Chunk> {
         if (portal == null) {
             return HashSet<Chunk>()
@@ -561,6 +653,8 @@ class Portals : Module<Portals?>() {
         }
         return set
     }
+
+    /** Loads and tickets all chunks used by the portal. */
 
     fun loadPortalChunks(portal: Portal?) {
         // Load chunks and adds a ticket, so they get loaded and are kept loaded
@@ -576,6 +670,8 @@ class Portals : Module<Portals?>() {
         }
     }
 
+    /** Decrements/removes chunk tickets for all chunks used by the portal. */
+
     fun allowUnloadPortalChunks(portal: Portal?) {
         // Removes the ticket so chunks can be unloaded again
         for (chunk in chunksFor(portal)) {
@@ -590,6 +686,8 @@ class Portals : Module<Portals?>() {
             }
         }
     }
+
+    /** Connect two portals (src and dst), activate both portals, and schedule auto-disable. */
 
     fun connectPortals(src: Portal, dst: Portal) {
         // Load chunks
@@ -608,7 +706,8 @@ class Portals : Module<Portals?>() {
         startDisableTask(src, dst)
     }
 
-    @JvmOverloads
+    /** Disconnects portal pair and handles cleanup of transient target state. */
+
     fun disconnectPortals(src: Portal?, dst: Portal? = portalFor(connectedPortals[src!!.id()])) {
         if (src == null || dst == null) {
             return
@@ -637,6 +736,7 @@ class Portals : Module<Portals?>() {
         stopDisableTask(src, dst)
     }
 
+    /** Starts or replaces delayed auto-disable task for connected portal pair. */
     private fun startDisableTask(portal: Portal, target: Portal) {
         stopDisableTask(portal, target)
         val task = scheduleTask(
@@ -647,6 +747,7 @@ class Portals : Module<Portals?>() {
         disableTasks[target.id()] = task
     }
 
+    /** Cancels pending auto-disable task(s) associated with a portal pair. */
     private fun stopDisableTask(portal: Portal, target: Portal) {
         val task1 = disableTasks.remove(portal.id())
         val task2 = disableTasks.remove(target.id())
@@ -656,6 +757,7 @@ class Portals : Module<Portals?>() {
         }
     }
 
+    /** Module shutdown hook: disconnects portals, clears visuals/tickets, and persists state. */
     override fun onModuleDisable() {
         // Disable all portals now
         for (id in ArrayList<UUID?>(connectedPortals.keys)) {
@@ -680,20 +782,27 @@ class Portals : Module<Portals?>() {
         super.onModuleDisable()
     }
 
+    /** Returns true when the portal currently has an active connection. */
+
     fun isActivated(portal: Portal): Boolean {
         return connectedPortals.containsKey(portal.id())
     }
+
+    /** Returns the currently connected counterpart of the portal, if connected. */
 
     fun connectedPortal(portal: Portal): Portal? {
         val connectedId = connectedPortals[portal.id()] ?: return null
         return portalFor(connectedId)
     }
 
+    /** Returns icon for the portal, falling back to the configured default icon. */
+
     fun iconFor(portal: Portal): ItemStack? {
         val item = portal.icon()
         return item ?: configDefaultIcon!!.item()
     }
 
+    /** Builds the hovering console item for the portal in active/inactive state. */
     private fun makeConsoleItem(portal: Portal, active: Boolean): ItemStack {
         val target = if (active) {
             connectedPortal(portal)
@@ -722,6 +831,8 @@ class Portals : Module<Portals?>() {
         return ItemUtil.nameItem(item!!, displayName)
     }
 
+    /** Refresh marker and dependent console items when a portal's icon/name data changes. */
+
     fun updatePortalIcon(portal: Portal) {
         // Update map marker, as name could have changed
         updateMarker(portal)
@@ -734,6 +845,8 @@ class Portals : Module<Portals?>() {
             }
         }
     }
+
+    /** Re-validate target references after a portal's visibility changes and update markers. */
 
     fun updatePortalVisibility(portal: Portal) {
         // Replace references to the portal everywhere if visibility
@@ -760,6 +873,8 @@ class Portals : Module<Portals?>() {
         updateMarker(portal)
     }
 
+    /** Create or update the floating console item above the given block for a portal. */
+
     fun updateConsoleItem(portal: Portal, block: Block) {
         var consoleItem = consoleFloatingItems[block]
         val isNew: Boolean
@@ -784,11 +899,14 @@ class Portals : Module<Portals?>() {
         }
     }
 
+    /** Remove the floating console item at the given block, if present. */
+
     fun removeConsoleItem(block: Block?) {
         val consoleItem = consoleFloatingItems.remove(block)
         consoleItem?.discard()
     }
 
+    /** Iterates all console blocks in [chunk] and applies [consumer] on each. */
     private fun forEachConsoleBlockInChunk(
         chunk: Chunk,
         consumer: Consumer2<Block?, PortalBlockLookup?>
@@ -805,7 +923,8 @@ class Portals : Module<Portals?>() {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    /** Removes floating console items for consoles in a chunk before unload. */
+
     fun onMonitorChunkUnload(event: ChunkUnloadEvent) {
         val chunk = event.getChunk()
 
@@ -815,7 +934,8 @@ class Portals : Module<Portals?>() {
         ) { block: Block?, console: PortalBlockLookup? -> removeConsoleItem(block) }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    /** Recreates floating console items for consoles in a chunk after load. */
+
     fun onMonitorChunkLoad(event: ChunkLoadEvent) {
         val chunk = event.getChunk()
 
@@ -826,31 +946,40 @@ class Portals : Module<Portals?>() {
         }
     }
 
+    /** Update dynamic map markers for a portal in all configured map integrations. */
+
     fun updateMarker(portal: Portal) {
         dynmapLayer.updateMarker(portal)
         blueMapLayer.updateMarker(portal)
     }
+
+    /** Remove markers for the given portal id in all configured map integrations. */
 
     fun removeMarker(portalId: UUID?) {
         dynmapLayer.removeMarker(portalId)
         blueMapLayer.removeMarker(portalId)
     }
 
-    @EventHandler
+    /** Persist portal state when the world is saved. */
+
     fun onSaveWorld(event: WorldSaveEvent) {
         updatePersistentData(event.getWorld())
     }
 
-    @EventHandler
+    /** Handle world load to restore portal state from persistent storage. */
+
     fun onLoadWorld(event: WorldLoadEvent) {
         loadPersistentData(event.getWorld())
     }
 
-    @EventHandler
+    /** Handle world unload to persist/cleanup portal state. */
+
     fun onUnloadWorld(event: WorldUnloadEvent) {
         // Save data before unloading a world (not called on stop)
         updatePersistentData(event.getWorld())
     }
+
+    /** Update persistent storage for portals across all worlds. */
 
     fun updatePersistentData() {
         for (world in server.worlds) {
@@ -858,6 +987,7 @@ class Portals : Module<Portals?>() {
         }
     }
 
+    /** Initializes components, permissions, and migrations for the module. */
     init {
         registerEntities()
 
@@ -884,6 +1014,8 @@ class Portals : Module<Portals?>() {
              "Portal visibility GROUP_INTERNAL was added. This is a no-op."
         ) { _ -> }
     }
+
+    /** Load portals from world storage and perform legacy-storage migration for the given world. */
 
     fun loadPersistentData(world: World) {
         val data = world.persistentDataContainer
@@ -929,7 +1061,7 @@ class Portals : Module<Portals?>() {
         }
 
         // Remove any portal that was successfully loaded from the new storage.
-        removeFromLegacyStorage.forEach(Consumer { key: UUID? -> storagePortals.remove(key) })
+        removeFromLegacyStorage.forEach { key -> storagePortals.remove(key) }
         if (removeFromLegacyStorage.isNotEmpty()) {
             markPersistentStorageDirty()
         }
@@ -950,20 +1082,20 @@ class Portals : Module<Portals?>() {
         }
     }
 
+    /** Persist invalidated portals and remove stale entries for the given world. */
+
     fun updatePersistentData(world: World) {
         val data = world.persistentDataContainer
         val storagePortalPrefix = "$STORAGE_PORTALS."
 
         // Update invalidated portals
-        portals
-            .values
-            .stream()
-            .filter { x: Portal? -> x!!.invalidated && x.spawnWorld() == world.uid }
-            .forEach { portal: Portal? ->
+        portals.values
+            .filter { x -> x.invalidated && x.spawnWorld() == world.uid }
+            .forEach { portal ->
                 try {
                     val json = PersistentSerializer.toJson(Portal::class.java, portal)
                     data.set(
-                        NamespacedKey.fromString(storagePortalPrefix + portal!!.id().toString())!!,
+                        NamespacedKey.fromString(storagePortalPrefix + portal.id().toString())!!,
                         PersistentDataType.BYTE_ARRAY,
                         json.toString().toByteArray()
                     )
@@ -978,21 +1110,24 @@ class Portals : Module<Portals?>() {
         val storedPortals = getStoredPortalIds(data, storagePortalPrefix)
 
         // Remove all portals that no longer exist
-        Sets.difference(storedPortals, portals.keys)
-            .forEach(Consumer { id: UUID? -> data.remove(NamespacedKey.fromString(storagePortalPrefix + id.toString())!!) }
-            )
+        Sets.difference(storedPortals, portals.keys).forEach { id ->
+            data.remove(NamespacedKey.fromString(storagePortalPrefix + id.toString())!!)
+        }
     }
 
-    // Helper: extract stored portal UUIDs from a world's PersistentDataContainer
+    /** Extract stored portal ids from the persistent data container using the given storage prefix. */
     private fun getStoredPortalIds(data: org.bukkit.persistence.PersistentDataContainer, storagePortalPrefix: String): Set<UUID> =
         data.storedUuidsByPrefix(storagePortalPrefix)
 
+    /** Runnable used for delayed disconnection of portal pairs. */
     private inner class PortalDisableRunnable(private val src: Portal?, private val dst: Portal?) : Runnable {
+        /** Disconnects the associated portal pair when executed. */
         override fun run() {
             this@Portals.disconnectPortals(src, dst)
         }
     }
 
+    /** Static serializer registration and key helpers for portal storage/indexing. */
     companion object {
         // Add (de-)serializers
         init {
@@ -1012,10 +1147,12 @@ class Portals : Module<Portals?>() {
             PersistentSerializer.deserializers[Style::class.java] = PersistentSerializer.Function { obj: Any? -> Style.deserialize(obj!!) }
         }
 
+        /** Packs block coordinates into a compact per-chunk key. */
         private fun blockKey(block: Block): Long {
             return ((block.y shl 8) or ((block.x and 0xF) shl 4) or ((block.z and 0xF))).toLong()
         }
 
+        /** Unpack a blockKey back into a block location inside the given chunk. */
         private fun unpackBlockKey(chunk: Chunk, blockKey: Long): Block {
             val y = (blockKey shr 8).toInt()
             val x = ((blockKey shr 4) and 0xFL).toInt()
@@ -1023,6 +1160,7 @@ class Portals : Module<Portals?>() {
             return chunk.getBlock(x, y, z)
         }
 
+        /** Root persistent-data key storing per-world serialized portal entries. */
         val STORAGE_PORTALS: NamespacedKey = StorageUtil.namespacedKey("vane_portals", "portals")
     }
 }

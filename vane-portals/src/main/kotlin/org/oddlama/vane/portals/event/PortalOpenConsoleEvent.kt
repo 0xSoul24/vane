@@ -5,12 +5,20 @@ import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.oddlama.vane.portals.portal.Portal
 
+/**
+ * Fired before opening a portal console menu.
+ *
+ * @property player the interacting player.
+ * @property console the clicked console block.
+ * @property portal the portal owning the console.
+ */
 class PortalOpenConsoleEvent(@JvmField val player: Player?, @JvmField val console: Block?, @JvmField val portal: Portal?) : PortalEvent() {
-    override fun getHandlers(): HandlerList {
-        return handlerList
-    }
+    /** Returns Bukkit handlers for this event. */
+    override fun getHandlers() = handlerList
 
+    /** Static Bukkit handler list for this event type. */
     companion object {
+        /** Shared handler list used by Bukkit's event system. */
         @JvmStatic val handlerList: HandlerList = HandlerList()
     }
 }

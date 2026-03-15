@@ -2,69 +2,75 @@ package org.oddlama.vane.regions
 
 import org.bukkit.plugin.Plugin
 import org.dynmap.DynmapCommonAPI
-import org.dynmap.DynmapCommonAPIListener
 import org.dynmap.markers.Marker
 import org.dynmap.markers.MarkerAPI
 import org.dynmap.markers.MarkerSet
+import org.oddlama.vane.core.dynmap.DynmapIntegration
 import org.oddlama.vane.regions.region.Region
 import java.util.*
-import java.util.logging.Level
 
 /**
- * Low-level dynmap API delegate used by `RegionDynmapLayer`.
+ * Low-level Dynmap API delegate used by `RegionDynmapLayer`.
+ *
+ * This delegate manages Dynmap registration, marker set creation and synchronization
+ * of region area markers. It is intentionally lightweight and invoked by the owning
+ * `RegionDynmapLayer` when Dynmap integration is enabled.
+ *
+ * @constructor Creates a new delegate bound to the owning [parent] layer.
+ * @param parent The owning [RegionDynmapLayer] instance.
  */
 class RegionDynmapLayerDelegate(private val parent: RegionDynmapLayer) {
-    /**
-     * Active dynmap API instance when integration is enabled.
-     */
+    /** Active Dynmap API instance captured when integration becomes available. */
     private var dynmapApi: DynmapCommonAPI? = null
-    /**
-     * Dynmap marker API handle.
-     */
+
+    /** Dynmap MarkerAPI instance used to create and manage markers. */
     private var markerApi: MarkerAPI? = null
-    /**
-     * Whether dynmap integration is currently active.
-     */
+
+    /** Whether Dynmap integration is currently active. */
     private var dynmapEnabled = false
 
-    /**
-     * Marker set used for all region overlays.
-     */
+    /** MarkerSet used for all region overlay markers; created or loaded on enable. */
     private var markerSet: MarkerSet? = null
 
-    /**
-     * Owning regions module instance.
-     */
+    /** Convenience accessor for the owning [Regions] module. */
     private val module: Regions
         get() = requireNotNull(parent.module)
 
     /**
-     * Registers dynmap listeners and creates/loads the region marker layer.
+     * Called when the owning layer is enabled; registers Dynmap integration and
+     * creates/loads the marker layer if Dynmap is available.
+     *
+     * @param plugin Optional plugin reference (unused). The parameter is kept to match
+     * the caller signature and for potential future use.
      */
     fun onEnable(@Suppress("UNUSED_PARAMETER") plugin: Plugin?) {
-        try {
-            DynmapCommonAPIListener.register(
-                object : DynmapCommonAPIListener() {
-                    override fun apiEnabled(api: DynmapCommonAPI?) {
-                        dynmapApi = api
-                        markerApi = dynmapApi?.markerAPI
-                    }
-                }
-            )
-        } catch (e: Exception) {
-            module.log.log(Level.WARNING, "Error while enabling dynmap integration!", e)
-            return
-        }
-
-        if (markerApi == null) return
-
-        module.log.info("Enabling dynmap integration")
-        dynmapEnabled = true
-        createOrLoadLayer()
+        if (!registerAndInitDynmap()) return
     }
 
     /**
-     * Disables dynmap integration state.
+     * Helper that registers the Dynmap listener and initializes the integration.
+     *
+     * The function delegates registration to [DynmapIntegration] and assigns the
+     * discovered API handles to the delegate. When Dynmap is available the marker
+     * set is created/loaded via [createOrLoadLayer].
+     *
+     * @return True when Dynmap integration is available and initialization proceeded.
+     */
+    private fun registerAndInitDynmap(): Boolean {
+        return DynmapIntegration.initialize(module.log, { d, m ->
+            dynmapApi = d
+            markerApi = m
+        }) {
+            dynmapEnabled = true
+            createOrLoadLayer()
+        }
+    }
+
+    /**
+     * Disable Dynmap integration and clear internal handles.
+     *
+     * This resets the enabled flag and drops references to the Dynmap API and
+     * marker API to allow GC and clean state for future reinitialization.
      */
     fun onDisable() {
         if (!dynmapEnabled) {
@@ -78,7 +84,9 @@ class RegionDynmapLayerDelegate(private val parent: RegionDynmapLayer) {
     }
 
     /**
-     * Creates or updates the dynmap marker set and applies current style settings.
+     * Create or update the Dynmap marker set and apply the current configuration
+     * (labels, priority, visibility). If the marker set or marker API cannot be
+     * resolved this function simply returns without throwing.
      */
     private fun createOrLoadLayer() {
         val api = markerApi ?: return
@@ -110,19 +118,30 @@ class RegionDynmapLayerDelegate(private val parent: RegionDynmapLayer) {
     }
 
     /**
-     * Converts a region UUID to dynmap marker id.
+     * Convert a region UUID to a Dynmap marker id string.
+     *
+     * @param regionId UUID of the region.
+     * @return String identifier used for Dynmap markers.
      */
     private fun idFor(regionId: UUID): String {
         return regionId.toString()
     }
 
     /**
-     * Resolves marker id for a region object.
+     * Resolve the marker id for a [region] instance.
+     *
+     * @param region Region instance to resolve.
+     * @return Marker id string or null when the region has no id.
      */
     private fun idFor(region: Region): String? = region.id()?.let(::idFor)
 
     /**
-     * Recreates a dynmap marker for the given region.
+     * Recreate or update the Dynmap area marker representing [region].
+     *
+     * If the marker set is unavailable or Dynmap integration is disabled this
+     * function returns without action.
+     *
+     * @param region Region to create/update marker for.
      */
     fun updateMarker(region: Region) {
         if (!dynmapEnabled) {
@@ -151,14 +170,18 @@ class RegionDynmapLayerDelegate(private val parent: RegionDynmapLayer) {
     }
 
     /**
-     * Removes marker by region id.
+     * Remove a marker by its region id.
+     *
+     * @param regionId UUID of the region whose marker should be removed.
      */
     fun removeMarker(regionId: UUID) {
         removeMarker(idFor(regionId))
     }
 
     /**
-     * Removes marker by marker id.
+     * Remove a marker by marker id string.
+     *
+     * @param markerId Identifier of the marker to remove, or null to do nothing.
      */
     fun removeMarker(markerId: String?) {
         if (!dynmapEnabled || markerId == null) return
@@ -167,7 +190,9 @@ class RegionDynmapLayerDelegate(private val parent: RegionDynmapLayer) {
     }
 
     /**
-     * Removes a concrete marker instance.
+     * Delete a concrete Dynmap [marker] instance when present.
+     *
+     * @param marker Marker instance to delete; no-op when null or integration disabled.
      */
     fun removeMarker(marker: Marker?) {
         if (!dynmapEnabled || marker == null) return
@@ -176,7 +201,8 @@ class RegionDynmapLayerDelegate(private val parent: RegionDynmapLayer) {
     }
 
     /**
-     * Synchronizes all region markers and prunes orphaned entries.
+     * Synchronize all region markers: recreate markers for every region and prune orphaned
+     * markers that no longer correspond to an existing region.
      */
     fun updateAllMarkers() {
         if (!dynmapEnabled) {

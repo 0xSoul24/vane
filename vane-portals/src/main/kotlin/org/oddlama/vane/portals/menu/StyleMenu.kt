@@ -5,7 +5,6 @@ import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.util.BoundingBox
 import org.oddlama.vane.annotation.lang.LangMessage
 import org.oddlama.vane.core.config.TranslatedItemStack
 import org.oddlama.vane.core.functional.Function1
@@ -21,86 +20,134 @@ import org.oddlama.vane.portals.portal.PortalBlock
 import org.oddlama.vane.portals.portal.Style
 import java.util.*
 
+/**
+ * Menu component allowing players to configure a portal's visual style.
+ *
+ * Provides item selectors for each block type used in a style and actions to accept/reset changes.
+ *
+ * @constructor Create a StyleMenu module component using the provided module [context].
+ * @param context Module context used to resolve translations, configuration and subcomponents.
+ */
 class StyleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(context.namespace("Style")) {
+    /** Translated title used for the style editor menu. */
     @LangMessage
     var langTitle: TranslatedMessage? = null
 
+    /** Translated title shown when selecting the active console block. */
     @LangMessage
     var langSelectBlockConsoleActiveTitle: TranslatedMessage? = null
 
+    /** Translated title shown when selecting the active origin block. */
     @LangMessage
     var langSelectBlockOriginActiveTitle: TranslatedMessage? = null
 
+    /** Translated title shown when selecting the active portal-area block (unused by default). */
     @LangMessage
     @Suppress("unused")
     var langSelectBlockPortalActiveTitle: TranslatedMessage? = null
 
+    /** Translated title shown when selecting the active boundary variant 1 block. */
     @LangMessage
     var langSelectBlockBoundary1ActiveTitle: TranslatedMessage? = null
 
+    /** Translated title shown when selecting the active boundary variant 2 block. */
     @LangMessage
     var langSelectBlockBoundary2ActiveTitle: TranslatedMessage? = null
 
+    /** Translated title shown when selecting the active boundary variant 3 block. */
     @LangMessage
     var langSelectBlockBoundary3ActiveTitle: TranslatedMessage? = null
 
+    /** Translated title shown when selecting the active boundary variant 4 block. */
     @LangMessage
     var langSelectBlockBoundary4ActiveTitle: TranslatedMessage? = null
 
+    /** Translated title shown when selecting the active boundary variant 5 block. */
     @LangMessage
     var langSelectBlockBoundary5ActiveTitle: TranslatedMessage? = null
 
+    /** Translated title shown when selecting the inactive console block. */
     @LangMessage
     var langSelectBlockConsoleInactiveTitle: TranslatedMessage? = null
 
+    /** Translated title shown when selecting the inactive origin block. */
     @LangMessage
     var langSelectBlockOriginInactiveTitle: TranslatedMessage? = null
 
+    /** Translated title shown when selecting the inactive portal-area block. */
     @LangMessage
     var langSelectBlockPortalInactiveTitle: TranslatedMessage? = null
 
+    /** Translated title shown when selecting the inactive boundary variant 1 block. */
     @LangMessage
     var langSelectBlockBoundary1InactiveTitle: TranslatedMessage? = null
 
+    /** Translated title shown when selecting the inactive boundary variant 2 block. */
     @LangMessage
     var langSelectBlockBoundary2InactiveTitle: TranslatedMessage? = null
 
+    /** Translated title shown when selecting the inactive boundary variant 3 block. */
     @LangMessage
     var langSelectBlockBoundary3InactiveTitle: TranslatedMessage? = null
 
+    /** Translated title shown when selecting the inactive boundary variant 4 block. */
     @LangMessage
     var langSelectBlockBoundary4InactiveTitle: TranslatedMessage? = null
 
+    /** Translated title shown when selecting the inactive boundary variant 5 block. */
     @LangMessage
     var langSelectBlockBoundary5InactiveTitle: TranslatedMessage? = null
 
+    /** Translated title for the defined-style selector. */
     @LangMessage
     var langSelectStyleTitle: TranslatedMessage? = null
 
+    /** Translated title for the styles filter input shown in the selector. */
     @LangMessage
     var langFilterStylesTitle: TranslatedMessage? = null
 
+    /** Item representing the active console block when selecting an active block. */
     private val itemBlockConsoleActive: TranslatedItemStack<*>
+    /** Item representing the active origin block when selecting an active block. */
     private val itemBlockOriginActive: TranslatedItemStack<*>
+    /** Item representing the active portal-area block when selecting an active block (nullable). */
     private val itemBlockPortalActive: TranslatedItemStack<*>?
+    /** Item representing the active boundary variant 1 block when selecting an active block. */
     private val itemBlockBoundary1Active: TranslatedItemStack<*>
+    /** Item representing the active boundary variant 2 block when selecting an active block. */
     private val itemBlockBoundary2Active: TranslatedItemStack<*>
+    /** Item representing the active boundary variant 3 block when selecting an active block. */
     private val itemBlockBoundary3Active: TranslatedItemStack<*>
+    /** Item representing the active boundary variant 4 block when selecting an active block. */
     private val itemBlockBoundary4Active: TranslatedItemStack<*>
+    /** Item representing the active boundary variant 5 block when selecting an active block. */
     private val itemBlockBoundary5Active: TranslatedItemStack<*>
+    /** Item representing the inactive console block when selecting an inactive block. */
     private val itemBlockConsoleInactive: TranslatedItemStack<*>
+    /** Item representing the inactive origin block when selecting an inactive block. */
     private val itemBlockOriginInactive: TranslatedItemStack<*>
+    /** Item representing the inactive portal-area block when selecting an inactive block. */
     private val itemBlockPortalInactive: TranslatedItemStack<*>
+    /** Item representing the inactive boundary variant 1 block when selecting an inactive block. */
     private val itemBlockBoundary1Inactive: TranslatedItemStack<*>
+    /** Item representing the inactive boundary variant 2 block when selecting an inactive block. */
     private val itemBlockBoundary2Inactive: TranslatedItemStack<*>
+    /** Item representing the inactive boundary variant 3 block when selecting an inactive block. */
     private val itemBlockBoundary3Inactive: TranslatedItemStack<*>
+    /** Item representing the inactive boundary variant 4 block when selecting an inactive block. */
     private val itemBlockBoundary4Inactive: TranslatedItemStack<*>
+    /** Item representing the inactive boundary variant 5 block when selecting an inactive block. */
     private val itemBlockBoundary5Inactive: TranslatedItemStack<*>
 
+    /** Item used as the accept/apply action for the style editor. */
     private val itemAccept: TranslatedItemStack<*>
+    /** Item used to reset any changes made in the style editor. */
     private val itemReset: TranslatedItemStack<*>
+    /** Item used to open the defined-style selector. */
     private val itemSelectDefined: TranslatedItemStack<*>
+    /** Item template used to represent defined styles in the selector. */
     private val itemSelectStyle: TranslatedItemStack<*>
+    /** Item used to cancel style selection and return to the previous menu. */
     private val itemCancel: TranslatedItemStack<*>
 
     init {
@@ -244,6 +291,19 @@ class StyleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(context.
         )
     }
 
+    /**
+     * Build and return the style selection [Menu] for the given portal and player.
+     *
+     * The menu allows editing the portal's style by selecting materials for each
+     * portal block type (console, origin, portal area, boundaries) in active and
+     * inactive variants. The returned menu will return to [previous] on natural close.
+     *
+     * @param portal Portal to edit.
+     * @param player The player opening the menu (may be null for non-player contexts).
+     * @param previous Previous menu to open when the style menu is closed.
+     * @return A configured [Menu] instance for editing the provided portal's style.
+     */
+    @Suppress("UNUSED_PARAMETER")
     fun create(portal: Portal, player: Player?, previous: Menu): Menu {
         val title = langTitle!!.strComponent("§5§l" + portal.name())
         val styleMenu = Menu(getContext()!!, Bukkit.createInventory(null, 4 * COLUMNS, title))
@@ -447,6 +507,23 @@ class StyleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(context.
         return styleMenu
     }
 
+    /**
+     * Create a menu widget that opens an item selector for the given [type] of portal block.
+     *
+     * The selector will update [styleContainer] with the chosen material (or reset to
+     * a default) and reopen the parent menu after selection. The [tItem] is used as the
+     * base item for display in the menu and [slot] determines where it will be placed.
+     *
+     * @param portal Portal being edited.
+     * @param styleContainer Container holding the currently edited style and defined-style key.
+     * @param slot Slot index inside the menu inventory where the widget will be placed.
+     * @param tItem Translated item template used to render the widget.
+     * @param buildingMaterial Default building Material used to describe the slot when empty.
+     * @param title Title shown in the item selector inventory.
+     * @param type The [PortalBlock.Type] this selector edits.
+     * @param active True to edit the active variant, false to edit the inactive variant.
+     * @return A [MenuWidget] that opens an item selector for the specified block type.
+     */
     private fun menuItemBlockSelector(
         portal: Portal,
         styleContainer: StyleContainer,
@@ -498,9 +575,7 @@ class StyleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(context.
                     val voxelshape = blockdata.getCollisionShape(player.location)
                     val bbs = voxelshape.boundingBoxes
                     if (bbs.size != 1 ||
-                        !bbs
-                            .stream()
-                            .allMatch { x: BoundingBox? -> x!!.widthX == 1.0 && x.widthZ == 1.0 && x.height == 1.0 }
+                        !bbs.all { x -> x.widthX == 1.0 && x.widthZ == 1.0 && x.height == 1.0 }
                     ) {
                         return@itemSelector null
                     }
@@ -525,6 +600,17 @@ class StyleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(context.
         }
     }
 
+    /**
+     * Create the accept/apply menu widget which applies the edited style to [portal].
+     *
+     * This will perform permission/event checks (fires [PortalChangeSettingsEvent]),
+     * apply the style, update portal blocks and return to [previous].
+     *
+     * @param portal Portal to update.
+     * @param styleContainer Container holding the edited style.
+     * @param previous Menu to return to after applying changes.
+     * @return A [MenuWidget] that applies the style on activation.
+     */
     private fun menuItemAccept(
         portal: Portal,
         styleContainer: StyleContainer,
@@ -546,6 +632,16 @@ class StyleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(context.
         })
     }
 
+    /**
+     * Create the reset menu widget which reverts unsaved style changes.
+     *
+     * When activated the style in [styleContainer] is reset to a copy of the portal's
+     * current style and the menu display is updated.
+     *
+     * @param portal Portal whose style to copy when resetting.
+     * @param styleContainer Container holding the edited style to be reset.
+     * @return A [MenuWidget] that resets the working style to the portal's style.
+     */
     private fun menuItemReset(portal: Portal, styleContainer: StyleContainer): MenuWidget {
         return MenuItem(3 * COLUMNS + 3, itemReset.item()) { _: Player?, menu: Menu?, _: MenuItem? ->
              styleContainer.style = portal.copyStyle(module!!, null)
@@ -554,6 +650,16 @@ class StyleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(context.
          }
     }
 
+    /**
+     * Create a menu widget that opens a selector for defined styles from configuration.
+     *
+     * Selecting a defined style will set the container's `definedStyle` and replace the
+     * working `style` in the provided `styleContainer` with a copy of the selected style.
+     *
+     * @param portal Portal being edited.
+     * @param styleContainer Container holding the edited style and selected defined key.
+     * @return A [MenuWidget] that opens the defined-style selector.
+     */
     private fun menuItemSelectDefined(portal: Portal, styleContainer: StyleContainer): MenuWidget {
         val itemFor: Function1<Style?, ItemStack?> = Function1 { style: Style? ->
             val mat = style!!.material(false, PortalBlock.Type.BOUNDARY1)
@@ -599,6 +705,12 @@ class StyleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(context.
         }
     }
 
+    /**
+     * Create the cancel/back menu widget which returns the player to [previous] without applying changes.
+     *
+     * @param previous Menu to open when the cancel action is invoked.
+     * @return A [MenuWidget] that cancels editing and returns to [previous].
+     */
     private fun menuItemCancel(previous: Menu): MenuWidget {
         return MenuItem(3 * COLUMNS + 8, itemCancel.item()) { player: Player?, menu: Menu?, _: MenuItem? ->
             menu!!.close(player!!)
@@ -607,18 +719,39 @@ class StyleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(context.
         }
     }
 
+    /** Called when this module component is enabled. No-op implementation. */
     public override fun onEnable() {}
 
+    /** Called when this module component is disabled. No-op implementation. */
     public override fun onDisable() {}
 
+    /**
+     * Container used while editing a style in the menu.
+     *
+     * Holds an optional defined-style key and the working copy of the [Style].
+     */
     private class StyleContainer {
+        /** The NamespacedKey of a defined style when one is selected, otherwise null. */
         var definedStyle: NamespacedKey? = null
+
+        /** The working copy of the style being edited; null when not set. */
         var style: Style? = null
     }
 
     companion object {
         private const val COLUMNS = 9
 
+        /**
+         * Get an ItemStack representing the material for the given [type] in [styleContainer].
+         *
+         * For the special case of an active PORTAL type this returns an AIR item stack to
+         * indicate the portal-area selection is empty.
+         *
+         * @param styleContainer Container holding the working style.
+         * @param active True for active variant, false for inactive.
+         * @param type The portal block [PortalBlock.Type] to query.
+         * @return An [ItemStack] that represents the material for the requested type/variant.
+         */
         private fun itemForType(
             styleContainer: StyleContainer,
             active: Boolean,

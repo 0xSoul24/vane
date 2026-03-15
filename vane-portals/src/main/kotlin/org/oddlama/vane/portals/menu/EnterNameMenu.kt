@@ -13,17 +13,26 @@ import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.core.module.ModuleComponent
 import org.oddlama.vane.portals.Portals
 
+/**
+ * Anvil-based menu used to input or rename a portal name.
+ *
+ * @property langTitle localized title shown on the anvil menu.
+ * @property configMaterial preview item used in the input slot.
+ */
 class EnterNameMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(context.namespace("EnterName")) {
+    /** Localized title shown on the name input menu. */
     @LangMessage
     var langTitle: TranslatedMessage? = null
 
+    /** Preview item used in the anvil input slot. */
     @ConfigMaterial(def = Material.ENDER_PEARL, desc = "The item used to name portals.")
     var configMaterial: Material? = null
 
-    fun create(player: Player, onClick: Function2<Player?, String?, Menu.ClickResult?>): Menu {
-        return create(player, "Name", onClick)
-    }
+    /** Creates a name input menu using the default placeholder name. */
+    fun create(player: Player, onClick: Function2<Player?, String?, Menu.ClickResult?>): Menu =
+        create(player, "Name", onClick)
 
+    /** Creates a name input menu and invokes [onClick] with the entered value. */
     fun create(
         player: Player,
         defaultName: String,
@@ -41,7 +50,9 @@ class EnterNameMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(cont
         }
     }
 
+    /** Enables this menu component. */
     public override fun onEnable() {}
 
+    /** Disables this menu component. */
     public override fun onDisable() {}
 }

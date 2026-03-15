@@ -18,17 +18,21 @@ import org.oddlama.vane.portals.portal.Portal
 import org.oddlama.vane.util.Nms
 import java.util.*
 
+/**
+ * Handles teleportation of entities and players through connected portals.
+ *
+ * Manages entity transfer, velocity/orientation transformation and passenger handling.
+ */
+
 class PortalTeleporter(context: Context<Portals?>?) : Listener<Portals?>(context) {
+    /** Tracks entities currently in the custom teleport flow. */
     private val entitiesPortalling = HashMap<UUID, Location?>()
 
-    private fun cancelPortalEvent(entity: Entity): Boolean {
-        if (entitiesPortalling.containsKey(entity.uniqueId)) {
-            return true
-        }
+    /** Returns true when native portal events should be cancelled for [entity]. */
+    private fun cancelPortalEvent(entity: Entity) =
+        entity.uniqueId in entitiesPortalling || module!!.isPortalBlock(entity.location.block)
 
-        return module!!.isPortalBlock(entity.location.block)
-    }
-
+    /** Cancels vanilla player portal processing while custom portal logic is active. */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onPlayerPortal(event: PlayerPortalEvent) {
         if (cancelPortalEvent(event.player)) {
@@ -36,6 +40,7 @@ class PortalTeleporter(context: Context<Portals?>?) : Listener<Portals?>(context
         }
     }
 
+    /** Cancels vanilla entity teleport events while custom portal logic is active. */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onEntityTeleportEvent(event: EntityTeleportEvent) {
         if (cancelPortalEvent(event.entity)) {
@@ -43,6 +48,7 @@ class PortalTeleporter(context: Context<Portals?>?) : Listener<Portals?>(context
         }
     }
 
+    /** Cancels end-gateway teleports initiated from portal structure blocks. */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onEntityTeleportEndGatewayEvent(event: EntityTeleportEndGatewayEvent) {
         // End gateway teleport can be initiated when the bounding boxes overlap, so
@@ -56,6 +62,7 @@ class PortalTeleporter(context: Context<Portals?>?) : Listener<Portals?>(context
         }
     }
 
+    /** Cancels player end-gateway teleports initiated from portal structure blocks. */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     fun onPlayerTeleportEvent(event: PlayerTeleportEndGatewayEvent) {
         val block = event.gateway.block
@@ -64,6 +71,10 @@ class PortalTeleporter(context: Context<Portals?>?) : Listener<Portals?>(context
         }
     }
 
+    /**
+     * Teleports a single [entity] to [targetLocation] and reapplies [newVelocity], preserving
+     * mount/passenger relationships when possible.
+     */
     private fun teleportSingleEntity(
         entity: Entity,
         targetLocation: Location,
@@ -104,7 +115,7 @@ class PortalTeleporter(context: Context<Portals?>?) : Listener<Portals?>(context
             // Entities traveling to a different dimension need to be despawned and respawned as
             // both worlds are distinct levels.
             // This means they must be dismounted (or unridden) before teleportation.
-            passengers.stream().forEach { passenger: Entity? -> entity.removePassenger(passenger!!) }
+            passengers.forEach { passenger -> entity.removePassenger(passenger) }
             entity.teleport(targetLocation)
 
             for (p in passengers) {
@@ -123,6 +134,7 @@ class PortalTeleporter(context: Context<Portals?>?) : Listener<Portals?>(context
         entity.velocity = newVelocity
     }
 
+    /** Computes transformed orientation/velocity and teleports [entity] from [source] to [target]. */
     private fun teleportEntity(entity: Entity, source: Portal, target: Portal) {
         var targetLocation = target.spawn().clone()
         if (entity is LivingEntity) {
@@ -169,23 +181,25 @@ class PortalTeleporter(context: Context<Portals?>?) : Listener<Portals?>(context
         teleportSingleEntity(entity, targetLocation, newVelocity)
     }
 
+    /** Detects portal entry/exit from movement events and runs portal teleport flow. */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     fun onEntityMove(event: EntityMoveEvent) {
+        val module = module ?: return
         val entity = event.entity ?: return
         val entityId = entity.uniqueId
         val from = event.from ?: return
         val to = event.to ?: return
         val block = to.block
 
-        if (!entitiesPortalling.containsKey(entityId)) {
+        if (entityId !in entitiesPortalling) {
             // Check if we walked into a portal
-            if (!module!!.portalAreaMaterials.contains(block.type)) {
+            if (!module.portalAreaMaterials.contains(block.type)) {
                 return
             }
 
-            val portal: Portal = module!!.portalFor(block) ?: return
+            val portal: Portal = module.portalFor(block) ?: return
 
-            val target: Portal = module!!.connectedPortal(portal) ?: return
+            val target: Portal = module.connectedPortal(portal) ?: return
 
             teleportEntity(entity, portal, target)
         } else {
@@ -194,7 +208,7 @@ class PortalTeleporter(context: Context<Portals?>?) : Listener<Portals?>(context
                 // Initial teleport. Remember the current location, so we can check
                 // that the entity moved away far enough to allow another teleport
                 entitiesPortalling[entityId] = from.clone()
-            } else if (!module!!.portalAreaMaterials.contains(block.type)) {
+            } else if (!module.portalAreaMaterials.contains(block.type)) {
                 // At least 2 blocks away and outside of portal area → finish portalling.
                 if (loc.world === from.world && from.distance(loc) > 2.0) {
                     entitiesPortalling.remove(entityId)

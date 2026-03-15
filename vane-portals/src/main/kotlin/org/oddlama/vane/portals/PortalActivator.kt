@@ -19,20 +19,33 @@ import org.oddlama.vane.portals.portal.PortalBlock
 import org.oddlama.vane.portals.portal.PortalBlockLookup
 import org.oddlama.vane.util.PlayerUtil
 
+/** Handles player and redstone interactions that activate portal behavior. */
 class PortalActivator(context: Context<Portals?>?) : Listener<Portals?>(context) {
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
-    fun onPlayerInteractConsole(event: PlayerInteractEvent) {
+    /**
+     * Helper that validates a PlayerInteractEvent is a right-click on a block the module
+     * should handle and returns a pair of the resolved module and clicked block.
+     * Returns null if any precondition fails.
+     */
+    private fun requireModuleAndClickedBlock(event: PlayerInteractEvent): Pair<Portals, org.bukkit.block.Block>? {
+        val module = module ?: return null
+
         if (!event.hasBlock() || event.action != Action.RIGHT_CLICK_BLOCK) {
-            return
+            return null
         }
 
         if (event.useInteractedBlock() == Event.Result.DENY) {
-            return
+            return null
         }
 
-        // Abort if the table is not a console
-        val block = event.clickedBlock ?: return
-        val portalBlock: PortalBlockLookup? = module!!.portalBlockFor(block)
+        val block = event.clickedBlock ?: return null
+
+        return Pair(module, block)
+    }
+    /** Opens the portal console menu when a portal console block is used. */
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
+    fun onPlayerInteractConsole(event: PlayerInteractEvent) {
+        val (module, block) = requireModuleAndClickedBlock(event) ?: return
+        val portalBlock: PortalBlockLookup? = module.portalBlockFor(block)
         if (portalBlock == null || portalBlock.type() != PortalBlock.Type.CONSOLE) {
             return
         }
@@ -40,30 +53,21 @@ class PortalActivator(context: Context<Portals?>?) : Listener<Portals?>(context)
         event.setUseInteractedBlock(Event.Result.DENY)
         event.setUseItemInHand(Event.Result.DENY)
 
-        val player = event.getPlayer()
-        val portal: Portal = module!!.portalFor(portalBlock)
-        if (portal.openConsole(module!!, player, block)) {
+        val player = event.player
+        val portal: Portal = module.portalFor(portalBlock)
+        if (portal.openConsole(module, player, block)) {
             PlayerUtil.swingArm(player, event.hand!!)
         }
     }
 
+    /** Toggles controlled portals when a bound switch is interacted with. */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     fun onPlayerInteractSwitch(event: PlayerInteractEvent) {
-        if (!event.hasBlock() || event.action != Action.RIGHT_CLICK_BLOCK) {
-            return
-        }
-
-        if (event.useInteractedBlock() == Event.Result.DENY) {
-            return
-        }
-
-        val block = event.clickedBlock ?: return
-        val allowDisable: Boolean = if (block.type == Material.LEVER) {
-            true
-        } else if (Tag.BUTTONS.isTagged(block.type)) {
-            false
-        } else {
-            return
+        val (module, block) = requireModuleAndClickedBlock(event) ?: return
+        val allowDisable = when {
+            block.type == Material.LEVER -> true
+            Tag.BUTTONS.isTagged(block.type) -> false
+            else -> return
         }
 
         // Get base block the switch is attached to
@@ -76,17 +80,17 @@ class PortalActivator(context: Context<Portals?>?) : Listener<Portals?>(context)
 
         // Find controlled portal
         val base = block.getRelative(attachedFace)
-        val portal = module!!.controlledPortal(base) ?: return
+        val portal = module.controlledPortal(base) ?: return
 
-        val player = event.getPlayer()
-        val active: Boolean = module!!.isActivated(portal)
+        val player = event.player
+        val active = module.isActivated(portal)
         if (bswitch.isPowered && allowDisable) {
             if (!active) {
                 return
             }
 
             // Switch is being switched off → deactivate
-            if (!portal.deactivate(module!!, player)) {
+            if (!portal.deactivate(module, player)) {
                 event.setUseInteractedBlock(Event.Result.DENY)
                 event.setUseItemInHand(Event.Result.DENY)
             }
@@ -96,15 +100,18 @@ class PortalActivator(context: Context<Portals?>?) : Listener<Portals?>(context)
             }
 
             // Switch is being switched on → activate
-            if (!portal.activate(module!!, player)) {
+            if (!portal.activate(module, player)) {
                 event.setUseInteractedBlock(Event.Result.DENY)
                 event.setUseItemInHand(Event.Result.DENY)
             }
         }
     }
 
+    /** Activates portals when a repeater powers their gateway block. */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onBlockRedstone(event: BlockRedstoneEvent) {
+        val module = module ?: return
+
         // Only on rising edge.
         if (event.oldCurrent != 0 || event.newCurrent == 0) {
             return
@@ -121,8 +128,8 @@ class PortalActivator(context: Context<Portals?>?) : Listener<Portals?>(context)
         val intoBlock = block.getRelative(repeater.facing.getOppositeFace())
 
         // Find controlled portal
-        val portal = module!!.portalFor(intoBlock) ?: return
+        val portal = module.portalFor(intoBlock) ?: return
 
-        portal.activate(module!!, null)
+        portal.activate(module, null)
     }
 }
