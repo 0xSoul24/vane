@@ -65,7 +65,8 @@ internal fun menuItemSettingToggle(
      * Rebuilds toggle item based on current value and forced-override state.
      */
     override fun item(item: ItemStack?) {
-        val maybeAddForcedHint: (MutableList<Component?>?) -> Unit = { lore ->
+        val maybeAddForcedHint = org.oddlama.vane.core.functional.Consumer1<MutableList<Component?>?> {
+            lore ->
             if (hasOverride()) {
                 val loreList = requireNotNull(lore)
                 loreList.add(Component.empty())

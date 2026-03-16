@@ -15,6 +15,7 @@ import org.oddlama.vane.core.material.ExtendedMaterial.Companion.from
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.core.module.Module
 import org.oddlama.vane.core.module.ModuleComponent
+import org.oddlama.vane.core.functional.Consumer1
 import org.oddlama.vane.util.ItemUtil
 
 /**
@@ -89,9 +90,9 @@ class TranslatedItemStack<T : Module<T?>?>(
     /**
      * Builds a localized item stack and applies a lore transformation callback.
      */
-    fun itemTransformLore(fLore: (MutableList<Component?>?) -> Unit, vararg args: Any?): ItemStack {
+    fun itemTransformLore(fLore: Consumer1<MutableList<Component?>?>, vararg args: Any?): ItemStack {
         val lore = langLore!!.format(*args)
-        fLore(lore)
+        fLore.apply(lore)
         return ItemUtil.nameItem(configMaterial!!.item(configAmount)!!, langName!!.format(*args), lore)
     }
 

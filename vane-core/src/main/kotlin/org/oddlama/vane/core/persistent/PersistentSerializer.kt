@@ -285,7 +285,7 @@ object PersistentSerializer {
                 for (key in (json as JSONObject).keySet()) {
                     put(fromJson(typeArgs[0] as Class<*>?, key), fromJson(typeArgs[1], json[key]))
                 }
-            }
+            }.toMutableMap()
             MutableSet::class.java  -> (json as JSONArray).mapTo(HashSet()) { fromJson(typeArgs[0], it) }
             MutableList::class.java -> (json as JSONArray).map { fromJson(typeArgs[0], it) }
             else -> throw IOException("Cannot deserialize $type. This is a bug.")

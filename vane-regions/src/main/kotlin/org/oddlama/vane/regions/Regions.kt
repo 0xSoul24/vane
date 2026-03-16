@@ -482,8 +482,9 @@ class Regions : Module<Regions?>() {
     /**
      * Returns a region group by id.
      */
-    fun getRegionGroup(regionGroup: UUID?): RegionGroup {
-        return storageRegionGroups[regionGroup]!!
+    fun getRegionGroup(regionGroup: UUID?): RegionGroup? {
+        if (regionGroup == null) return null
+        return storageRegionGroups[regionGroup]
     }
 
     /**
@@ -691,7 +692,7 @@ class Regions : Module<Regions?>() {
         val ownerId = owner.uniqueId
         val regionGroupId = storageDefaultRegionGroup[ownerId]
         if (regionGroupId != null) {
-            return getRegionGroup(regionGroupId)
+            getRegionGroup(regionGroupId)?.let { return it }
         }
 
         // Create and save owner's default group
