@@ -111,10 +111,16 @@ class Bedtime : Module<Bedtime?>() {
         blueMapLayer.updateMarker(player)
 
         scheduleNextTick {
-            /* Register the new player as sleeping. */
-            addSleeping(world, player)
-            /* Schedule a sleep threshold check. */
-            startCheckWorldTask(world)
+            /* Only register the player if they actually went to sleep. Some plugins or
+             * conditions may prevent entering the bed even though the interact event fired.
+             * Checking Player.isSleeping here (on the next tick) ensures we only count
+             * legitimate sleepers. */
+            if (player.isSleeping) {
+                /* Register the new player as sleeping. */
+                addSleeping(world, player)
+                /* Schedule a sleep threshold check. */
+                startCheckWorldTask(world)
+            }
         }
     }
 

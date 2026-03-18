@@ -33,8 +33,16 @@ class Time(context: Context<Admin?>) : VaneCommand<Admin?>(context) {
             .then(
                 Commands.argument<TimeValue>("time", TimeValueArgumentType.timeValue())
                     .executes { ctx ->
-                        setTimeCurrentWorld(ctx.source.sender as Player, timeValue(ctx))
-                        Command.SINGLE_SUCCESS
+                        val sender = ctx.source.sender
+                        val time = timeValue(ctx)
+                        if (sender is Player) {
+                            setTimeCurrentWorld(sender, time)
+                            Command.SINGLE_SUCCESS
+                        } else {
+                            // Console or non-player senders must specify a world explicitly.
+                            sender.sendMessage("This command must be run by a player or you must specify a world.")
+                            0
+                        }
                     }
                     .then(
                         Commands.argument("world", ArgumentTypes.world())
