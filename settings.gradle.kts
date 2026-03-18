@@ -4,7 +4,7 @@ pluginManagement {
         //maven("https://repo.papermc.io/repository/maven-public/")
 	}
     plugins {
-        kotlin("jvm") version "2.3.10"
+        kotlin("jvm") version "2.3.20"
     }
 }
 plugins {
