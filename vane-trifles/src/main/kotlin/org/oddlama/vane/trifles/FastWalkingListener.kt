@@ -4,6 +4,7 @@ import io.papermc.paper.event.entity.EntityMoveEvent
 import net.minecraft.world.entity.monster.Monster
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
+import org.bukkit.Location
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.player.PlayerMoveEvent
@@ -45,15 +46,23 @@ class FastWalkingListener(private val fastWalking: FastWalkingGroup) : Listener<
         }
 
         // Sample the block slightly below the feet to identify the walked material.
-        val block = effectEntity.location.clone().subtract(0.0, 0.1, 0.0).block
-        val materials = fastWalking.configMaterials
-        if (block.type !in materials) {
-            return
-        }
+        applyWalkSpeedIfOnMaterial(effectEntity, effectEntity.location)
+    }
 
-        // Apply cached movement effect.
+    /**
+     * Samples the block slightly below the given location and applies the configured
+     * walk-speed potion effect to the provided entity if the block's material matches
+     * the configured path materials.
+     */
+    private fun applyWalkSpeedIfOnMaterial(entity: org.bukkit.entity.Entity, sampleLocation: Location) {
+        if (entity !is LivingEntity) return
+
+        val block = sampleLocation.clone().subtract(0.0, 0.1, 0.0).block
+        val materials = fastWalking.configMaterials
+        if (block.type !in materials) return
+
         val walkSpeedEffect = fastWalking.walkSpeedEffect ?: return
-        effectEntity.addPotionEffect(walkSpeedEffect)
+        entity.addPotionEffect(walkSpeedEffect)
     }
 
     /** Applies the fast-walk effect to non-player entities when enabled by config. */
@@ -70,15 +79,6 @@ class FastWalkingListener(private val fastWalking: FastWalkingGroup) : Listener<
         // Cancel event if speedwalking is disabled for villagers
         if (entity.type == EntityType.VILLAGER && !configVillagerSpeedwalk) return
 
-        // Sample the block slightly below the feet to identify the walked material.
-        val block = event.to.clone().subtract(0.0, 0.1, 0.0).block
-        val materials = fastWalking.configMaterials
-        if (block.type !in materials) {
-            return
-        }
-
-        // Apply cached movement effect.
-        val walkSpeedEffect = fastWalking.walkSpeedEffect ?: return
-        entity.addPotionEffect(walkSpeedEffect)
+        applyWalkSpeedIfOnMaterial(entity, event.to)
     }
 }
