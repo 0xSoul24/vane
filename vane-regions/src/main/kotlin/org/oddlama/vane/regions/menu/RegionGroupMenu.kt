@@ -23,53 +23,59 @@ import java.util.stream.Collectors
  */
 class RegionGroupMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.namespace("RegionGroup")) {
     @LangMessage
-    /**
-     * Localized region-group menu title.
-     */
+            /**
+             * Localized region-group menu title.
+             */
     var langTitle: TranslatedMessage? = null
 
     @LangMessage
-    /**
-     * Localized confirmation title for region-group deletion.
-     */
+            /**
+             * Localized confirmation title for region-group deletion.
+             */
     var langDeleteConfirmTitle: TranslatedMessage? = null
 
     @LangMessage
-    /**
-     * Localized title for role selector menu.
-     */
+            /**
+             * Localized title for role selector menu.
+             */
     var langSelectRoleTitle: TranslatedMessage? = null
 
     @LangMessage
-    /**
-     * Localized title for role filter input.
-     */
+            /**
+             * Localized title for role filter input.
+             */
     var langFilterRolesTitle: TranslatedMessage? = null
 
     /**
      * Item for renaming the region group.
      */
     var itemRename: TranslatedItemStack<*>
+
     /**
      * Item for deleting the region group.
      */
     var itemDelete: TranslatedItemStack<*>
+
     /**
      * Item confirming region-group deletion.
      */
     var itemDeleteConfirmAccept: TranslatedItemStack<*>
+
     /**
      * Item cancelling region-group deletion.
      */
     var itemDeleteConfirmCancel: TranslatedItemStack<*>
+
     /**
      * Item opening role-creation flow.
      */
     var itemCreateRole: TranslatedItemStack<*>
+
     /**
      * Item opening role list.
      */
     var itemListRoles: TranslatedItemStack<*>
+
     /**
      * Item template for one role entry in selectors.
      */
@@ -79,34 +85,42 @@ class RegionGroupMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(co
      * Item shown for enabled setting toggle state.
      */
     var itemSettingToggleOn: TranslatedItemStack<*>
+
     /**
      * Item shown for disabled setting toggle state.
      */
     var itemSettingToggleOff: TranslatedItemStack<*>
+
     /**
      * Info item for the animals setting.
      */
     var itemSettingInfoAnimals: TranslatedItemStack<*>
+
     /**
      * Info item for the monsters setting.
      */
     var itemSettingInfoMonsters: TranslatedItemStack<*>
+
     /**
      * Info item for the explosions setting.
      */
     var itemSettingInfoExplosions: TranslatedItemStack<*>
+
     /**
      * Info item for the fire setting.
      */
     var itemSettingInfoFire: TranslatedItemStack<*>
+
     /**
      * Info item for the PVP setting.
      */
     var itemSettingInfoPvp: TranslatedItemStack<*>
+
     /**
      * Info item for the trample setting.
      */
     var itemSettingInfoTrample: TranslatedItemStack<*>
+
     /**
      * Info item for the vine-growth setting.
      */
@@ -283,18 +297,22 @@ class RegionGroupMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(co
             val p = player!!
             menu!!.close(p)
             module!!.menus?.enterRegionGroupNameMenu?.create(
-                 p,
-                 group.name() ?: ""
-             ) { player2: Player?, name: String? ->
-                 group.name(name)
-                 markPersistentStorageDirty()
+                p,
+                group.name() ?: ""
+            ) { player2: Player?, name: String? ->
+                group.name(name)
+                markPersistentStorageDirty()
 
-                 // Open new menu because of possibly changed title
+                // Open new menu because of possibly changed title
                 player2?.let { module!!.menus?.regionGroupMenu?.create(group, it)?.open(it) }
-                 Menu.ClickResult.SUCCESS
-             }
-                 ?.onNaturalClose { player2: Player? -> player2?.let { module!!.menus?.regionGroupMenu?.create(group, it)?.open(it) } }
-                 ?.open(p)
+                Menu.ClickResult.SUCCESS
+            }
+                ?.onNaturalClose { player2: Player? ->
+                    player2?.let {
+                        module!!.menus?.regionGroupMenu?.create(group, it)?.open(it)
+                    }
+                }
+                ?.open(p)
             Menu.ClickResult.SUCCESS
         }
     }
@@ -344,16 +362,16 @@ class RegionGroupMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(co
             val p = player!!
             menu!!.close(p)
             module!!.menus?.enterRoleNameMenu?.create(p) { player2: Player?, name: String? ->
-                 val role = Role(name, Role.RoleType.NORMAL)
-                 group.addRole(role)
-                 markPersistentStorageDirty()
-                 player2?.let { module!!.menus?.roleMenu?.create(group, role, it)?.open(it) }
-                 Menu.ClickResult.SUCCESS
-             }
-                 ?.onNaturalClose { player2: Player? -> player2?.let { menu.open(it) } }
-                 ?.open(p)
-             Menu.ClickResult.SUCCESS
-         }
+                val role = Role(name, Role.RoleType.NORMAL)
+                group.addRole(role)
+                markPersistentStorageDirty()
+                player2?.let { module!!.menus?.roleMenu?.create(group, role, it)?.open(it) }
+                Menu.ClickResult.SUCCESS
+            }
+                ?.onNaturalClose { player2: Player? -> player2?.let { menu.open(it) } }
+                ?.open(p)
+            Menu.ClickResult.SUCCESS
+        }
     }
 
     /**
@@ -387,7 +405,7 @@ class RegionGroupMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(co
                     Menu.ClickResult.SUCCESS
                 },
                 { player2: Player? -> player2?.let { menu.open(it) } }
-             ).open(p)
+            ).open(p)
             Menu.ClickResult.SUCCESS
         }
     }

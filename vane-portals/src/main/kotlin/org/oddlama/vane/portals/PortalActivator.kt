@@ -41,6 +41,7 @@ class PortalActivator(context: Context<Portals?>?) : Listener<Portals?>(context)
 
         return Pair(module, block)
     }
+
     /** Opens the portal console menu when a portal console block is used. */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
     fun onPlayerInteractConsole(event: PlayerInteractEvent) {
@@ -73,7 +74,7 @@ class PortalActivator(context: Context<Portals?>?) : Listener<Portals?>(context)
         // Get base block the switch is attached to
         val bswitch = block.blockData as Switch
         val attachedFace: BlockFace = when (bswitch.attachedFace) {
-            AttachedFace.WALL -> bswitch.facing.getOppositeFace()
+            AttachedFace.WALL -> bswitch.facing.oppositeFace
             AttachedFace.CEILING -> BlockFace.UP
             AttachedFace.FLOOR -> BlockFace.DOWN
         }
@@ -125,7 +126,7 @@ class PortalActivator(context: Context<Portals?>?) : Listener<Portals?>(context)
 
         // Get the block it's pointing towards. (Opposite of block's facing for repeaters)
         val repeater = block.blockData as Repeater
-        val intoBlock = block.getRelative(repeater.facing.getOppositeFace())
+        val intoBlock = block.getRelative(repeater.facing.oppositeFace)
 
         // Find controlled portal
         val portal = module.portalFor(intoBlock) ?: return

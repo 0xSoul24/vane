@@ -15,10 +15,13 @@ import org.oddlama.vane.util.ItemUtil
 class CookingRecipeDefinition(name: String?, private val type: String) : RecipeDefinition(name) {
     /** Input ingredient definition. */
     private var input: String? = null
+
     /** Result item definition. */
     private var result: String? = null
+
     /** Experience awarded by the recipe. */
     private var experience = 0.0f
+
     /** Cooking time in ticks. */
     private var cookingTime = 10
 

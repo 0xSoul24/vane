@@ -23,60 +23,60 @@ class RegionBlueMapLayer(context: Context<Regions?>) :
         get() = requireNotNull(module)
 
     @ConfigBoolean(def = false, desc = "If the marker set should be hidden by default.")
-    /**
-     * Whether the BlueMap marker set is hidden by default.
-     */
+            /**
+             * Whether the BlueMap marker set is hidden by default.
+             */
     var configHideByDefault: Boolean = false
 
     @ConfigBoolean(
         def = true,
         desc = "Set to false to make the area markers visible through terrain and other objects."
     )
-    /**
-     * Whether marker depth testing is enabled.
-     */
+            /**
+             * Whether marker depth testing is enabled.
+             */
     var configDepthTest: Boolean = false
 
     @ConfigInt(def = 2, min = 1, desc = "Area marker line width.")
-    /**
-     * Marker outline width.
-     */
+            /**
+             * Marker outline width.
+             */
     var configLineWidth: Int = 0
 
     @ConfigInt(def = 0xffb422, min = 0, max = 0xffffff, desc = "Area marker fill color (0xRRGGBB).")
-    /**
-     * Marker fill color (RGB integer).
-     */
+            /**
+             * Marker fill color (RGB integer).
+             */
     var configFillColor: Int = 0
 
     @ConfigDouble(def = 0.1, min = 0.0, max = 1.0, desc = "Area marker fill opacity.")
-    /**
-     * Marker fill opacity.
-     */
+            /**
+             * Marker fill opacity.
+             */
     var configFillOpacity: Double = 0.0
 
     @ConfigInt(def = 0xffb422, min = 0, max = 0xffffff, desc = "Area marker line color (0xRRGGBB).")
-    /**
-     * Marker outline color (RGB integer).
-     */
+            /**
+             * Marker outline color (RGB integer).
+             */
     var configLineColor: Int = 0
 
     @ConfigDouble(def = 1.0, min = 0.0, max = 1.0, desc = "Area marker line opacity.")
-    /**
-     * Marker outline opacity.
-     */
+            /**
+             * Marker outline opacity.
+             */
     var configLineOpacity: Double = 0.0
 
     @LangMessage
-    /**
-     * Localized label for the BlueMap marker set.
-     */
+            /**
+             * Localized label for the BlueMap marker set.
+             */
     var langLayerLabel: TranslatedMessage? = null
 
     @LangMessage
-    /**
-     * Localized marker label format string.
-     */
+            /**
+             * Localized marker label format string.
+             */
     var langMarkerLabel: TranslatedMessage? = null
 
     /**

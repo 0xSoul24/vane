@@ -12,13 +12,18 @@ import org.oddlama.vane.portals.portal.Portal
  * @property console the clicked console block.
  * @property portal the portal owning the console.
  */
-class PortalOpenConsoleEvent(@JvmField val player: Player?, @JvmField val console: Block?, @JvmField val portal: Portal?) : PortalEvent() {
+class PortalOpenConsoleEvent(
+    @JvmField val player: Player?,
+    @JvmField val console: Block?,
+    @JvmField val portal: Portal?
+) : PortalEvent() {
     /** Returns Bukkit handlers for this event. */
     override fun getHandlers() = handlerList
 
     /** Static Bukkit handler list for this event type. */
     companion object {
         /** Shared handler list used by Bukkit's event system. */
-        @JvmStatic val handlerList: HandlerList = HandlerList()
+        @JvmStatic
+        val handlerList: HandlerList = HandlerList()
     }
 }

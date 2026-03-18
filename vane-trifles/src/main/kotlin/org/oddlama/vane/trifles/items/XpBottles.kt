@@ -72,7 +72,7 @@ class XpBottles(context: Context<Trifles?>) :
     }
 
     @JvmField
-    /** All XP bottle variants managed by this listener. */
+            /** All XP bottle variants managed by this listener. */
     var bottles: MutableList<XpBottle> = ArrayList()
 
     /** Instantiates all XP bottle variants. */

@@ -61,6 +61,7 @@ class Bedtime : Module<Bedtime?>() {
 
     /** Dynmap integration component. */
     var dynmapLayer: BedtimeDynmapLayer = BedtimeDynmapLayer(this)
+
     /** BlueMap integration component. */
     var blueMapLayer: BedtimeBlueMapLayer = BedtimeBlueMapLayer(this)
 

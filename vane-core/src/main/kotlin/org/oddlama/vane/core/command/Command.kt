@@ -109,17 +109,20 @@ abstract class Command<T : Module<T?>?> @JvmOverloads constructor(
     /**
      * Localized usage line.
      */
-    @LangMessage lateinit var langUsage: TranslatedMessage
+    @LangMessage
+    lateinit var langUsage: TranslatedMessage
 
     /**
      * Localized command description.
      */
-    @LangMessage lateinit var langDescription: TranslatedMessage
+    @LangMessage
+    lateinit var langDescription: TranslatedMessage
 
     /**
      * Localized help text body.
      */
-    @LangMessage lateinit var langHelp: TranslatedMessage
+    @LangMessage
+    lateinit var langHelp: TranslatedMessage
 
     /**
      * Command name from the `@Name` annotation.
@@ -177,8 +180,8 @@ abstract class Command<T : Module<T?>?> @JvmOverloads constructor(
         rootParam = AnyParam(this, "/$name", Function1 { it })
 
         bukkitCommand = BukkitCommand(name).also {
-            it.setLabel(name)
-            it.setName(name)
+            it.label = name
+            it.name = name
         }
 
         aliases = javaClass.getAnnotation(Aliases::class.java)
@@ -227,12 +230,16 @@ abstract class Command<T : Module<T?>?> @JvmOverloads constructor(
     /**
      * Registers this command with the owning module.
      */
-    override fun onEnable() { module!!.registerCommand(this) }
+    override fun onEnable() {
+        module!!.registerCommand(this)
+    }
 
     /**
      * Unregisters this command from the owning module.
      */
-    override fun onDisable() { module!!.unregisterCommand(this) }
+    override fun onDisable() {
+        module!!.unregisterCommand(this)
+    }
 
     /**
      * Sends command usage/help lines to a sender.

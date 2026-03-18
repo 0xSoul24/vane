@@ -39,6 +39,7 @@ class RegionEnvironmentSettingEnforcer(context: Context<Regions?>?) : Listener<R
     ): Boolean {
         /** Region at the queried location. */
         val region = regions.regionAt(location) ?: return false
+
         /** Region group owning that region. */
         val group = region.regionGroup(regions) ?: return false
         return group.getSetting(setting) == checkAgainst
@@ -54,27 +55,27 @@ class RegionEnvironmentSettingEnforcer(context: Context<Regions?>?) : Listener<R
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    /**
-     * Prevents explosion block damage where `EXPLOSIONS` is denied.
-     */
+            /**
+             * Prevents explosion block damage where `EXPLOSIONS` is denied.
+             */
     fun onBlockExplode(event: BlockExplodeEvent) {
         // Prevent explosions from removing region blocks
         event.blockList().removeIf { block -> checkSettingAt(block, EnvironmentSetting.EXPLOSIONS, false) }
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    /**
-     * Prevents entity-caused explosion block damage where `EXPLOSIONS` is denied.
-     */
+            /**
+             * Prevents entity-caused explosion block damage where `EXPLOSIONS` is denied.
+             */
     fun onEntityExplode(event: EntityExplodeEvent) {
         // Prevent explosions from removing region blocks
         event.blockList().removeIf { block -> checkSettingAt(block, EnvironmentSetting.EXPLOSIONS, false) }
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    /**
-     * Prevents monster block changes where monster interactions are denied.
-     */
+            /**
+             * Prevents monster block changes where monster interactions are denied.
+             */
     fun onEntityChangeBlock(event: EntityChangeBlockEvent) {
         if (event.entity !is Monster) {
             return
@@ -87,9 +88,9 @@ class RegionEnvironmentSettingEnforcer(context: Context<Regions?>?) : Listener<R
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    /**
-     * Cancels burning where `FIRE` is denied.
-     */
+            /**
+             * Cancels burning where `FIRE` is denied.
+             */
     fun onBlockBurn(event: BlockBurnEvent) {
         if (checkSettingAt(event.block, EnvironmentSetting.FIRE, false)) {
             event.isCancelled = true
@@ -97,9 +98,9 @@ class RegionEnvironmentSettingEnforcer(context: Context<Regions?>?) : Listener<R
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    /**
-     * Cancels fire/vine spread where corresponding settings are denied.
-     */
+            /**
+             * Cancels fire/vine spread where corresponding settings are denied.
+             */
     fun onBlockSpread(event: BlockSpreadEvent) {
         val setting = when (event.newState.type) {
             Material.FIRE -> EnvironmentSetting.FIRE
@@ -113,9 +114,9 @@ class RegionEnvironmentSettingEnforcer(context: Context<Regions?>?) : Listener<R
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    /**
-     * Restricts natural animal/monster spawns based on region settings.
-     */
+            /**
+             * Restricts natural animal/monster spawns based on region settings.
+             */
     fun onCreatureSpawn(event: CreatureSpawnEvent) {
         // Only cancel natural spawns and alike
         when (event.spawnReason) {
@@ -136,9 +137,9 @@ class RegionEnvironmentSettingEnforcer(context: Context<Regions?>?) : Listener<R
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    /**
-     * Enforces PVP restrictions for direct and projectile player damage.
-     */
+            /**
+             * Enforces PVP restrictions for direct and projectile player damage.
+             */
     fun onEntityDamageByEntity(event: EntityDamageByEntityEvent) {
         val damaged = event.getEntity()
         val damager = event.damager
@@ -171,9 +172,9 @@ class RegionEnvironmentSettingEnforcer(context: Context<Regions?>?) : Listener<R
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    /**
-     * Prevents explosion-based hanging breaks where explosions are denied.
-     */
+            /**
+             * Prevents explosion-based hanging breaks where explosions are denied.
+             */
     fun onHangingBreakEvent(event: HangingBreakEvent) {
         when (event.cause) {
             RemoveCause.ENTITY -> return  // Handeled by onHangingBreakByEntity
@@ -188,9 +189,9 @@ class RegionEnvironmentSettingEnforcer(context: Context<Regions?>?) : Listener<R
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    /**
-     * Prevents farmland trampling when `TRAMPLE` is denied.
-     */
+            /**
+             * Prevents farmland trampling when `TRAMPLE` is denied.
+             */
     fun onPlayerInteract(event: PlayerInteractEvent) {
         if (event.action != Action.PHYSICAL) {
             return
@@ -205,9 +206,9 @@ class RegionEnvironmentSettingEnforcer(context: Context<Regions?>?) : Listener<R
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    /**
-     * Enforces PVP restrictions for splash-potion effects.
-     */
+            /**
+             * Enforces PVP restrictions for splash-potion effects.
+             */
     fun onPotionSplash(event: PotionSplashEvent) {
         // Only if a player threw the potion check for PVP
         val thrower = event.entity.shooter as? Player ?: return

@@ -144,7 +144,10 @@ abstract class VaneProxyPlugin {
             // Filter out any null elements; if after filtering there are no args, abort
             val filtered = rawCmd.filterNotNull()
             if (filtered.isEmpty()) {
-                getLogger().log(Level.SEVERE, "Start command for server '${server.id()}' is empty after filtering nulls.")
+                getLogger().log(
+                    Level.SEVERE,
+                    "Start command for server '${server.id()}' is empty after filtering nulls."
+                )
                 return
             }
             cmd = filtered.toTypedArray()

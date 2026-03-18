@@ -27,7 +27,7 @@ class LootChestProtector(context: Context<Core?>?) : Listener<Core?>(context) {
         def = true,
         desc = "Prevent players from breaking blocks with loot-tables (like treasure chests) when they first attempt to destroy it. They still can break it, but must do so within a short timeframe."
     )
-    /** Whether loot-table block break protection warning is enabled. */
+            /** Whether loot-table block break protection warning is enabled. */
     var configWarnBreakingLootBlocks: Boolean = false
 
     /** Message sent when initial break attempt is blocked. */

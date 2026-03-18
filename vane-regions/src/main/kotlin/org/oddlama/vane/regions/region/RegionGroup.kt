@@ -14,10 +14,12 @@ class RegionGroup {
      * Unique region-group identifier.
      */
     private var id: UUID? = null
+
     /**
      * Region-group display name.
      */
     private var name: String? = null
+
     /**
      * Owner player UUID.
      */
@@ -27,10 +29,12 @@ class RegionGroup {
      * Roles indexed by role id.
      */
     private var roles: MutableMap<UUID?, Role?>? = HashMap<UUID?, Role?>()
+
     /**
      * Player-to-role assignment map.
      */
     private var playerToRole: MutableMap<UUID?, UUID?>? = HashMap<UUID?, UUID?>()
+
     /**
      * Fallback role id used for unassigned players.
      */
@@ -39,17 +43,21 @@ class RegionGroup {
     /**
      * Environment settings configured for this region group.
      */
-    private var settings: MutableMap<EnvironmentSetting?, Boolean?>? = EnumMap<EnvironmentSetting, Boolean?>(EnvironmentSetting::class.java)
+    private var settings: MutableMap<EnvironmentSetting?, Boolean?>? =
+        EnumMap<EnvironmentSetting, Boolean?>(EnvironmentSetting::class.java)
+
     /**
      * Non-null accessor for role storage.
      */
     private val rolesMap: MutableMap<UUID?, Role?>
         get() = requireNotNull(roles)
+
     /**
      * Non-null accessor for player-role assignments.
      */
     private val playerRoles: MutableMap<UUID?, UUID?>
         get() = requireNotNull(playerToRole)
+
     /**
      * Non-null accessor for environment setting values.
      */
@@ -86,6 +94,7 @@ class RegionGroup {
          * Built-in friends role.
          */
         val friends = Role("Friends", Role.RoleType.NORMAL)
+
         /**
          * Mutable settings map for the friends role.
          */
@@ -180,25 +189,46 @@ class RegionGroup {
     companion object {
         @JvmStatic
         @Throws(IOException::class)
-        /**
-         * Serializes a region group to JSON-compatible data.
-         */
+                /**
+                 * Serializes a region group to JSON-compatible data.
+                 */
         fun serialize(o: Any): Any {
             val regionGroup = o as RegionGroup
             val json = JSONObject()
             putOwnable(json, regionGroup.id, regionGroup.name, regionGroup.owner)
-            withField { json.put("roles", PersistentSerializer.toJson(RegionGroup::class.java.getDeclaredField("roles"), regionGroup.roles)) }
-            withField { json.put("playerToRole", PersistentSerializer.toJson(RegionGroup::class.java.getDeclaredField("playerToRole"), regionGroup.playerToRole)) }
+            withField {
+                json.put(
+                    "roles",
+                    PersistentSerializer.toJson(RegionGroup::class.java.getDeclaredField("roles"), regionGroup.roles)
+                )
+            }
+            withField {
+                json.put(
+                    "playerToRole",
+                    PersistentSerializer.toJson(
+                        RegionGroup::class.java.getDeclaredField("playerToRole"),
+                        regionGroup.playerToRole
+                    )
+                )
+            }
             putSerialized(json, "roleOthers", UUID::class.java, regionGroup.roleOthers)
-            withField { json.put("settings", PersistentSerializer.toJson(RegionGroup::class.java.getDeclaredField("settings"), regionGroup.settings)) }
+            withField {
+                json.put(
+                    "settings",
+                    PersistentSerializer.toJson(
+                        RegionGroup::class.java.getDeclaredField("settings"),
+                        regionGroup.settings
+                    )
+                )
+            }
             return json
         }
 
         @JvmStatic
         @Throws(IOException::class)
-        /**
-         * Deserializes a region group from JSON-compatible data.
-         */
+                /**
+                 * Deserializes a region group from JSON-compatible data.
+                 */
         fun deserialize(o: Any): RegionGroup {
             val json = o as JSONObject
             val regionGroup = RegionGroup()
@@ -208,16 +238,25 @@ class RegionGroup {
             regionGroup.owner = owner
             withField {
                 @Suppress("UNCHECKED_CAST")
-                regionGroup.roles = PersistentSerializer.fromJson(RegionGroup::class.java.getDeclaredField("roles"), json.get("roles")) as MutableMap<UUID?, Role?>?
+                regionGroup.roles = PersistentSerializer.fromJson(
+                    RegionGroup::class.java.getDeclaredField("roles"),
+                    json.get("roles")
+                ) as MutableMap<UUID?, Role?>?
             }
             withField {
                 @Suppress("UNCHECKED_CAST")
-                regionGroup.playerToRole = PersistentSerializer.fromJson(RegionGroup::class.java.getDeclaredField("playerToRole"), json.get("playerToRole")) as MutableMap<UUID?, UUID?>?
+                regionGroup.playerToRole = PersistentSerializer.fromJson(
+                    RegionGroup::class.java.getDeclaredField("playerToRole"),
+                    json.get("playerToRole")
+                ) as MutableMap<UUID?, UUID?>?
             }
             regionGroup.roleOthers = readSerialized(json, "roleOthers", UUID::class.java)
             withField {
                 @Suppress("UNCHECKED_CAST")
-                regionGroup.settings = PersistentSerializer.fromJson(RegionGroup::class.java.getDeclaredField("settings"), json.get("settings")) as MutableMap<EnvironmentSetting?, Boolean?>?
+                regionGroup.settings = PersistentSerializer.fromJson(
+                    RegionGroup::class.java.getDeclaredField("settings"),
+                    json.get("settings")
+                ) as MutableMap<EnvironmentSetting?, Boolean?>?
             }
             return regionGroup
         }

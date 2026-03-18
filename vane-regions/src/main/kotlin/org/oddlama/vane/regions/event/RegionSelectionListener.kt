@@ -19,15 +19,15 @@ import org.oddlama.vane.regions.region.RegionSelection
  */
 class RegionSelectionListener(context: Context<Regions?>?) : Listener<Regions?>(context) {
     @LangMessage
-    /**
-     * Message sent after setting the primary selection block.
-     */
+            /**
+             * Message sent after setting the primary selection block.
+             */
     var langSelectPrimaryBlock: TranslatedMessage? = null
 
     @LangMessage
-    /**
-     * Message sent after setting the secondary selection block.
-     */
+            /**
+             * Message sent after setting the secondary selection block.
+             */
     var langSelectSecondaryBlock: TranslatedMessage? = null
 
     /**
@@ -37,9 +37,9 @@ class RegionSelectionListener(context: Context<Regions?>?) : Listener<Regions?>(
         get() = requireNotNull(module)
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = false)
-    /**
-     * Captures left/right clicks with empty hands to set region selection corners.
-     */
+            /**
+             * Captures left/right clicks with empty hands to set region selection corners.
+             */
     fun onPlayerInteract(event: PlayerInteractEvent) {
         // Require the main hand event
         if (event.hand != EquipmentSlot.HAND) {

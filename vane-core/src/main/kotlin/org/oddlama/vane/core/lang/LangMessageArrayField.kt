@@ -70,7 +70,7 @@ class LangMessageArrayField(
         if (list.size != loadedSize) {
             throw YamlLoadException.Lang(
                 "All translation lists for message arrays must have the exact same size. " +
-                "The loaded language file has $loadedSize entries, while the currently processed file has ${list.size}",
+                        "The loaded language file has $loadedSize entries, while the currently processed file has ${list.size}",
                 this
             )
         }

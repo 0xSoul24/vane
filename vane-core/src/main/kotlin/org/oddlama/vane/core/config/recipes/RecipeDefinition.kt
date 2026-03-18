@@ -36,7 +36,7 @@ abstract class RecipeDefinition(val name: String?) {
      */
     companion object {
         @JvmStatic
-        /** Creates a concrete recipe definition from dictionary data. */
+                /** Creates a concrete recipe definition from dictionary data. */
         fun fromDict(name: String?, dict: Any): RecipeDefinition {
             require(dict is Map<*, *>) {
                 "Invalid recipe dictionary: Argument must be a Map<String, Object>, but is ${dict.javaClass}!"
@@ -45,17 +45,17 @@ abstract class RecipeDefinition(val name: String?) {
             require(typeObj is String) { "Invalid recipe dictionary: recipe type must exist and be a string!" }
 
             return when (typeObj) {
-                "shaped"     -> ShapedRecipeDefinition(name).fromDict(dict)
-                "shapeless"  -> ShapelessRecipeDefinition(name).fromDict(dict)
+                "shaped" -> ShapedRecipeDefinition(name).fromDict(dict)
+                "shapeless" -> ShapelessRecipeDefinition(name).fromDict(dict)
                 "blasting", "furnace", "campfire", "smoking" -> CookingRecipeDefinition(name, typeObj).fromDict(dict)
-                "smithing"   -> SmithingRecipeDefinition(name).fromDict(dict)
+                "smithing" -> SmithingRecipeDefinition(name).fromDict(dict)
                 "stonecutting" -> StonecuttingRecipeDefinition(name).fromDict(dict)
                 else -> throw IllegalArgumentException("Unknown recipe type '$typeObj'")
             }
         }
 
         @JvmStatic
-        /** Parses a recipe ingredient definition into a Bukkit [RecipeChoice]. */
+                /** Parses a recipe ingredient definition into a Bukkit [RecipeChoice]. */
         fun recipeChoice(definition: String): RecipeChoice {
             val trimmed = definition.trim()
 

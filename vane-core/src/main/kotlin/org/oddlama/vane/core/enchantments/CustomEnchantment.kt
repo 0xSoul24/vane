@@ -38,11 +38,13 @@ open class CustomEnchantment<T : Module<T?>?> @JvmOverloads constructor(
 
     /** Internal enchantment name from annotation metadata. */
     val name: String
+
     /** Namespaced key used to register and resolve this enchantment. */
     private val key: NamespacedKey
 
     /** Recipe configuration for this enchantment. */
     var recipes: Recipes<T?>?
+
     /** Loot configuration for this enchantment. */
     var lootTables: LootTables<T?>?
 
@@ -80,8 +82,8 @@ open class CustomEnchantment<T : Module<T?>?> @JvmOverloads constructor(
      */
     open fun applyDisplayFormat(component: Component): Component = when (annotation.rarity) {
         Rarity.COMMON, Rarity.UNCOMMON -> component.color(NamedTextColor.DARK_AQUA)
-        Rarity.RARE                    -> component.color(NamedTextColor.GOLD)
-        Rarity.VERY_RARE               -> component.color(NamedTextColor.DARK_PURPLE).decorate(TextDecoration.BOLD)
+        Rarity.RARE -> component.color(NamedTextColor.GOLD)
+        Rarity.VERY_RARE -> component.color(NamedTextColor.DARK_PURPLE).decorate(TextDecoration.BOLD)
     }
 
     /**
@@ -173,6 +175,7 @@ open class CustomEnchantment<T : Module<T?>?> @JvmOverloads constructor(
 
     /** Returns default recipe definitions associated with this enchantment. */
     open fun defaultRecipes(): RecipeList? = RecipeList.of()
+
     /** Returns default loot definitions associated with this enchantment. */
     open fun defaultLootTables(): LootTableList? = LootTableList.of()
 

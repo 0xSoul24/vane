@@ -22,7 +22,12 @@ class ConfigStringListField(
 ) : ConfigField<MutableList<String?>?>(owner, field, mapName, "list of strings", annotation.desc) {
 
     /** Appends a quoted string list definition block. */
-    private fun appendStringListDefinition(builder: StringBuilder?, indent: String?, prefix: String?, def: MutableList<String?>) {
+    private fun appendStringListDefinition(
+        builder: StringBuilder?,
+        indent: String?,
+        prefix: String?,
+        def: MutableList<String?>
+    ) {
         appendListDefinition<String?>(builder, indent, prefix, def) { b, s ->
             b!!.append("\"${escapeYaml(s)}\"")
         }

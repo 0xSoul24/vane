@@ -50,7 +50,7 @@ class EnchantmentFilterArgumentType : CustomArgumentType.Converted<Enchantment, 
     /** Factory methods for [EnchantmentFilterArgumentType]. */
     companion object {
         @JvmStatic
-        /** Creates a new enchantment filter argument type. */
+                /** Creates a new enchantment filter argument type. */
         fun enchantmentFilter(): EnchantmentFilterArgumentType = EnchantmentFilterArgumentType()
     }
 }

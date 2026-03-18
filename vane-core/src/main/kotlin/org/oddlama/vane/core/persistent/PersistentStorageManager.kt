@@ -159,10 +159,17 @@ class PersistentStorageManager(var module: Module<*>) {
         }
 
         try {
-            Files.move(tmpFile.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
+            Files.move(
+                tmpFile.toPath(),
+                file.toPath(),
+                StandardCopyOption.REPLACE_EXISTING,
+                StandardCopyOption.ATOMIC_MOVE
+            )
         } catch (e: IOException) {
-            module.log.log(Level.SEVERE,
-                "error while atomically replacing '$file' with temporary file (very recent changes might be lost)!", e)
+            module.log.log(
+                Level.SEVERE,
+                "error while atomically replacing '$file' with temporary file (very recent changes might be lost)!", e
+            )
         }
     }
 }

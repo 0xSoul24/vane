@@ -31,10 +31,16 @@ class ConfigMaterialMapMapMapField(
     private fun Material.keyString() = "\"${escapeYaml(key.namespace)}:${escapeYaml(key.key)}\""
 
     /** Sorts map entries by nullable keys with nulls first and natural ordering. */
-    private val nullsFirstNatural = compareBy(nullsFirst(naturalOrder<String>())) { it: Map.Entry<String?, *> -> it.key }
+    private val nullsFirstNatural =
+        compareBy(nullsFirst(naturalOrder<String>())) { it: Map.Entry<String?, *> -> it.key }
 
     /** Appends a nested map definition block. */
-    private fun appendMapDefinition(builder: StringBuilder, indent: String?, prefix: String?, def: MutableMap<String?, MutableMap<String?, MutableMap<String?, Material?>?>?>) {
+    private fun appendMapDefinition(
+        builder: StringBuilder,
+        indent: String?,
+        prefix: String?,
+        def: MutableMap<String?, MutableMap<String?, MutableMap<String?, Material?>?>?>
+    ) {
         def.entries.sortedWith(nullsFirstNatural).forEach { e1 ->
             builder.append("$indent$prefix  ${escapeYaml(e1.key)}:\n")
             e1.value!!.entries.sortedWith(nullsFirstNatural).forEach { e2 ->
@@ -50,7 +56,7 @@ class ConfigMaterialMapMapMapField(
     override fun def(): MutableMap<String?, MutableMap<String?, MutableMap<String?, Material?>?>?> =
         overriddenDef() ?: annotation.def.associateTo(mutableMapOf()) { e1 ->
             e1.key to e1.value.associateTo(mutableMapOf()) { e2 ->
-                e2.key to e2.value.associateTo(mutableMapOf<String?, Material?>()) { e3 -> e3.key to e3.value }
+                e2.key to e2.value.associateTo(mutableMapOf()) { e3 -> e3.key to e3.value }
             }
         }
 
@@ -97,14 +103,14 @@ class ConfigMaterialMapMapMapField(
 
     /** Loads this field value from YAML. */
     fun loadFromYaml(yaml: YamlConfiguration): MutableMap<String?, MutableMap<String?, MutableMap<String?, Material?>?>?> =
-        yaml.getConfigurationSection(yamlPath())!!.getKeys(false).associateTo(mutableMapOf()) { key1 ->
+        yaml.getConfigurationSection(yamlPath())!!.getKeys(false).associateWithTo(mutableMapOf()) { key1 ->
             val key1Path = "${yamlPath()}.$key1"
-            key1 to yaml.getConfigurationSection(key1Path)!!.getKeys(false).associateTo(mutableMapOf()) { key2 ->
+            yaml.getConfigurationSection(key1Path)!!.getKeys(false).associateWithTo(mutableMapOf()) { key2 ->
                 val key2Path = "$key1Path.$key2"
-                key2 to yaml.getConfigurationSection(key2Path)!!.getKeys(false).associateTo(mutableMapOf<String?, Material?>()) { key3 ->
+                yaml.getConfigurationSection(key2Path)!!.getKeys(false).associateWithTo(mutableMapOf()) { key3 ->
                     val key3Path = "$key2Path.$key3"
                     val (ns, key) = requireNamespacedKeyParts(key3Path, yaml.getString(key3Path)!!, "material")
-                    key3 to materialFrom(namespacedKey(ns, key))
+                    materialFrom(namespacedKey(ns, key))
                 }
             }
         }

@@ -68,11 +68,11 @@ Menus:
   ItemSelector:
     Accept:
       Name: "§a§lAkzeptieren"
-      Lore: ["§bWähle§7 das aktuelle item."]
+      Lore: [ "§bWähle§7 das aktuelle item." ]
 
     Cancel:
       Name: "§c§lAbbrechen"
-      Lore: ["§7Itemauswahl §6abbrechen§7."]
+      Lore: [ "§7Itemauswahl §6abbrechen§7." ]
 
     Selected:
       Name: "§d§lGewähltes Item"
@@ -86,7 +86,7 @@ Menus:
   GenericSelector:
     Page:
       Name: "§bSeite %1$s"
-      Lore: []
+      Lore: [ ]
 
     CurrentPage:
       Name: "§aAktuelle Seite %1$s §7/ %2$s"
@@ -103,4 +103,4 @@ Menus:
 
     Cancel:
       Name: "§c§lAbbrechen"
-      Lore: ["§7Auswahl §6abbrechen§7."]
+      Lore: [ "§7Auswahl §6abbrechen§7." ]

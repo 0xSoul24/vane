@@ -101,9 +101,9 @@ class ExistingItemConverter(context: Context<Core?>) : Listener<Core?>(context.n
 
             val damageableMeta = contents[i]!!.itemMeta as Damageable
             val maxDamage = if (damageableMeta.hasMaxDamage()) damageableMeta.maxDamage
-                            else item.type.maxDurability.toInt()
+            else item.type.maxDurability.toInt()
             val correctMaxDamage = if (customItem.durability() == 0) item.type.maxDurability.toInt()
-                                   else customItem.durability()
+            else customItem.durability()
 
             if (maxDamage != correctMaxDamage ||
                 meta.persistentDataContainer.has(DurabilityManager.ITEM_DURABILITY_DAMAGE)

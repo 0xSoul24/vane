@@ -21,10 +21,13 @@ class RegionPortalIntegration(context: Regions, portalsPlugin: Plugin?) {
             portalsPlugin.setIsInSameRegionGroupCallback { a: Portal?, b: Portal? ->
                 /** First portal to compare. */
                 val portalA = a ?: return@setIsInSameRegionGroupCallback false
+
                 /** Second portal to compare. */
                 val portalB = b ?: return@setIsInSameRegionGroupCallback false
+
                 /** Region containing `portalA`, if any. */
                 val regA = context.regionAt(portalA.spawn())
+
                 /** Region containing `portalB`, if any. */
                 val regB = context.regionAt(portalB.spawn())
                 if (regA == null || regB == null) {
@@ -36,11 +39,14 @@ class RegionPortalIntegration(context: Regions, portalsPlugin: Plugin?) {
             portalsPlugin.setPlayerCanUsePortalsInRegionGroupOfCallback { player: Player?, portal: Portal? ->
                 /** Player attempting to use the portal. */
                 val user = player ?: return@setPlayerCanUsePortalsInRegionGroupOfCallback false
+
                 /** Target portal being evaluated. */
                 val portalRef = portal ?: return@setPlayerCanUsePortalsInRegionGroupOfCallback false
+
                 /** Region containing the portal destination, if one exists. */
                 val region = context.regionAt(portalRef.spawn()) ?: // No region -> no restriction.
                 return@setPlayerCanUsePortalsInRegionGroupOfCallback true
+
                 /** Region group owning the portal region. */
                 val group = region.regionGroup(context) ?: return@setPlayerCanUsePortalsInRegionGroupOfCallback true
                 group.getRole(user.uniqueId)?.getSetting(RoleSetting.PORTAL) ?: true

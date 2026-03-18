@@ -267,7 +267,7 @@ class Portal {
 
                 val lever = l.blockData as Switch
                 val attachedFace: BlockFace = when (lever.attachedFace) {
-                    AttachedFace.WALL -> lever.facing.getOppositeFace()
+                    AttachedFace.WALL -> lever.facing.oppositeFace
                     AttachedFace.CEILING -> BlockFace.UP
                     AttachedFace.FLOOR -> BlockFace.DOWN
                 }
@@ -347,7 +347,7 @@ class Portal {
         if (soundVolume > 0.0f) {
             // Play sound
             spawn()
-                .getWorld()
+                .world
                 .playSound(spawn(), Sound.BLOCK_END_PORTAL_SPAWN, SoundCategory.BLOCKS, soundVolume, 0.8f)
         }
     }
@@ -364,7 +364,7 @@ class Portal {
         if (soundVolume > 0.0f) {
             // Play sound
             spawn()
-                .getWorld()
+                .world
                 .playSound(spawn(), Sound.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, soundVolume, 0.5f)
         }
     }
@@ -391,7 +391,7 @@ class Portal {
                 // the portal is used.
                 // Setting any location will do, since the teleporting is canceled via their events
                 // anyway.
-                if (spawn!!.location().getWorld().environment == World.Environment.THE_END) {
+                if (spawn!!.location().world.environment == World.Environment.THE_END) {
                     endGateway.exitLocation = spawn!!.location()
                     endGateway.isExactTeleport = true
                 }
@@ -427,7 +427,7 @@ class Portal {
     fun copyStyle(portals: Portals, newKey: NamespacedKey?): Style {
         if (styleOverride == null) {
             val base = portals.style(style) ?: portals.style(defaultStyleKey())
-                ?: throw RuntimeException("No base style available to copy")
+            ?: throw RuntimeException("No base style available to copy")
             return base.copy(newKey)
         }
         return styleOverride!!.copy(newKey)
@@ -474,7 +474,7 @@ class Portal {
     /** Sorts target portals by world affinity and planar distance to the given player. */
     class TargetSelectionComparator(player: Player) : Comparator<Portal?> {
         /** Player world used for world-priority sorting. */
-        private val world: World = player.location.getWorld()
+        private val world: World = player.location.world
 
         /** Player position flattened to y=0 for horizontal-distance sorting. */
         private val from: Vector = player.location.toVector().setY(0.0)
@@ -485,8 +485,8 @@ class Portal {
             if (a == null) return 1
             if (b == null) return -1
 
-            val aSameWorld = world == a.spawn().getWorld()
-            val bSameWorld = world == b.spawn().getWorld()
+            val aSameWorld = world == a.spawn().world
+            val bSameWorld = world == b.spawn().world
 
             if (aSameWorld) {
                 if (bSameWorld) {
@@ -575,12 +575,16 @@ class Portal {
             portal.icon = PersistentSerializer.fromJson(ItemStack::class.java, json.get("icon"))
             portal.visibility = PersistentSerializer.fromJson(Visibility::class.java, json.get("visibility"))
 
-            portal.exitOrientationLocked = PersistentSerializer.fromJson(Boolean::class.javaPrimitiveType, json.optString("exitOrientationLocked", "false"))
+            portal.exitOrientationLocked = PersistentSerializer.fromJson(
+                Boolean::class.javaPrimitiveType,
+                json.optString("exitOrientationLocked", "false")
+            )
                 ?: false
             portal.targetId = PersistentSerializer.fromJson(UUID::class.java, json.get("targetId"))
-            portal.targetLocked = PersistentSerializer.fromJson(Boolean::class.javaPrimitiveType, json.get("targetLocked"))
-                ?: false
-             return portal
-         }
-     }
- }
+            portal.targetLocked =
+                PersistentSerializer.fromJson(Boolean::class.javaPrimitiveType, json.get("targetLocked"))
+                    ?: false
+            return portal
+        }
+    }
+}

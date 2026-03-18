@@ -50,7 +50,8 @@ class VanillaFunctionalityInhibitor(context: Context<Core?>?) : Listener<Core?>(
         val player = event.target as? Player ?: return
         val registry = module!!.itemRegistry() ?: return
         if (inhibit(registry.get(player.inventory.itemInMainHand), InhibitBehavior.TEMPT) ||
-            inhibit(registry.get(player.inventory.itemInOffHand), InhibitBehavior.TEMPT)) {
+            inhibit(registry.get(player.inventory.itemInOffHand), InhibitBehavior.TEMPT)
+        ) {
             event.isCancelled = true
         }
     }
@@ -75,7 +76,12 @@ class VanillaFunctionalityInhibitor(context: Context<Core?>?) : Listener<Core?>(
     fun onPrepareItemCraft(event: PrepareItemCraftEvent) {
         val recipe = event.recipe
         if (recipe !is Keyed || recipe.key.namespace != "minecraft") return
-        if (event.inventory.matrix.any { inhibit(module!!.itemRegistry()?.get(it), InhibitBehavior.USE_IN_VANILLA_RECIPE) }) {
+        if (event.inventory.matrix.any {
+                inhibit(
+                    module!!.itemRegistry()?.get(it),
+                    InhibitBehavior.USE_IN_VANILLA_RECIPE
+                )
+            }) {
             event.inventory.result = null
         }
     }
@@ -87,7 +93,11 @@ class VanillaFunctionalityInhibitor(context: Context<Core?>?) : Listener<Core?>(
     fun onPrepareSmithing(event: PrepareSmithingEvent) {
         val recipe = event.inventory.recipe
         if (recipe !is Keyed || recipe.key.namespace != "minecraft") return
-        if (inhibit(module!!.itemRegistry()?.get(event.inventory.inputEquipment), InhibitBehavior.USE_IN_VANILLA_RECIPE)) {
+        if (inhibit(
+                module!!.itemRegistry()?.get(event.inventory.inputEquipment),
+                InhibitBehavior.USE_IN_VANILLA_RECIPE
+            )
+        ) {
             event.inventory.result = null
         }
     }

@@ -96,6 +96,7 @@ class DurabilityManager(context: Context<Core?>?) : Listener<Core?>(context) {
                     val pct = if (visualMax > 0) damageMeta.damage.toDouble() / visualMax else 0.0
                     (customItem.durability() * pct).toInt()
                 }
+
                 else -> 0
             }
 
@@ -110,15 +111,16 @@ class DurabilityManager(context: Context<Core?>?) : Listener<Core?>(context) {
             val meta = itemStack.itemMeta as? Damageable ?: return
 
             val newMaxDamage = if (customItem.durability() == 0) itemStack.type.maxDurability.toInt()
-                               else customItem.durability()
+            else customItem.durability()
 
             val data = meta.persistentDataContainer
             val hasPdc = data.has(ITEM_DURABILITY_DAMAGE) && data.has(ITEM_DURABILITY_MAX)
 
             val oldDamage = if (hasPdc) data.get(ITEM_DURABILITY_DAMAGE, PersistentDataType.INTEGER) ?: 0
-                            else if (meta.hasDamage()) meta.damage else 0
-            val oldMaxDamage = if (hasPdc) data.get(ITEM_DURABILITY_MAX, PersistentDataType.INTEGER) ?: itemStack.type.maxDurability.toInt()
-                               else if (meta.hasMaxDamage()) meta.maxDamage else itemStack.type.maxDurability.toInt()
+            else if (meta.hasDamage()) meta.damage else 0
+            val oldMaxDamage = if (hasPdc) data.get(ITEM_DURABILITY_MAX, PersistentDataType.INTEGER)
+                ?: itemStack.type.maxDurability.toInt()
+            else if (meta.hasMaxDamage()) meta.maxDamage else itemStack.type.maxDurability.toInt()
 
             itemStack.editMeta(Damageable::class.java) { imeta ->
                 imeta.persistentDataContainer.remove(ITEM_DURABILITY_DAMAGE)

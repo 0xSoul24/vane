@@ -28,12 +28,12 @@ object MaterialUtil {
      */
     @JvmStatic
     fun seedFor(plantType: Material): Material? = when (plantType) {
-        Material.WHEAT       -> Material.WHEAT_SEEDS
-        Material.CARROTS     -> Material.CARROT
-        Material.POTATOES    -> Material.POTATO
-        Material.BEETROOTS   -> Material.BEETROOT_SEEDS
+        Material.WHEAT -> Material.WHEAT_SEEDS
+        Material.CARROTS -> Material.CARROT
+        Material.POTATOES -> Material.POTATO
+        Material.BEETROOTS -> Material.BEETROOT_SEEDS
         Material.NETHER_WART -> Material.NETHER_WART
-        else                 -> null
+        else -> null
     }
 
     /**
@@ -43,7 +43,7 @@ object MaterialUtil {
     fun farmlandFor(seedType: Material): Material? = when (seedType) {
         Material.WHEAT_SEEDS, Material.CARROT, Material.POTATO, Material.BEETROOT_SEEDS -> Material.FARMLAND
         Material.NETHER_WART -> Material.SOUL_SAND
-        else                 -> null
+        else -> null
     }
 
     /**

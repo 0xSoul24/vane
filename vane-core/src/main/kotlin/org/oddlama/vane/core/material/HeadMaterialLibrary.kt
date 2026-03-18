@@ -9,13 +9,16 @@ import org.oddlama.vane.core.material.HeadMaterial.Companion.from
  */
 object HeadMaterialLibrary {
     /** Head registry by namespaced key. */
-    private val registry   = mutableMapOf<NamespacedKey, HeadMaterial>()
+    private val registry = mutableMapOf<NamespacedKey, HeadMaterial>()
+
     /** Category lookup map. */
     private val categories = mutableMapOf<String, MutableList<HeadMaterial>>()
+
     /** Tag lookup map. */
-    private val tags       = mutableMapOf<String, MutableList<HeadMaterial>>()
+    private val tags = mutableMapOf<String, MutableList<HeadMaterial>>()
+
     /** Lookup by base64 texture payload. */
-    private val byTexture  = mutableMapOf<String, HeadMaterial>()
+    private val byTexture = mutableMapOf<String, HeadMaterial>()
 
     /** Loads head materials from serialized JSON array content. */
     @JvmStatic

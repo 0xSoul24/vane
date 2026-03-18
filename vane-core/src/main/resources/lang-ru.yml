@@ -97,12 +97,12 @@ Menus:
     # The item used to accept the selection.
     Accept:
       Name: "§a§lПринять"
-      Lore: ["§bВыбрать§7 выделенный предмет."]
+      Lore: [ "§bВыбрать§7 выделенный предмет." ]
 
     # The item used to cancel the selection.
     Cancel:
       Name: "§c§lОтклонить"
-      Lore: ["§6Отменяет§7 выбор предмета."]
+      Lore: [ "§6Отменяет§7 выбор предмета." ]
 
     # The item used to represent the currently selected item.
     Selected:
@@ -120,7 +120,7 @@ Menus:
     # %1$s: Page number
     Page:
       Name: "§bСтраница %1$s"
-      Lore: []
+      Lore: [ ]
 
     # The item showing the current page
     # %1$s: Page number
@@ -145,4 +145,4 @@ Menus:
     # The item used to cancel the selection.
     Cancel:
       Name: "§c§lОтмена"
-      Lore: ["§6Отменяет§7 выбор."]
+      Lore: [ "§6Отменяет§7 выбор." ]

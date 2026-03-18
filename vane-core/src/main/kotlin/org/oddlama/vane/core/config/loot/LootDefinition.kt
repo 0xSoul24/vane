@@ -41,21 +41,21 @@ class LootDefinition(val name: String?) {
             fun deserialize(map: Map<String?, Any?>): Entry {
                 val chance = when (val v = map["Chance"]) {
                     is Double -> v
-                    is Float  -> v.toDouble()
-                    is Int    -> v.toDouble()
-                    is Long   -> v.toDouble()
+                    is Float -> v.toDouble()
+                    is Int -> v.toDouble()
+                    is Long -> v.toDouble()
                     else -> throw IllegalArgumentException("Invalid loot table entry: chance must be a number (double)!")
                 }
                 val amountMin = when (val v = map["AmountMin"]) {
-                    is Int    -> v
+                    is Int -> v
                     is Double -> v.toInt()
-                    is Long   -> v.toInt()
+                    is Long -> v.toInt()
                     else -> throw IllegalArgumentException("Invalid loot table entry: amountMin must be an int!")
                 }
                 val amountMax = when (val v = map["AmountMax"]) {
-                    is Int    -> v
+                    is Int -> v
                     is Double -> v.toInt()
-                    is Long   -> v.toInt()
+                    is Long -> v.toInt()
                     else -> throw IllegalArgumentException("Invalid loot table entry: amountMax must be an int!")
                 }
                 val itemDefinition = map["Item"]?.toString()
@@ -90,7 +90,7 @@ class LootDefinition(val name: String?) {
     /** Serializes this loot definition to dictionary form. */
     fun serialize(): Map<String, Any> = mapOf(
         "Tables" to affectedTables.map { it.toString() },
-        "Items"  to entries.map { it.serialize() }
+        "Items" to entries.map { it.serialize() }
     )
 
     /** Converts serialized entries into runtime loot-table entries. */

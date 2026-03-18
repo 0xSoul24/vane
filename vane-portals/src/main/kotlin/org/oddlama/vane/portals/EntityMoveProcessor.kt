@@ -151,7 +151,7 @@ class EntityMoveProcessor(context: Context<Portals?>?) : ModuleComponent<Portals
         /** Returns true when two locations represent movement within the same world. */
         private fun isMovement(l1: Location, l2: Location): Boolean {
             // Different worlds = not a movement event.
-            return (l1.getWorld() === l2.getWorld() &&
+            return (l1.world === l2.world &&
                     (l1.x != l2.x || l1.y != l2.y || l1.z != l2.z || l1.pitch != l2.pitch || l1.yaw != l2.yaw)
                     )
         }

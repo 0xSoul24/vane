@@ -8,10 +8,12 @@ import java.util.UUID
  * JSON key used for serialized UUID id fields.
  */
 private const val KEY_ID = "id"
+
 /**
  * JSON key used for serialized name fields.
  */
 private const val KEY_NAME = "name"
+
 /**
  * JSON key used for serialized owner UUID fields.
  */
@@ -49,10 +51,10 @@ internal fun readOwnable(json: JSONObject): Triple<UUID?, String?, UUID?> {
  * Wraps a [NoSuchFieldException]-throwing block, rethrowing as [RuntimeException] with a clear message.
  */
 internal inline fun <T> withField(block: () -> T): T = try {
-        block()
-    } catch (e: NoSuchFieldException) {
-        throw RuntimeException("Invalid field. This is a bug.", e)
-    }
+    block()
+} catch (e: NoSuchFieldException) {
+    throw RuntimeException("Invalid field. This is a bug.", e)
+}
 
 
 

@@ -11,7 +11,8 @@ import org.oddlama.vane.portals.portal.Portal
  * @property portal the portal targeted for destruction.
  * @property checkOnly whether this is a dry-run validation.
  */
-class PortalDestroyEvent(@JvmField val player: Player, @JvmField val portal: Portal, private val checkOnly: Boolean) : PortalEvent() {
+class PortalDestroyEvent(@JvmField val player: Player, @JvmField val portal: Portal, private val checkOnly: Boolean) :
+    PortalEvent() {
     /** Controls whether non-owners are automatically denied. */
     private var cancelIfNotOwner = true
 
@@ -32,6 +33,7 @@ class PortalDestroyEvent(@JvmField val player: Player, @JvmField val portal: Por
     /** Static Bukkit handler list for this event type. */
     companion object {
         /** Shared handler list used by Bukkit's event system. */
-        @JvmStatic val handlerList: HandlerList = HandlerList()
+        @JvmStatic
+        val handlerList: HandlerList = HandlerList()
     }
 }

@@ -108,45 +108,64 @@ class StyleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(context.
 
     /** Item representing the active console block when selecting an active block. */
     private val itemBlockConsoleActive: TranslatedItemStack<*>
+
     /** Item representing the active origin block when selecting an active block. */
     private val itemBlockOriginActive: TranslatedItemStack<*>
+
     /** Item representing the active portal-area block when selecting an active block (nullable). */
     private val itemBlockPortalActive: TranslatedItemStack<*>?
+
     /** Item representing the active boundary variant 1 block when selecting an active block. */
     private val itemBlockBoundary1Active: TranslatedItemStack<*>
+
     /** Item representing the active boundary variant 2 block when selecting an active block. */
     private val itemBlockBoundary2Active: TranslatedItemStack<*>
+
     /** Item representing the active boundary variant 3 block when selecting an active block. */
     private val itemBlockBoundary3Active: TranslatedItemStack<*>
+
     /** Item representing the active boundary variant 4 block when selecting an active block. */
     private val itemBlockBoundary4Active: TranslatedItemStack<*>
+
     /** Item representing the active boundary variant 5 block when selecting an active block. */
     private val itemBlockBoundary5Active: TranslatedItemStack<*>
+
     /** Item representing the inactive console block when selecting an inactive block. */
     private val itemBlockConsoleInactive: TranslatedItemStack<*>
+
     /** Item representing the inactive origin block when selecting an inactive block. */
     private val itemBlockOriginInactive: TranslatedItemStack<*>
+
     /** Item representing the inactive portal-area block when selecting an inactive block. */
     private val itemBlockPortalInactive: TranslatedItemStack<*>
+
     /** Item representing the inactive boundary variant 1 block when selecting an inactive block. */
     private val itemBlockBoundary1Inactive: TranslatedItemStack<*>
+
     /** Item representing the inactive boundary variant 2 block when selecting an inactive block. */
     private val itemBlockBoundary2Inactive: TranslatedItemStack<*>
+
     /** Item representing the inactive boundary variant 3 block when selecting an inactive block. */
     private val itemBlockBoundary3Inactive: TranslatedItemStack<*>
+
     /** Item representing the inactive boundary variant 4 block when selecting an inactive block. */
     private val itemBlockBoundary4Inactive: TranslatedItemStack<*>
+
     /** Item representing the inactive boundary variant 5 block when selecting an inactive block. */
     private val itemBlockBoundary5Inactive: TranslatedItemStack<*>
 
     /** Item used as the accept/apply action for the style editor. */
     private val itemAccept: TranslatedItemStack<*>
+
     /** Item used to reset any changes made in the style editor. */
     private val itemReset: TranslatedItemStack<*>
+
     /** Item used to open the defined-style selector. */
     private val itemSelectDefined: TranslatedItemStack<*>
+
     /** Item template used to represent defined styles in the selector. */
     private val itemSelectStyle: TranslatedItemStack<*>
+
     /** Item used to cancel style selection and return to the previous menu. */
     private val itemCancel: TranslatedItemStack<*>
 
@@ -558,7 +577,7 @@ class StyleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(context.
                 { player2: Player? -> menu.open(player2!!) },
                 { item: ItemStack? ->
                     // Only allow placeable solid blocks
-                    if (item == null || !(item.type.isBlock && item.type.isSolid())) {
+                    if (item == null || !(item.type.isBlock && item.type.isSolid)) {
                         return@itemSelector null
                     }
 
@@ -595,7 +614,7 @@ class StyleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(context.
                 if (stack.type == Material.AIR) {
                     stack = ItemStack(Material.BARRIER)
                 }
-                super.item(tItem.alternative(stack, "§6" + buildingMaterial.getKey()))
+                super.item(tItem.alternative(stack, "§6" + buildingMaterial.key))
             }
         }
     }
@@ -644,10 +663,10 @@ class StyleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(context.
      */
     private fun menuItemReset(portal: Portal, styleContainer: StyleContainer): MenuWidget {
         return MenuItem(3 * COLUMNS + 3, itemReset.item()) { _: Player?, menu: Menu?, _: MenuItem? ->
-             styleContainer.style = portal.copyStyle(module!!, null)
-             menu!!.update()
-             Menu.ClickResult.SUCCESS
-         }
+            styleContainer.style = portal.copyStyle(module!!, null)
+            menu!!.update()
+            Menu.ClickResult.SUCCESS
+        }
     }
 
     /**
@@ -671,8 +690,8 @@ class StyleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(context.
         }
 
         return MenuItem(
-             3 * COLUMNS + 4,
-             itemSelectDefined.item()
+            3 * COLUMNS + 4,
+            itemSelectDefined.item()
         ) { player: Player?, menu: Menu?, _: MenuItem? ->
             menu!!.close(player!!)
             val allStyles: ArrayList<Style?> = ArrayList<Style?>(module!!.styles.values)

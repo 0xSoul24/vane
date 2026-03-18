@@ -24,7 +24,12 @@ class ConfigStringListMapField(
     owner, field, mapName, "map of string to string list", annotation.desc
 ) {
     /** Appends the string-list-map definition block to YAML output. */
-    private fun appendStringListMapDefinition(builder: StringBuilder, indent: String?, prefix: String?, def: MutableMap<String?, MutableList<String?>?>) {
+    private fun appendStringListMapDefinition(
+        builder: StringBuilder,
+        indent: String?,
+        prefix: String?,
+        def: MutableMap<String?, MutableList<String?>?>
+    ) {
         def.forEach { (k, list) ->
             builder.append("$indent$prefix  ${escapeYaml(toPascalCase(k))}:\n")
             list!!.forEach { s -> builder.append("$indent$prefix    - ${escapeYaml(s)}\n") }

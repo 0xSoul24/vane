@@ -63,13 +63,21 @@ class LangManager(var module: Module<*>) {
             .firstOrNull() ?: error("No @Lang annotation found on field ${field.name}")
 
         return when (val atype = annotation.annotationClass.java) {
-            LangMessage::class.java      -> LangMessageField(module, owner, field, mapName, annotation as LangMessage)
-            LangMessageArray::class.java -> LangMessageArrayField(module, owner, field, mapName, annotation as LangMessageArray)
-            LangVersion::class.java      -> {
+            LangMessage::class.java -> LangMessageField(module, owner, field, mapName, annotation as LangMessage)
+            LangMessageArray::class.java -> LangMessageArrayField(
+                module,
+                owner,
+                field,
+                mapName,
+                annotation as LangMessageArray
+            )
+
+            LangVersion::class.java -> {
                 require(owner === module) { "@LangVersion can only be used inside the main module. This is a bug." }
                 require(fieldVersion == null) { "There must be exactly one @LangVersion field! (found multiple). This is a bug." }
                 LangVersionField(module, owner, field, mapName, annotation as LangVersion).also { fieldVersion = it }
             }
+
             else -> throw RuntimeException("Missing LangField handler for @${atype.name}. This is a bug.")
         }
     }
@@ -87,10 +95,12 @@ class LangManager(var module: Module<*>) {
                 module.log.severe("If you are sure your configuration is correct and this isn't a file")
                 module.log.severe("system permission issue, please report this to https://github.com/oddlama/vane/issues")
             }
+
             version < expectedVersion() -> {
                 module.log.severe("This language file is for an older version of ${module.name}.")
                 module.log.severe("Please update your file or use an officially supported language file.")
             }
+
             else -> {
                 module.log.severe("This language file is for a future version of ${module.name}.")
                 module.log.severe("Please use the correct file for this version, or use an officially")

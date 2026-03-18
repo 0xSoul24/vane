@@ -61,7 +61,7 @@ class Scrolls(context: Context<Trifles?>) : Listener<Trifles?>(
         priority = EventPriority.LOW,
         ignoreCancelled = false
     ) // Keep disabled-cancel filtering to include right-click-air handling.
-    /** Handles right-click scroll usage and executes teleport flow when valid. */
+            /** Handles right-click scroll usage and executes teleport flow when valid. */
     fun onPlayerRightClick(event: PlayerInteractEvent) {
         if (event.action != Action.RIGHT_CLICK_BLOCK && event.action != Action.RIGHT_CLICK_AIR) {
             return

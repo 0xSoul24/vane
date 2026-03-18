@@ -33,7 +33,8 @@ class ChoiceParam<T>(
     /**
      * Lookup table from display string to choice value.
      */
-    private val fromString: MutableMap<String, T?> = choices.associateByTo(mutableMapOf()) { (toString.apply(it) ?: "") }
+    private val fromString: MutableMap<String, T?> =
+        choices.associateByTo(mutableMapOf()) { (toString.apply(it) ?: "") }
 
     /**
      * Enables case-insensitive matching.

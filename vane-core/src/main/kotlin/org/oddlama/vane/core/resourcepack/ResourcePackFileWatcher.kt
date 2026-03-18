@@ -47,7 +47,10 @@ class ResourcePackFileWatcher(private val resourcePackDistributor: ResourcePackD
     fun stop() {
         watchTask?.cancel()
         watchTask = null
-        try { eyes?.close() } catch (_: IOException) {}
+        try {
+            eyes?.close()
+        } catch (_: IOException) {
+        }
         eyes = null
     }
 

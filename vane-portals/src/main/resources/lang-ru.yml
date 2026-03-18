@@ -109,65 +109,65 @@ Menus:
 
     Rename:
       Name: "§b§lПереименовать"
-      Lore: []
+      Lore: [ ]
 
     SelectIcon:
       Name: "§b§lВыберите значок"
-      Lore: []
+      Lore: [ ]
 
     SelectStyle:
       Name: "§b§lВыберите стиль"
-      Lore: []
+      Lore: [ ]
 
     ExitOrientationLockOn:
       Name: "§b§lПереключить фиксацию направления выхода"
-      Lore: ["", "§bТекущая: §e§lФиксированно (выход всегда спереди)§r"]
+      Lore: [ "", "§bТекущая: §e§lФиксированно (выход всегда спереди)§r" ]
 
     ExitOrientationLockOff:
       Name: "§b§lПереключить фиксацию направления выхода"
-      Lore: ["", "§bТекушая: §a§lСвободно (выход с той же стороны что и вход)§r"]
+      Lore: [ "", "§bТекушая: §a§lСвободно (выход с той же стороны что и вход)§r" ]
 
     VisibilityPublic:
       Name: "§b§lПереключить видимость"
-      Lore: ["", "§bТекущая: §a§lПубличный§r"]
+      Lore: [ "", "§bТекущая: §a§lПубличный§r" ]
 
     VisibilityGroup:
       Name: "§b§lПереключить видимость"
-      Lore: ["", "§bТекущая: §e§lГруппа региона (участники)§r"]
+      Lore: [ "", "§bТекущая: §e§lГруппа региона (участники)§r" ]
 
     VisibilityGroupInternal:
       Name: "§b§lПереключить видимость"
-      Lore: ["", "§bТекущая: §e§lГруппа региона (видимый только внутри)§r"]
+      Lore: [ "", "§bТекущая: §e§lГруппа региона (видимый только внутри)§r" ]
 
     VisibilityPrivate:
       Name: "§b§lПереключить видимость"
-      Lore: ["", "§bТекущая: §c§lЧастный§r"]
+      Lore: [ "", "§bТекущая: §c§lЧастный§r" ]
 
     TargetLockOn:
       Name: "§b§lПереключить фиксацию выбора цели"
-      Lore: ["", "§bТекущая §c§lФиксированно§r"]
+      Lore: [ "", "§bТекущая §c§lФиксированно§r" ]
 
     TargetLockOff:
       Name: "§b§lПереключить фиксацию выбора цели"
-      Lore: ["", "§bТекущая: §a§lСвободно§r"]
+      Lore: [ "", "§bТекущая: §a§lСвободно§r" ]
 
     Back:
       Name: "§6↩ §lНазад"
-      Lore: []
+      Lore: [ ]
 
   Style:
     Title: "§8§lСтиль для: %1$s"
-    SelectBlockConsoleActiveTitle:       "Выберите активный блок консоли."
-    SelectBlockOriginActiveTitle:        "Выберите активный основной блок."
-    SelectBlockPortalActiveTitle:        "Выберите активный блок заполнения."
-    SelectBlockBoundary1ActiveTitle:   "Выберите активную рамку портала - 1 вариант."
-    SelectBlockBoundary2ActiveTitle:   "Выберите активную рамку портала - 2 вариант."
-    SelectBlockBoundary3ActiveTitle:   "Выберите активную рамку портала - 3 вариант."
-    SelectBlockBoundary4ActiveTitle:   "Выберите активную рамку портала - 4 вариант."
-    SelectBlockBoundary5ActiveTitle:   "Выберите активную рамку портала - 5 вариант."
-    SelectBlockConsoleInactiveTitle:     "Выберите неактивный блок консоли."
-    SelectBlockOriginInactiveTitle:      "Выберите неактивный основной блок."
-    SelectBlockPortalInactiveTitle:      "Выберите неактивный блок заполнения."
+    SelectBlockConsoleActiveTitle: "Выберите активный блок консоли."
+    SelectBlockOriginActiveTitle: "Выберите активный основной блок."
+    SelectBlockPortalActiveTitle: "Выберите активный блок заполнения."
+    SelectBlockBoundary1ActiveTitle: "Выберите активную рамку портала - 1 вариант."
+    SelectBlockBoundary2ActiveTitle: "Выберите активную рамку портала - 2 вариант."
+    SelectBlockBoundary3ActiveTitle: "Выберите активную рамку портала - 3 вариант."
+    SelectBlockBoundary4ActiveTitle: "Выберите активную рамку портала - 4 вариант."
+    SelectBlockBoundary5ActiveTitle: "Выберите активную рамку портала - 5 вариант."
+    SelectBlockConsoleInactiveTitle: "Выберите неактивный блок консоли."
+    SelectBlockOriginInactiveTitle: "Выберите неактивный основной блок."
+    SelectBlockPortalInactiveTitle: "Выберите неактивный блок заполнения."
     SelectBlockBoundary1InactiveTitle: "Выберите неактивную рамку портала - 1 вариант."
     SelectBlockBoundary2InactiveTitle: "Выберите неактивную рамку портала - 2 вариант."
     SelectBlockBoundary3InactiveTitle: "Выберите неактивную рамку портала - 3 вариант."
@@ -176,80 +176,80 @@ Menus:
 
     BlockConsoleActive:
       Name: "§b§lКонсоль §a(активная)"
-      Lore: []
+      Lore: [ ]
     BlockOriginActive:
       Name: "§b§lОсновной блок §a(активный)"
-      Lore: []
+      Lore: [ ]
     BlockPortalActive:
       Name: "§b§lБлок заполнения §a(активный)"
-      Lore: []
+      Lore: [ ]
     BlockBoundary1Active:
       Name: "§b§lРамка §a(активная)"
-      Lore: ["", "§aВариант 1", "§7Строительный материал: %1$s"]
+      Lore: [ "", "§aВариант 1", "§7Строительный материал: %1$s" ]
     BlockBoundary2Active:
       Name: "§b§lРамка §a(активная)"
-      Lore: ["", "§aВариант 2", "§7Строительный материал: %1$s"]
+      Lore: [ "", "§aВариант 2", "§7Строительный материал: %1$s" ]
     BlockBoundary3Active:
       Name: "§b§lРамка §a(активная)"
-      Lore: ["", "§aВариант 3", "§7Строительный материал: %1$s"]
+      Lore: [ "", "§aВариант 3", "§7Строительный материал: %1$s" ]
     BlockBoundary4Active:
       Name: "§b§lРамка §a(активная)"
-      Lore: ["", "§aВариант 4", "§7Строительный материал: %1$s"]
+      Lore: [ "", "§aВариант 4", "§7Строительный материал: %1$s" ]
     BlockBoundary5Active:
       Name: "§b§lРамка §a(активная)"
-      Lore: ["", "§aВариант 5", "§7Строительный материал: %1$s"]
+      Lore: [ "", "§aВариант 5", "§7Строительный материал: %1$s" ]
     BlockConsoleInactive:
       Name: "§b§lКонсоль §e(неактивная)"
-      Lore: []
+      Lore: [ ]
     BlockOriginInactive:
       Name: "§b§lОсновной блок §e(неактивный)"
-      Lore: []
+      Lore: [ ]
     BlockPortalInactive:
       Name: "§b§lБлок заполнения §e(неактивный)"
-      Lore: []
+      Lore: [ ]
     BlockBoundary1Inactive:
       Name: "§b§lРамка §e(неактивная)"
-      Lore: ["", "§aВариант 1", "§7Строительный материал: %1$s"]
+      Lore: [ "", "§aВариант 1", "§7Строительный материал: %1$s" ]
     BlockBoundary2Inactive:
       Name: "§b§lРамка §e(неактивная)"
-      Lore: ["", "§aВариант 2", "§7Строительный материал: %1$s"]
+      Lore: [ "", "§aВариант 2", "§7Строительный материал: %1$s" ]
     BlockBoundary3Inactive:
       Name: "§b§lРамка §e(неактивная)"
-      Lore: ["", "§aВариант 3", "§7Строительный материал: %1$s"]
+      Lore: [ "", "§aВариант 3", "§7Строительный материал: %1$s" ]
     BlockBoundary4Inactive:
       Name: "§b§lРамка §e(неактивная)"
-      Lore: ["", "§aВариант 4", "§7Строительный материал: %1$s"]
+      Lore: [ "", "§aВариант 4", "§7Строительный материал: %1$s" ]
     BlockBoundary5Inactive:
       Name: "§b§lРамка §e(неактивная)"
-      Lore: ["", "§aВариант 5", "§7Строительный материал: %1$s"]
+      Lore: [ "", "§aВариант 5", "§7Строительный материал: %1$s" ]
 
     Accept:
       Name: "§a§lПрименить стиль"
-      Lore: []
+      Lore: [ ]
 
     Reset:
       Name: "§6§lСбросить изменения"
-      Lore: []
+      Lore: [ ]
 
     SelectStyleTitle: "§8§lВыбрать стиль"
     FilterStylesTitle: "§8§lФильтр стилей"
     SelectDefined:
       Name: "§b§lВыбрать подготовленный стиль"
-      Lore: []
+      Lore: [ ]
     SelectStyle:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
 
     Cancel:
       Name: "§6↩ §lОтменить изменения"
-      Lore: []
+      Lore: [ ]
 
   Console:
     Title: "§8§lПортал: %1$s"
 
     Settings:
       Name: "§b§lНастройки"
-      Lore: []
+      Lore: [ ]
 
     SelectTarget:
       Name: "§d§lВыберите цель"
@@ -279,22 +279,22 @@ Menus:
 
     UnlinkConsole:
       Name: "§c§lОтвязать консоль"
-      Lore: []
+      Lore: [ ]
     UnlinkConsoleConfirmTitle: "§c§lОтвязать консоль?"
     UnlinkConsoleConfirmAccept:
       Name: "§c§lОТВЯЗАТЬ КОНСОЛЬ"
-      Lore: []
+      Lore: [ ]
     UnlinkConsoleConfirmCancel:
       Name: "§a§lОтмена"
-      Lore: []
+      Lore: [ ]
 
     DestroyPortal:
       Name: "§c§lРазрушить портал"
-      Lore: []
+      Lore: [ ]
     DestroyPortalConfirmTitle: "§c§lРазрушить портал?"
     DestroyPortalConfirmAccept:
       Name: "§c§lРАЗРУШИТЬ ПОРТАЛ"
-      Lore: []
+      Lore: [ ]
     DestroyPortalConfirmCancel:
       Name: "§a§lОтмена"
-      Lore: []
+      Lore: [ ]

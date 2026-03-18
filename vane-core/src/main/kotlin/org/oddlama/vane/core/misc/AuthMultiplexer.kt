@@ -112,7 +112,7 @@ class AuthMultiplexer(context: Context<Core?>?) : Listener<Core?>(context), Plug
 
                 module!!.log.info(
                     "[multiplex] Registered auth multiplexed player {$newUuid, $newName} " +
-                    "from player {$oldUuid, $oldName} multiplexerId $multiplexerId"
+                            "from player {$oldUuid, $oldName} multiplexerId $multiplexerId"
                 )
                 storageAuthMultiplex[newUuid] = oldUuid
                 storageAuthMultiplexerId[newUuid] = multiplexerId

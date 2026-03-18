@@ -19,7 +19,8 @@ class TimeValueArgumentType : CustomArgumentType.Converted<TimeValue, String> {
 
     /** Converts a string token into a [TimeValue]. */
     @Throws(CommandSyntaxException::class)
-    override fun convert(nativeType: String): TimeValue = TimeValue.valueOf(nativeType.replaceFirstChar { it.uppercaseChar() })
+    override fun convert(nativeType: String): TimeValue =
+        TimeValue.valueOf(nativeType.replaceFirstChar { it.uppercaseChar() })
 
     /** Builds completion suggestions from [TimeValue] display names. */
     override fun <S : Any> listSuggestions(

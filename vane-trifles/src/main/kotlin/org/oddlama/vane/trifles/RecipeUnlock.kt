@@ -21,7 +21,7 @@ class RecipeUnlock(context: Context<Trifles?>) :
         if (count > 0) {
             module?.log?.info(
                 "Given $count recipes to " +
-                    LegacyComponentSerializer.legacySection().serialize(player.displayName())
+                        LegacyComponentSerializer.legacySection().serialize(player.displayName())
             )
         }
     }

@@ -15,6 +15,7 @@ import org.oddlama.vane.util.ItemUtil
 class ShapelessRecipeDefinition(name: String?) : RecipeDefinition(name) {
     /** Ingredient definition strings. */
     private var ingredients: MutableList<String> = ArrayList()
+
     /** Result item definition string. */
     private var result: String? = null
 

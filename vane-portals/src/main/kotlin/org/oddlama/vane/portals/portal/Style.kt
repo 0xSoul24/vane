@@ -24,7 +24,8 @@ class Style(private var key: NamespacedKey?) {
     fun key() = key
 
     /** Returns the material configured for [type] in the selected [active] state. */
-    fun material(active: Boolean, type: PortalBlock.Type) = if (active) activeMaterials[type] else inactiveMaterials[type]
+    fun material(active: Boolean, type: PortalBlock.Type) =
+        if (active) activeMaterials[type] else inactiveMaterials[type]
 
     /** Sets a material mapping and rejects duplicate keys. */
     fun setMaterial(active: Boolean, type: PortalBlock.Type, material: Material) {

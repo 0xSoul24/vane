@@ -25,13 +25,16 @@ import org.oddlama.vane.core.module.Context
 @Name("enchant")
 class Enchant(context: Context<Core?>) : org.oddlama.vane.core.command.Command<Core?>(context) {
     /** Message shown when the requested level is below the enchantment minimum. */
-    @LangMessage private val langLevelTooLow: TranslatedMessage? = null
+    @LangMessage
+    private val langLevelTooLow: TranslatedMessage? = null
 
     /** Message shown when the requested level exceeds the enchantment maximum. */
-    @LangMessage private val langLevelTooHigh: TranslatedMessage? = null
+    @LangMessage
+    private val langLevelTooHigh: TranslatedMessage? = null
 
     /** Message shown when the enchantment is invalid for the current item. */
-    @LangMessage private val langInvalidEnchantment: TranslatedMessage? = null
+    @LangMessage
+    private val langInvalidEnchantment: TranslatedMessage? = null
 
     /**
      * Builds the brigadier command tree for `/enchant`.
@@ -74,6 +77,7 @@ class Enchant(context: Context<Core?>) : org.oddlama.vane.core.command.Command<C
                 langLevelTooLow!!.send(player, "§b$level", "§a${enchantment.startLevel}")
                 return
             }
+
             level > enchantment.maxLevel -> {
                 langLevelTooHigh!!.send(player, "§b$level", "§a${enchantment.maxLevel}")
                 return

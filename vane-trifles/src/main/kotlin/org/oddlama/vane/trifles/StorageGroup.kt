@@ -124,7 +124,9 @@ class StorageGroup(context: Context<Trifles?>) :
                 val swappedItemIsStorage = isStorageItem(player.inventory.getItem(event.hotbarButton))
                 cancel = (swappedItemIsStorage || clickedItemIsStorage) && !clickedInventoryIsPlayerInventory
             }
-            else -> { /* no-op */ }
+
+            else -> { /* no-op */
+            }
         }
 
         if (cancel) {
@@ -326,7 +328,8 @@ class StorageGroup(context: Context<Trifles?>) :
 
         // Reuse item naming for the opened transient inventory title.
         var name: Component?
-        name = if (blockStateMeta.hasDisplayName()) blockStateMeta.displayName() else if (blockStateMeta.hasItemName()) blockStateMeta.itemName() else null
+        name =
+            if (blockStateMeta.hasDisplayName()) blockStateMeta.displayName() else if (blockStateMeta.hasItemName()) blockStateMeta.itemName() else null
 
         // Fallback to registered custom item display name for unnamed legacy items.
         if (name == null) {

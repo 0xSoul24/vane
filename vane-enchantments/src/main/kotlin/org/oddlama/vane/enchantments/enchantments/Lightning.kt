@@ -121,7 +121,7 @@ class Lightning(context: Context<Enchantments?>) : CustomEnchantment<Enchantment
         if (damagee.location.blockY < world.getHighestBlockYAt(damagee.location)) return
 
         // Execute
-        event.setDamage(event.damage + configLightningDamage)
+        event.damage = event.damage + configLightningDamage
         world.strikeLightning(damagee.location)
     }
 }

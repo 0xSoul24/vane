@@ -13,6 +13,7 @@ class RegionEconomyDelegate(private val module: Regions) {
      * Economy service provider resolved from Vault.
      */
     private var economy: Economy? = null
+
     /**
      * Non-null accessor for the resolved economy service.
      */
@@ -34,7 +35,7 @@ class RegionEconomyDelegate(private val module: Regions) {
         val rsp = module
             .server
             .servicesManager
-            .getRegistration<Economy?>(Economy::class.java)
+            .getRegistration(Economy::class.java)
         if (rsp == null) {
             module.log.severe(
                 "Economy was selected as the currency provider, but no Economy service provider is registered via VaultAPI! Falling back to material currency."

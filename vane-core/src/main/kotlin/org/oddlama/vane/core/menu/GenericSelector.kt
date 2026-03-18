@@ -43,10 +43,13 @@ class GenericSelector<T, F : Filter<T?>?> private constructor(
 ) {
     /** Whether filter output should be recomputed on next update. */
     var updateFilter = true
+
     /** Current page index. */
     var page = 0
+
     /** Last valid page index. */
     var lastPage = 0
+
     /** Filtered elements currently shown by the selector. */
     var filteredThings: MutableList<T?> = mutableListOf()
 
@@ -77,6 +80,7 @@ class GenericSelector<T, F : Filter<T?>?> private constructor(
                     i == (slotTo - slotFrom) / 2 -> gs.menuManager.genericSelectorCurrentPage!!.item(
                         "§6${page + 1}", "§6${gs.lastPage + 1}", "§6${gs.filteredThings.size}"
                     )
+
                     noOp -> null
                     else -> gs.menuManager.genericSelectorPage!!.itemAmount(abs(actualOffset), "§6${page + 1}")
                 }
@@ -97,7 +101,13 @@ class GenericSelector<T, F : Filter<T?>?> private constructor(
             (gs.page + offset).coerceIn(0, gs.lastPage)
 
         /** Handles clicks on page controls. */
-        override fun click(player: Player?, menu: Menu?, item: ItemStack?, slot: Int, event: InventoryClickEvent?): Menu.ClickResult {
+        override fun click(
+            player: Player?,
+            menu: Menu?,
+            item: ItemStack?,
+            slot: Int,
+            event: InventoryClickEvent?
+        ): Menu.ClickResult {
             if (menu == null) return Menu.ClickResult.IGNORE
             if (slot !in slotFrom until slotTo) return Menu.ClickResult.IGNORE
             if (menu.inventory()!!.getItem(slot) == null) return Menu.ClickResult.IGNORE
@@ -134,7 +144,13 @@ class GenericSelector<T, F : Filter<T?>?> private constructor(
         }
 
         /** Handles clicks inside the paged selection area. */
-        override fun click(player: Player?, menu: Menu?, item: ItemStack?, slot: Int, event: InventoryClickEvent?): Menu.ClickResult? {
+        override fun click(
+            player: Player?,
+            menu: Menu?,
+            item: ItemStack?,
+            slot: Int,
+            event: InventoryClickEvent?
+        ): Menu.ClickResult? {
             if (menu == null) return Menu.ClickResult.IGNORE
             if (slot < firstSlot || slot >= firstSlot + gs.pageSize) return Menu.ClickResult.IGNORE
             if (menu.inventory()!!.getItem(slot) == null) return Menu.ClickResult.IGNORE
@@ -191,33 +207,35 @@ class GenericSelector<T, F : Filter<T?>?> private constructor(
             genericSelectorMenu.add(PageSelector(gs, gs.pageSize + 1, gs.pageSize + 8))
 
             // Filter item
-            genericSelectorMenu.add(MenuItem(
-                gs.pageSize,
-                menuManager.genericSelectorFilter!!.item(),
-                Function4 { p, menu, _, event ->
-                    if (!isLeftOrRightClick(event)) return@Function4 Menu.ClickResult.INVALID_CLICK
-                    if (event!!.click == ClickType.RIGHT) {
-                        gs.filter!!.reset()
-                        gs.updateFilter = true
-                        menu!!.update()
-                    } else {
-                        menu!!.close(p!!)
-                        gs.filter!!.openFilterSettings(context, p, filterTitle, menu)
-                        gs.updateFilter = true
+            genericSelectorMenu.add(
+                MenuItem(
+                    gs.pageSize,
+                    menuManager.genericSelectorFilter!!.item(),
+                    Function4 { p, menu, _, event ->
+                        if (!isLeftOrRightClick(event)) return@Function4 Menu.ClickResult.INVALID_CLICK
+                        if (event!!.click == ClickType.RIGHT) {
+                            gs.filter!!.reset()
+                            gs.updateFilter = true
+                            menu!!.update()
+                        } else {
+                            menu!!.close(p!!)
+                            gs.filter!!.openFilterSettings(context, p, filterTitle, menu)
+                            gs.updateFilter = true
+                        }
+                        Menu.ClickResult.SUCCESS
                     }
-                    Menu.ClickResult.SUCCESS
-                }
-            ))
+                ))
 
             // Cancel item
-            genericSelectorMenu.add(MenuItem(
-                gs.pageSize + 8,
-                menuManager.genericSelectorCancel!!.item()
-            ) { p, menu, _ ->
-                menu!!.close(p!!)
-                onCancel.apply(player)
-                Menu.ClickResult.SUCCESS
-            })
+            genericSelectorMenu.add(
+                MenuItem(
+                    gs.pageSize + 8,
+                    menuManager.genericSelectorCancel!!.item()
+                ) { p, menu, _ ->
+                    menu!!.close(p!!)
+                    onCancel.apply(player)
+                    Menu.ClickResult.SUCCESS
+                })
 
             genericSelectorMenu.onNaturalClose(onCancel)
 

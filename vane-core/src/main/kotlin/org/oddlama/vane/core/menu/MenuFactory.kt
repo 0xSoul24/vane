@@ -181,14 +181,14 @@ object MenuFactory {
         // Accept item
         itemSelectorMenu.add(
             MenuItem(2, menuManager.itemSelectorAccept!!.item(), Function3 { p, menu, _ ->
-                 val item: ItemStack? = if (selectedItem.originalSelected === noItem) {
-                     if (allowNothing) null else return@Function3 Menu.ClickResult.ERROR
-                 } else {
-                     selectedItem.originalSelected
-                 }
-                 menu!!.close(p!!)
-                 onConfirm.apply(p, item)
-             })
+                val item: ItemStack? = if (selectedItem.originalSelected === noItem) {
+                    if (allowNothing) null else return@Function3 Menu.ClickResult.ERROR
+                } else {
+                    selectedItem.originalSelected
+                }
+                menu!!.close(p!!)
+                onConfirm.apply(p, item)
+            })
         )
 
         // Cancel item
@@ -303,4 +303,4 @@ object MenuFactory {
             onCancel ?: Consumer1 { }
         )
     }
- }
+}

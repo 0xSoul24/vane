@@ -41,7 +41,7 @@ class MenuItemClickListener(
         item: ItemStack?,
         slot: Int,
         event: InventoryClickEvent?
-    ): Menu.ClickResult? {
+    ): Menu.ClickResult {
         if (this.slot != slot) return Menu.ClickResult.IGNORE
         return onClick?.apply(player, menu, item, event) ?: Menu.ClickResult.IGNORE
     }

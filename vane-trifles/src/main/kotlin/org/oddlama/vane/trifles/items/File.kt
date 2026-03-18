@@ -6,7 +6,6 @@ import org.bukkit.SoundCategory
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Bisected
-import org.bukkit.block.data.Directional
 import org.bukkit.block.data.MultipleFacing
 import org.bukkit.block.data.type.*
 import org.bukkit.block.data.type.Tripwire
@@ -269,11 +268,12 @@ class File(context: Context<Trifles?>) : CustomItem<Trifles?>(context) {
         val result = BlockUtil.raytraceDominantFace(player, block) ?: return null
         // Only replace facing choice if we did hit a side,
         // or if the dominance was big enough.
-        val adjustedClickedFace = if (result.dominance > .2 || (clickedFace != BlockFace.UP && clickedFace != BlockFace.DOWN)) {
-            result.face
-        } else {
-            clickedFace
-        }
+        val adjustedClickedFace =
+            if (result.dominance > .2 || (clickedFace != BlockFace.UP && clickedFace != BlockFace.DOWN)) {
+                result.face
+            } else {
+                clickedFace
+            }
 
         if (clickedFace == BlockFace.UP) {
             val wasUp = wall.isUp

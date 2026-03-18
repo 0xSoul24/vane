@@ -17,14 +17,15 @@ import kotlin.math.pow
  */
 class RegionSelection(private val regions: Regions) {
     @JvmField
-    /**
-     * Primary selected corner block.
-     */
+            /**
+             * Primary selected corner block.
+             */
     var primary: Block? = null
+
     @JvmField
-    /**
-     * Secondary selected corner block.
-     */
+            /**
+             * Secondary selected corner block.
+             */
     var secondary: Block? = null
 
     /**

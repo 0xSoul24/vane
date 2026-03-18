@@ -21,6 +21,7 @@ class RegionExtent {
      * Minimum inclusive corner.
      */
     private val min: LazyBlock // inclusive
+
     /**
      * Maximum inclusive corner.
      */
@@ -43,8 +44,20 @@ class RegionExtent {
         }
 
         // Sort coordinates along axes.
-        this.min = LazyBlock(from.world.getBlockAt(kotlin.math.min(from.x, to.x), kotlin.math.min(from.y, to.y), kotlin.math.min(from.z, to.z)))
-        this.max = LazyBlock(from.world.getBlockAt(kotlin.math.max(from.x, to.x), kotlin.math.max(from.y, to.y), kotlin.math.max(from.z, to.z)))
+        this.min = LazyBlock(
+            from.world.getBlockAt(
+                kotlin.math.min(from.x, to.x),
+                kotlin.math.min(from.y, to.y),
+                kotlin.math.min(from.z, to.z)
+            )
+        )
+        this.max = LazyBlock(
+            from.world.getBlockAt(
+                kotlin.math.max(from.x, to.x),
+                kotlin.math.max(from.y, to.y),
+                kotlin.math.max(from.z, to.z)
+            )
+        )
     }
 
     /**
@@ -70,8 +83,8 @@ class RegionExtent {
         val h = max() ?: return false
         if (loc.world != l.world) return false
         return loc.x >= l.x && loc.x < (h.x + 1) &&
-            loc.y >= l.y && loc.y < (h.y + 1) &&
-            loc.z >= l.z && loc.z < (h.z + 1)
+                loc.y >= l.y && loc.y < (h.y + 1) &&
+                loc.z >= l.z && loc.z < (h.z + 1)
     }
 
     /**
@@ -82,8 +95,8 @@ class RegionExtent {
         val h = max() ?: return false
         if (block.world != l.world) return false
         return block.x >= l.x && block.x <= h.x &&
-            block.y >= l.y && block.y <= h.y &&
-            block.z >= l.z && block.z <= h.z
+                block.y >= l.y && block.y <= h.y &&
+                block.z >= l.z && block.z <= h.z
     }
 
     /**
@@ -153,9 +166,9 @@ class RegionExtent {
     companion object {
         @JvmStatic
         @Throws(IOException::class)
-        /**
-         * Serializes a region extent to JSON-compatible data.
-         */
+                /**
+                 * Serializes a region extent to JSON-compatible data.
+                 */
         fun serialize(o: Any): Any {
             val regionExtent = o as RegionExtent
             val json = JSONObject()
@@ -166,9 +179,9 @@ class RegionExtent {
 
         @JvmStatic
         @Throws(IOException::class)
-        /**
-         * Deserializes a region extent from JSON-compatible data.
-         */
+                /**
+                 * Deserializes a region extent from JSON-compatible data.
+                 */
         fun deserialize(o: Any): RegionExtent {
             val json = o as JSONObject
             val min: LazyBlock? = PersistentSerializer.fromJson(LazyBlock::class.java, json.get("min"))

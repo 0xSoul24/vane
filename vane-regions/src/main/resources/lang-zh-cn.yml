@@ -81,15 +81,15 @@ Menus:
         - "§7- §a✓§7 能够支付 (%10$s§7)"
     CancelSelection:
       Name: "§c§l取消选择"
-      Lore: []
+      Lore: [ ]
     ListRegions:
       Name: "§b§l选择区域"
-      Lore: []
+      Lore: [ ]
     SelectRegionTitle: "§8§l选择区域"
     FilterRegionsTitle: "§8§l筛选区域"
     SelectRegion:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
     CurrentRegion:
       Name: "§b§l当前区域"
       Lore:
@@ -107,7 +107,7 @@ Menus:
         - "§7所有区域都将共享这些权限"
     ListRegionGroups:
       Name: "§b§l选择区域组"
-      Lore: []
+      Lore: [ ]
     CurrentRegionGroup:
       Name: "§b§l当前区域组"
       Lore:
@@ -120,39 +120,39 @@ Menus:
     FilterRegionGroupsTitle: "§8§l筛选区域组"
     SelectRegionGroup:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
   Region:
     Title: "§8§l区域: %1$s"
     Rename:
       Name: "§b§l重新命名区域"
-      Lore: []
+      Lore: [ ]
     Delete:
       Name: "§c§l删除区域"
-      Lore: []
+      Lore: [ ]
     DeleteConfirmTitle: "§c§l确定要删除区域吗？"
     DeleteConfirmAccept:
       Name: "§c§l删除区域"
-      Lore: []
+      Lore: [ ]
     DeleteConfirmCancel:
       Name: "§a§l取消"
-      Lore: []
+      Lore: [ ]
     AssignRegionGroup:
       Name: "§b§l指定群组"
-      Lore: []
+      Lore: [ ]
 
     SelectRegionGroupTitle: "§8§l选择区域群组"
     FilterRegionGroupsTitle: "§8§l筛选区域群组"
     SelectRegionGroup:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
   RegionGroup:
     Title: "§8§l群组: %1$s"
     SettingToggleOn:
       Name: "§a§l启用"
-      Lore: []
+      Lore: [ ]
     SettingToggleOff:
       Name: "§c§l停用"
-      Lore: []
+      Lore: [ ]
     SettingInfoAnimals:
       Name: "§b§l动物"
       Lore:
@@ -190,7 +190,7 @@ Menus:
         - "§7控制是否允许藤蔓在区域内生长"
     Rename:
       Name: "§b§l重新命名群组"
-      Lore: []
+      Lore: [ ]
     Delete:
       Name: "§c§l删除群组"
       Lore:
@@ -200,10 +200,10 @@ Menus:
     DeleteConfirmTitle: "§c§l删除区域群组？"
     DeleteConfirmAccept:
       Name: "§c§l删除区域群组"
-      Lore: []
+      Lore: [ ]
     DeleteConfirmCancel:
       Name: "§a§l取消"
-      Lore: []
+      Lore: [ ]
     CreateRole:
       Name: "§a§l创建角色"
       Lore:
@@ -212,21 +212,21 @@ Menus:
         - "§7角色用于为一群玩家设置权限"
     ListRoles:
       Name: "§b§lRoles"
-      Lore: []
+      Lore: [ ]
     SelectRoleTitle: "§8§lSelect Role"
     FilterRolesTitle: "§8§lFilter Roles"
     SelectRole:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
   Role:
     Title: "§8§l群组：%1$s"
 
     SettingToggleOn:
       Name: "§a§l启用"
-      Lore: []
+      Lore: [ ]
     SettingToggleOff:
       Name: "§c§l禁用"
-      Lore: []
+      Lore: [ ]
     SettingInfoAdmin:
       Name: "§b§l管理员"
       Lore:
@@ -259,17 +259,17 @@ Menus:
         - "§7允许与传送门交互"
     Rename:
       Name: "§b§l重命名角色"
-      Lore: []
+      Lore: [ ]
     Delete:
       Name: "§c§l删除角色"
-      Lore: []
+      Lore: [ ]
     DeleteConfirmTitle: "§c§l删除角色？"
     DeleteConfirmAccept:
       Name: "§c§l删除角色"
-      Lore: []
+      Lore: [ ]
     DeleteConfirmCancel:
       Name: "§a§l取消"
-      Lore: []
+      Lore: [ ]
     AssignPlayer:
       Name: "§b§l指定玩家"
       Lore:
@@ -291,4 +291,4 @@ Menus:
     FilterPlayersTitle: "§8§l过滤玩家"
     SelectPlayer:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]

@@ -11,7 +11,11 @@ import org.oddlama.vane.portals.portal.Portal
  * @property portal the portal being modified.
  * @property checkOnly whether this is a dry-run validation.
  */
-class PortalChangeSettingsEvent(@JvmField val player: Player, @JvmField val portal: Portal, private val checkOnly: Boolean) :
+class PortalChangeSettingsEvent(
+    @JvmField val player: Player,
+    @JvmField val portal: Portal,
+    private val checkOnly: Boolean
+) :
     PortalEvent() {
     /** Controls whether non-owners are automatically denied. */
     private var cancelIfNotOwner = true
@@ -33,6 +37,7 @@ class PortalChangeSettingsEvent(@JvmField val player: Player, @JvmField val port
     /** Static Bukkit handler list for this event type. */
     companion object {
         /** Shared handler list used by Bukkit's event system. */
-        @JvmStatic val handlerList: HandlerList = HandlerList()
+        @JvmStatic
+        val handlerList: HandlerList = HandlerList()
     }
 }

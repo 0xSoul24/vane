@@ -31,7 +31,7 @@ class RecipeList(private var recipes: MutableList<RecipeDefinition?> = mutableLi
      */
     companion object {
         @JvmStatic
-        /** Creates a [RecipeList] from vararg definitions. */
+                /** Creates a [RecipeList] from vararg definitions. */
         fun of(vararg defs: RecipeDefinition?): RecipeList = RecipeList(defs.toMutableList())
 
         /** Maps internal recipe names to preferred YAML display names. */

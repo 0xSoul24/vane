@@ -19,25 +19,27 @@ import org.oddlama.vane.regions.Regions
 class EnterRegionGroupNameMenu(context: Context<Regions?>) :
     ModuleComponent<Regions?>(context.namespace("EnterRegionGroupName")) {
     @LangMessage
-    /**
-     * Localized title shown in the anvil input UI.
-     */
+            /**
+             * Localized title shown in the anvil input UI.
+             */
     var langTitle: TranslatedMessage? = null
 
     @ConfigMaterial(def = Material.GLOBE_BANNER_PATTERN, desc = "The item used to name region groups.")
-    /**
-     * Icon material used in the anvil input UI.
-     */
+            /**
+             * Icon material used in the anvil input UI.
+             */
     var configMaterial: Material? = null
 
     /**
      * Non-null context for creating child menus.
      */
     private val menuContext get() = requireNotNull(getContext())
+
     /**
      * Resolved anvil UI title.
      */
     private val title get() = requireNotNull(langTitle).str()
+
     /**
      * Resolved anvil icon item.
      */

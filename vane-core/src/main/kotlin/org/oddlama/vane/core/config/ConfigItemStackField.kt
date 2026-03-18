@@ -68,6 +68,7 @@ class ConfigItemStackField(
                     if (ns.isEmpty() || key.isEmpty())
                         throw YamlLoadException("Invalid material for yaml path '${yamlPath()}': '$str' is not a valid namespaced key")
                 }
+
                 "amount" -> {
                     if (yaml.get(varPath) !is Number)
                         throw YamlLoadException("Invalid type for yaml path '${yamlPath()}', expected int")
@@ -85,8 +86,11 @@ class ConfigItemStackField(
         for (varKey in yaml.getConfigurationSection(yamlPath())!!.getKeys(false)) {
             val varPath = "${yamlPath()}.$varKey"
             when (varKey) {
-                "material" -> { materialStr = yaml.getString(varPath)!!; amount = 0 }
-                "amount"   -> amount = yaml.getInt(varPath)
+                "material" -> {
+                    materialStr = yaml.getString(varPath)!!; amount = 0
+                }
+
+                "amount" -> amount = yaml.getInt(varPath)
             }
         }
         val (ns, key) = requireNamespacedKeyParts(yamlPath(), materialStr, "material")

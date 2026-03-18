@@ -42,7 +42,7 @@ class OfflinePlayerArgumentType : CustomArgumentType.Converted<OfflinePlayer, St
     /** Factory methods for [OfflinePlayerArgumentType]. */
     companion object {
         @JvmStatic
-        /** Creates a new offline-player argument type. */
+                /** Creates a new offline-player argument type. */
         fun offlinePlayer(): OfflinePlayerArgumentType = OfflinePlayerArgumentType()
     }
 }

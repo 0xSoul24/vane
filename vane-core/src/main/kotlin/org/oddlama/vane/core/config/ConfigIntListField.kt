@@ -22,7 +22,12 @@ class ConfigIntListField(
 ) : ConfigField<MutableList<Int?>?>(owner, field, mapName, "int list", annotation.desc) {
 
     /** Appends an integer list definition block. */
-    private fun appendIntListDefinition(builder: StringBuilder?, indent: String?, prefix: String?, def: MutableList<Int?>) {
+    private fun appendIntListDefinition(
+        builder: StringBuilder?,
+        indent: String?,
+        prefix: String?,
+        def: MutableList<Int?>
+    ) {
         appendListDefinition<Int?>(builder, indent, prefix, def) { b, i -> b!!.append(i!!) }
     }
 

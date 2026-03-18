@@ -73,26 +73,51 @@ class ConfigManager(var module: Module<*>) {
             .firstOrNull() ?: error("No @Config annotation found on field ${field.name}")
 
         return when (val atype = annotation.annotationClass.java) {
-            ConfigBoolean::class.java          -> ConfigBooleanField(owner, field, mapName, annotation as ConfigBoolean)
-            ConfigDict::class.java             -> ConfigDictField(owner, field, mapName, annotation as ConfigDict)
-            ConfigDouble::class.java           -> ConfigDoubleField(owner, field, mapName, annotation as ConfigDouble)
-            ConfigDoubleList::class.java       -> ConfigDoubleListField(owner, field, mapName, annotation as ConfigDoubleList)
-            ConfigExtendedMaterial::class.java -> ConfigExtendedMaterialField(owner, field, mapName, annotation as ConfigExtendedMaterial)
-            ConfigInt::class.java              -> ConfigIntField(owner, field, mapName, annotation as ConfigInt)
-            ConfigIntList::class.java          -> ConfigIntListField(owner, field, mapName, annotation as ConfigIntList)
-            ConfigItemStack::class.java        -> ConfigItemStackField(owner, field, mapName, annotation as ConfigItemStack)
-            ConfigLong::class.java             -> ConfigLongField(owner, field, mapName, annotation as ConfigLong)
-            ConfigMaterial::class.java         -> ConfigMaterialField(owner, field, mapName, annotation as ConfigMaterial)
-            ConfigMaterialMapMapMap::class.java -> ConfigMaterialMapMapMapField(owner, field, mapName, annotation as ConfigMaterialMapMapMap)
-            ConfigMaterialSet::class.java      -> ConfigMaterialSetField(owner, field, mapName, annotation as ConfigMaterialSet)
-            ConfigString::class.java           -> ConfigStringField(owner, field, mapName, annotation as ConfigString)
-            ConfigStringList::class.java       -> ConfigStringListField(owner, field, mapName, annotation as ConfigStringList)
-            ConfigStringListMap::class.java    -> ConfigStringListMapField(owner, field, mapName, annotation as ConfigStringListMap)
-            ConfigVersion::class.java          -> {
+            ConfigBoolean::class.java -> ConfigBooleanField(owner, field, mapName, annotation as ConfigBoolean)
+            ConfigDict::class.java -> ConfigDictField(owner, field, mapName, annotation as ConfigDict)
+            ConfigDouble::class.java -> ConfigDoubleField(owner, field, mapName, annotation as ConfigDouble)
+            ConfigDoubleList::class.java -> ConfigDoubleListField(owner, field, mapName, annotation as ConfigDoubleList)
+            ConfigExtendedMaterial::class.java -> ConfigExtendedMaterialField(
+                owner,
+                field,
+                mapName,
+                annotation as ConfigExtendedMaterial
+            )
+
+            ConfigInt::class.java -> ConfigIntField(owner, field, mapName, annotation as ConfigInt)
+            ConfigIntList::class.java -> ConfigIntListField(owner, field, mapName, annotation as ConfigIntList)
+            ConfigItemStack::class.java -> ConfigItemStackField(owner, field, mapName, annotation as ConfigItemStack)
+            ConfigLong::class.java -> ConfigLongField(owner, field, mapName, annotation as ConfigLong)
+            ConfigMaterial::class.java -> ConfigMaterialField(owner, field, mapName, annotation as ConfigMaterial)
+            ConfigMaterialMapMapMap::class.java -> ConfigMaterialMapMapMapField(
+                owner,
+                field,
+                mapName,
+                annotation as ConfigMaterialMapMapMap
+            )
+
+            ConfigMaterialSet::class.java -> ConfigMaterialSetField(
+                owner,
+                field,
+                mapName,
+                annotation as ConfigMaterialSet
+            )
+
+            ConfigString::class.java -> ConfigStringField(owner, field, mapName, annotation as ConfigString)
+            ConfigStringList::class.java -> ConfigStringListField(owner, field, mapName, annotation as ConfigStringList)
+            ConfigStringListMap::class.java -> ConfigStringListMapField(
+                owner,
+                field,
+                mapName,
+                annotation as ConfigStringListMap
+            )
+
+            ConfigVersion::class.java -> {
                 require(owner === module) { "@ConfigVersion can only be used inside the main module. This is a bug." }
                 require(fieldVersion == null) { "There must be exactly one @ConfigVersion field! (found multiple). This is a bug." }
                 ConfigVersionField(owner, field, mapName, annotation as ConfigVersion).also { fieldVersion = it }
             }
+
             else -> throw RuntimeException("Missing ConfigField handler for @${atype.name}. This is a bug.")
         }
     }
@@ -110,6 +135,7 @@ class ConfigManager(var module: Module<*>) {
                 module.log.severe("If you are sure your configuration is correct and this isn't a file")
                 module.log.severe("system permission issue, please report this to https://github.com/oddlama/vane/issues")
             }
+
             version < expectedVersion() -> {
                 module.log.severe("This config is for an older version of ${module.name}.")
                 module.log.severe("Please update your configuration. A new default configuration")
@@ -117,6 +143,7 @@ class ConfigManager(var module: Module<*>) {
                 module.log.severe("delete your configuration to have a new one generated next time.")
                 generateFile(File(module.dataFolder, "config.yml.new"), null)
             }
+
             else -> {
                 module.log.severe("This config is for a future version of ${module.name}.")
                 module.log.severe("Please use the correct file for this version, or delete it and")
@@ -225,9 +252,18 @@ class ConfigManager(var module: Module<*>) {
             return false
         }
         try {
-            Files.move(tmpFile.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
+            Files.move(
+                tmpFile.toPath(),
+                file.toPath(),
+                StandardCopyOption.REPLACE_EXISTING,
+                StandardCopyOption.ATOMIC_MOVE
+            )
         } catch (e: IOException) {
-            module.log.log(Level.SEVERE, "error while atomically replacing '$file' with temporary file (very recent changes might be lost)!", e)
+            module.log.log(
+                Level.SEVERE,
+                "error while atomically replacing '$file' with temporary file (very recent changes might be lost)!",
+                e
+            )
             return false
         }
         return true
@@ -249,11 +285,18 @@ class ConfigManager(var module: Module<*>) {
         if (!generateFile(tmpFile, yaml)) return false
 
         try {
-            Files.move(tmpFile.toPath(), standardFile().toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
+            Files.move(
+                tmpFile.toPath(),
+                standardFile().toPath(),
+                StandardCopyOption.REPLACE_EXISTING,
+                StandardCopyOption.ATOMIC_MOVE
+            )
         } catch (e: IOException) {
-            module.log.log(Level.SEVERE,
+            module.log.log(
+                Level.SEVERE,
                 "error while atomically replacing '${standardFile()}' with updated version. " +
-                "Please manually resolve the conflict (new file is named '$tmpFile')", e)
+                        "Please manually resolve the conflict (new file is named '$tmpFile')", e
+            )
             return false
         }
 

@@ -19,7 +19,8 @@ class WeatherArgumentType : CustomArgumentType.Converted<WeatherValue, String> {
 
     /** Converts a string token into a [WeatherValue]. */
     @Throws(CommandSyntaxException::class)
-    override fun convert(nativeType: String): WeatherValue = WeatherValue.valueOf(nativeType.replaceFirstChar { it.uppercaseChar() })
+    override fun convert(nativeType: String): WeatherValue =
+        WeatherValue.valueOf(nativeType.replaceFirstChar { it.uppercaseChar() })
 
     /** Builds completion suggestions from [WeatherValue] display names. */
     override fun <S : Any> listSuggestions(

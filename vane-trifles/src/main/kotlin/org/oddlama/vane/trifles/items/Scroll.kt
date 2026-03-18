@@ -39,12 +39,12 @@ abstract class Scroll(context: Context<Trifles?>, private val defaultCooldown: I
 
     /** Returns the behavior inhibition set shared by all scroll variants. */
     override fun inhibitedBehaviors(): EnumSet<InhibitBehavior> = EnumSet.of(
-            InhibitBehavior.USE_IN_VANILLA_RECIPE,
-            InhibitBehavior.TEMPT,
-            InhibitBehavior.USE_OFFHAND
-        ).apply {
-            if (!configAllowMending) {
-                add(InhibitBehavior.MEND)
-            }
+        InhibitBehavior.USE_IN_VANILLA_RECIPE,
+        InhibitBehavior.TEMPT,
+        InhibitBehavior.USE_OFFHAND
+    ).apply {
+        if (!configAllowMending) {
+            add(InhibitBehavior.MEND)
         }
+    }
 }

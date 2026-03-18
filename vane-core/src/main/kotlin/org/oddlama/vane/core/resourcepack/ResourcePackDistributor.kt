@@ -124,12 +124,14 @@ class ResourcePackDistributor(context: Context<Core?>) :
                 }
                 mod.log.info("Setting up dev lazy server")
             }
+
             (customResourcePackConfig.getContext() as? ModuleGroup<*>)?.configEnabled == true -> {
                 mod.log.info("Serving custom resource pack")
                 packUrl = customResourcePackConfig.configUrl
                 packSha1 = customResourcePackConfig.configSha1
                 packUuid = UUID.fromString(customResourcePackConfig.configUuid)
             }
+
             else -> {
                 mod.log.info("Serving official vane resource pack")
                 try {
@@ -165,7 +167,7 @@ class ResourcePackDistributor(context: Context<Core?>) :
                 if (rpInfo.url().trim().isNotEmpty()) {
                     mod.log.warning(
                         "You have manually configured a resource pack in your server.properties. " +
-                        "This cannot be used together with vane, as servers only allow serving a single resource pack."
+                                "This cannot be used together with vane, as servers only allow serving a single resource pack."
                     )
                 }
             }
@@ -238,7 +240,8 @@ class ResourcePackDistributor(context: Context<Core?>) :
      * @param connection the player configuration connection.
      */
     fun sendResourcePackDuringConfiguration(connection: PlayerConfigurationConnection) {
-        val info = ResourcePackInfo.resourcePackInfo(packUuid, URI.create(requireNotNull(packUrl)), requireNotNull(packSha1))
+        val info =
+            ResourcePackInfo.resourcePackInfo(packUuid, URI.create(requireNotNull(packUrl)), requireNotNull(packSha1))
         val promptLang = requireNotNull(if (configForce) langPackRequired else langPackSuggested)
         val prompt: Component? = if (promptLang.str().isEmpty()) null else promptLang.strComponent()
         val request = ResourcePackRequest.resourcePackRequest()
@@ -267,7 +270,8 @@ class ResourcePackDistributor(context: Context<Core?>) :
             audience.sendMessage(Component.text("$url $packSha1"))
         }
         try {
-            val info = ResourcePackInfo.resourcePackInfo(packUuid, URI.create(requireNotNull(url)), requireNotNull(packSha1))
+            val info =
+                ResourcePackInfo.resourcePackInfo(packUuid, URI.create(requireNotNull(url)), requireNotNull(packSha1))
             audience.sendResourcePacks(ResourcePackRequest.resourcePackRequest().packs(info).asResourcePackRequest())
         } catch (_: URISyntaxException) {
             module?.log?.warning("The provided resource pack URL is incorrect: $url")
@@ -284,7 +288,8 @@ class ResourcePackDistributor(context: Context<Core?>) :
         try {
             val hashBytes = MessageDigest.getInstance("SHA-1").digest(file.readBytes())
             packSha1 = hashBytes.joinToString("") { "%02x".format(it) }
-        } catch (_: IOException) {}
+        } catch (_: IOException) {
+        }
     }
 
     /**

@@ -15,8 +15,10 @@ import org.oddlama.vane.util.ItemUtil
 class ShapedRecipeDefinition(name: String?) : RecipeDefinition(name) {
     /** Recipe shape rows. */
     private var shape: MutableList<String> = mutableListOf()
+
     /** Ingredient mapping from shape symbols to ingredient definitions. */
     private var ingredients: MutableMap<String?, String?> = mutableMapOf()
+
     /** Result item definition string. */
     private var result: String? = null
 

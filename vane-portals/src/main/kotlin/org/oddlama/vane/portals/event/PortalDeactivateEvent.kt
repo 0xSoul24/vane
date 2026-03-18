@@ -17,6 +17,7 @@ class PortalDeactivateEvent(@JvmField val player: Player?, @JvmField val portal:
     /** Static Bukkit handler list for this event type. */
     companion object {
         /** Shared handler list used by Bukkit's event system. */
-        @JvmStatic val handlerList: HandlerList = HandlerList()
+        @JvmStatic
+        val handlerList: HandlerList = HandlerList()
     }
 }

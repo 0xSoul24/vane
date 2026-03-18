@@ -58,7 +58,9 @@ interface Filter<T> {
         /**
          * Clears the active filter string.
          */
-        override fun reset() { str = null }
+        override fun reset() {
+            str = null
+        }
 
         /**
          * Filters elements using the configured predicate.

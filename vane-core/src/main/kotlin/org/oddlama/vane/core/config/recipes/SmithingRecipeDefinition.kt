@@ -16,10 +16,13 @@ import org.oddlama.vane.util.ItemUtil
 class SmithingRecipeDefinition(name: String?) : RecipeDefinition(name) {
     /** Base ingredient definition. */
     private var base: String? = null
+
     /** Addition ingredient definition. */
     private var addition: String? = null
+
     /** Whether smithing should copy NBT from base item to result. */
     private var copyNbt = false
+
     /** Result item definition string. */
     private var result: String? = null
 

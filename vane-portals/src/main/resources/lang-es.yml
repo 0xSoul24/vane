@@ -122,58 +122,58 @@ Menus:
     # Este ítem se utiliza para cambiar el nombre del portal.
     Rename:
       Name: "§b§lRenombrar"
-      Lore: []
+      Lore: [ ]
     # Este ítem se utiliza para seleccionar el ícono del portal.
     SelectIcon:
       Name: "§b§lSeleccionar ícono"
-      Lore: []
+      Lore: [ ]
     # Este ítem se utiliza para cambiar el estilo del portal.
     SelectStyle:
       Name: "§b§lSeleccionar estilo"
-      Lore: []
+      Lore: [ ]
     # Este ítem se utiliza para cambiar e indicar el bloqueo de orientación de salida activado.
     ExitOrientationLockOn:
       Name: "§b§lAlternar bloqueo de orientación de salida"
-      Lore: ["", "§bActual: §e§lBloqueado (siempre hacia adelante)§r"]
+      Lore: [ "", "§bActual: §e§lBloqueado (siempre hacia adelante)§r" ]
     # Este ítem se utiliza para cambiar e indicar el bloqueo de orientación de salida desactivado.
     ExitOrientationLockOff:
       Name: "§b§lAlternar bloqueo de orientación de salida"
-      Lore: ["", "§bActual: §a§lDesbloqueado (salida en el mismo lado que la entrada)§r"]
+      Lore: [ "", "§bActual: §a§lDesbloqueado (salida en el mismo lado que la entrada)§r" ]
 
     # Este ítem se utiliza para alternar la visibilidad e indicar visibilidad pública.
     VisibilityPublic:
       Name: "§b§lAlternar Visibilidad"
-      Lore: ["", "§bActual: §a§lPública§r"]
+      Lore: [ "", "§bActual: §a§lPública§r" ]
 
     # Este ítem se utiliza para alternar la visibilidad e indicar visibilidad de grupo.
     VisibilityGroup:
       Name: "§b§lAlternar Visibilidad"
-      Lore: ["", "§bActual: §e§lGrupo de región (miembros)§r"]
+      Lore: [ "", "§bActual: §e§lGrupo de región (miembros)§r" ]
 
     # Este ítem se utiliza para alternar la visibilidad e indicar visibilidad de grupo interna.
     VisibilityGroupInternal:
       Name: "§b§lAlternar Visibilidad"
-      Lore: ["", "§bActual: §e§lGrupo de región (solo visible internamente)§r"]
+      Lore: [ "", "§bActual: §e§lGrupo de región (solo visible internamente)§r" ]
 
     # Este ítem se utiliza para alternar la visibilidad e indicar visibilidad privada.
     VisibilityPrivate:
       Name: "§b§lAlternar Visibilidad"
-      Lore: ["", "§bActual: §c§lPrivada§r"]
+      Lore: [ "", "§bActual: §c§lPrivada§r" ]
 
     # Este ítem se utiliza para cambiar e indicar el bloqueo de destino activado.
     TargetLockOn:
       Name: "§b§lAlternar Bloqueo de Destino"
-      Lore: ["", "§bActual: §c§lBloqueado§r"]
+      Lore: [ "", "§bActual: §c§lBloqueado§r" ]
 
     # Este ítem se utiliza para cambiar e indicar el bloqueo de destino desactivado.
     TargetLockOff:
       Name: "§b§lAlternar Bloqueo de Destino"
-      Lore: ["", "§bActual: §a§lDesbloqueado§r"]
+      Lore: [ "", "§bActual: §a§lDesbloqueado§r" ]
 
     # Este ítem se utiliza para volver al menú anterior.
     Back:
       Name: "§6↩ §lVolver"
-      Lore: []
+      Lore: [ ]
 
     # Configuraciones para el menú de estilo del portal.
   Style:
@@ -181,27 +181,27 @@ Menus:
     # %1$s: Nombre del portal
     Title: "§8§lEstilo para: %1$s"
     # El título para el selector de bloque para el bloque de consola activo.
-    SelectBlockConsoleActiveTitle:     "Seleccionar bloque de consola activo."
+    SelectBlockConsoleActiveTitle: "Seleccionar bloque de consola activo."
     # El título para el selector de bloque para el bloque de origen activo.
-    SelectBlockOriginActiveTitle:      "Seleccionar bloque de origen activo."
+    SelectBlockOriginActiveTitle: "Seleccionar bloque de origen activo."
     # El título para el selector de bloque para el bloque de área de portal activo.
-    SelectBlockPortalActiveTitle:      "Seleccionar bloque de área de portal activo."
+    SelectBlockPortalActiveTitle: "Seleccionar bloque de área de portal activo."
     # El título para el selector de bloque para el bloque de variante de límite activo 1.
-    SelectBlockBoundary1ActiveTitle:   "Seleccionar bloque de variante de límite activo 1."
+    SelectBlockBoundary1ActiveTitle: "Seleccionar bloque de variante de límite activo 1."
     # El título para el selector de bloque para el bloque de variante de límite activo 2.
-    SelectBlockBoundary2ActiveTitle:   "Seleccionar bloque de variante de límite activo 2."
+    SelectBlockBoundary2ActiveTitle: "Seleccionar bloque de variante de límite activo 2."
     # El título para el selector de bloque para el bloque de variante de límite activo 3.
-    SelectBlockBoundary3ActiveTitle:   "Seleccionar bloque de variante de límite activo 3."
+    SelectBlockBoundary3ActiveTitle: "Seleccionar bloque de variante de límite activo 3."
     # El título para el selector de bloque para el bloque de variante de límite activo 4.
-    SelectBlockBoundary4ActiveTitle:   "Seleccionar bloque de variante de límite activo 4."
+    SelectBlockBoundary4ActiveTitle: "Seleccionar bloque de variante de límite activo 4."
     # El título para el selector de bloque para el bloque de variante de límite activo 5.
-    SelectBlockBoundary5ActiveTitle:   "Seleccionar bloque de variante de límite activo 5."
+    SelectBlockBoundary5ActiveTitle: "Seleccionar bloque de variante de límite activo 5."
     # El título para el selector de bloque para el bloque de consola inactivo.
-    SelectBlockConsoleInactiveTitle:   "Seleccionar bloque de consola inactivo."
+    SelectBlockConsoleInactiveTitle: "Seleccionar bloque de consola inactivo."
     # El título para el selector de bloque para el bloque de origen inactivo.
-    SelectBlockOriginInactiveTitle:    "Seleccionar bloque de origen inactivo."
+    SelectBlockOriginInactiveTitle: "Seleccionar bloque de origen inactivo."
     # El título para el selector de bloque para el bloque de área de portal inactivo.
-    SelectBlockPortalInactiveTitle:    "Seleccionar bloque de área de portal inactivo."
+    SelectBlockPortalInactiveTitle: "Seleccionar bloque de área de portal inactivo."
     # El título para el selector de bloque para el bloque de variante de límite inactivo 1.
     SelectBlockBoundary1InactiveTitle: "Seleccionar bloque de variante de límite inactivo 1."
     # El título para el selector de bloque para el bloque de variante de límite inactivo 2.
@@ -217,103 +217,103 @@ Menus:
     # %1$s: Material de construcción
     BlockConsoleActive:
       Name: "§b§lConsola §a(activo)"
-      Lore: []
+      Lore: [ ]
 
     # El ítem utilizado para representar el bloque de origen activo seleccionado.
     # %1$s: Material de construcción
     BlockOriginActive:
       Name: "§b§lOrigen §a(activo)"
-      Lore: []
+      Lore: [ ]
 
     # El ítem utilizado para representar el área de portal activa seleccionada.
     # %1$s: Material de construcción
     BlockPortalActive:
       Name: "§b§lÁrea del portal §a(activo)"
-      Lore: []
+      Lore: [ ]
 
     # El ítem utilizado para representar el bloque de límite activo de variante 1 seleccionado.
     # %1$s: Material de construcción
     BlockBoundary1Active:
       Name: "§b§lLímite §a(activo)"
-      Lore: ["", "§aVariante 1", "§7Material de construcción: %1$s"]
+      Lore: [ "", "§aVariante 1", "§7Material de construcción: %1$s" ]
 
     # El ítem utilizado para representar el bloque de límite activo de variante 2 seleccionado.
     # %1$s: Material de construcción
     BlockBoundary2Active:
       Name: "§b§lLímite §a(activo)"
-      Lore: ["", "§aVariante 2", "§7Material de construcción: %1$s"]
+      Lore: [ "", "§aVariante 2", "§7Material de construcción: %1$s" ]
 
     # El ítem utilizado para representar el bloque de límite activo de variante 3 seleccionado.
     # %1$s: Material de construcción
     BlockBoundary3Active:
       Name: "§b§lLímite §a(activo)"
-      Lore: ["", "§aVariante 3", "§7Material de construcción: %1$s"]
+      Lore: [ "", "§aVariante 3", "§7Material de construcción: %1$s" ]
 
     # El ítem utilizado para representar el bloque de límite activo de variante 4 seleccionado.
     # %1$s: Material de construcción
     BlockBoundary4Active:
       Name: "§b§lLímite §a(activo)"
-      Lore: ["", "§aVariante 4", "§7Material de construcción: %1$s"]
+      Lore: [ "", "§aVariante 4", "§7Material de construcción: %1$s" ]
 
     # El ítem utilizado para representar el bloque de límite activo de variante 5 seleccionado.
     # %1$s: Material de construcción
     BlockBoundary5Active:
       Name: "§b§lLímite §a(activo)"
-      Lore: ["", "§aVariante 5", "§7Material de construcción: %1$s"]
+      Lore: [ "", "§aVariante 5", "§7Material de construcción: %1$s" ]
 
     # El ítem utilizado para representar el bloque de consola inactivo seleccionado.
     # %1$s: Material de construcción
     BlockConsoleInactive:
       Name: "§b§lConsola §e(inactivo)"
-      Lore: []
+      Lore: [ ]
 
     # El ítem utilizado para representar el bloque de origen inactivo seleccionado.
     # %1$s: Material de construcción
     BlockOriginInactive:
       Name: "§b§lOrigen §e(inactivo)"
-      Lore: []
+      Lore: [ ]
 
     # El ítem utilizado para representar el área de portal inactiva seleccionada.
     # %1$s: Material de construcción
     BlockPortalInactive:
       Name: "§b§lÁrea del portal §e(inactivo)"
-      Lore: []
+      Lore: [ ]
 
     # El ítem utilizado para representar el bloque de límite inactivo de variante 1 seleccionado.
     # %1$s: Material de construcción
     BlockBoundary1Inactive:
       Name: "§b§lLímite §e(inactivo)"
-      Lore: ["", "§aVariante 1", "§7Material de construcción: %1$s"]
+      Lore: [ "", "§aVariante 1", "§7Material de construcción: %1$s" ]
     # El ítem utilizado para representar el bloque de límite inactivo de la variante 2 seleccionado.
     # %1$s: Material de construcción
     BlockBoundary2Inactive:
       Name: "§b§lLímite §e(inactivo)"
-      Lore: ["", "§aVariante 2", "§7Material de construcción: %1$s"]
+      Lore: [ "", "§aVariante 2", "§7Material de construcción: %1$s" ]
     # El ítem utilizado para representar el bloque de límite inactivo de la variante 3 seleccionado.
     # %1$s: Material de construcción
     BlockBoundary3Inactive:
       Name: "§b§lLímite §e(inactivo)"
-      Lore: ["", "§aVariante 3", "§7Material de construcción: %1$s"]
+      Lore: [ "", "§aVariante 3", "§7Material de construcción: %1$s" ]
     # El ítem utilizado para representar el bloque de límite inactivo de la variante 4 seleccionado.
     # %1$s: Material de construcción
     BlockBoundary4Inactive:
       Name: "§b§lLímite §e(inactivo)"
-      Lore: ["", "§aVariante 4", "§7Material de construcción: %1$s"]
+      Lore: [ "", "§aVariante 4", "§7Material de construcción: %1$s" ]
     # El ítem utilizado para representar el bloque de límite inactivo de la variante 5 seleccionado.
     # %1$s: Material de construcción
     BlockBoundary5Inactive:
       Name: "§b§lLímite §e(inactivo)"
-      Lore: ["", "§aVariante 5", "§7Material de construcción: %1$s"]
+      Lore: [ "", "§aVariante 5", "§7Material de construcción: %1$s" ]
 
     # El ítem utilizado para aplicar el estilo al portal.
     Accept:
       Name: "§a§lAplicar Estilo"
-      Lore: []
+      Lore: [ ]
 
     # El ítem utilizado para restablecer todos los cambios realizados en este menú.
     Reset:
       Name: "§6§lRestablecer Cambios"
-      Lore: []
+      Lore: [ ]
 
     # El título para el selector de estilos predefinidos.
     SelectStyleTitle: "§8§lSeleccionar Estilo"
@@ -322,17 +322,17 @@ Menus:
     # El ítem utilizado para abrir el selector de estilos para estilos predefinidos.
     SelectDefined:
       Name: "§b§lSeleccionar Estilo Definido"
-      Lore: []
+      Lore: [ ]
     # El ítem utilizado para representar un estilo predefinido.
     # %1$s: Nombre del estilo
     SelectStyle:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
 
     # El ítem utilizado para descartar cualquier cambio y volver al menú anterior.
     Cancel:
       Name: "§6↩ §lDescartar Cambios"
-      Lore: []
+      Lore: [ ]
 
   # Configuración para el menú de consola del portal.
   Console:
@@ -343,7 +343,7 @@ Menus:
     # El ítem utilizado para abrir la configuración del portal.
     Settings:
       Name: "§b§lConfiguración"
-      Lore: []
+      Lore: [ ]
 
     # El ítem utilizado para abrir el selector de destino del portal.
     # %1$s: El destino actualmente seleccionado
@@ -384,29 +384,29 @@ Menus:
     # El ítem utilizado para desvincular la consola actual.
     UnlinkConsole:
       Name: "§c§lDesvincular Consola"
-      Lore: []
+      Lore: [ ]
     # El título para el diálogo de confirmación de desvinculación.
     UnlinkConsoleConfirmTitle: "§c§l¿Desvincular consola?"
     # El ítem para aceptar la desvinculación.
     UnlinkConsoleConfirmAccept:
       Name: "§c§lDESVINCULAR CONSOLA"
-      Lore: []
+      Lore: [ ]
     # El ítem para cancelar la desvinculación.
     UnlinkConsoleConfirmCancel:
       Name: "§a§lCancelar"
-      Lore: []
+      Lore: [ ]
 
     # El ítem utilizado para destruir el portal.
     DestroyPortal:
       Name: "§c§lDestruir Portal"
-      Lore: []
+      Lore: [ ]
     # El título para el diálogo de confirmación de destrucción del portal.
     DestroyPortalConfirmTitle: "§c§l¿Destruir portal?"
     # El ítem para aceptar la destrucción.
     DestroyPortalConfirmAccept:
       Name: "§c§lDESTRUIR PORTAL"
-      Lore: []
+      Lore: [ ]
     # El ítem para cancelar la destrucción.
     DestroyPortalConfirmCancel:
       Name: "§a§lCancelar"
-      Lore: []
+      Lore: [ ]

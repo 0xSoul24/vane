@@ -15,6 +15,7 @@ import org.oddlama.vane.util.ItemUtil
 class StonecuttingRecipeDefinition(name: String?) : RecipeDefinition(name) {
     /** Input ingredient definition. */
     private var input: String? = null
+
     /** Result item definition string. */
     private var result: String? = null
 

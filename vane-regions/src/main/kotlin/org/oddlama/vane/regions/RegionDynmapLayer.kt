@@ -24,57 +24,57 @@ class RegionDynmapLayer(context: Context<Regions?>) : ModuleComponent<Regions?>(
         get() = requireNotNull(module)
 
     @ConfigInt(def = 35, min = 0, desc = "Layer ordering priority.")
-    /**
-     * Dynmap layer ordering priority.
-     */
+            /**
+             * Dynmap layer ordering priority.
+             */
     var configLayerPriority: Int = 0
 
     @ConfigBoolean(def = false, desc = "If the layer should be hidden by default.")
-    /**
-     * Whether the dynmap layer is hidden by default.
-     */
+            /**
+             * Whether the dynmap layer is hidden by default.
+             */
     var configLayerHide: Boolean = false
 
     @ConfigInt(def = 0xffb422, min = 0, max = 0xffffff, desc = "Area marker fill color (0xRRGGBB).")
-    /**
-     * Marker fill color (RGB integer).
-     */
+            /**
+             * Marker fill color (RGB integer).
+             */
     var configFillColor: Int = 0
 
     @ConfigDouble(def = 0.05, min = 0.0, max = 1.0, desc = "Area marker fill opacity.")
-    /**
-     * Marker fill opacity.
-     */
+            /**
+             * Marker fill opacity.
+             */
     var configFillOpacity: Double = 0.0
 
     @ConfigInt(def = 2, min = 1, desc = "Area marker line weight.")
-    /**
-     * Marker outline width.
-     */
+            /**
+             * Marker outline width.
+             */
     var configLineWeight: Int = 0
 
     @ConfigInt(def = 0xffb422, min = 0, max = 0xffffff, desc = "Area marker line color (0xRRGGBB).")
-    /**
-     * Marker outline color (RGB integer).
-     */
+            /**
+             * Marker outline color (RGB integer).
+             */
     var configLineColor: Int = 0
 
     @ConfigDouble(def = 1.0, min = 0.0, max = 1.0, desc = "Area marker line opacity.")
-    /**
-     * Marker outline opacity.
-     */
+            /**
+             * Marker outline opacity.
+             */
     var configLineOpacity: Double = 0.0
 
     @LangMessage
-    /**
-     * Localized label for the dynmap layer.
-     */
+            /**
+             * Localized label for the dynmap layer.
+             */
     var langLayerLabel: TranslatedMessage? = null
 
     @LangMessage
-    /**
-     * Localized marker label format string.
-     */
+            /**
+             * Localized marker label format string.
+             */
     var langMarkerLabel: TranslatedMessage? = null
 
     /**

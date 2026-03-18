@@ -56,8 +56,11 @@ object Nms {
             val handle = CraftItemStack::class.java.getDeclaredField("handle")
                 .also { it.isAccessible = true }
             handle.get(itemStack) as? net.minecraft.world.item.ItemStack
-        } catch (_: NoSuchFieldException) { null }
-          catch (_: IllegalAccessException) { null }
+        } catch (_: NoSuchFieldException) {
+            null
+        } catch (_: IllegalAccessException) {
+            null
+        }
     }
 
     /** Returns the NMS handle for a player, or null when incompatible. */
@@ -85,6 +88,7 @@ object Nms {
         val id = "${pseudoNamespace}_$key"
         val worldVersion = SharedConstants.getCurrentVersion().dataVersion().version()
         val worldVersionKey = DataFixUtils.makeKey(worldVersion)
+
         @Suppress("UNCHECKED_CAST")
         val dataTypesMap = DataFixers.getDataFixer()
             .getSchema(worldVersionKey)

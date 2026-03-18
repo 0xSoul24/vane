@@ -53,54 +53,54 @@ import kotlin.math.min
  */
 class Regions : Module<Regions?>() {
     @ConfigInt(def = 4, min = 1, desc = "Minimum region extent in x direction.")
-    /**
-     * Minimum allowed region size on the X axis.
-     */
+            /**
+             * Minimum allowed region size on the X axis.
+             */
     var configMinRegionExtentX: Int = 0
 
     @ConfigInt(def = 4, min = 1, desc = "Minimum region extent in y direction.")
-    /**
-     * Minimum allowed region size on the Y axis.
-     */
+            /**
+             * Minimum allowed region size on the Y axis.
+             */
     var configMinRegionExtentY: Int = 0
 
     @ConfigInt(def = 4, min = 1, desc = "Minimum region extent in z direction.")
-    /**
-     * Minimum allowed region size on the Z axis.
-     */
+            /**
+             * Minimum allowed region size on the Z axis.
+             */
     var configMinRegionExtentZ: Int = 0
 
     @ConfigInt(def = 2048, min = 1, desc = "Maximum region extent in x direction.")
-    /**
-     * Maximum allowed region size on the X axis.
-     */
+            /**
+             * Maximum allowed region size on the X axis.
+             */
     var configMaxRegionExtentX: Int = 0
 
     @ConfigInt(def = 2048, min = 1, desc = "Maximum region extent in y direction.")
-    /**
-     * Maximum allowed region size on the Y axis.
-     */
+            /**
+             * Maximum allowed region size on the Y axis.
+             */
     var configMaxRegionExtentY: Int = 0
 
     @ConfigInt(def = 2048, min = 1, desc = "Maximum region extent in z direction.")
-    /**
-     * Maximum allowed region size on the Z axis.
-     */
+            /**
+             * Maximum allowed region size on the Z axis.
+             */
     var configMaxRegionExtentZ: Int = 0
 
     @ConfigBoolean(def = false, desc = "Use economy via VaultAPI as currency provider.")
-    /**
-     * Uses Vault-backed economy instead of material currency when enabled.
-     */
+            /**
+             * Uses Vault-backed economy instead of material currency when enabled.
+             */
     var configEconomyAsCurrency: Boolean = false
 
     @ConfigBoolean(
         def = false,
         desc = "Enable this to prevent players without the container permission from being able to view chests."
     )
-    /**
-     * Blocks chest/container viewing for players lacking container permissions.
-     */
+            /**
+             * Blocks chest/container viewing for players lacking container permissions.
+             */
     var configProhibitViewingContainers: Boolean = false
 
     @ConfigInt(
@@ -108,18 +108,18 @@ class Regions : Module<Regions?>() {
         min = -1,
         desc = "The amount of decimal places the costs will be rounded to. If set to -1, it will round to the amount of decimal places specified by your economy plugin. If set to 0, costs will simply be rounded up to the nearest integer."
     )
-    /**
-     * Decimal precision used when formatting and rounding economy costs.
-     */
+            /**
+             * Decimal precision used when formatting and rounding economy costs.
+             */
     var configEconomyDecimalPlaces: Int = 0
 
     @ConfigMaterial(
         def = Material.DIAMOND,
         desc = "The currency material for regions. The alternative option to an economy plugin."
     )
-    /**
-     * Material used as fallback currency when economy integration is disabled.
-     */
+            /**
+             * Material used as fallback currency when economy integration is disabled.
+             */
     var configCurrency: Material? = null
 
     @ConfigDouble(
@@ -127,9 +127,9 @@ class Regions : Module<Regions?>() {
         min = 0.0,
         desc = "The base amount of currency required to buy an area equal to one chunk (256 blocks)."
     )
-    /**
-     * Base horizontal purchase cost for one chunk-sized area.
-     */
+            /**
+             * Base horizontal purchase cost for one chunk-sized area.
+             */
     var configCostXzBase: Double = 0.0
 
     @ConfigDouble(
@@ -137,9 +137,9 @@ class Regions : Module<Regions?>() {
         min = 1.0,
         desc = "The multiplicator determines how much the cost increases for each additional 16 blocks of height. A region of height h will cost multiplicator^(h / 16.0) * base_amount. Rounding is applied at the end."
     )
-    /**
-     * Vertical cost multiplier applied per 16 blocks of selected height.
-     */
+            /**
+             * Vertical cost multiplier applied per 16 blocks of selected height.
+             */
     var configCostYMultiplicator: Double = 0.0
 
     // Primary persistent storage for all regions (`region.id -> region`).
@@ -182,9 +182,9 @@ class Regions : Module<Regions?>() {
     private val regionSelections: MutableMap<UUID, RegionSelection> = HashMap<UUID, RegionSelection>()
 
     @LangMessage
-    /**
-     * Message shown when region-selection mode starts.
-     */
+            /**
+             * Message shown when region-selection mode starts.
+             */
     var langStartRegionSelection: TranslatedMessage? = null
 
     // Permission that bypasses normal region administration restrictions.
@@ -202,6 +202,7 @@ class Regions : Module<Regions?>() {
      * Dynmap integration layer wrapper.
      */
     var dynmapLayer: RegionDynmapLayer
+
     /**
      * BlueMap integration layer wrapper.
      */
@@ -211,6 +212,7 @@ class Regions : Module<Regions?>() {
      * Active economy delegate when Vault integration is enabled.
      */
     var economy: RegionEconomyDelegate? = null
+
     /**
      * Indicates whether `vane-portals` integration is active.
      */
@@ -707,34 +709,34 @@ class Regions : Module<Regions?>() {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    /**
-     * Clears pending selection state when a player disconnects.
-     */
+            /**
+             * Clears pending selection state when a player disconnects.
+             */
     fun onPlayerQuit(event: PlayerQuitEvent) {
         // Remove pending selection
         cancelRegionSelection(event.getPlayer())
     }
 
     @EventHandler
-    /**
-     * Persists region data for the world being saved.
-     */
+            /**
+             * Persists region data for the world being saved.
+             */
     fun onSaveWorld(event: WorldSaveEvent) {
         updatePersistentData(event.getWorld())
     }
 
     @EventHandler
-    /**
-     * Loads region data when a world is loaded.
-     */
+            /**
+             * Loads region data when a world is loaded.
+             */
     fun onLoadWorld(event: WorldLoadEvent) {
         loadPersistentData(event.getWorld())
     }
 
     @EventHandler
-    /**
-     * Persists world region data before world unload.
-     */
+            /**
+             * Persists world region data before world unload.
+             */
     fun onUnloadWorld(event: WorldUnloadEvent) {
         // Save data before unloading a world (not called on stop)
         updatePersistentData(event.getWorld())
@@ -783,7 +785,8 @@ class Regions : Module<Regions?>() {
             val jsonBytes: ByteArray? = data.get(key, PersistentDataType.BYTE_ARRAY)
             try {
                 val regionJsonBytes = jsonBytes ?: continue
-                val region: Region? = PersistentSerializer.fromJson(Region::class.java, JSONObject(String(regionJsonBytes)))
+                val region: Region? =
+                    PersistentSerializer.fromJson(Region::class.java, JSONObject(String(regionJsonBytes)))
                 indexRegion(requireNotNull(region))
             } catch (e: IOException) {
                 log.log(Level.SEVERE, "error while serializing persistent data!", e)
@@ -904,26 +907,41 @@ class Regions : Module<Regions?>() {
         // └────────────┘       └───────────────┘
         // Add (de-)serializers
         init {
-            PersistentSerializer.serializers[EnvironmentSetting::class.java] = PersistentSerializer.Function { x: Any? -> (x as EnvironmentSetting).name }
-            PersistentSerializer.deserializers[EnvironmentSetting::class.java] = PersistentSerializer.Function { x: Any? -> EnvironmentSetting.valueOf((x as String?)!!) }
-            PersistentSerializer.serializers[RoleSetting::class.java] = PersistentSerializer.Function { x: Any? -> (x as RoleSetting).name }
-            PersistentSerializer.deserializers[RoleSetting::class.java] = PersistentSerializer.Function { x: Any? -> RoleSetting.valueOf((x as String?)!!) }
-            PersistentSerializer.serializers[Role::class.java] = PersistentSerializer.Function { obj: Any? -> Role.serialize(obj!!) }
-            PersistentSerializer.deserializers[Role::class.java] = PersistentSerializer.Function { obj: Any? -> Role.deserialize(obj!!) }
-            PersistentSerializer.serializers[RoleType::class.java] = PersistentSerializer.Function { x: Any? -> (x as RoleType).name }
-            PersistentSerializer.deserializers[RoleType::class.java] = PersistentSerializer.Function { x: Any? -> RoleType.valueOf((x as String?)!!) }
-            PersistentSerializer.serializers[RegionGroup::class.java] = PersistentSerializer.Function { obj: Any? -> RegionGroup.serialize(obj!!) }
-            PersistentSerializer.deserializers[RegionGroup::class.java] = PersistentSerializer.Function { obj: Any? -> RegionGroup.deserialize(obj!!) }
-            PersistentSerializer.serializers[Region::class.java] = PersistentSerializer.Function { obj: Any? -> Region.serialize(obj!!) }
-            PersistentSerializer.deserializers[Region::class.java] = PersistentSerializer.Function { obj: Any? -> Region.deserialize(obj!!) }
-            PersistentSerializer.serializers[RegionExtent::class.java] = PersistentSerializer.Function { obj: Any? -> RegionExtent.serialize(obj!!) }
-            PersistentSerializer.deserializers[RegionExtent::class.java] = PersistentSerializer.Function { obj: Any? -> RegionExtent.deserialize(obj!!) }
+            PersistentSerializer.serializers[EnvironmentSetting::class.java] =
+                PersistentSerializer.Function { x: Any? -> (x as EnvironmentSetting).name }
+            PersistentSerializer.deserializers[EnvironmentSetting::class.java] =
+                PersistentSerializer.Function { x: Any? -> EnvironmentSetting.valueOf((x as String?)!!) }
+            PersistentSerializer.serializers[RoleSetting::class.java] =
+                PersistentSerializer.Function { x: Any? -> (x as RoleSetting).name }
+            PersistentSerializer.deserializers[RoleSetting::class.java] =
+                PersistentSerializer.Function { x: Any? -> RoleSetting.valueOf((x as String?)!!) }
+            PersistentSerializer.serializers[Role::class.java] =
+                PersistentSerializer.Function { obj: Any? -> Role.serialize(obj!!) }
+            PersistentSerializer.deserializers[Role::class.java] =
+                PersistentSerializer.Function { obj: Any? -> Role.deserialize(obj!!) }
+            PersistentSerializer.serializers[RoleType::class.java] =
+                PersistentSerializer.Function { x: Any? -> (x as RoleType).name }
+            PersistentSerializer.deserializers[RoleType::class.java] =
+                PersistentSerializer.Function { x: Any? -> RoleType.valueOf((x as String?)!!) }
+            PersistentSerializer.serializers[RegionGroup::class.java] =
+                PersistentSerializer.Function { obj: Any? -> RegionGroup.serialize(obj!!) }
+            PersistentSerializer.deserializers[RegionGroup::class.java] =
+                PersistentSerializer.Function { obj: Any? -> RegionGroup.deserialize(obj!!) }
+            PersistentSerializer.serializers[Region::class.java] =
+                PersistentSerializer.Function { obj: Any? -> Region.serialize(obj!!) }
+            PersistentSerializer.deserializers[Region::class.java] =
+                PersistentSerializer.Function { obj: Any? -> Region.deserialize(obj!!) }
+            PersistentSerializer.serializers[RegionExtent::class.java] =
+                PersistentSerializer.Function { obj: Any? -> RegionExtent.serialize(obj!!) }
+            PersistentSerializer.deserializers[RegionExtent::class.java] =
+                PersistentSerializer.Function { obj: Any? -> RegionExtent.deserialize(obj!!) }
         }
 
         /**
          * Global role-setting overrides applied across region checks.
          */
         var roleOverrides: RegionGlobalRoleOverrides? = null
+
         /**
          * Global environment-setting overrides applied across region checks.
          */
@@ -933,18 +951,22 @@ class Regions : Module<Regions?>() {
          * Hard cap for spawned visualization particles per rendered edge.
          */
         private const val VISUALIZE_MAX_PARTICLES = 20000
+
         /**
          * Particle density used when rendering selection edges.
          */
         private const val VISUALIZE_PARTICLES_PER_BLOCK = 12
+
         /**
          * Gaussian spread compensation factor for edge visualization.
          */
         private const val VISUALIZE_STDDEV_COMPENSATION = 0.25
+
         /**
          * Dust color used for invalid selections.
          */
         private val VISUALIZE_DUST_INVALID = DustOptions(Color.fromRGB(230, 60, 11), 1.0f)
+
         /**
          * Dust color used for valid selections.
          */

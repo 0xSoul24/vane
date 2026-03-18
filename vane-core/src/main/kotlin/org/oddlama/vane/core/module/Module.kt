@@ -57,31 +57,40 @@ import kotlin.math.max
 abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
     /** Module annotation metadata. */
     val annotation: VaneModule = javaClass.getAnnotation(VaneModule::class.java)!!
+
     /** Reference to vane-core module. */
     var core: Core? = null
+
     /** Java util logger for this module. */
     var log: Logger = logger
+
     /** Adventure component logger for this module. */
     var clog: ComponentLogger = componentLogger
+
     /** Resource-pack namespace of this module. */
     private val namespace = "vane_" + annotation.name.replace("[^a-zA-Z0-9_]".toRegex(), "_")
 
     /** Configuration manager. */
     var configManager: ConfigManager = ConfigManager(this)
+
     /** Localization manager. */
     var langManager: LangManager = LangManager(this)
+
     /** Persistent storage manager. */
     var persistentStorageManager: PersistentStorageManager = PersistentStorageManager(this)
+
     /** Whether persistent storage should be saved at next flush interval. */
     private var persistentStorageDirty = false
 
     /** Per-module catch-all command permission. */
     var permissionCommandCatchallModule: Permission?
+
     /** Module-scoped random source. */
     var random: Random = Random()
 
     /** Console permissions queued until attachment creation. */
     private val pendingConsolePermissions: MutableList<String> = mutableListOf()
+
     /** Console permission attachment. */
     var consoleAttachment: PermissionAttachment? = null
 
@@ -103,7 +112,7 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
         desc = "The language for this module. The corresponding language file must be named lang-{lang}.yml. Specifying 'inherit' will load the value set for vane-core.",
         metrics = true
     )
-    /** Configured language code for this module. */
+            /** Configured language code for this module. */
     var configLang: String? = null
 
     /** Whether bStats metrics are enabled for this module. */
@@ -111,7 +120,7 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
         def = true,
         desc = "Enable plugin metrics via bStats. You can opt-out here or via the global bStats configuration. All collected information is completely anonymous and publicly available."
     )
-    /** Whether bStats metrics are enabled. */
+            /** Whether bStats metrics are enabled. */
     var configMetricsEnabled: Boolean = false
 
     /** Root context group for this module. */
@@ -123,7 +132,9 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
     )
 
     /** Compiles a component into the root context. */
-    override fun compile(component: ModuleComponent<T?>?) { contextGroup.compile(component) }
+    override fun compile(component: ModuleComponent<T?>?) {
+        contextGroup.compile(component)
+    }
 
     /** Adds a child context to the root context while preventing self-cycles. */
     override fun addChild(subcontext: Context<T?>?) {
@@ -142,21 +153,29 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
 
     /** Root YAML path of this module context. */
     override fun yamlPath(): String? = ""
+
     /** Resolves variable YAML paths for the root context. */
     override fun variableYamlPath(variable: String?): String? = variable
+
     /** Whether this module is logically enabled. */
     override fun enabled(): Boolean = contextGroup.enabled()
 
     /** Hook called during plugin load phase. */
     protected fun onModuleLoad() {}
+
     /** Hook called when the module is enabled. */
     override fun onModuleEnable() {}
+
     /** Hook called when the module is disabled. */
     override fun onModuleDisable() {}
+
     /** Hook called after config reload. */
     override fun onConfigChange() {}
+
     /** Hook called during resource-pack generation. */
-    @Throws(IOException::class) fun onGenerateResourcePack() {}
+    @Throws(IOException::class)
+    fun onGenerateResourcePack() {
+    }
 
     /** Iterates over all compiled module components. */
     override fun forEachModuleComponent(f: Consumer1<ModuleComponent<*>?>?) {
@@ -171,7 +190,7 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
 
     init {
         core = if (this.name == "vane-core") this as Core
-               else server.pluginManager.getPlugin("vane-core") as Core?
+        else server.pluginManager.getPlugin("vane-core") as Core?
 
         permissionCommandCatchallModule = Permission(
             "vane.${annotationName}.commands.*",
@@ -203,7 +222,11 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
         reloadConfiguration()
 
         scheduleTaskTimer(
-            { if (persistentStorageDirty) { savePersistentStorage(); persistentStorageDirty = false } },
+            {
+                if (persistentStorageDirty) {
+                    savePersistentStorage(); persistentStorageDirty = false
+                }
+            },
             (60 * 20).toLong(),
             (60 * 20).toLong()
         )
@@ -271,7 +294,10 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
                     reader.lineSequence().forEach { filePath ->
                         getResource("resource_pack/$filePath")?.let { content ->
                             pack.addFile(filePath, content)
-                        } ?: log.log(Level.WARNING, "Missing resource 'resource_pack/$filePath' in module $annotationName")
+                        } ?: log.log(
+                            Level.WARNING,
+                            "Missing resource 'resource_pack/$filePath' in module $annotationName"
+                        )
                     }
                 }
             } catch (e: IOException) {
@@ -378,7 +404,9 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
     }
 
     /** Marks persistent storage as dirty for deferred save. */
-    override fun markPersistentStorageDirty() { persistentStorageDirty = true }
+    override fun markPersistentStorageDirty() {
+        persistentStorageDirty = true
+    }
 
     /** Saves persistent storage to disk. */
     fun savePersistentStorage() {
@@ -388,6 +416,7 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
 
     /** Registers a Bukkit listener with this module plugin instance. */
     fun registerListener(listener: Listener) = server.pluginManager.registerEvents(listener, this)
+
     /** Unregisters a Bukkit listener. */
     fun unregisterListener(listener: Listener) = HandlerList.unregisterAll(listener)
 
@@ -447,9 +476,9 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
         val loc = event.lootContext.location
         val localRandom = Random(
             (random.nextInt() +
-                (loc.blockX and (0xffff shl 16)) +
-                (loc.blockY and (0xffff shl 32)) +
-                (loc.blockZ and (0xffff shl 48))).toLong()
+                    (loc.blockX and (0xffff shl 16)) +
+                    (loc.blockY and (0xffff shl 32)) +
+                    (loc.blockZ and (0xffff shl 48))).toLong()
         )
         additionalLootTable.generateLoot(event.loot, localRandom)
     }
@@ -465,15 +494,15 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
         val rodLuck = player.inventory.getItem(event.hand!!).getEnchantmentLevel(Enchantment.LUCK_OF_THE_SEA).toDouble()
         val totalLuck = playerLuck + rodLuck
 
-        val weightFish     = max(0.0, 85 + totalLuck * -1)
-        val weightJunk     = max(0.0, 10 + totalLuck * -2)
+        val weightFish = max(0.0, 85 + totalLuck * -1)
+        val weightJunk = max(0.0, 10 + totalLuck * -2)
         val weightTreasure = if (event.hook.isInOpenWater) max(0.0, 5 + totalLuck * 2) else 0.0
 
         val roll = random.nextDouble() * (weightFish + weightJunk + weightTreasure)
         val key = when {
-            roll < weightFish                  -> LootTables.FISHING_FISH.key
-            roll < weightFish + weightJunk     -> LootTables.FISHING_JUNK.key
-            else                               -> LootTables.FISHING_TREASURE.key
+            roll < weightFish -> LootTables.FISHING_FISH.key
+            roll < weightFish + weightJunk -> LootTables.FISHING_JUNK.key
+            else -> LootTables.FISHING_TREASURE.key
         }
 
         val additionalLootTable = additionalLootTables[key] ?: return

@@ -18,12 +18,16 @@ import java.util.UUID
 class BedtimeDynmapLayerDelegate(private val parent: BedtimeDynmapLayer) {
     /** Live reference to the Dynmap common API; `null` until `apiEnabled` fires. */
     private var dynmapApi: DynmapCommonAPI? = null
+
     /** Marker API obtained from [dynmapApi]; `null` until the API is ready. */
     private var markerApi: MarkerAPI? = null
+
     /** Whether Dynmap integration is currently active. */
     private var dynmapEnabled = false
+
     /** The marker set used to group all bedtime markers. */
     private var markerSet: MarkerSet? = null
+
     /** The icon applied to every bed marker. */
     private var markerIcon: MarkerIcon? = null
 

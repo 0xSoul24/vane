@@ -244,7 +244,13 @@ object ItemUtil {
 
             if (itemStack.type == Material.ENCHANTED_BOOK) {
                 val flevel = level
-                itemStack.editMeta(EnchantmentStorageMeta::class.java) { meta -> meta.addStoredEnchant(ench, flevel, false) }
+                itemStack.editMeta(EnchantmentStorageMeta::class.java) { meta ->
+                    meta.addStoredEnchant(
+                        ench,
+                        flevel,
+                        false
+                    )
+                }
             } else {
                 itemStack.addEnchantment(ench, level)
             }

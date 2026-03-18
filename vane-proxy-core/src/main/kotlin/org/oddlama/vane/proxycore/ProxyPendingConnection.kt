@@ -36,9 +36,9 @@ interface ProxyPendingConnection {
      * @return `true` when startup is permitted.
      */
     fun canStartServer(server: ProxyServer?, serverName: String?): Boolean = hasPermission(
-            server,
-            "vane_proxy.start_server",
-            "vane_proxy.start_server.*",
-            "vane_proxy.start_server.$serverName"
-        )
+        server,
+        "vane_proxy.start_server",
+        "vane_proxy.start_server.*",
+        "vane_proxy.start_server.$serverName"
+    )
 }

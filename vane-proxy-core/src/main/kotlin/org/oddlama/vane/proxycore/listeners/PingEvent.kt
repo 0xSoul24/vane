@@ -10,7 +10,11 @@ import org.oddlama.vane.proxycore.config.IVaneProxyServerInfo
  * @property ping mutable ping response wrapper.
  * @property server backend server currently being pinged.
  */
-abstract class PingEvent(var plugin: VaneProxyPlugin, @JvmField var ping: ProxyServerPing, var server: IVaneProxyServerInfo) :
+abstract class PingEvent(
+    var plugin: VaneProxyPlugin,
+    @JvmField var ping: ProxyServerPing,
+    var server: IVaneProxyServerInfo
+) :
     ProxyEvent {
     /** Applies presentation values and sends the ping response. */
     override fun fire() {

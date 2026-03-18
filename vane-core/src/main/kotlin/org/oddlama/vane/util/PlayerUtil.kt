@@ -174,10 +174,10 @@ object PlayerUtil {
     @JvmStatic
     fun harvestPlant(player: Player, block: Block): Boolean {
         val drops = when (block.type) {
-            Material.WHEAT      -> arrayOf(ItemStack(Material.WHEAT,       1 + (Math.random() * 2.5).toInt()))
-            Material.CARROTS    -> arrayOf(ItemStack(Material.CARROT,      1 + (Math.random() * 2.5).toInt()))
-            Material.POTATOES   -> arrayOf(ItemStack(Material.POTATO,      1 + (Math.random() * 2.5).toInt()))
-            Material.BEETROOTS  -> arrayOf(ItemStack(Material.BEETROOT,    1 + (Math.random() * 2.5).toInt()))
+            Material.WHEAT -> arrayOf(ItemStack(Material.WHEAT, 1 + (Math.random() * 2.5).toInt()))
+            Material.CARROTS -> arrayOf(ItemStack(Material.CARROT, 1 + (Math.random() * 2.5).toInt()))
+            Material.POTATOES -> arrayOf(ItemStack(Material.POTATO, 1 + (Math.random() * 2.5).toInt()))
+            Material.BEETROOTS -> arrayOf(ItemStack(Material.BEETROOT, 1 + (Math.random() * 2.5).toInt()))
             Material.NETHER_WART -> arrayOf(ItemStack(Material.NETHER_WART, 1 + (Math.random() * 2.5).toInt()))
             else -> return false
         }
@@ -199,7 +199,7 @@ object PlayerUtil {
     @JvmStatic
     fun swingArm(player: Player, hand: EquipmentSlot) {
         when (hand) {
-            EquipmentSlot.HAND     -> player.swingMainHand()
+            EquipmentSlot.HAND -> player.swingMainHand()
             EquipmentSlot.OFF_HAND -> player.swingOffHand()
             else -> {}
         }

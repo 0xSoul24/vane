@@ -145,12 +145,12 @@ Menus:
     # This item is used to cancel a pending selection.
     CancelSelection:
       Name: "§c§lSeçimi İptal Et"
-      Lore: []
+      Lore: [ ]
 
     # This item is used to select a region where the player is administrator.
     ListRegions:
       Name: "§b§lBölge Seç"
-      Lore: []
+      Lore: [ ]
 
     # The title for the region selection menu
     SelectRegionTitle: "§8§lBölge Seç"
@@ -160,7 +160,7 @@ Menus:
     # %1$s: Region name
     SelectRegion:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
 
     # This item is a shortcut to select the region the player is standing in.
     # %1$s: Region name
@@ -185,7 +185,7 @@ Menus:
     # This item is used to select a region group.
     ListRegionGroups:
       Name: "§b§lBölge Grubunu Seçin"
-      Lore: []
+      Lore: [ ]
 
     # This item is a shortcut to select the region group of the region the player is standing in.
     # %1$s: Region group name
@@ -204,7 +204,7 @@ Menus:
     # %1$s: Region group name
     SelectRegionGroup:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
 
   # Settings for the region menu.
   Region:
@@ -215,27 +215,27 @@ Menus:
     # The item used to rename a region.
     Rename:
       Name: "§b§lBölgeyi Yeniden Adlandır"
-      Lore: []
+      Lore: [ ]
 
     # The item used to delete a region.
     Delete:
       Name: "§c§lBölgeyi Sil"
-      Lore: []
+      Lore: [ ]
     # The title for the delete confirmation dialog.
     DeleteConfirmTitle: "§c§lBölgeyi silmek ister misin?"
     # The item to accept deleting.
     DeleteConfirmAccept:
       Name: "§c§lBÖLGEYİ SİL"
-      Lore: []
+      Lore: [ ]
     # The item to cancel deleting.
     DeleteConfirmCancel:
       Name: "§a§lİptal Etmek"
-      Lore: []
+      Lore: [ ]
 
     # The item used to open the list of region groups to assign the region to one
     AssignRegionGroup:
       Name: "§b§lGruba Katıl"
-      Lore: []
+      Lore: [ ]
 
     SelectRegionGroupTitle: "§8§lBölge Grubunu Seçin"
     FilterRegionGroupsTitle: "§8§lBölge Gruplarını Filtrele"
@@ -243,7 +243,7 @@ Menus:
     # %1$s: Region group name
     SelectRegionGroup:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
 
   # Settings for the region group menu.
   RegionGroup:
@@ -253,10 +253,10 @@ Menus:
 
     SettingToggleOn:
       Name: "§a§lAKTİFLEŞTİRİLDİ"
-      Lore: []
+      Lore: [ ]
     SettingToggleOff:
       Name: "§c§lKAPATILDI"
-      Lore: []
+      Lore: [ ]
     SettingInfoAnimals:
       Name: "§b§lHayvanlar"
       Lore:
@@ -296,7 +296,7 @@ Menus:
     # The item used to rename a region group.
     Rename:
       Name: "§b§lGrubu Yeniden Adlandır"
-      Lore: []
+      Lore: [ ]
 
     # The item used to delete a region group.
     # %1$s: Checkmark: No region uses this group
@@ -311,11 +311,11 @@ Menus:
     # The item to accept deleting.
     DeleteConfirmAccept:
       Name: "§c§lBÖLGE GRUBUNU SİL"
-      Lore: []
+      Lore: [ ]
     # The item to cancel deleting.
     DeleteConfirmCancel:
       Name: "§a§lİptal Etmek"
-      Lore: []
+      Lore: [ ]
 
     # This item is used to create a new role.
     CreateRole:
@@ -328,7 +328,7 @@ Menus:
     # This item is used to open the role menu for a role.
     ListRoles:
       Name: "§b§lRoller"
-      Lore: []
+      Lore: [ ]
 
     SelectRoleTitle: "§8§lRol Seç"
     FilterRolesTitle: "§8§lRolleri Filtrele"
@@ -336,9 +336,9 @@ Menus:
     # %1$s: Role name
     SelectRole:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
 
-# Settings for the role menu.
+  # Settings for the role menu.
   Role:
     # The title for the role menu.
     # %1$s: Role name
@@ -346,10 +346,10 @@ Menus:
 
     SettingToggleOn:
       Name: "§a§lETKİNLEŞTİRİLMİŞ"
-      Lore: []
+      Lore: [ ]
     SettingToggleOff:
       Name: "§c§lKAPATILMIŞ"
-      Lore: []
+      Lore: [ ]
     SettingInfoAdmin:
       Name: "§b§lAdmin"
       Lore:
@@ -384,22 +384,22 @@ Menus:
     # The item used to rename a role.
     Rename:
       Name: "§b§lRolü Yeniden Adlandır"
-      Lore: []
+      Lore: [ ]
 
     # The item used to delete a role.
     Delete:
       Name: "§c§lRolü Sil"
-      Lore: []
+      Lore: [ ]
     # The title for the delete confirmation dialog.
     DeleteConfirmTitle: "§c§lRolü silmek ister misin?"
     # The item to accept deleting.
     DeleteConfirmAccept:
       Name: "§c§lROLÜ SİL"
-      Lore: []
+      Lore: [ ]
     # The item to cancel deleting.
     DeleteConfirmCancel:
       Name: "§a§lİptal Etmek"
-      Lore: []
+      Lore: [ ]
 
     # This item is used to open the player assignment menu for a role.
     AssignPlayer:
@@ -427,4 +427,4 @@ Menus:
     # %1$s: Player name
     SelectPlayer:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]

@@ -94,21 +94,21 @@ object BlockUtil {
     @JvmStatic
     fun adjacentBlocks3D(root: Block): Array<Block?> = arrayOf(
         // Direct adjacent
-        root.getRelative( 1,  0,  0), root.getRelative(-1,  0,  0),
-        root.getRelative( 0,  0,  1), root.getRelative( 0,  0, -1),
-        root.getRelative( 0,  1,  0), root.getRelative( 0, -1,  0),
+        root.getRelative(1, 0, 0), root.getRelative(-1, 0, 0),
+        root.getRelative(0, 0, 1), root.getRelative(0, 0, -1),
+        root.getRelative(0, 1, 0), root.getRelative(0, -1, 0),
         // Edge adjacent
-        root.getRelative( 0, -1, -1), root.getRelative( 0, -1,  1),
-        root.getRelative( 0,  1, -1), root.getRelative( 0,  1,  1),
-        root.getRelative(-1,  0, -1), root.getRelative(-1,  0,  1),
-        root.getRelative( 1,  0, -1), root.getRelative( 1,  0,  1),
-        root.getRelative(-1, -1,  0), root.getRelative(-1,  1,  0),
-        root.getRelative( 1, -1,  0), root.getRelative( 1,  1,  0),
+        root.getRelative(0, -1, -1), root.getRelative(0, -1, 1),
+        root.getRelative(0, 1, -1), root.getRelative(0, 1, 1),
+        root.getRelative(-1, 0, -1), root.getRelative(-1, 0, 1),
+        root.getRelative(1, 0, -1), root.getRelative(1, 0, 1),
+        root.getRelative(-1, -1, 0), root.getRelative(-1, 1, 0),
+        root.getRelative(1, -1, 0), root.getRelative(1, 1, 0),
         // Corner adjacent
-        root.getRelative(-1, -1, -1), root.getRelative(-1, -1,  1),
-        root.getRelative(-1,  1, -1), root.getRelative(-1,  1,  1),
-        root.getRelative( 1, -1, -1), root.getRelative( 1, -1,  1),
-        root.getRelative( 1,  1, -1), root.getRelative( 1,  1,  1),
+        root.getRelative(-1, -1, -1), root.getRelative(-1, -1, 1),
+        root.getRelative(-1, 1, -1), root.getRelative(-1, 1, 1),
+        root.getRelative(1, -1, -1), root.getRelative(1, -1, 1),
+        root.getRelative(1, 1, -1), root.getRelative(1, 1, 1),
     )
 
     /** Finds the nearest air block above matching farmland around a root block. */
@@ -194,33 +194,37 @@ object BlockUtil {
 
         /** Returns whether the corner is on the upper half. */
         fun up(): Boolean = y
+
         /** Returns whether the corner is on the eastern half. */
         fun east(): Boolean = x
+
         /** Returns whether the corner is on the southern half. */
         fun south(): Boolean = z
 
         /** Returns a copy with updated upper/lower half. */
         fun up(up: Boolean): Corner = Corner(x, up, z)
+
         /** Returns a copy with updated east/west half. */
         fun east(east: Boolean): Corner = Corner(east, y, z)
+
         /** Returns a copy with updated north/south half. */
         fun south(south: Boolean): Corner = Corner(x, y, south)
 
         /** Rotates this corner into north-facing reference orientation. */
         fun rotateToNorthReference(rotation: BlockFace): Corner = when (rotation) {
             BlockFace.NORTH -> Corner(x, y, z)
-            BlockFace.EAST  -> Corner(z, y, !x)
+            BlockFace.EAST -> Corner(z, y, !x)
             BlockFace.SOUTH -> Corner(!x, y, !z)
-            BlockFace.WEST  -> Corner(!z, y, x)
+            BlockFace.WEST -> Corner(!z, y, x)
             else -> throw IllegalArgumentException("rotation must be one of NORTH, EAST, SOUTH, WEST")
         }
 
         /** Returns the diagonal horizontal face represented by this corner. */
         fun xzFace(): BlockFace = when {
-            x && z   -> BlockFace.SOUTH_EAST
-            x && !z  -> BlockFace.NORTH_EAST
-            !x && z  -> BlockFace.SOUTH_WEST
-            else     -> BlockFace.NORTH_WEST
+            x && z -> BlockFace.SOUTH_EAST
+            x && !z -> BlockFace.NORTH_EAST
+            !x && z -> BlockFace.SOUTH_WEST
+            else -> BlockFace.NORTH_WEST
         }
 
         override fun hashCode(): Int = id
@@ -233,10 +237,13 @@ object BlockUtil {
     class Oct(private val hitPos: Vector, private val face: BlockFace?) {
         /** Corner represented by this hit position. */
         val corner: Corner = Corner(hitPos)
+
         /** Returns hit position relative vector. */
         fun hitPos(): Vector = hitPos
+
         /** Returns hit corner. */
         fun corner(): Corner = corner
+
         /** Returns hit face. */
         fun face(): BlockFace? = face
     }
@@ -246,9 +253,12 @@ object BlockUtil {
      */
     class RaytraceDominantFaceResult {
         /** Dominant face candidate. */
-        @JvmField var face: BlockFace? = null
+        @JvmField
+        var face: BlockFace? = null
+
         /** Dominance score for [face]. */
-        @JvmField var dominance: Double = 0.0
+        @JvmField
+        var dominance: Double = 0.0
     }
 
     /**
@@ -258,6 +268,6 @@ object BlockUtil {
         /** Compares vectors by squared Euclidean distance. */
         override fun compare(a: BlockVector, b: BlockVector): Int =
             (a.blockX * a.blockX + a.blockY * a.blockY + a.blockZ * a.blockZ) -
-            (b.blockX * b.blockX + b.blockY * b.blockY + b.blockZ * b.blockZ)
+                    (b.blockX * b.blockX + b.blockY * b.blockY + b.blockZ * b.blockZ)
     }
 }

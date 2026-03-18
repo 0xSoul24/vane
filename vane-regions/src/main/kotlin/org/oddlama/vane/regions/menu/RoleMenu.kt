@@ -23,59 +23,65 @@ import org.oddlama.vane.util.StorageUtil
  */
 class RoleMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.namespace("Role")) {
     @LangMessage
-    /**
-     * Localized role menu title.
-     */
+            /**
+             * Localized role menu title.
+             */
     var langTitle: TranslatedMessage? = null
 
     @LangMessage
-    /**
-     * Localized confirmation title for role deletion.
-     */
+            /**
+             * Localized confirmation title for role deletion.
+             */
     var langDeleteConfirmTitle: TranslatedMessage? = null
 
     @LangMessage
-    /**
-     * Localized title for assign-player selector.
-     */
+            /**
+             * Localized title for assign-player selector.
+             */
     var langSelectAssignPlayerTitle: TranslatedMessage? = null
 
     @LangMessage
-    /**
-     * Localized title for remove-player selector.
-     */
+            /**
+             * Localized title for remove-player selector.
+             */
     var langSelectRemovePlayerTitle: TranslatedMessage? = null
 
     @LangMessage
-    /**
-     * Localized title for player filter input.
-     */
+            /**
+             * Localized title for player filter input.
+             */
     var langFilterPlayersTitle: TranslatedMessage? = null
 
     /**
      * Item for renaming the role.
      */
     var itemRename: TranslatedItemStack<*>
+
     /**
      * Item for deleting the role.
      */
     var itemDelete: TranslatedItemStack<*>
+
     /**
      * Item confirming role deletion.
      */
     var itemDeleteConfirmAccept: TranslatedItemStack<*>
+
     /**
      * Item cancelling role deletion.
      */
     var itemDeleteConfirmCancel: TranslatedItemStack<*>
+
     /**
      * Item opening player-assignment flow.
      */
     var itemAssignPlayer: TranslatedItemStack<*>
+
     /**
      * Item opening player-removal flow.
      */
     var itemRemovePlayer: TranslatedItemStack<*>
+
     /**
      * Item template for one player entry in selectors.
      */
@@ -85,26 +91,32 @@ class RoleMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.n
      * Item shown for enabled setting toggle state.
      */
     var itemSettingToggleOn: TranslatedItemStack<*>
+
     /**
      * Item shown for disabled setting toggle state.
      */
     var itemSettingToggleOff: TranslatedItemStack<*>
+
     /**
      * Info item for the admin setting.
      */
     var itemSettingInfoAdmin: TranslatedItemStack<*>
+
     /**
      * Info item for the build setting.
      */
     var itemSettingInfoBuild: TranslatedItemStack<*>
+
     /**
      * Info item for the use setting.
      */
     var itemSettingInfoUse: TranslatedItemStack<*>
+
     /**
      * Info item for the container setting.
      */
     var itemSettingInfoContainer: TranslatedItemStack<*>
+
     /**
      * Info item for the portal setting.
      */
@@ -265,7 +277,11 @@ class RoleMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.n
                 player2?.let { module!!.menus?.roleMenu?.create(group, role, it)?.open(it) }
                 Menu.ClickResult.SUCCESS
             }
-                ?.onNaturalClose { player2: Player? -> player2?.let { module!!.menus?.roleMenu?.create(group, role, it)?.open(it) } }
+                ?.onNaturalClose { player2: Player? ->
+                    player2?.let {
+                        module!!.menus?.roleMenu?.create(group, role, it)?.open(it)
+                    }
+                }
                 ?.open(p)
             Menu.ClickResult.SUCCESS
         }

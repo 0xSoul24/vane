@@ -9,6 +9,7 @@ import org.dynmap.markers.MarkerIcon
 import org.dynmap.markers.MarkerSet
 import org.oddlama.vane.portals.portal.Portal
 import java.util.*
+
 // ...existing imports...
 
 /** Internal Dynmap integration helper used by [PortalDynmapLayer]. */
@@ -118,7 +119,7 @@ class PortalDynmapLayerDelegate(private val parent: PortalDynmapLayer) {
         }
 
         val loc = portal.spawn()
-        val worldName = loc.getWorld().name
+        val worldName = loc.world.name
         val markerId = idFor(portal) ?: return
         val markerLabel = parent.langMarkerLabel!!.str(portal.name())
 

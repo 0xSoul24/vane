@@ -47,7 +47,7 @@ class Setspawn(context: Context<Trifles?>) : org.oddlama.vane.core.command.Comma
 
     companion object {
         @JvmField
-        /** Metadata key identifying which world acts as global spawn target. */
+                /** Metadata key identifying which world acts as global spawn target. */
         val IS_SPAWN_WORLD: NamespacedKey = StorageUtil.namespacedKey("vane", "is_spawn_world")
     }
 }

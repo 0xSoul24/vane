@@ -23,7 +23,12 @@ class ConfigDoubleListField(
 ) : ConfigField<MutableList<Double?>?>(owner, field, mapName, "double list", annotation.desc) {
 
     /** Appends a double list definition block. */
-    private fun appendDoubleListDefinition(builder: StringBuilder?, indent: String?, prefix: String?, def: MutableList<Double?>) {
+    private fun appendDoubleListDefinition(
+        builder: StringBuilder?,
+        indent: String?,
+        prefix: String?,
+        def: MutableList<Double?>
+    ) {
         appendListDefinition<Double?>(builder, indent, prefix, def) { b, d -> b!!.append(d!!) }
     }
 

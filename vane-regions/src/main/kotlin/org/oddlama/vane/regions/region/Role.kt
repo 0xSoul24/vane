@@ -22,18 +22,22 @@ class Role {
      * Unique role identifier.
      */
     private var id: UUID? = null
+
     /**
      * Role display name.
      */
     private var name: String? = null
+
     /**
      * Category of this role.
      */
     private var roleType: RoleType? = null
+
     /**
      * Explicit permission values configured for this role.
      */
     private var settings: MutableMap<RoleSetting?, Boolean?>? = EnumMap<RoleSetting, Boolean?>(RoleSetting::class.java)
+
     /**
      * Non-null accessor for the settings map.
      */
@@ -104,9 +108,9 @@ class Role {
     companion object {
         @JvmStatic
         @Throws(IOException::class)
-        /**
-         * Serializes a role to JSON-compatible data.
-         */
+                /**
+                 * Serializes a role to JSON-compatible data.
+                 */
         fun serialize(o: Any): Any {
             val role = o as Role
             val json = JSONObject()
@@ -125,9 +129,9 @@ class Role {
 
         @JvmStatic
         @Throws(IOException::class)
-        /**
-         * Deserializes a role from JSON-compatible data.
-         */
+                /**
+                 * Deserializes a role from JSON-compatible data.
+                 */
         fun deserialize(o: Any): Role {
             val json = o as JSONObject
             val role = Role()

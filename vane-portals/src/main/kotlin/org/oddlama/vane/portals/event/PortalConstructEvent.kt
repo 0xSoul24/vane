@@ -11,7 +11,11 @@ import org.oddlama.vane.portals.portal.PortalBoundary
  * @property boundary the detected boundary.
  * @property checkOnly whether this is a dry-run validation.
  */
-class PortalConstructEvent(@JvmField val player: Player?, @JvmField val boundary: PortalBoundary?, private val checkOnly: Boolean) :
+class PortalConstructEvent(
+    @JvmField val player: Player?,
+    @JvmField val boundary: PortalBoundary?,
+    private val checkOnly: Boolean
+) :
     PortalEvent() {
     /** Returns whether this event is in validation-only mode. */
     fun checkOnly() = checkOnly
@@ -22,6 +26,7 @@ class PortalConstructEvent(@JvmField val player: Player?, @JvmField val boundary
     /** Static Bukkit handler list for this event type. */
     companion object {
         /** Shared handler list used by Bukkit's event system. */
-        @JvmStatic val handlerList: HandlerList = HandlerList()
+        @JvmStatic
+        val handlerList: HandlerList = HandlerList()
     }
 }

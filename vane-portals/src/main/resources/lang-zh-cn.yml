@@ -61,40 +61,40 @@ Menus:
     SelectIconTitle: "§8§l选择图示"
     Rename:
       Name: "§b§l重命名"
-      Lore: []
+      Lore: [ ]
     SelectIcon:
       Name: "§b§l选择图示"
-      Lore: []
+      Lore: [ ]
     SelectStyle:
       Name: "§b§l选择样式"
-      Lore: []
+      Lore: [ ]
     ExitOrientationLockOn:
       Name: "§b§l切换出口定向锁"
-      Lore: ["", "§b当前: §e§l锁定（总是向前离开）§r"]
+      Lore: [ "", "§b当前: §e§l锁定（总是向前离开）§r" ]
     ExitOrientationLockOff:
       Name: "§b§l切换出口定向锁"
-      Lore: ["", "§b当前: §a§l未锁定（离开与进入相同方向）§r"]
+      Lore: [ "", "§b当前: §a§l未锁定（离开与进入相同方向）§r" ]
     VisibilityPublic:
       Name: "§b§l切换显示方式"
-      Lore: ["", "§b当前: §a§l公共显示§r"]
+      Lore: [ "", "§b当前: §a§l公共显示§r" ]
     VisibilityGroup:
       Name: "§b§l切换显示方式"
-      Lore: ["", "§b当前: §e§l区域组（成员）显示§r"]
+      Lore: [ "", "§b当前: §e§l区域组（成员）显示§r" ]
     VisibilityGroupInternal:
       Name: "§b§l切换可见度"
-      Lore: ["", "§b当前状态: §e§l群组 (仅在内部可见)§r"]
+      Lore: [ "", "§b当前状态: §e§l群组 (仅在内部可见)§r" ]
     VisibilityPrivate:
       Name: "§b§l切换可见度"
-      Lore: ["", "§b当前状态: §c§l私有§r"]
+      Lore: [ "", "§b当前状态: §c§l私有§r" ]
     TargetLockOn:
       Name: "§b§l切换目标锁定"
-      Lore: ["", "§b当前状态: §c§l已锁定§r"]
+      Lore: [ "", "§b当前状态: §c§l已锁定§r" ]
     TargetLockOff:
       Name: "§b§l切换目标锁定"
-      Lore: ["", "§b当前状态: §a§l已解锁§r"]
+      Lore: [ "", "§b当前状态: §a§l已解锁§r" ]
     Back:
       Name: "§6↩ §l返回"
-      Lore: []
+      Lore: [ ]
   Style:
     Title: "§8§l入口样式： %1$s"
     SelectBlockConsoleActiveTitle: "选择激活的 控制 方块。"
@@ -117,117 +117,117 @@ Menus:
 
     BlockConsoleActive:
       Name: "§b§l控制台 §a(启用中)"
-      Lore: []
+      Lore: [ ]
     BlockOriginActive:
       Name: "§b§l原点 §a(启用中)"
-      Lore: []
+      Lore: [ ]
     BlockPortalActive:
       Name: "§b§l传送门区域 §a(启用中)"
-      Lore: []
+      Lore: [ ]
     BlockBoundary1Active:
       Name: "§b§l边界 §a(启用中)"
-      Lore: ["", "§a变体 1", "§7建造材料: %1$s"]
+      Lore: [ "", "§a变体 1", "§7建造材料: %1$s" ]
     BlockBoundary2Active:
       Name: "§b§l边界 §a(启用中)"
-      Lore: ["", "§a变体 2", "§7建造材料: %1$s"]
+      Lore: [ "", "§a变体 2", "§7建造材料: %1$s" ]
     BlockBoundary3Active:
       Name: "§b§l边界 §a(启用中)"
-      Lore: ["", "§a变体 3", "§7建造材料: %1$s"]
+      Lore: [ "", "§a变体 3", "§7建造材料: %1$s" ]
     BlockBoundary4Active:
       Name: "§b§l边界 §a(启用中)"
-      Lore: ["", "§a变体 4", "§7建造材料: %1$s"]
+      Lore: [ "", "§a变体 4", "§7建造材料: %1$s" ]
     BlockBoundary5Active:
       Name: "§b§l边界 §a(启用中)"
-      Lore: ["", "§a变体 5", "§7建造材料: %1$s"]
+      Lore: [ "", "§a变体 5", "§7建造材料: %1$s" ]
     BlockConsoleInactive:
       Name: "§b§l控制台 §e(未启用)"
-      Lore: []
+      Lore: [ ]
     BlockOriginInactive:
       Name: "§b§l起点 §e(未启用)"
-      Lore: []
+      Lore: [ ]
     BlockPortalInactive:
       Name: "§b§l传送门区域 §e(未启用)"
-      Lore: []
+      Lore: [ ]
     BlockBoundary1Inactive:
       Name: "§b§l边界 §e(未启用)"
-      Lore: ["", "§a变体 1", "§7建造材料：%1$s"]
+      Lore: [ "", "§a变体 1", "§7建造材料：%1$s" ]
     BlockBoundary2Inactive:
       Name: "§b§l边界 §e(未启用)"
-      Lore: ["", "§a变体 2", "§7建造材料：%1$s"]
+      Lore: [ "", "§a变体 2", "§7建造材料：%1$s" ]
     BlockBoundary3Inactive:
       Name: "§b§l边界 §e(未启用)"
-      Lore: ["", "§a变体 3", "§7建造材料：%1$s"]
+      Lore: [ "", "§a变体 3", "§7建造材料：%1$s" ]
     BlockBoundary4Inactive:
       Name: "§b§l边界 §e(未启用)"
-      Lore: ["", "§a变体 4", "§7建造材料：%1$s"]
+      Lore: [ "", "§a变体 4", "§7建造材料：%1$s" ]
     BlockBoundary5Inactive:
       Name: "§b§l边界 §e(未启用)"
-      Lore: ["", "§a变体 5", "§7建造材料：%1$s"]
+      Lore: [ "", "§a变体 5", "§7建造材料：%1$s" ]
     Accept:
       Name: "§a§l套用风格"
-      Lore: []
+      Lore: [ ]
     Reset:
       Name: "§6§l重设更改"
-      Lore: []
+      Lore: [ ]
     SelectStyleTitle: "§8§l选择风格"
     FilterStylesTitle: "§8§l筛选风格"
     SelectDefined:
       Name: "§b§l选择预设风格"
-      Lore: []
+      Lore: [ ]
     SelectStyle:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
     Cancel:
       Name: "§6↩ §l舍弃更改"
-      Lore: []
+      Lore: [ ]
   Console:
-      Title: "§8§l传送门: %1$s"
-      Settings:
-        Name: "§b§l设定"
-        Lore: []
-      SelectTarget:
-        Name: "§d§l选择目标"
-        Lore:
-          - ""
-          - "§7目前: %1$s"
-      SelectTargetLocked:
-        Name: "§d§l选择目标"
-        Lore:
-          - ""
-          - "§7目前: %1$s"
-          - "§8目标选择目前§6§l已锁定§r§8！"
-      SelectTargetTitle: "§8§l选择目标传送门"
-      FilterPortalsTitle: "§8§l筛选传送门"
-      SelectTargetPortal:
-        Name: "%1$s"
-        Lore:
-          - ""
-          - "§7距离: %2$s§6米"
-          - "§7世界: %3$s"
-          - "§7%4$s"
-      SelectTargetPortalVisibilityPublic: "§a公共的"
-      SelectTargetPortalVisibilityGroup: "§e区域组（成员）"
-      SelectTargetPortalVisibilityGroupInternal: "§e区域组（仅在内部可见）"
-      SelectTargetPortalVisibilityPrivate: "§c私有的"
+    Title: "§8§l传送门: %1$s"
+    Settings:
+      Name: "§b§l设定"
+      Lore: [ ]
+    SelectTarget:
+      Name: "§d§l选择目标"
+      Lore:
+        - ""
+        - "§7目前: %1$s"
+    SelectTargetLocked:
+      Name: "§d§l选择目标"
+      Lore:
+        - ""
+        - "§7目前: %1$s"
+        - "§8目标选择目前§6§l已锁定§r§8！"
+    SelectTargetTitle: "§8§l选择目标传送门"
+    FilterPortalsTitle: "§8§l筛选传送门"
+    SelectTargetPortal:
+      Name: "%1$s"
+      Lore:
+        - ""
+        - "§7距离: %2$s§6米"
+        - "§7世界: %3$s"
+        - "§7%4$s"
+    SelectTargetPortalVisibilityPublic: "§a公共的"
+    SelectTargetPortalVisibilityGroup: "§e区域组（成员）"
+    SelectTargetPortalVisibilityGroupInternal: "§e区域组（仅在内部可见）"
+    SelectTargetPortalVisibilityPrivate: "§c私有的"
 
 
-      UnlinkConsole:
-        Name: "§c§l解除连接控制台"
-        Lore: []
-      UnlinkConsoleConfirmTitle: "§c§l确认解除连接控制台？"
-      UnlinkConsoleConfirmAccept:
-        Name: "§c§l解除连接控制台"
-        Lore: []
-      UnlinkConsoleConfirmCancel:
-        Name: "§a§l取消"
-        Lore: []
-      DestroyPortal:
-        Name: "§c§l摧毁传送门"
-        Lore: []
-      DestroyPortalConfirmTitle: "§c§l确认摧毁传送门？"
-      DestroyPortalConfirmAccept:
-        Name: "§c§l摧毁传送门"
-        Lore: []
-      DestroyPortalConfirmCancel:
-        Name: "§a§l取消"
-        Lore: []
+    UnlinkConsole:
+      Name: "§c§l解除连接控制台"
+      Lore: [ ]
+    UnlinkConsoleConfirmTitle: "§c§l确认解除连接控制台？"
+    UnlinkConsoleConfirmAccept:
+      Name: "§c§l解除连接控制台"
+      Lore: [ ]
+    UnlinkConsoleConfirmCancel:
+      Name: "§a§l取消"
+      Lore: [ ]
+    DestroyPortal:
+      Name: "§c§l摧毁传送门"
+      Lore: [ ]
+    DestroyPortalConfirmTitle: "§c§l确认摧毁传送门？"
+    DestroyPortalConfirmAccept:
+      Name: "§c§l摧毁传送门"
+      Lore: [ ]
+    DestroyPortalConfirmCancel:
+      Name: "§a§l取消"
+      Lore: [ ]

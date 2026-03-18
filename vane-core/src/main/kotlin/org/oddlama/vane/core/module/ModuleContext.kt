@@ -173,5 +173,7 @@ open class ModuleContext<T : Module<T?>?> @JvmOverloads constructor(
     /**
      * Hook invoked before resource-pack generation propagation.
      */
-    @Throws(IOException::class) override fun onGenerateResourcePack(pack: ResourcePackGenerator?) {}
+    @Throws(IOException::class)
+    override fun onGenerateResourcePack(pack: ResourcePackGenerator?) {
+    }
 }

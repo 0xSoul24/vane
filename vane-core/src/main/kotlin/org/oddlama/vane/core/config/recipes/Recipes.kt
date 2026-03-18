@@ -26,7 +26,10 @@ class Recipes<T : Module<T?>?> @JvmOverloads constructor(
     private val desc: String? = "The associated recipes. This is a map of recipe name to recipe definitions."
 ) : ModuleComponent<T?>(context) {
     /** Whether recipe registration is enabled. */
-    @ConfigBoolean(def = true, desc = "Whether these recipes should be registered at all. Set to false to quickly disable all associated recipes.")
+    @ConfigBoolean(
+        def = true,
+        desc = "Whether these recipes should be registered at all. Set to false to quickly disable all associated recipes."
+    )
     var configRegisterRecipes: Boolean = false
 
     /** Recipe configuration dictionary. */
@@ -53,6 +56,7 @@ class Recipes<T : Module<T?>?> @JvmOverloads constructor(
 
     /** Enables this component. */
     override fun onEnable() {}
+
     /** Disables this component. */
     override fun onDisable() {}
 }

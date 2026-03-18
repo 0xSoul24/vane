@@ -145,56 +145,56 @@ object PersistentSerializer {
          */
         for (cls in listOf(
             Boolean::class.javaPrimitiveType, Boolean::class.java, Boolean::class.javaObjectType,
-            Char::class.javaPrimitiveType,    Char::class.java,    Char::class.javaObjectType,
-            Double::class.javaPrimitiveType,  Double::class.java,  Double::class.javaObjectType,
-            Float::class.javaPrimitiveType,   Float::class.java,   Float::class.javaObjectType,
-            Int::class.javaPrimitiveType,     Int::class.java,     Int::class.javaObjectType,
-            Long::class.javaPrimitiveType,    Long::class.java,    Long::class.javaObjectType,
+            Char::class.javaPrimitiveType, Char::class.java, Char::class.javaObjectType,
+            Double::class.javaPrimitiveType, Double::class.java, Double::class.javaObjectType,
+            Float::class.javaPrimitiveType, Float::class.java, Float::class.javaObjectType,
+            Int::class.javaPrimitiveType, Int::class.java, Int::class.javaObjectType,
+            Long::class.javaPrimitiveType, Long::class.java, Long::class.javaObjectType,
         )) {
             @Suppress("UNCHECKED_CAST")
             serializers[cls] = Function { it.toString() }
         }
 
-        deserializers[Boolean::class.javaPrimitiveType]  = Function { (it as String?).toBoolean() }
-        deserializers[Boolean::class.java]               = Function { (it as String?).toBoolean() }
-        deserializers[Boolean::class.javaObjectType]     = Function { (it as String?).toBoolean() }
-        deserializers[Char::class.javaPrimitiveType]     = Function { (it as String)[0] }
-        deserializers[Char::class.java]                  = Function { (it as String)[0] }
-        deserializers[Char::class.javaObjectType]        = Function { (it as String)[0] }
-        deserializers[Double::class.javaPrimitiveType]   = Function { (it as String).toDouble() }
-        deserializers[Double::class.java]                = Function { (it as String).toDouble() }
-        deserializers[Double::class.javaObjectType]      = Function { (it as String).toDouble() }
-        deserializers[Float::class.javaPrimitiveType]    = Function { (it as String).toFloat() }
-        deserializers[Float::class.java]                 = Function { (it as String).toFloat() }
-        deserializers[Float::class.javaObjectType]       = Function { (it as String).toFloat() }
-        deserializers[Int::class.javaPrimitiveType]      = Function { (it as String).toInt() }
-        deserializers[Int::class.java]                   = Function { (it as String).toInt() }
-        deserializers[Int::class.javaObjectType]         = Function { (it as String).toInt() }
-        deserializers[Long::class.javaPrimitiveType]     = Function { (it as String).toLong() }
-        deserializers[Long::class.java]                  = Function { (it as String).toLong() }
-        deserializers[Long::class.javaObjectType]        = Function { (it as String).toLong() }
+        deserializers[Boolean::class.javaPrimitiveType] = Function { (it as String?).toBoolean() }
+        deserializers[Boolean::class.java] = Function { (it as String?).toBoolean() }
+        deserializers[Boolean::class.javaObjectType] = Function { (it as String?).toBoolean() }
+        deserializers[Char::class.javaPrimitiveType] = Function { (it as String)[0] }
+        deserializers[Char::class.java] = Function { (it as String)[0] }
+        deserializers[Char::class.javaObjectType] = Function { (it as String)[0] }
+        deserializers[Double::class.javaPrimitiveType] = Function { (it as String).toDouble() }
+        deserializers[Double::class.java] = Function { (it as String).toDouble() }
+        deserializers[Double::class.javaObjectType] = Function { (it as String).toDouble() }
+        deserializers[Float::class.javaPrimitiveType] = Function { (it as String).toFloat() }
+        deserializers[Float::class.java] = Function { (it as String).toFloat() }
+        deserializers[Float::class.javaObjectType] = Function { (it as String).toFloat() }
+        deserializers[Int::class.javaPrimitiveType] = Function { (it as String).toInt() }
+        deserializers[Int::class.java] = Function { (it as String).toInt() }
+        deserializers[Int::class.javaObjectType] = Function { (it as String).toInt() }
+        deserializers[Long::class.javaPrimitiveType] = Function { (it as String).toLong() }
+        deserializers[Long::class.java] = Function { (it as String).toLong() }
+        deserializers[Long::class.javaObjectType] = Function { (it as String).toLong() }
 
         /**
          * Registers serializers for standard library value types.
          */
-        serializers[String::class.java]   = Function { it }
+        serializers[String::class.java] = Function { it }
         deserializers[String::class.java] = Function { it }
-        serializers[UUID::class.java]     = Function { it.toString() }
-        deserializers[UUID::class.java]   = Function { UUID.fromString(it as String?) }
+        serializers[UUID::class.java] = Function { it.toString() }
+        deserializers[UUID::class.java] = Function { UUID.fromString(it as String?) }
 
         /**
          * Registers serializers for Bukkit and vane-specific types.
          */
-        serializers[NamespacedKey::class.java]  = Function { serializeNamespacedKey(it!!) }
+        serializers[NamespacedKey::class.java] = Function { serializeNamespacedKey(it!!) }
         deserializers[NamespacedKey::class.java] = Function { deserializeNamespacedKey(it!!) }
-        serializers[LazyLocation::class.java]   = Function { serializeLazyLocation(it!!) }
+        serializers[LazyLocation::class.java] = Function { serializeLazyLocation(it!!) }
         deserializers[LazyLocation::class.java] = Function { deserializeLazyLocation(it!!) }
-        serializers[LazyBlock::class.java]      = Function { serializeLazyBlock(it!!) }
-        deserializers[LazyBlock::class.java]    = Function { deserializeLazyBlock(it!!) }
-        serializers[Material::class.java]       = Function { serializeMaterial(it!!) }
-        deserializers[Material::class.java]     = Function { deserializeMaterial(it!!) }
-        serializers[ItemStack::class.java]      = Function { serializeItemStack(it!!) }
-        deserializers[ItemStack::class.java]    = Function { deserializeItemStack(it!!) }
+        serializers[LazyBlock::class.java] = Function { serializeLazyBlock(it!!) }
+        deserializers[LazyBlock::class.java] = Function { deserializeLazyBlock(it!!) }
+        serializers[Material::class.java] = Function { serializeMaterial(it!!) }
+        deserializers[Material::class.java] = Function { deserializeMaterial(it!!) }
+        serializers[ItemStack::class.java] = Function { serializeItemStack(it!!) }
+        deserializers[ItemStack::class.java] = Function { deserializeItemStack(it!!) }
     }
 
     /**
@@ -215,7 +215,7 @@ object PersistentSerializer {
         if (isNull(value)) return JSONObject.NULL
         val serializer: Function<Any?, Any?> = serializers[cls]
             ?: if (cls != null && cls.isEnum) Function { (it as Enum<*>).name }
-               else throw IOException("No serializer registered for type $cls. This is a bug.")
+            else throw IOException("No serializer registered for type $cls. This is a bug.")
         return serializer.apply(value)
     }
 
@@ -237,8 +237,25 @@ object PersistentSerializer {
                     json.put(toJson(typeArgs[0] as Class<*>?, k) as String?, toJson(typeArgs[1], v!!))
                 }
             }
-            MutableSet::class.java  -> JSONArray().also { json -> for (t in value as Set<*>)  json.put(toJson(typeArgs[0], t!!)) }
-            MutableList::class.java -> JSONArray().also { json -> for (t in value as List<*>) json.put(toJson(typeArgs[0], t!!)) }
+
+            MutableSet::class.java -> JSONArray().also { json ->
+                for (t in value as Set<*>) json.put(
+                    toJson(
+                        typeArgs[0],
+                        t!!
+                    )
+                )
+            }
+
+            MutableList::class.java -> JSONArray().also { json ->
+                for (t in value as List<*>) json.put(
+                    toJson(
+                        typeArgs[0],
+                        t!!
+                    )
+                )
+            }
+
             else -> throw IOException("Cannot serialize $type. This is a bug.")
         }
     }
@@ -286,7 +303,8 @@ object PersistentSerializer {
                     put(fromJson(typeArgs[0] as Class<*>?, key), fromJson(typeArgs[1], json[key]))
                 }
             }.toMutableMap()
-            MutableSet::class.java  -> (json as JSONArray).mapTo(HashSet()) { fromJson(typeArgs[0], it) }
+
+            MutableSet::class.java -> (json as JSONArray).mapTo(HashSet()) { fromJson(typeArgs[0], it) }
             MutableList::class.java -> (json as JSONArray).map { fromJson(typeArgs[0], it) }
             else -> throw IOException("Cannot deserialize $type. This is a bug.")
         }

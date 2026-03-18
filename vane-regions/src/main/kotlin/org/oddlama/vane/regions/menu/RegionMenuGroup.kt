@@ -14,45 +14,45 @@ class RegionMenuGroup(context: Context<Regions?>) : ModuleComponent<Regions?>(co
     private val menuContext = requireNotNull(getContext())
 
     @JvmField
-    /**
-     * Name input menu for new regions.
-     */
+            /**
+             * Name input menu for new regions.
+             */
     val enterRegionNameMenu = EnterRegionNameMenu(menuContext)
 
     @JvmField
-    /**
-     * Name input menu for new region groups.
-     */
+            /**
+             * Name input menu for new region groups.
+             */
     val enterRegionGroupNameMenu = EnterRegionGroupNameMenu(menuContext)
 
     @JvmField
-    /**
-     * Name input menu for new roles.
-     */
+            /**
+             * Name input menu for new roles.
+             */
     val enterRoleNameMenu = EnterRoleNameMenu(menuContext)
 
     @JvmField
-    /**
-     * Root regions menu.
-     */
+            /**
+             * Root regions menu.
+             */
     val mainMenu = MainMenu(menuContext)
 
     @JvmField
-    /**
-     * Region-group detail menu.
-     */
+            /**
+             * Region-group detail menu.
+             */
     val regionGroupMenu = RegionGroupMenu(menuContext)
 
     @JvmField
-    /**
-     * Region detail menu.
-     */
+            /**
+             * Region detail menu.
+             */
     val regionMenu = RegionMenu(menuContext)
 
     @JvmField
-    /**
-     * Role detail menu.
-     */
+            /**
+             * Role detail menu.
+             */
     val roleMenu = RoleMenu(menuContext)
 
     /**

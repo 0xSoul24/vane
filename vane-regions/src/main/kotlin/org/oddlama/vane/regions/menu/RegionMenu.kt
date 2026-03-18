@@ -24,49 +24,54 @@ import org.oddlama.vane.util.StorageUtil
  */
 class RegionMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.namespace("Region")) {
     @LangMessage
-    /**
-     * Localized region menu title.
-     */
+            /**
+             * Localized region menu title.
+             */
     var langTitle: TranslatedMessage? = null
 
     @LangMessage
-    /**
-     * Localized confirmation title for region deletion.
-     */
+            /**
+             * Localized confirmation title for region deletion.
+             */
     var langDeleteConfirmTitle: TranslatedMessage? = null
 
     @LangMessage
-    /**
-     * Localized title for region-group selector menu.
-     */
+            /**
+             * Localized title for region-group selector menu.
+             */
     var langSelectRegionGroupTitle: TranslatedMessage? = null
 
     @LangMessage
-    /**
-     * Localized title for region-group filter input.
-     */
+            /**
+             * Localized title for region-group filter input.
+             */
     var langFilterRegionGroupsTitle: TranslatedMessage? = null
 
     /**
      * Item for renaming the region.
      */
     var itemRename: TranslatedItemStack<*>
+
     /**
      * Item for deleting the region.
      */
     var itemDelete: TranslatedItemStack<*>
+
     /**
      * Item confirming region deletion.
      */
     var itemDeleteConfirmAccept: TranslatedItemStack<*>
+
     /**
      * Item cancelling region deletion.
      */
     var itemDeleteConfirmCancel: TranslatedItemStack<*>
+
     /**
      * Item opening region-group assignment flow.
      */
     var itemAssignRegionGroup: TranslatedItemStack<*>
+
     /**
      * Item template for one region-group entry in assignment selectors.
      */

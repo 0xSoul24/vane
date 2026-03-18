@@ -31,7 +31,7 @@ class LootTableList : ConfigDictSerializable {
      */
     companion object {
         @JvmStatic
-        /** Creates a [LootTableList] from vararg definitions. */
+                /** Creates a [LootTableList] from vararg definitions. */
         fun of(vararg defs: LootDefinition?): LootTableList =
             LootTableList().also { it.tables = defs.toMutableList() }
 
@@ -39,12 +39,12 @@ class LootTableList : ConfigDictSerializable {
         private fun toYamlName(s: String?): String? {
             if (s.isNullOrEmpty()) return s
             return when (s.lowercase(Locale.getDefault())) {
-                "generic"          -> "Generic"
-                "terralith_generic"-> "TerralithGeneric"
-                "terralith_rare"   -> "TerralithRare"
-                "ancientcity"      -> "AncientCity"
-                "bastion"          -> "Bastion"
-                else               -> s
+                "generic" -> "Generic"
+                "terralith_generic" -> "TerralithGeneric"
+                "terralith_rare" -> "TerralithRare"
+                "ancientcity" -> "AncientCity"
+                "bastion" -> "Bastion"
+                else -> s
             }
         }
 
@@ -52,12 +52,12 @@ class LootTableList : ConfigDictSerializable {
         private fun fromYamlName(s: String?): String? {
             if (s.isNullOrEmpty()) return s
             return when (s.lowercase(Locale.getDefault()).replace("[_\\s]".toRegex(), "")) {
-                "generic"          -> "generic"
+                "generic" -> "generic"
                 "terralithgeneric" -> "terralith_generic"
-                "terralithrare"    -> "terralith_rare"
-                "ancientcity"      -> "ancientcity"
-                "bastion"          -> "bastion"
-                else               -> s
+                "terralithrare" -> "terralith_rare"
+                "ancientcity" -> "ancientcity"
+                "bastion" -> "bastion"
+                else -> s
             }
         }
     }

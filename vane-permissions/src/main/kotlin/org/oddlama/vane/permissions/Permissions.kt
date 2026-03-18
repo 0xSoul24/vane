@@ -73,6 +73,7 @@ class Permissions : Module<Permissions?>() {
 
     /** Flattened permissions per group after inheritance resolution. */
     val permissionGroups: MutableMap<String, MutableSet<String>> = HashMap()
+
     /** Active permission attachments for online players. */
     private val playerAttachments: MutableMap<UUID, PermissionAttachment> = HashMap()
 

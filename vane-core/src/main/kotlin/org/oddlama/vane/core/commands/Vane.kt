@@ -25,16 +25,20 @@ import java.util.Random
 @Name("vane")
 class Vane(context: Context<Core?>) : org.oddlama.vane.core.command.Command<Core?>(context) {
     /** Message shown when module reload succeeds. */
-    @LangMessage private val langReloadSuccess: TranslatedMessage? = null
+    @LangMessage
+    private val langReloadSuccess: TranslatedMessage? = null
 
     /** Message shown when module reload fails. */
-    @LangMessage private val langReloadFail: TranslatedMessage? = null
+    @LangMessage
+    private val langReloadFail: TranslatedMessage? = null
 
     /** Message shown when resource-pack generation succeeds. */
-    @LangMessage private val langResourcePackGenerateSuccess: TranslatedMessage? = null
+    @LangMessage
+    private val langResourcePackGenerateSuccess: TranslatedMessage? = null
 
     /** Message shown when resource-pack generation fails. */
-    @LangMessage private val langResourcePackGenerateFail: TranslatedMessage? = null
+    @LangMessage
+    private val langResourcePackGenerateFail: TranslatedMessage? = null
 
     /**
      * Builds the brigadier command tree for `/vane`.
@@ -141,8 +145,9 @@ class Vane(context: Context<Core?>) : org.oddlama.vane.core.command.Command<Core
         when {
             tomes == 0 -> module!!.log.severe("0 tomes were generated in $simulationCount chests.")
             tomes > gtPercentage * simulationCount * tolerance &&
-            tomes < (gtPercentage * simulationCount) / tolerance ->
+                    tomes < (gtPercentage * simulationCount) / tolerance ->
                 module!!.log.warning(msg)
+
             else -> module!!.log.info(msg)
         }
     }

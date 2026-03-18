@@ -282,7 +282,7 @@ class ConsoleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(contex
                             module!!.iconFor(p) ?: ItemStack(Material.BARRIER),
                             "§a§l" + p.name(),
                             "§6" + String.format("%.1f", dist),
-                            "§b" + p.spawn().getWorld().name,
+                            "§b" + p.spawn().world.name,
                             portalVisibility(p.visibility() ?: Portal.Visibility.PRIVATE)
                         )
                     },
@@ -346,14 +346,14 @@ class ConsoleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(contex
 
                     module!!.removePortalBlock(portal, portalBlock)
                     Menu.ClickResult.SUCCESS
-                 },
-                 itemUnlinkConsoleConfirmCancel.item(),
-                 { player2: Player? -> menu.open(player2!!) }
-             )
-                 .tag(PortalMenuTag(portal.id()))
-                 .open(player)
-             Menu.ClickResult.SUCCESS
-         }
+                },
+                itemUnlinkConsoleConfirmCancel.item(),
+                { player2: Player? -> menu.open(player2!!) }
+            )
+                .tag(PortalMenuTag(portal.id()))
+                .open(player)
+            Menu.ClickResult.SUCCESS
+        }
     }
 
     /** Builds the destroy-portal action item and confirmation flow. */
@@ -375,19 +375,19 @@ class ConsoleMenu(context: Context<Portals?>) : ModuleComponent<Portals?>(contex
 
                     module!!.removePortal(portal)
                     Menu.ClickResult.SUCCESS
-                 },
-                 itemDestroyPortalConfirmCancel.item(),
-                 { player2: Player? -> menu.open(player2!!) }
-             )
-                 .tag(PortalMenuTag(portal.id()))
-                 .open(player)
-             Menu.ClickResult.SUCCESS
-         }
-     }
+                },
+                itemDestroyPortalConfirmCancel.item(),
+                { player2: Player? -> menu.open(player2!!) }
+            )
+                .tag(PortalMenuTag(portal.id()))
+                .open(player)
+            Menu.ClickResult.SUCCESS
+        }
+    }
 
-     /** Enables this menu component. */
-     public override fun onEnable() {}
+    /** Enables this menu component. */
+    public override fun onEnable() {}
 
-     /** Disables this menu component. */
-     public override fun onDisable() {}
- }
+    /** Disables this menu component. */
+    public override fun onDisable() {}
+}

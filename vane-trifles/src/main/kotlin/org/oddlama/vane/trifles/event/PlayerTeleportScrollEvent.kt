@@ -9,13 +9,14 @@ import org.bukkit.event.player.PlayerEvent
 /**
  * Fired when a scroll teleport is about to move a player.
  */
-class PlayerTeleportScrollEvent(player: Player, from: Location, to: Location?) :
-    PlayerEvent(player), Cancellable {
+class PlayerTeleportScrollEvent(
+    player: Player,
     /** Source location of the teleport. */
-    val from: Location = from
-
+    val from: Location,
     /** Destination location of the teleport. */
-    val to: Location? = to
+    val to: Location?
+) :
+    PlayerEvent(player), Cancellable {
 
     /** Backing cancellation flag. */
     private var cancelled = false
@@ -33,11 +34,11 @@ class PlayerTeleportScrollEvent(player: Player, from: Location, to: Location?) :
 
     companion object {
         @JvmField
-        /** Shared Bukkit handler list for this event type. */
+                /** Shared Bukkit handler list for this event type. */
         val HANDLER_LIST: HandlerList = HandlerList()
 
         @JvmStatic
-        /** Static accessor required by Bukkit's event registration API. */
+                /** Static accessor required by Bukkit's event registration API. */
         fun getHandlerList(): HandlerList = HANDLER_LIST
     }
 }

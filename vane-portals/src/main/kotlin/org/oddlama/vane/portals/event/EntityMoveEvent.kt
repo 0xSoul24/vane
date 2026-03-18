@@ -12,13 +12,15 @@ import org.bukkit.event.HandlerList
  * @property from previous location.
  * @property to new location.
  */
-class EntityMoveEvent(@JvmField val entity: Entity?, @JvmField val from: Location?, @JvmField val to: Location?) : Event() {
+class EntityMoveEvent(@JvmField val entity: Entity?, @JvmField val from: Location?, @JvmField val to: Location?) :
+    Event() {
     /** Returns Bukkit handlers for this event. */
     override fun getHandlers() = handlerList
 
     /** Static Bukkit handler list for this event type. */
     companion object {
         /** Shared handler list used by Bukkit's event system. */
-        @JvmStatic val handlerList: HandlerList = HandlerList()
+        @JvmStatic
+        val handlerList: HandlerList = HandlerList()
     }
 }

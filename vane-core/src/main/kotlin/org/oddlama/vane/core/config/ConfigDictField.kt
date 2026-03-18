@@ -55,6 +55,7 @@ class ConfigDictField(
                         @Suppress("UNCHECKED_CAST")
                         appendDict(builder, "$indent  ", null, entry as MutableMap<String, Any>, true)
                     }
+
                     else -> throw RuntimeException("Invalid value '$entry' of type ${entry!!.javaClass} in mapping of ConfigDictSerializable")
                 }
             }
@@ -62,7 +63,13 @@ class ConfigDictField(
     }
 
     /** Appends a YAML dictionary definition recursively. */
-    private fun appendDict(builder: StringBuilder, indent: String?, dictKey: String?, dict: MutableMap<String, Any>, isListEntry: Boolean) {
+    private fun appendDict(
+        builder: StringBuilder,
+        indent: String?,
+        dictKey: String?,
+        dict: MutableMap<String, Any>,
+        isListEntry: Boolean
+    ) {
         builder.append(indent)
         if (isListEntry) builder.append("-") else builder.append("$dictKey:")
         if (dict.isEmpty()) {
@@ -77,10 +84,12 @@ class ConfigDictField(
                         @Suppress("UNCHECKED_CAST")
                         appendDict(builder, "$indent  ", k, v as MutableMap<String, Any>, false)
                     }
+
                     is MutableList<*> -> {
                         @Suppress("UNCHECKED_CAST")
                         appendList(builder, "$indent  ", k, v as MutableList<Any?>)
                     }
+
                     else -> throw RuntimeException("Invalid value '$v' of type ${v.javaClass} in mapping of ConfigDictSerializable")
                 }
             }
@@ -88,7 +97,12 @@ class ConfigDictField(
     }
 
     /** Appends either default or effective dictionary output block. */
-    private fun appendDict(builder: StringBuilder, indent: String?, defaultDefinition: Boolean, ser: ConfigDictSerializable) {
+    private fun appendDict(
+        builder: StringBuilder,
+        indent: String?,
+        defaultDefinition: Boolean,
+        ser: ConfigDictSerializable
+    ) {
         if (defaultDefinition) appendDict(builder, "$indent# ", "Default", ser.toDict(), false)
         else appendDict(builder, indent, basename(), ser.toDict(), false)
     }
@@ -121,12 +135,12 @@ class ConfigDictField(
         section.getKeys(false).associateWithTo(mutableMapOf()) { subkey ->
             when {
                 section.isConfigurationSection(subkey) -> loadDictFromYaml(section.getConfigurationSection(subkey)!!)
-                section.isList(subkey)    -> loadListFromYaml(section.getList(subkey)!!)
-                section.isString(subkey)  -> section.getString(subkey)!!
-                section.isInt(subkey)     -> section.getInt(subkey)
-                section.isDouble(subkey)  -> section.getDouble(subkey)
+                section.isList(subkey) -> loadListFromYaml(section.getList(subkey)!!)
+                section.isString(subkey) -> section.getString(subkey)!!
+                section.isInt(subkey) -> section.getInt(subkey)
+                section.isDouble(subkey) -> section.getDouble(subkey)
                 section.isBoolean(subkey) -> section.getBoolean(subkey)
-                section.isLong(subkey)    -> section.getLong(subkey)
+                section.isLong(subkey) -> section.getLong(subkey)
                 else -> throw IllegalStateException("Cannot load dict entry '${yamlPath()}.$subkey': unknown type")
             }
         }
@@ -142,6 +156,7 @@ class ConfigDictField(
                 is InstantiationException, is IllegalAccessException, is IllegalArgumentException,
                 is InvocationTargetException, is NoSuchMethodException, is SecurityException ->
                     throw RuntimeException("Could not instanciate storage class for ConfigDict: ${annotation.cls}", e)
+
                 else -> throw e
             }
         }

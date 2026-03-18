@@ -26,27 +26,31 @@ class Region {
      * Unique region identifier.
      */
     private var id: UUID? = null
+
     /**
      * Region display name.
      */
     private var name: String? = null
+
     /**
      * Owner player UUID.
      */
     private var owner: UUID? = null
+
     /**
      * Spatial extent occupied by this region.
      */
     private var extent: RegionExtent? = null
+
     /**
      * Region-group id controlling role permissions for this region.
      */
     private var regionGroup: UUID? = null
 
     @JvmField
-    /**
-     * Indicates whether this region needs to be written back to persistence.
-     */
+            /**
+             * Indicates whether this region needs to be written back to persistence.
+             */
     var invalidated: Boolean = true
 
     /**
@@ -105,9 +109,9 @@ class Region {
     companion object {
         @JvmStatic
         @Throws(IOException::class)
-        /**
-         * Serializes a region to JSON-compatible structure.
-         */
+                /**
+                 * Serializes a region to JSON-compatible structure.
+                 */
         fun serialize(o: Any): Any {
             val region = o as Region
             val json = JSONObject()
@@ -119,9 +123,9 @@ class Region {
 
         @JvmStatic
         @Throws(IOException::class)
-        /**
-         * Deserializes a region from JSON-compatible structure.
-         */
+                /**
+                 * Deserializes a region from JSON-compatible structure.
+                 */
         fun deserialize(o: Any): Region {
             val json = o as JSONObject
             val region = Region()

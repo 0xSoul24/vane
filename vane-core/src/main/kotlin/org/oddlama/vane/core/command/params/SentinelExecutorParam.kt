@@ -39,9 +39,9 @@ class SentinelExecutorParam<T> @JvmOverloads constructor(
         if (args.size != method.parameters.size) {
             throw RuntimeException(
                 "Invalid command functor ${method.declaringClass.name}::${method.name}!" +
-                "\nFunctor takes ${method.parameters.size} parameters, but ${args.size} were given." +
-                "\nRequired: ${method.parameters.map { it.type.name }}" +
-                "\nGiven: ${args.map { it!!.javaClass.name }}"
+                        "\nFunctor takes ${method.parameters.size} parameters, but ${args.size} were given." +
+                        "\nRequired: ${method.parameters.map { it.type.name }}" +
+                        "\nGiven: ${args.map { it!!.javaClass.name }}"
             )
         }
         for (i in args.indices) {
@@ -51,7 +51,7 @@ class SentinelExecutorParam<T> @JvmOverloads constructor(
             if (!needs.isAssignableFrom(got)) {
                 throw RuntimeException(
                     "Invalid command functor ${method.declaringClass.name}::${method.name}!" +
-                    "\nArgument ${i + 1} (${needs.name}) is not assignable from ${got.name}"
+                            "\nArgument ${i + 1} (${needs.name}) is not assignable from ${got.name}"
                 )
             }
         }
@@ -120,6 +120,7 @@ class SentinelExecutorParam<T> @JvmOverloads constructor(
                     safeArgs.slice(offset until safeArgs.size).joinToString(", ") { "§4$it§6" }
                 }}§r"
             )
+
             safeArgs.size < offset -> throw RuntimeException("Sentinel executor received missing arguments! This is a bug.")
             else -> ExecutorCheckResult(offset, this)
         }

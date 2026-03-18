@@ -63,11 +63,11 @@ class LootTable {
     class LootTableEntry(val chance: Double, val generator: Consumer2<MutableList<ItemStack?>?, Random?>) {
         /** Creates an entry from expected chest rarity with fixed amount 1. */
         constructor(rarityExpectedChests: Int, item: ItemStack) :
-            this(1.0 / rarityExpectedChests, item.clone(), 1, 1)
+                this(1.0 / rarityExpectedChests, item.clone(), 1, 1)
 
         /** Creates an entry from expected chest rarity and amount range. */
         constructor(rarityExpectedChests: Int, item: ItemStack, amountMin: Int, amountMax: Int) :
-            this(1.0 / rarityExpectedChests, item.clone(), amountMin, amountMax)
+                this(1.0 / rarityExpectedChests, item.clone(), amountMin, amountMax)
 
         /** Creates an entry with explicit chance and amount range. */
         constructor(chance: Double, item: ItemStack, amountMin: Int, amountMax: Int) : this(
@@ -80,6 +80,7 @@ class LootTable {
 
         /** Adds a sampled item to the output list. */
         fun addSample(items: MutableList<ItemStack?>?, random: Random?) = generator.apply(items, random)
+
         /** Evaluates this entry's random chance. */
         fun evaluateChance(random: Random): Boolean = random.nextDouble() < chance
     }

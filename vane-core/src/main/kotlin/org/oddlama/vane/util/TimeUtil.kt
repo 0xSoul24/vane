@@ -25,6 +25,7 @@ private val timeMultiplier: Map<Char, Long> = mapOf(
 fun parseTime(input: String): Long {
     /** Accumulated parsed duration in milliseconds. */
     var ret = 0L
+
     /** Parsed alternating numeric/unit segments. */
     val parts = input.split("(?<=[^0-9])(?=[0-9])".toRegex()).filter { it.isNotEmpty() }
     for (time in parts) {
@@ -47,16 +48,19 @@ fun parseTime(input: String): Long {
  */
 fun formatTime(millis: Long): String {
     /** Whole days component. */
-    val days    = millis / 86_400_000L
+    val days = millis / 86_400_000L
+
     /** Remaining hours component after days. */
-    val hours   = (millis / 3_600_000L) % 24
+    val hours = (millis / 3_600_000L) % 24
+
     /** Remaining minutes component after hours. */
-    val minutes = (millis / 60_000L)    % 60
+    val minutes = (millis / 60_000L) % 60
+
     /** Remaining seconds component after minutes. */
-    val seconds = (millis / 1_000L)     % 60
+    val seconds = (millis / 1_000L) % 60
     return buildString {
-        if (days > 0)    append("${days}d")
-        if (hours > 0)   append("${hours}h")
+        if (days > 0) append("${days}d")
+        if (hours > 0) append("${hours}h")
         if (minutes > 0) append("${minutes}m")
         if (seconds > 0 || isEmpty()) append("${seconds}s")
     }

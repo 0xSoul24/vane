@@ -195,9 +195,9 @@ class Velocity @Inject constructor(
      */
     companion object {
         @JvmField
-        /**
-         * Plugin messaging channel used by auth multiplexing.
-         */
+                /**
+                 * Plugin messaging channel used by auth multiplexing.
+                 */
         val CHANNEL: MinecraftChannelIdentifier = MinecraftChannelIdentifier.create(
             CHANNEL_AUTH_MULTIPLEX_NAMESPACE,
             CHANNEL_AUTH_MULTIPLEX_NAME

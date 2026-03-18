@@ -77,42 +77,90 @@ interface Param {
 
     /** Adds a player-only executor with five arguments. */
     fun <T1, T2, T3, T4, T5> execPlayer(f: Consumer5<T1?, T2?, T3?, T4?, T5?>?) {
-        addParam(SentinelExecutorParam<Consumer5<T1?, T2?, T3?, T4?, T5?>?>(command, f, { requirePlayer(it) }, { it == 0 }))
+        addParam(
+            SentinelExecutorParam<Consumer5<T1?, T2?, T3?, T4?, T5?>?>(
+                command,
+                f,
+                { requirePlayer(it) },
+                { it == 0 })
+        )
     }
 
     /** Adds a player-only executor with six arguments. */
     fun <T1, T2, T3, T4, T5, T6> execPlayer(f: Consumer6<T1?, T2?, T3?, T4?, T5?, T6?>?) {
-        addParam(SentinelExecutorParam<Consumer6<T1?, T2?, T3?, T4?, T5?, T6?>?>(command, f, { requirePlayer(it) }, { it == 0 }))
+        addParam(
+            SentinelExecutorParam<Consumer6<T1?, T2?, T3?, T4?, T5?, T6?>?>(
+                command,
+                f,
+                { requirePlayer(it) },
+                { it == 0 })
+        )
     }
 
     /** Adds a player-only executor function with one argument. */
     fun <T1> execPlayer(f: Function1<T1?, Boolean?>?) {
-        addParam(SentinelExecutorParam<Function1<T1?, Boolean?>?>(command, f, Function1 { requirePlayer(it) }, Function1 { it == 0 }))
+        addParam(
+            SentinelExecutorParam<Function1<T1?, Boolean?>?>(
+                command,
+                f,
+                Function1 { requirePlayer(it) },
+                Function1 { it == 0 })
+        )
     }
 
     /** Adds a player-only executor function with two arguments. */
     fun <T1, T2> execPlayer(f: Function2<T1?, T2?, Boolean?>?) {
-        addParam(SentinelExecutorParam<Function2<T1?, T2?, Boolean?>?>(command, f, Function1 { requirePlayer(it) }, Function1 { it == 0 }))
+        addParam(
+            SentinelExecutorParam<Function2<T1?, T2?, Boolean?>?>(
+                command,
+                f,
+                Function1 { requirePlayer(it) },
+                Function1 { it == 0 })
+        )
     }
 
     /** Adds a player-only executor function with three arguments. */
     fun <T1, T2, T3> execPlayer(f: Function3<T1?, T2?, T3?, Boolean?>?) {
-        addParam(SentinelExecutorParam<Function3<T1?, T2?, T3?, Boolean?>?>(command, f, Function1 { requirePlayer(it) }, Function1 { it == 0 }))
+        addParam(
+            SentinelExecutorParam<Function3<T1?, T2?, T3?, Boolean?>?>(
+                command,
+                f,
+                Function1 { requirePlayer(it) },
+                Function1 { it == 0 })
+        )
     }
 
     /** Adds a player-only executor function with four arguments. */
     fun <T1, T2, T3, T4> execPlayer(f: Function4<T1?, T2?, T3?, T4?, Boolean?>?) {
-        addParam(SentinelExecutorParam<Function4<T1?, T2?, T3?, T4?, Boolean?>?>(command, f, Function1 { requirePlayer(it) }, Function1 { it == 0 }))
+        addParam(
+            SentinelExecutorParam<Function4<T1?, T2?, T3?, T4?, Boolean?>?>(
+                command,
+                f,
+                Function1 { requirePlayer(it) },
+                Function1 { it == 0 })
+        )
     }
 
     /** Adds a player-only executor function with five arguments. */
     fun <T1, T2, T3, T4, T5> execPlayer(f: Function5<T1?, T2?, T3?, T4?, T5?, Boolean?>?) {
-        addParam(SentinelExecutorParam<Function5<T1?, T2?, T3?, T4?, T5?, Boolean?>?>(command, f, Function1 { requirePlayer(it) }, Function1 { it == 0 }))
+        addParam(
+            SentinelExecutorParam<Function5<T1?, T2?, T3?, T4?, T5?, Boolean?>?>(
+                command,
+                f,
+                Function1 { requirePlayer(it) },
+                Function1 { it == 0 })
+        )
     }
 
     /** Adds a player-only executor function with six arguments. */
     fun <T1, T2, T3, T4, T5, T6> execPlayer(f: Function6<T1?, T2?, T3?, T4?, T5?, T6?, Boolean?>?) {
-        addParam(SentinelExecutorParam<Function6<T1?, T2?, T3?, T4?, T5?, T6?, Boolean?>?>(command, f, Function1 { requirePlayer(it) }, Function1 { it == 0 }))
+        addParam(
+            SentinelExecutorParam<Function6<T1?, T2?, T3?, T4?, T5?, T6?, Boolean?>?>(
+                command,
+                f,
+                Function1 { requirePlayer(it) },
+                Function1 { it == 0 })
+        )
     }
 
     /** Adds an executor with one argument. */
@@ -346,7 +394,8 @@ interface Param {
 
         return checkAcceptDelegate(sender, args, offset)!!.prepend(
             result.argumentType,
-            result.parsed, result.includeParam)
+            result.parsed, result.includeParam
+        )
     }
 
     /**

@@ -61,7 +61,7 @@ EnchantmentLeafchopper:
 EnchantmentLightning:
   # The display name of this enchantment. Will be packed into a resource pack.
   Name: "Yıldırım"
-  
+
 EnchantmentRake:
   # The display name of this enchantment. Will be packed into a resource pack.
   Name: "Tırmık"

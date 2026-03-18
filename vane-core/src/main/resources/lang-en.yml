@@ -102,12 +102,12 @@ Menus:
     # The item used to accept the selection.
     Accept:
       Name: "§a§lAccept"
-      Lore: ["§bChoose§7 the currently selected item."]
+      Lore: [ "§bChoose§7 the currently selected item." ]
 
     # The item used to cancel the selection.
     Cancel:
       Name: "§c§lCancel"
-      Lore: ["§6Abort§7 item selection."]
+      Lore: [ "§6Abort§7 item selection." ]
 
     # The item used to represent the currently selected item.
     Selected:
@@ -125,7 +125,7 @@ Menus:
     # %1$s: Page number
     Page:
       Name: "§bPage %1$s"
-      Lore: []
+      Lore: [ ]
 
     # The item showing the current page
     # %1$s: Page number
@@ -150,4 +150,4 @@ Menus:
     # The item used to cancel the selection.
     Cancel:
       Name: "§c§lCancel"
-      Lore: ["§6Abort§7 selection."]
+      Lore: [ "§6Abort§7 selection." ]

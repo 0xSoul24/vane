@@ -69,65 +69,65 @@ Menus:
 
     Rename:
       Name: "§b§lUmbenennen"
-      Lore: []
+      Lore: [ ]
 
     SelectIcon:
       Name: "§b§lIcon auswählen"
-      Lore: []
+      Lore: [ ]
 
     SelectStyle:
       Name: "§b§lStil auswählen"
-      Lore: []
+      Lore: [ ]
 
     ExitOrientationLockOn:
       Name: "§b§lRichtungssperre umschalten"
-      Lore: ["", "§bAktuell: §e§lGelGesperrt (Ausgang immer vorne)§r"]
+      Lore: [ "", "§bAktuell: §e§lGelGesperrt (Ausgang immer vorne)§r" ]
 
     ExitOrientationLockOff:
       Name: "§b§lRichtungssperre umschalten"
-      Lore: ["", "§bAktuell: §a§lEntsperrt (Ausgangseite ist betretene Seite)§r"]
+      Lore: [ "", "§bAktuell: §a§lEntsperrt (Ausgangseite ist betretene Seite)§r" ]
 
     VisibilityPublic:
       Name: "§b§lSichtbarkeit umschalten"
-      Lore: ["", "§bAktuell: §a§lÖffentlich§r"]
+      Lore: [ "", "§bAktuell: §a§lÖffentlich§r" ]
 
     VisibilityGroup:
       Name: "§b§lSichtbarkeit umschalten"
-      Lore: ["", "§bAktuell: §e§lGruppe (Mitglieder)§r"]
+      Lore: [ "", "§bAktuell: §e§lGruppe (Mitglieder)§r" ]
 
     VisibilityGroupInternal:
       Name: "§b§lSichtbarkeit umschalten"
-      Lore: ["", "§bAktuell: §e§lGruppe (Nur intern sichtbar)§r"]
+      Lore: [ "", "§bAktuell: §e§lGruppe (Nur intern sichtbar)§r" ]
 
     VisibilityPrivate:
       Name: "§b§lSichtbarkeit umschalten"
-      Lore: ["", "§bAktuell: §c§lPrivat§r"]
+      Lore: [ "", "§bAktuell: §c§lPrivat§r" ]
 
     TargetLockOn:
       Name: "§b§lZielsperre umschalten"
-      Lore: ["", "§bAktuell: §c§lGesperrt§r"]
+      Lore: [ "", "§bAktuell: §c§lGesperrt§r" ]
 
     TargetLockOff:
       Name: "§b§lZielsperre umschalten"
-      Lore: ["", "§bAktuell: §a§lEntsperrt§r"]
+      Lore: [ "", "§bAktuell: §a§lEntsperrt§r" ]
 
     Back:
       Name: "§6↩ §lZurück"
-      Lore: []
+      Lore: [ ]
 
   Style:
     Title: "§8§lStil für: %1$s"
-    SelectBlockConsoleActiveTitle:       "Aktive Konsole auswählen."
-    SelectBlockOriginActiveTitle:        "Aktiven Hauptblock auswählen."
-    SelectBlockPortalActiveTitle:        "Aktiven Portalbereich auswählen."
-    SelectBlockBoundary1ActiveTitle:   "Aktiven Portalrahmen Variante 1 auswählen."
-    SelectBlockBoundary2ActiveTitle:   "Aktiven Portalrahmen Variante 2 auswählen."
-    SelectBlockBoundary3ActiveTitle:   "Aktiven Portalrahmen Variante 3 auswählen."
-    SelectBlockBoundary4ActiveTitle:   "Aktiven Portalrahmen Variante 4 auswählen."
-    SelectBlockBoundary5ActiveTitle:   "Aktiven Portalrahmen Variante 5 auswählen."
-    SelectBlockConsoleInactiveTitle:     "Inaktive Konsole auswählen."
-    SelectBlockOriginInactiveTitle:      "Inaktiven Hauptblock auswählen."
-    SelectBlockPortalInactiveTitle:      "Inaktiven Portalbereich auswählen."
+    SelectBlockConsoleActiveTitle: "Aktive Konsole auswählen."
+    SelectBlockOriginActiveTitle: "Aktiven Hauptblock auswählen."
+    SelectBlockPortalActiveTitle: "Aktiven Portalbereich auswählen."
+    SelectBlockBoundary1ActiveTitle: "Aktiven Portalrahmen Variante 1 auswählen."
+    SelectBlockBoundary2ActiveTitle: "Aktiven Portalrahmen Variante 2 auswählen."
+    SelectBlockBoundary3ActiveTitle: "Aktiven Portalrahmen Variante 3 auswählen."
+    SelectBlockBoundary4ActiveTitle: "Aktiven Portalrahmen Variante 4 auswählen."
+    SelectBlockBoundary5ActiveTitle: "Aktiven Portalrahmen Variante 5 auswählen."
+    SelectBlockConsoleInactiveTitle: "Inaktive Konsole auswählen."
+    SelectBlockOriginInactiveTitle: "Inaktiven Hauptblock auswählen."
+    SelectBlockPortalInactiveTitle: "Inaktiven Portalbereich auswählen."
     SelectBlockBoundary1InactiveTitle: "Inaktiven Portalrahmen Variante 1 auswählen."
     SelectBlockBoundary2InactiveTitle: "Inaktiven Portalrahmen Variante 2 auswählen."
     SelectBlockBoundary3InactiveTitle: "Inaktiven Portalrahmen Variante 3 auswählen."
@@ -136,80 +136,80 @@ Menus:
 
     BlockConsoleActive:
       Name: "§b§lKonsole §a(aktiv)"
-      Lore: []
+      Lore: [ ]
     BlockOriginActive:
       Name: "§b§lHauptblock §a(aktiv)"
-      Lore: []
+      Lore: [ ]
     BlockPortalActive:
       Name: "§b§lPortalbereich §a(aktiv)"
-      Lore: []
+      Lore: [ ]
     BlockBoundary1Active:
       Name: "§b§lPortalrahmen §a(aktiv)"
-      Lore: ["", "§aVariante 1", "§7Baumaterial: %1$s"]
+      Lore: [ "", "§aVariante 1", "§7Baumaterial: %1$s" ]
     BlockBoundary2Active:
       Name: "§b§lPortalrahmen §a(aktiv)"
-      Lore: ["", "§aVariante 2", "§7Baumaterial: %1$s"]
+      Lore: [ "", "§aVariante 2", "§7Baumaterial: %1$s" ]
     BlockBoundary3Active:
       Name: "§b§lPortalrahmen §a(aktiv)"
-      Lore: ["", "§aVariante 3", "§7Baumaterial: %1$s"]
+      Lore: [ "", "§aVariante 3", "§7Baumaterial: %1$s" ]
     BlockBoundary4Active:
       Name: "§b§lPortalrahmen §a(aktiv)"
-      Lore: ["", "§aVariante 4", "§7Baumaterial: %1$s"]
+      Lore: [ "", "§aVariante 4", "§7Baumaterial: %1$s" ]
     BlockBoundary5Active:
       Name: "§b§lPortalrahmen §a(aktiv)"
-      Lore: ["", "§aVariante 5", "§7Baumaterial: %1$s"]
+      Lore: [ "", "§aVariante 5", "§7Baumaterial: %1$s" ]
     BlockConsoleInactive:
       Name: "§b§lKonsole §e(inaktiv)"
-      Lore: []
+      Lore: [ ]
     BlockOriginInactive:
       Name: "§b§lHauptblock §e(inaktiv)"
-      Lore: []
+      Lore: [ ]
     BlockPortalInactive:
       Name: "§b§lPortalbereich §e(inaktiv)"
-      Lore: []
+      Lore: [ ]
     BlockBoundary1Inactive:
       Name: "§b§lPortalrahmen §e(inaktiv)"
-      Lore: ["", "§aVariante 1", "§7Baumaterial: %1$s"]
+      Lore: [ "", "§aVariante 1", "§7Baumaterial: %1$s" ]
     BlockBoundary2Inactive:
       Name: "§b§lPortalrahmen §e(inaktiv)"
-      Lore: ["", "§aVariante 2", "§7Baumaterial: %1$s"]
+      Lore: [ "", "§aVariante 2", "§7Baumaterial: %1$s" ]
     BlockBoundary3Inactive:
       Name: "§b§lPortalrahmen §e(inaktiv)"
-      Lore: ["", "§aVariante 3", "§7Baumaterial: %1$s"]
+      Lore: [ "", "§aVariante 3", "§7Baumaterial: %1$s" ]
     BlockBoundary4Inactive:
       Name: "§b§lPortalrahmen §e(inaktiv)"
-      Lore: ["", "§aVariante 4", "§7Baumaterial: %1$s"]
+      Lore: [ "", "§aVariante 4", "§7Baumaterial: %1$s" ]
     BlockBoundary5Inactive:
       Name: "§b§lPortalrahmen §e(inaktiv)"
-      Lore: ["", "§aVariante 5", "§7Baumaterial: %1$s"]
+      Lore: [ "", "§aVariante 5", "§7Baumaterial: %1$s" ]
 
     Accept:
       Name: "§a§lStil anwenden"
-      Lore: []
+      Lore: [ ]
 
     Reset:
       Name: "§6§lÄnderungen zurücksetzen"
-      Lore: []
+      Lore: [ ]
 
     SelectStyleTitle: "§8§lStil auswählen"
     FilterStylesTitle: "§8§lStile filtern"
     SelectDefined:
       Name: "§b§lVordefinierten Stil auswählen"
-      Lore: []
+      Lore: [ ]
     SelectStyle:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
 
     Cancel:
       Name: "§6↩ §lVerwerfen"
-      Lore: []
+      Lore: [ ]
 
   Console:
     Title: "§8§lPortal: %1$s"
 
     Settings:
       Name: "§b§lEinstellungen"
-      Lore: []
+      Lore: [ ]
 
     SelectTarget:
       Name: "§d§lZiel auswählen"
@@ -239,22 +239,22 @@ Menus:
 
     UnlinkConsole:
       Name: "§c§lKonsole Entfernen"
-      Lore: []
+      Lore: [ ]
     UnlinkConsoleConfirmTitle: "§c§lKonsole entfernen?"
     UnlinkConsoleConfirmAccept:
       Name: "§c§lKONSOLE ENTFERNEN"
-      Lore: []
+      Lore: [ ]
     UnlinkConsoleConfirmCancel:
       Name: "§a§lAbbrechen"
-      Lore: []
+      Lore: [ ]
 
     DestroyPortal:
       Name: "§c§lPortal Zerstören"
-      Lore: []
+      Lore: [ ]
     DestroyPortalConfirmTitle: "§c§lPortal zerstören?"
     DestroyPortalConfirmAccept:
       Name: "§c§lPORTAL ZERSTÖREN"
-      Lore: []
+      Lore: [ ]
     DestroyPortalConfirmCancel:
       Name: "§a§lAbbrechen"
-      Lore: []
+      Lore: [ ]

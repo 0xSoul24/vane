@@ -83,10 +83,14 @@ open class Menu {
     fun tag(tag: Any?): Menu = apply { this.tag = tag }
 
     /** Marks this menu as tainted. */
-    fun taint() { tainted = true }
+    fun taint() {
+        tainted = true
+    }
 
     /** Adds a widget to this menu. */
-    fun add(widget: MenuWidget?) { widgets.add(widget!!) }
+    fun add(widget: MenuWidget?) {
+        widgets.add(widget!!)
+    }
 
     /** Removes a widget from this menu. */
     fun remove(widget: MenuWidget?): Boolean = widgets.remove(widget)
@@ -180,8 +184,21 @@ open class Menu {
 
         when (result) {
             ClickResult.INVALID_CLICK, ClickResult.IGNORE -> {}
-            ClickResult.SUCCESS -> player.playSound(player.location, Sound.UI_BUTTON_CLICK, SoundCategory.MASTER, 1f, 1f)
-            ClickResult.ERROR   -> player.playSound(player.location, Sound.BLOCK_FIRE_EXTINGUISH, SoundCategory.MASTER, 1f, 1f)
+            ClickResult.SUCCESS -> player.playSound(
+                player.location,
+                Sound.UI_BUTTON_CLICK,
+                SoundCategory.MASTER,
+                1f,
+                1f
+            )
+
+            ClickResult.ERROR -> player.playSound(
+                player.location,
+                Sound.BLOCK_FIRE_EXTINGUISH,
+                SoundCategory.MASTER,
+                1f,
+                1f
+            )
         }
     }
 
@@ -207,14 +224,14 @@ open class Menu {
      */
     companion object {
         @JvmStatic
-        /** Returns whether the event is a left or right click. */
+                /** Returns whether the event is a left or right click. */
         fun isLeftOrRightClick(event: InventoryClickEvent?): Boolean {
             val type = event?.click ?: return false
             return type == ClickType.LEFT || type == ClickType.RIGHT
         }
 
         @JvmStatic
-        /** Returns whether the event is a left click. */
+                /** Returns whether the event is a left click. */
         fun isLeftClick(event: InventoryClickEvent?): Boolean =
             event?.click == ClickType.LEFT
     }

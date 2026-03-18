@@ -122,62 +122,62 @@ Menus:
     # This item is used to rename the portal.
     Rename:
       Name: "§b§lYeniden Adlandır"
-      Lore: []
+      Lore: [ ]
 
     # This item is used to select the portal's icon.
     SelectIcon:
       Name: "§b§lİkon seç"
-      Lore: []
+      Lore: [ ]
 
     # This item is used to change the portal's style.
     SelectStyle:
       Name: "§b§lStil Seç"
-      Lore: []
+      Lore: [ ]
 
     # This item is used to change and indicate enabled exit orientation lock.
     ExitOrientationLockOn:
       Name: "§b§lÇıkış Yönlendirme Kilidini Değiştir"
-      Lore: ["", "§bMevcut: §e§lKilitli (her zaman önden çık)§r"]
+      Lore: [ "", "§bMevcut: §e§lKilitli (her zaman önden çık)§r" ]
 
     # This item is used to change and indicate disabled exit orientation lock.
     ExitOrientationLockOff:
       Name: "§b§lÇıkış Yönlendirme Kilidini Değiştir"
-      Lore: ["", "§bMevcut: §a§lKilitsiz (girildiği gibi aynı taraftan çık)§r"]
+      Lore: [ "", "§bMevcut: §a§lKilitsiz (girildiği gibi aynı taraftan çık)§r" ]
 
     # This item is used to cycle visibility and indicate public visibility.
     VisibilityPublic:
       Name: "§b§lGörünürlüğü Değiştir"
-      Lore: ["", "§bMevcut: §a§lHerkese Açık§r"]
+      Lore: [ "", "§bMevcut: §a§lHerkese Açık§r" ]
 
     # This item is used to cycle visibility and indicate group visibility.
     VisibilityGroup:
       Name: "§b§lGörünürlüğü Değiştir"
-      Lore: ["", "§bMevcut: §e§lBölge Grubu (oyuncular)§r"]
+      Lore: [ "", "§bMevcut: §e§lBölge Grubu (oyuncular)§r" ]
 
     # This item is used to cycle visibility and indicate group visibility.
     VisibilityGroupInternal:
       Name: "§b§lGörünürlüğü Değiştir"
-      Lore: ["", "§bMevcut: §e§lBölge Grubu (sadece dahili olarak görünür)§r"]
+      Lore: [ "", "§bMevcut: §e§lBölge Grubu (sadece dahili olarak görünür)§r" ]
 
     # This item is used to cycle visibility and indicate private visibility.
     VisibilityPrivate:
       Name: "§b§lGörünürlüğü Değiştir"
-      Lore: ["", "§bMevcut: §c§lGizli§r"]
+      Lore: [ "", "§bMevcut: §c§lGizli§r" ]
 
     # This item is used to change and indicate enabled target lock.
     TargetLockOn:
       Name: "§b§lHedef Kilidini Değiştir"
-      Lore: ["", "§bMevcut: §c§lKilitli§r"]
+      Lore: [ "", "§bMevcut: §c§lKilitli§r" ]
 
     # This item is used to change and indicate disabled target lock.
     TargetLockOff:
       Name: "§b§lHedef Kilidini Değiştir"
-      Lore: ["", "§bMevcut: §a§lKilitsiz§r"]
+      Lore: [ "", "§bMevcut: §a§lKilitsiz§r" ]
 
     # This item is used to return to the previous menu.
     Back:
       Name: "§6↩ §lGeri"
-      Lore: []
+      Lore: [ ]
 
   # Settings for the portal style menu.
   Style:
@@ -185,27 +185,27 @@ Menus:
     # %1$s: Portal name
     Title: "§8§lStil: %1$s"
     # The title for the block selector for the active console block.
-    SelectBlockConsoleActiveTitle:       "Etkin Konsol bloğunu seçin."
+    SelectBlockConsoleActiveTitle: "Etkin Konsol bloğunu seçin."
     # The title for the block selector for the active origin block.
-    SelectBlockOriginActiveTitle:        "Aktif Orijin bloğunu seçin."
+    SelectBlockOriginActiveTitle: "Aktif Orijin bloğunu seçin."
     # The title for the block selector for the active portal block.
-    SelectBlockPortalActiveTitle:        "Aktif Portal Alan bloğunu seçin."
+    SelectBlockPortalActiveTitle: "Aktif Portal Alan bloğunu seçin."
     # The title for the block selector for the active boundary variant 1 block.
-    SelectBlockBoundary1ActiveTitle:   "Aktif Sınır Varyantı 1 bloğunu seçin."
+    SelectBlockBoundary1ActiveTitle: "Aktif Sınır Varyantı 1 bloğunu seçin."
     # The title for the block selector for the active boundary variant 2 block.
-    SelectBlockBoundary2ActiveTitle:   "Aktif Sınır Varyantı 2 bloğunu seçin."
+    SelectBlockBoundary2ActiveTitle: "Aktif Sınır Varyantı 2 bloğunu seçin."
     # The title for the block selector for the active boundary variant 3 block.
-    SelectBlockBoundary3ActiveTitle:   "Aktif Sınır Varyantı 3 bloğunu seçin."
+    SelectBlockBoundary3ActiveTitle: "Aktif Sınır Varyantı 3 bloğunu seçin."
     # The title for the block selector for the active boundary variant 4 block.
-    SelectBlockBoundary4ActiveTitle:   "Aktif Sınır Varyantı 4 bloğunu seçin."
+    SelectBlockBoundary4ActiveTitle: "Aktif Sınır Varyantı 4 bloğunu seçin."
     # The title for the block selector for the active boundary variant 5 block.
-    SelectBlockBoundary5ActiveTitle:   "Aktif Sınır Varyantı 5 bloğunu seçin."
+    SelectBlockBoundary5ActiveTitle: "Aktif Sınır Varyantı 5 bloğunu seçin."
     # The title for the block selector for the inactive console block.
-    SelectBlockConsoleInactiveTitle:     "Etkin olmayan Konsol bloğunu seçin."
+    SelectBlockConsoleInactiveTitle: "Etkin olmayan Konsol bloğunu seçin."
     # The title for the block selector for the inactive origin block.
-    SelectBlockOriginInactiveTitle:      "Etkin olmayan Orijin bloğunu seçin."
+    SelectBlockOriginInactiveTitle: "Etkin olmayan Orijin bloğunu seçin."
     # The title for the block selector for the inactive portal block.
-    SelectBlockPortalInactiveTitle:      "Etkin olmayan Portal Alan bloğunu seçin."
+    SelectBlockPortalInactiveTitle: "Etkin olmayan Portal Alan bloğunu seçin."
     # The title for the block selector for the inactive boundary variant 1 block.
     SelectBlockBoundary1InactiveTitle: "Etkin olmayan Sınır Varyantı 1 bloğunu seçin."
     # The title for the block selector for the inactive boundary variant 2 block.
@@ -221,92 +221,92 @@ Menus:
     # %1$s: Building material
     BlockConsoleActive:
       Name: "§b§lKonsol §a(aktif)"
-      Lore: []
+      Lore: [ ]
     # The item used to represent the selected active origin block.
     # %1$s: Building material
     BlockOriginActive:
       Name: "§b§lOrijin §a(aktif)"
-      Lore: []
+      Lore: [ ]
     # The item used to represent the selected active portal block.
     # %1$s: Building material
     BlockPortalActive:
       Name: "§b§lPortal alanı §a(aktif)"
-      Lore: []
+      Lore: [ ]
     # The item used to represent the selected active boundary variant 1 block.
     # %1$s: Building material
     BlockBoundary1Active:
       Name: "§b§lSınır §a(aktif)"
-      Lore: ["", "§aVaryant 1", "§7Yapı malzemesi: %1$s"]
+      Lore: [ "", "§aVaryant 1", "§7Yapı malzemesi: %1$s" ]
     # The item used to represent the selected active boundary variant 2 block.
     # %1$s: Building material
     BlockBoundary2Active:
       Name: "§b§lSınır §a(aktif)"
-      Lore: ["", "§aVaryant 2", "§7Yapı malzemesi: %1$s"]
+      Lore: [ "", "§aVaryant 2", "§7Yapı malzemesi: %1$s" ]
     # The item used to represent the selected active boundary variant 3 block.
     # %1$s: Building material
     BlockBoundary3Active:
       Name: "§b§lSınır §a(aktif)"
-      Lore: ["", "§aVaryant 3", "§7Yapı malzemesi: %1$s"]
+      Lore: [ "", "§aVaryant 3", "§7Yapı malzemesi: %1$s" ]
     # The item used to represent the selected active boundary variant 4 block.
     # %1$s: Building material
     BlockBoundary4Active:
       Name: "§b§lSınır §a(aktif)"
-      Lore: ["", "§aVaryant 4", "§7Yapı malzemesi: %1$s"]
+      Lore: [ "", "§aVaryant 4", "§7Yapı malzemesi: %1$s" ]
     # The item used to represent the selected active boundary variant 5 block.
     # %1$s: Building material
     BlockBoundary5Active:
       Name: "§b§lSınır §a(aktif)"
-      Lore: ["", "§aVaryant 5", "§7Yapı malzemesi: %1$s"]
+      Lore: [ "", "§aVaryant 5", "§7Yapı malzemesi: %1$s" ]
     # The item used to represent the selected inactive console block.
     # %1$s: Building material
     BlockConsoleInactive:
       Name: "§b§lKonsol §e(inactive)"
-      Lore: []
+      Lore: [ ]
     # The item used to represent the selected inactive origin block.
     # %1$s: Building material
     BlockOriginInactive:
       Name: "§b§lOrijin §e(inactive)"
-      Lore: []
+      Lore: [ ]
     # The item used to represent the selected inactive portal block.
     # %1$s: Building material
     BlockPortalInactive:
       Name: "§b§lPortal bölgesi §e(inactive)"
-      Lore: []
+      Lore: [ ]
     # The item used to represent the selected inactive boundary variant 1 block.
     # %1$s: Building material
     BlockBoundary1Inactive:
       Name: "§b§lSınır §e(aktif olmayan)"
-      Lore: ["", "§aVaryant 1", "§7Yapı malzemesi: %1$s"]
+      Lore: [ "", "§aVaryant 1", "§7Yapı malzemesi: %1$s" ]
     # The item used to represent the selected inactive boundary variant 2 block.
     # %1$s: Building material
     BlockBoundary2Inactive:
       Name: "§b§lSınır §e(aktif olmayan)"
-      Lore: ["", "§aVaryant 2", "§7Yapı malzemesi: %1$s"]
+      Lore: [ "", "§aVaryant 2", "§7Yapı malzemesi: %1$s" ]
     # The item used to represent the selected inactive boundary variant 3 block.
     # %1$s: Building material
     BlockBoundary3Inactive:
       Name: "§b§lSınır §e(aktif olmayan)"
-      Lore: ["", "§aVaryant 3", "§7Yapı malzemesi: %1$s"]
+      Lore: [ "", "§aVaryant 3", "§7Yapı malzemesi: %1$s" ]
     # The item used to represent the selected inactive boundary variant 4 block.
     # %1$s: Building material
     BlockBoundary4Inactive:
       Name: "§b§lSınır §e(aktif olmayan)"
-      Lore: ["", "§aVaryant 4", "§7Yapı malzemesi: %1$s"]
+      Lore: [ "", "§aVaryant 4", "§7Yapı malzemesi: %1$s" ]
     # The item used to represent the selected inactive boundary variant 5 block.
     # %1$s: Building material
     BlockBoundary5Inactive:
       Name: "§b§lSınır §e(aktif olmayan)"
-      Lore: ["", "§aVaryant 5", "§7Yapı malzemesi: %1$s"]
+      Lore: [ "", "§aVaryant 5", "§7Yapı malzemesi: %1$s" ]
 
     # The item used to apply the style to the portal.
     Accept:
       Name: "§a§lStili Uygula"
-      Lore: []
+      Lore: [ ]
 
     # The item used to reset all changes made in this menu.
     Reset:
       Name: "§6§lDeğişiklikleri sıfırla"
-      Lore: []
+      Lore: [ ]
 
     # The title for the predefined style selector.
     SelectStyleTitle: "§8§lStil Seç"
@@ -315,17 +315,17 @@ Menus:
     # The item used to open the style selector for predefined styles.
     SelectDefined:
       Name: "§b§lTanımlı Stili Seçin"
-      Lore: []
+      Lore: [ ]
     # The item used to represent a predefined style.
     # %1$s: Name of the style
     SelectStyle:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
 
     # The item used to discard any changes and return to the previous menu.
     Cancel:
       Name: "§6↩ §lDeğişiklikleri Gözardı Et"
-      Lore: []
+      Lore: [ ]
 
   # Settings for the portal console menu.
   Console:
@@ -336,7 +336,7 @@ Menus:
     # The item used to open the portal's settings.
     Settings:
       Name: "§b§lAyarlar"
-      Lore: []
+      Lore: [ ]
 
     # The item used to open the portal's target selector.
     # %1$s: The currently selected target
@@ -376,29 +376,29 @@ Menus:
     # The item used to unlink the current console.
     UnlinkConsole:
       Name: "§c§lKonsol Bağlantısını Kes"
-      Lore: []
+      Lore: [ ]
     # The title for the unlinking confirmation dialog.
     UnlinkConsoleConfirmTitle: "§c§lKonsol Bağlantısını Kesmek istiyor musun?"
     # The item to accept unlinking.
     UnlinkConsoleConfirmAccept:
       Name: "§c§lKONSOL BAĞLANTISINI KES"
-      Lore: []
+      Lore: [ ]
     # The item to cancel unlinking.
     UnlinkConsoleConfirmCancel:
       Name: "§a§lİptal Etmek"
-      Lore: []
+      Lore: [ ]
 
     # The item used to destroy the portal.
     DestroyPortal:
       Name: "§c§lPortalı yok et"
-      Lore: []
+      Lore: [ ]
     # The title for the destroy portal confirmation dialog.
     DestroyPortalConfirmTitle: "§c§lPortalı Yok Etmek İster Misin?"
     # The item to accept destroying.
     DestroyPortalConfirmAccept:
       Name: "§c§lPORTALI YOK ET"
-      Lore: []
+      Lore: [ ]
     # The item to cancel destroying.
     DestroyPortalConfirmCancel:
       Name: "§a§lİptal Etmek"
-      Lore: []
+      Lore: [ ]

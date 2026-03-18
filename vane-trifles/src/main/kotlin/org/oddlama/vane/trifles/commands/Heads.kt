@@ -67,7 +67,10 @@ class Heads(context: Context<Trifles?>) :
 
                 // Charge configured currency before granting heads.
                 if (configPricePerHead > 0 &&
-                    !PlayerUtil.takeItems(targetPlayer, ItemStack(requireNotNull(configCurrency), configPricePerHead * amount))
+                    !PlayerUtil.takeItems(
+                        targetPlayer,
+                        ItemStack(requireNotNull(configCurrency), configPricePerHead * amount)
+                    )
                 ) {
                     return@headSelector Menu.ClickResult.ERROR
                 }

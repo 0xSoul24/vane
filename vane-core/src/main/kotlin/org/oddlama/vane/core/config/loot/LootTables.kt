@@ -26,7 +26,10 @@ class LootTables<T : Module<T?>?> @JvmOverloads constructor(
     private val desc: String? = "The associated loot. This is a map of loot tables (as defined by minecraft) to additional loot. This additional loot is a list of loot definitions, which specify the amount and loot percentage for a particular item."
 ) : ModuleComponent<T?>(context) {
     /** Whether configured loot should be registered. */
-    @ConfigBoolean(def = true, desc = "Whether the loot should be registered. Set to false to quickly disable all associated loot.")
+    @ConfigBoolean(
+        def = true,
+        desc = "Whether the loot should be registered. Set to false to quickly disable all associated loot."
+    )
     var configRegisterLoot: Boolean = false
 
     /** Loot configuration dictionary. */
@@ -34,11 +37,11 @@ class LootTables<T : Module<T?>?> @JvmOverloads constructor(
     private var configLoot: LootTableList? = null
 
     @Suppress("unused")
-    /** Returns default loot definitions for config generation. */
+            /** Returns default loot definitions for config generation. */
     fun configLootDef(): LootTableList? = defLoot()
 
     @Suppress("unused")
-    /** Returns config description text for the loot dictionary. */
+            /** Returns config description text for the loot dictionary. */
     fun configLootDesc(): String? = desc
 
     /** Re-registers loot hooks according to current config state. */

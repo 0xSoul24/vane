@@ -21,7 +21,7 @@ class FloatingItem(entitytypes: EntityType<out ItemEntity>, world: Level) : Item
     world
 ) {
     /** Creates a floating item at the given Bukkit [location]. */
-    constructor(location: Location) : this(location.getWorld(), location.x, location.y, location.z)
+    constructor(location: Location) : this(location.world, location.x, location.y, location.z)
 
     /** Creates a floating item in [world] at exact coordinates. */
     constructor(world: World, x: Double, y: Double, z: Double) : this(EntityType.ITEM, Nms.worldHandle(world)) {

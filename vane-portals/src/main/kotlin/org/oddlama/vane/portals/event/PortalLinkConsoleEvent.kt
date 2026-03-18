@@ -36,11 +36,13 @@ class PortalLinkConsoleEvent(
     override fun getHandlers() = handlerList
 
     /** Returns true when explicitly cancelled or blocked by ownership checks. */
-    override fun isCancelled() = super.isCancelled() || (cancelIfNotOwner && portal != null && player.uniqueId != portal.owner())
+    override fun isCancelled() =
+        super.isCancelled() || (cancelIfNotOwner && portal != null && player.uniqueId != portal.owner())
 
     /** Static Bukkit handler list for this event type. */
     companion object {
         /** Shared handler list used by Bukkit's event system. */
-        @JvmStatic val handlerList: HandlerList = HandlerList()
+        @JvmStatic
+        val handlerList: HandlerList = HandlerList()
     }
 }

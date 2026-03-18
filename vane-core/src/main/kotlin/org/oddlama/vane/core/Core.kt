@@ -47,8 +47,10 @@ import java.util.logging.Level
 class Core : Module<Core?>() {
     /** Enchantment manager. */
     var enchantmentManager: EnchantmentManager?
+
     /** Registry of reserved custom model data ranges. */
     private val modelDataRegistry: CustomModelDataRegistry?
+
     /** Registry of custom items. */
     private val itemRegistry: CustomItemRegistry?
 
@@ -57,15 +59,20 @@ class Core : Module<Core?>() {
         def = true,
         desc = "Allow loading of player heads in relevant menus. Disabling this will show all player heads using the Steve skin, which may perform better on low-performance servers and clients."
     )
-    /** Whether player heads should load profile textures in menus. */
+            /** Whether player heads should load profile textures in menus. */
     var configPlayerHeadsInMenus: Boolean = false
 
     /** Message used when a command requires a player sender. */
-    @LangMessage var langCommandNotAPlayer: TranslatedMessage? = null
+    @LangMessage
+    var langCommandNotAPlayer: TranslatedMessage? = null
+
     /** Message used when command permission checks fail. */
-    @LangMessage var langCommandPermissionDenied: TranslatedMessage? = null
+    @LangMessage
+    var langCommandPermissionDenied: TranslatedMessage? = null
+
     /** Message used for invalid time format parsing. */
-    @LangMessage var langInvalidTimeFormat: TranslatedMessage? = null
+    @LangMessage
+    var langInvalidTimeFormat: TranslatedMessage? = null
 
     /** Loaded vane modules ordered by annotation name. */
     private val vaneModules: SortedSet<Module<*>> = TreeSet(compareBy { it.annotationName })
@@ -103,7 +110,7 @@ class Core : Module<Core?>() {
         def = true,
         desc = "Let the client translate messages using the generated resource pack. This allows every player to select their preferred language, and all plugin messages will also be translated. Disabling this won't allow you to skip generating the resource pack, as it will be needed for custom item textures."
     )
-    /** Whether client-side translation keys should be used in outgoing messages. */
+            /** Whether client-side translation keys should be used in outgoing messages. */
     var configClientSideTranslations: Boolean = false
 
     /** Whether update notices are sent to operators. */
@@ -112,6 +119,7 @@ class Core : Module<Core?>() {
 
     /** Current running vane version string. */
     var currentVersion: String? = null
+
     /** Latest version string fetched from GitHub releases. */
     var latestVersion: String? = null
 
@@ -168,6 +176,7 @@ class Core : Module<Core?>() {
             when (e) {
                 is NoSuchFieldException, is SecurityException, is IllegalArgumentException, is IllegalAccessException ->
                     log.log(Level.SEVERE, "Failed to unfreeze registries", e)
+
                 else -> throw e
             }
         }
@@ -223,6 +232,7 @@ class Core : Module<Core?>() {
             when (e) {
                 is IOException, is JSONException, is URISyntaxException ->
                     log.warning("Could not check for updates: $e")
+
                 else -> throw e
             }
         }

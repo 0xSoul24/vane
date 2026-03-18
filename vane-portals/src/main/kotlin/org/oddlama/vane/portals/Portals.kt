@@ -134,7 +134,7 @@ class Portals : Module<Portals?>() {
         )],
         desc = "Portal style definitions. Must provide a material for each portal block type and activation state. The default style may be overridden."
     )
-    /** Raw style config map loaded from module configuration. */
+            /** Raw style config map loaded from module configuration. */
     var configStyles: MutableMap<String?, MutableMap<String?, MutableMap<String?, Material?>?>?>? = null
 
     @ConfigLong(
@@ -143,14 +143,14 @@ class Portals : Module<Portals?>() {
         max = 110000,
         desc = "Delay in milliseconds after which two connected portals will automatically be disabled. Purple end-gateway beams do not show up until the maximum value of 110 seconds."
     )
-    /** Delay before connected portals auto-deactivate. */
+            /** Delay before connected portals auto-deactivate. */
     var configDeactivationDelay: Long = 0
 
     @ConfigExtendedMaterial(
         def = "vane:decoration_end_portal_orb",
         desc = "The default portal icon. Also accepts heads from the head library."
     )
-    /** Default icon used when portals do not define a custom icon. */
+            /** Default icon used when portals do not define a custom icon. */
     var configDefaultIcon: ExtendedMaterial? = null
 
     @ConfigDouble(
@@ -159,7 +159,7 @@ class Portals : Module<Portals?>() {
         max = 1.0,
         desc = "Volume for the portal activation sound effect. 0 to disable."
     )
-    /** Activation sound volume. */
+            /** Activation sound volume. */
     var configVolumeActivation: Double = 0.0
 
     @ConfigDouble(
@@ -168,7 +168,7 @@ class Portals : Module<Portals?>() {
         max = 1.0,
         desc = "Volume for the portal deactivation sound effect. 0 to disable."
     )
-    /** Deactivation sound volume. */
+            /** Deactivation sound volume. */
     var configVolumeDeactivation: Double = 0.0
 
     /** Console display format for active portals. */
@@ -1003,15 +1003,15 @@ class Portals : Module<Portals?>() {
         // Register admin permission
         adminPermission = Permission(
             "vane." + this.annotationName + ".admin",
-             "Allows administration of any portal",
-             PermissionDefault.OP
-         )
+            "Allows administration of any portal",
+            PermissionDefault.OP
+        )
         registerPermission(adminPermission)
 
         // TODO legacy, remove in v2.
         persistentStorageManager.addMigrationTo(
-             2,
-             "Portal visibility GROUP_INTERNAL was added. This is a no-op."
+            2,
+            "Portal visibility GROUP_INTERNAL was added. This is a no-op."
         ) { _ -> }
     }
 
@@ -1030,12 +1030,12 @@ class Portals : Module<Portals?>() {
                 key,
                 PersistentDataType.BYTE_ARRAY
             )
-             try {
+            try {
                 val portal = PersistentSerializer.fromJson(Portal::class.java, org.json.JSONObject(String(jsonBytes!!)))
                 indexPortal(portal!!)
-             } catch (e: IOException) {
-                 logger.log(java.util.logging.Level.SEVERE, "error while serializing persistent data!", e)
-             }
+            } catch (e: IOException) {
+                logger.log(java.util.logging.Level.SEVERE, "error while serializing persistent data!", e)
+            }
         }
         logger.log(
             java.util.logging.Level.INFO,
@@ -1116,7 +1116,10 @@ class Portals : Module<Portals?>() {
     }
 
     /** Extract stored portal ids from the persistent data container using the given storage prefix. */
-    private fun getStoredPortalIds(data: org.bukkit.persistence.PersistentDataContainer, storagePortalPrefix: String): Set<UUID> =
+    private fun getStoredPortalIds(
+        data: org.bukkit.persistence.PersistentDataContainer,
+        storagePortalPrefix: String
+    ): Set<UUID> =
         data.storedUuidsByPrefix(storagePortalPrefix)
 
     /** Runnable used for delayed disconnection of portal pairs. */
@@ -1131,20 +1134,34 @@ class Portals : Module<Portals?>() {
     companion object {
         // Add (de-)serializers
         init {
-            PersistentSerializer.serializers[Orientation::class.java] = PersistentSerializer.Function { x: Any? -> (x as Orientation).name }
-            PersistentSerializer.deserializers[Orientation::class.java] = PersistentSerializer.Function { x: Any? -> Orientation.valueOf((x as String?)!!) }
-            PersistentSerializer.serializers[Portal::class.java] = PersistentSerializer.Function { obj: Any? -> Portal.serialize(obj!!) }
-            PersistentSerializer.deserializers[Portal::class.java] = PersistentSerializer.Function { obj: Any? -> Portal.deserialize(obj!!) }
-             PersistentSerializer.serializers[Portal.Visibility::class.java] = PersistentSerializer.Function { x: Any? -> (x as Portal.Visibility).name }
-             PersistentSerializer.deserializers[Portal.Visibility::class.java] = PersistentSerializer.Function { x: Any? -> Portal.Visibility.valueOf((x as String?)!!) }
-            PersistentSerializer.serializers[PortalBlock::class.java] = PersistentSerializer.Function { obj: Any? -> PortalBlock.serialize(obj!!) }
-            PersistentSerializer.deserializers[PortalBlock::class.java] = PersistentSerializer.Function { obj: Any? -> PortalBlock.deserialize(obj!!) }
-             PersistentSerializer.serializers[PortalBlock.Type::class.java] = PersistentSerializer.Function { x: Any? -> (x as PortalBlock.Type).name }
-             PersistentSerializer.deserializers[PortalBlock.Type::class.java] = PersistentSerializer.Function { x: Any? -> PortalBlock.Type.valueOf((x as String?)!!) }
-            PersistentSerializer.serializers[PortalBlockLookup::class.java] = PersistentSerializer.Function { obj: Any? -> PortalBlockLookup.serialize(obj!!) }
-            PersistentSerializer.deserializers[PortalBlockLookup::class.java] = PersistentSerializer.Function { obj: Any? -> PortalBlockLookup.deserialize(obj!!) }
-            PersistentSerializer.serializers[Style::class.java] = PersistentSerializer.Function { obj: Any? -> Style.serialize(obj!!) }
-            PersistentSerializer.deserializers[Style::class.java] = PersistentSerializer.Function { obj: Any? -> Style.deserialize(obj!!) }
+            PersistentSerializer.serializers[Orientation::class.java] =
+                PersistentSerializer.Function { x: Any? -> (x as Orientation).name }
+            PersistentSerializer.deserializers[Orientation::class.java] =
+                PersistentSerializer.Function { x: Any? -> Orientation.valueOf((x as String?)!!) }
+            PersistentSerializer.serializers[Portal::class.java] =
+                PersistentSerializer.Function { obj: Any? -> Portal.serialize(obj!!) }
+            PersistentSerializer.deserializers[Portal::class.java] =
+                PersistentSerializer.Function { obj: Any? -> Portal.deserialize(obj!!) }
+            PersistentSerializer.serializers[Portal.Visibility::class.java] =
+                PersistentSerializer.Function { x: Any? -> (x as Portal.Visibility).name }
+            PersistentSerializer.deserializers[Portal.Visibility::class.java] =
+                PersistentSerializer.Function { x: Any? -> Portal.Visibility.valueOf((x as String?)!!) }
+            PersistentSerializer.serializers[PortalBlock::class.java] =
+                PersistentSerializer.Function { obj: Any? -> PortalBlock.serialize(obj!!) }
+            PersistentSerializer.deserializers[PortalBlock::class.java] =
+                PersistentSerializer.Function { obj: Any? -> PortalBlock.deserialize(obj!!) }
+            PersistentSerializer.serializers[PortalBlock.Type::class.java] =
+                PersistentSerializer.Function { x: Any? -> (x as PortalBlock.Type).name }
+            PersistentSerializer.deserializers[PortalBlock.Type::class.java] =
+                PersistentSerializer.Function { x: Any? -> PortalBlock.Type.valueOf((x as String?)!!) }
+            PersistentSerializer.serializers[PortalBlockLookup::class.java] =
+                PersistentSerializer.Function { obj: Any? -> PortalBlockLookup.serialize(obj!!) }
+            PersistentSerializer.deserializers[PortalBlockLookup::class.java] =
+                PersistentSerializer.Function { obj: Any? -> PortalBlockLookup.deserialize(obj!!) }
+            PersistentSerializer.serializers[Style::class.java] =
+                PersistentSerializer.Function { obj: Any? -> Style.serialize(obj!!) }
+            PersistentSerializer.deserializers[Style::class.java] =
+                PersistentSerializer.Function { obj: Any? -> Style.deserialize(obj!!) }
         }
 
         /** Packs block coordinates into a compact per-chunk key. */

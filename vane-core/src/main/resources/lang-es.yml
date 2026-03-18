@@ -3,7 +3,7 @@
 # >> Consulta lang-en.yml para descripciones de variables <<
 #
 # +-----------------------------------------+
-# | ¡PRECAUCIÓN: NO modificar este archivo! |
+# | ¡PRECAUCIÓN!: NO modificar este archivo! |
 # +-----------------------------------------+
 #
 # ¡Se sobrescribirá silenciosamente con actualizaciones! Si deseas
@@ -14,11 +14,11 @@
 # si el archivo necesita actualizarse.
 Version: 5
 # Código de idioma correspondiente utilizado en paquetes de recursos. Utilizado para
-# generación de paquetes de recursos. Normalmente es una combinación de
+# generación de paquetes de recursos. Normalmente, es una combinación de
 # código de idioma (ISO 639) y código de país (ISO 3166).
 ResourcePackLangCode: 'es_es'
 
-# Este mensaje se envía cuando un comando requiere un jugador pero es ejecutado
+# Este mensaje se envía cuando un comando requiere un jugador, pero es ejecutado
 # por un no jugador.
 CommandNotAPlayer: "§cerror:§6 el comando debe ser ejecutado por un jugador."
 # Este mensaje se envía cuando el remitente del comando no tiene los permisos requeridos.
@@ -97,12 +97,12 @@ Menus:
     # El objeto utilizado para aceptar la selección.
     Accept:
       Name: "§a§lAceptar"
-      Lore: ["§bSelecciona§7 el objeto actualmente seleccionado."]
+      Lore: [ "§bSelecciona§7 el objeto actualmente seleccionado." ]
 
     # El objeto utilizado para cancelar la selección.
     Cancel:
       Name: "§c§lCancelar"
-      Lore: ["§6Cancelar§7 la selección."]
+      Lore: [ "§6Cancelar§7 la selección." ]
 
     # El objeto que representa el objeto actualmente seleccionado.
     Selected:
@@ -120,7 +120,7 @@ Menus:
     # %1$s: Número de página
     Page:
       Name: "§bPágina %1$s"
-      Lore: []
+      Lore: [ ]
 
     # El objeto que muestra la página actual
     # %1$s: Número de página
@@ -145,5 +145,5 @@ Menus:
     # El objeto utilizado para cancelar la selección.
     Cancel:
       Name: "§c§lCancelar"
-      Lore: ["§6Abortar§7 la selección."]
+      Lore: [ "§6Abortar§7 la selección." ]
 

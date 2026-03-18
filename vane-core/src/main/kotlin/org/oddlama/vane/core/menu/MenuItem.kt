@@ -41,7 +41,9 @@ open class MenuItem @JvmOverloads constructor(
         }
     )
 
-    init { item(item) }
+    init {
+        item(item)
+    }
 
     /** Returns the target slot. */
     fun slot(): Int = slot
@@ -50,7 +52,9 @@ open class MenuItem @JvmOverloads constructor(
     fun item(menu: Menu?): ItemStack? = menu?.inventory()?.getItem(slot)
 
     /** Updates the internal item value. */
-    open fun item(item: ItemStack?) { this.item = item }
+    open fun item(item: ItemStack?) {
+        this.item = item
+    }
 
     /** Updates the internal item and refreshes the menu. */
     fun updateItem(menu: Menu, item: ItemStack?) {
@@ -70,7 +74,13 @@ open class MenuItem @JvmOverloads constructor(
     }
 
     /** Handles click events for this slot. */
-    override fun click(player: Player?, menu: Menu?, item: ItemStack?, slot: Int, event: InventoryClickEvent?): Menu.ClickResult? {
+    override fun click(
+        player: Player?,
+        menu: Menu?,
+        item: ItemStack?,
+        slot: Int,
+        event: InventoryClickEvent?
+    ): Menu.ClickResult? {
         if (this.slot != slot) return Menu.ClickResult.IGNORE
         return onClick?.apply(player, menu, this, event) ?: Menu.ClickResult.IGNORE
     }

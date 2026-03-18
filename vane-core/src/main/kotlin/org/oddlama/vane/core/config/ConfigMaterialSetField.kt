@@ -30,7 +30,12 @@ class ConfigMaterialSetField(
     private fun Material.keyString() = "\"${escapeYaml(key.namespace)}:${escapeYaml(key.key)}\""
 
     /** Appends a material set definition block. */
-    private fun appendMaterialSetDefinition(builder: StringBuilder?, indent: String?, prefix: String?, def: MutableSet<Material>) {
+    private fun appendMaterialSetDefinition(
+        builder: StringBuilder?,
+        indent: String?,
+        prefix: String?,
+        def: MutableSet<Material>
+    ) {
         appendListDefinition(builder, indent, prefix, def) { b, m -> b!!.append(m!!.keyString()) }
     }
 
@@ -54,8 +59,9 @@ class ConfigMaterialSetField(
         builder.append("$indent# Default:\n")
         appendMaterialSetDefinition(builder, indent, "# ", def())
         builder.append("$indent${basename()}:\n")
-        val def: MutableSet<Material> = if (existingCompatibleConfig != null && existingCompatibleConfig.contains(yamlPath()))
-            loadFromYaml(existingCompatibleConfig) else def()
+        val def: MutableSet<Material> =
+            if (existingCompatibleConfig != null && existingCompatibleConfig.contains(yamlPath()))
+                loadFromYaml(existingCompatibleConfig) else def()
         appendMaterialSetDefinition(builder, indent, "", def)
     }
 

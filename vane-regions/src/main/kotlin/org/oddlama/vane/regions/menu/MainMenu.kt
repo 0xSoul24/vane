@@ -24,75 +24,85 @@ import kotlin.math.abs
  */
 class MainMenu(context: Context<Regions?>) : ModuleComponent<Regions?>(context.namespace("Main")) {
     @LangMessage
-    /**
-     * Localized main menu title.
-     */
+            /**
+             * Localized main menu title.
+             */
     var langTitle: TranslatedMessage? = null
 
     @LangMessage
-    /**
-     * Localized title for the region selector menu.
-     */
+            /**
+             * Localized title for the region selector menu.
+             */
     var langSelectRegionTitle: TranslatedMessage? = null
 
     @LangMessage
-    /**
-     * Localized title for region filter input.
-     */
+            /**
+             * Localized title for region filter input.
+             */
     var langFilterRegionsTitle: TranslatedMessage? = null
 
     @LangMessage
-    /**
-     * Localized title for the region-group selector menu.
-     */
+            /**
+             * Localized title for the region-group selector menu.
+             */
     var langSelectRegionGroupTitle: TranslatedMessage? = null
 
     @LangMessage
-    /**
-     * Localized title for region-group filter input.
-     */
+            /**
+             * Localized title for region-group filter input.
+             */
     var langFilterRegionGroupsTitle: TranslatedMessage? = null
 
     /**
      * Item shown to start region selection mode.
      */
     var itemCreateRegionStartSelection: TranslatedItemStack<*>
+
     /**
      * Item shown when the current selection is invalid.
      */
     var itemCreateRegionInvalidSelection: TranslatedItemStack<*>
+
     /**
      * Item shown when the current selection is valid and purchasable.
      */
     var itemCreateRegionValidSelection: TranslatedItemStack<*>
+
     /**
      * Item shown to cancel selection mode.
      */
     var itemCancelSelection: TranslatedItemStack<*>
+
     /**
      * Item shown to open the region at the player's location.
      */
     var itemCurrentRegion: TranslatedItemStack<*>
+
     /**
      * Item shown to list administrable regions.
      */
     var itemListRegions: TranslatedItemStack<*>
+
     /**
      * Item template for one region entry in selector menus.
      */
     var itemSelectRegion: TranslatedItemStack<*>
+
     /**
      * Item shown to create a new region group.
      */
     var itemCreateRegionGroup: TranslatedItemStack<*>
+
     /**
      * Item shown to open the current region's group.
      */
     var itemCurrentRegionGroup: TranslatedItemStack<*>
+
     /**
      * Item shown to list administrable region groups.
      */
     var itemListRegionGroups: TranslatedItemStack<*>
+
     /**
      * Item template for one region-group entry in selector menus.
      */

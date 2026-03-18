@@ -88,17 +88,17 @@ Menus:
 
     CancelSelection:
       Name: "§c§lAnnuler la sélection"
-      Lore: []
+      Lore: [ ]
 
     ListRegions:
       Name: "§b§lSélectionner une région"
-      Lore: []
+      Lore: [ ]
 
     SelectRegionTitle: "§8§lSélectionner une région"
     FilterRegionsTitle: "§8§lFiltrer les régions"
     SelectRegion:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
 
     CurrentRegion:
       Name: "§b§lRégion actuelle"
@@ -119,7 +119,7 @@ Menus:
 
     ListRegionGroups:
       Name: "§b§lSélectionner un groupe de régions"
-      Lore: []
+      Lore: [ ]
 
     CurrentRegionGroup:
       Name: "§b§lGroupe de régions actuel"
@@ -134,45 +134,45 @@ Menus:
     FilterRegionGroupsTitle: "§8§lFiltrer les groupes de régions"
     SelectRegionGroup:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
 
   Region:
     Title: "§8§lRégion: %1$s"
 
     Rename:
       Name: "§b§lRenommer une région"
-      Lore: []
+      Lore: [ ]
 
     Delete:
       Name: "§c§lSupprimer une région"
-      Lore: []
+      Lore: [ ]
     DeleteConfirmTitle: "§c§lSupprimer la région ?"
     DeleteConfirmAccept:
       Name: "§c§lSUPPRIMER"
-      Lore: []
+      Lore: [ ]
     DeleteConfirmCancel:
       Name: "§a§lAnnuler"
-      Lore: []
+      Lore: [ ]
 
     AssignRegionGroup:
       Name: "§b§lAssigner à un groupe de régions"
-      Lore: []
+      Lore: [ ]
 
     SelectRegionGroupTitle: "§8§lSélectionner un groupe de régions"
     FilterRegionGroupsTitle: "§8§lFiltrer les groupes de régions"
     SelectRegionGroup:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
 
   RegionGroup:
     Title: "§8§lGroupe: %1$s"
 
     SettingToggleOn:
       Name: "§a§lACTIF"
-      Lore: []
+      Lore: [ ]
     SettingToggleOff:
       Name: "§c§lINACTIF"
-      Lore: []
+      Lore: [ ]
     SettingInfoAnimals:
       Name: "§b§lAnimaux"
       Lore:
@@ -211,7 +211,7 @@ Menus:
 
     Rename:
       Name: "§b§lRenommer un groupe"
-      Lore: []
+      Lore: [ ]
 
     Delete:
       Name: "§c§lSupprimer un groupe"
@@ -222,10 +222,10 @@ Menus:
     DeleteConfirmTitle: "§c§lSupprimer le groupe de régions ?"
     DeleteConfirmAccept:
       Name: "§c§lSUPPRIMER"
-      Lore: []
+      Lore: [ ]
     DeleteConfirmCancel:
       Name: "§a§lAnnuler"
-      Lore: []
+      Lore: [ ]
 
     CreateRole:
       Name: "§a§lCréer un rôle"
@@ -236,23 +236,23 @@ Menus:
 
     ListRoles:
       Name: "§b§lRôles"
-      Lore: []
+      Lore: [ ]
 
     SelectRoleTitle: "§8§lSélectionner un rôle"
     FilterRolesTitle: "§8§lFiltrer les rôles"
     SelectRole:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
 
   Role:
     Title: "§8§lRôle: %1$s"
 
     SettingToggleOn:
       Name: "§a§lACTIF"
-      Lore: []
+      Lore: [ ]
     SettingToggleOff:
       Name: "§c§lINACTIF"
-      Lore: []
+      Lore: [ ]
     SettingInfoAdmin:
       Name: "§b§lAdministrateur"
       Lore:
@@ -286,18 +286,18 @@ Menus:
 
     Rename:
       Name: "§b§lRenommer un rôle"
-      Lore: []
+      Lore: [ ]
 
     Delete:
       Name: "§c§lSupprimer un rôle"
-      Lore: []
+      Lore: [ ]
     DeleteConfirmTitle: "§c§lSupprimer le rôle ?"
     DeleteConfirmAccept:
       Name: "§c§lSUPPRIMER"
-      Lore: []
+      Lore: [ ]
     DeleteConfirmCancel:
       Name: "§a§lAnnuler"
-      Lore: []
+      Lore: [ ]
 
     AssignPlayer:
       Name: "§b§lAssigner un rôle aux joueur·se·s"
@@ -321,4 +321,4 @@ Menus:
     FilterPlayersTitle: "§8§lFiltrer les joueur·se·s"
     SelectPlayer:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]

@@ -49,7 +49,8 @@ abstract class ConfigField<T>(
     /**
      * Split YAML path components.
      */
-    private val yamlPathComponents: Array<String?> = path.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+    private val yamlPathComponents: Array<String?> =
+        path.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
     /**
      * Group path part (without leaf basename).
@@ -73,8 +74,8 @@ abstract class ConfigField<T>(
         this.typeName = typeName
 
         when (this.path) {
-            "Lang"           -> this.sortPriority = -10
-            "Enabled"        -> this.sortPriority = -9
+            "Lang" -> this.sortPriority = -10
+            "Enabled" -> this.sortPriority = -9
             "MetricsEnabled" -> this.sortPriority = -8
         }
 
@@ -87,9 +88,15 @@ abstract class ConfigField<T>(
             } catch (_: NoSuchMethodException) {
                 description
             } catch (e: InvocationTargetException) {
-                throw RuntimeException("Could not call ${owner!!.javaClass.name}.${field.name}Desc() to override description value", e)
+                throw RuntimeException(
+                    "Could not call ${owner!!.javaClass.name}.${field.name}Desc() to override description value",
+                    e
+                )
             } catch (e: IllegalAccessException) {
-                throw RuntimeException("Could not call ${owner!!.javaClass.name}.${field.name}Desc() to override description value", e)
+                throw RuntimeException(
+                    "Could not call ${owner!!.javaClass.name}.${field.name}Desc() to override description value",
+                    e
+                )
             }
         }
     }
@@ -104,9 +111,15 @@ abstract class ConfigField<T>(
         } catch (_: NoSuchMethodException) {
             null
         } catch (e: InvocationTargetException) {
-            throw RuntimeException("Could not call ${owner!!.javaClass.name}.${field.name}Def() to override default value", e)
+            throw RuntimeException(
+                "Could not call ${owner!!.javaClass.name}.${field.name}Def() to override default value",
+                e
+            )
         } catch (e: IllegalAccessException) {
-            throw RuntimeException("Could not call ${owner!!.javaClass.name}.${field.name}Def() to override default value", e)
+            throw RuntimeException(
+                "Could not call ${owner!!.javaClass.name}.${field.name}Def() to override default value",
+                e
+            )
         }
 
     /**
@@ -119,9 +132,15 @@ abstract class ConfigField<T>(
         } catch (_: NoSuchMethodException) {
             null
         } catch (e: InvocationTargetException) {
-            throw RuntimeException("Could not call ${owner!!.javaClass.name}.${field.name}Metrics() to override metrics status", e)
+            throw RuntimeException(
+                "Could not call ${owner!!.javaClass.name}.${field.name}Metrics() to override metrics status",
+                e
+            )
         } catch (e: IllegalAccessException) {
-            throw RuntimeException("Could not call ${owner!!.javaClass.name}.${field.name}Metrics() to override metrics status", e)
+            throw RuntimeException(
+                "Could not call ${owner!!.javaClass.name}.${field.name}Metrics() to override metrics status",
+                e
+            )
         }
 
     /**
@@ -208,12 +227,14 @@ abstract class ConfigField<T>(
         invalidMax: U?
     ) {
         builder.append("$indent# Valid values: ")
-        builder.append(when {
-            min != invalidMin && max != invalidMax -> "[$min,$max]"
-            min != invalidMin                     -> "[$min,)"
-            max != invalidMax                     -> "(,$max]"
-            else                                  -> "Any $typeName"
-        })
+        builder.append(
+            when {
+                min != invalidMin && max != invalidMax -> "[$min,$max]"
+                min != invalidMin -> "[$min,)"
+                max != invalidMax -> "(,$max]"
+                else -> "Any $typeName"
+            }
+        )
         builder.append("\n")
     }
 

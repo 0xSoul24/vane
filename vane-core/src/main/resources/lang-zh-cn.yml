@@ -64,10 +64,10 @@ Menus:
   ItemSelector:
     Accept:
       Name: "§a§l接受"
-      Lore: ["§b选择§7当前选定的物品"]
+      Lore: [ "§b选择§7当前选定的物品" ]
     Cancel:
       Name: "§c§l取消"
-      Lore: ["§6取消§7物品选择"]
+      Lore: [ "§6取消§7物品选择" ]
     Selected:
       Name: "§d§l已选物品"
       Lore:
@@ -79,7 +79,7 @@ Menus:
   GenericSelector:
     Page:
       Name: "§b第%1$s页"
-      Lore: []
+      Lore: [ ]
     CurrentPage:
       Name: "§a当前第%1$s页 §7/ %2$s"
       Lore:
@@ -93,4 +93,4 @@ Menus:
         - "§b右键点击可重置筛选器"
     Cancel:
       Name: "§c§l取消"
-      Lore: ["§6取消选择"]
+      Lore: [ "§6取消选择" ]

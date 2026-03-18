@@ -88,17 +88,17 @@ Menus:
 
     CancelSelection:
       Name: "§c§lОтменить выделение"
-      Lore: []
+      Lore: [ ]
 
     ListRegions:
       Name: "§b§lВыбрать регион"
-      Lore: []
+      Lore: [ ]
 
     SelectRegionTitle: "§8§lВыбор региона"
     FilterRegionsTitle: "§8§lФильтр регионов"
     SelectRegion:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
 
     CurrentRegion:
       Name: "§b§lТекущий регион"
@@ -119,7 +119,7 @@ Menus:
 
     ListRegionGroups:
       Name: "§b§lВыбрать группу региона"
-      Lore: []
+      Lore: [ ]
 
     CurrentRegionGroup:
       Name: "§b§lТекущая группа региона"
@@ -134,45 +134,45 @@ Menus:
     FilterRegionGroupsTitle: "§8§lФильтр групп регионов"
     SelectRegionGroup:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
 
   Region:
     Title: "§8§lРегион: %1$s"
 
     Rename:
       Name: "§b§lПереименовать регион"
-      Lore: []
+      Lore: [ ]
 
     Delete:
       Name: "§c§lУдалить регион"
-      Lore: []
+      Lore: [ ]
     DeleteConfirmTitle: "§c§lУдалить регион?"
     DeleteConfirmAccept:
       Name: "§c§lУДАЛИТЬ РЕГИОН"
-      Lore: []
+      Lore: [ ]
     DeleteConfirmCancel:
       Name: "§a§lОтмена"
-      Lore: []
+      Lore: [ ]
 
     AssignRegionGroup:
       Name: "§b§lПрисвоить группу"
-      Lore: []
+      Lore: [ ]
 
     SelectRegionGroupTitle: "§8§lВыбор группы региона"
     FilterRegionGroupsTitle: "§8§lФильтр группы регионов"
     SelectRegionGroup:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
 
   RegionGroup:
     Title: "§8§lГруппа: %1$s"
 
     SettingToggleOn:
       Name: "§a§lВКЛЮЧЕНА"
-      Lore: []
+      Lore: [ ]
     SettingToggleOff:
       Name: "§c§lОТКЛЮЧЕНА"
-      Lore: []
+      Lore: [ ]
     SettingInfoAnimals:
       Name: "§b§lЖивотные"
       Lore:
@@ -211,7 +211,7 @@ Menus:
 
     Rename:
       Name: "§b§lПереименовать группу"
-      Lore: []
+      Lore: [ ]
 
     Delete:
       Name: "§c§lУдалить группу"
@@ -222,10 +222,10 @@ Menus:
     DeleteConfirmTitle: "§c§lУдалить группу региона?"
     DeleteConfirmAccept:
       Name: "§c§lУДАЛИТЬ ГРУППУ РЕГИОНА"
-      Lore: []
+      Lore: [ ]
     DeleteConfirmCancel:
       Name: "§a§lОтмена"
-      Lore: []
+      Lore: [ ]
 
     CreateRole:
       Name: "§a§lСоздать роль"
@@ -236,23 +236,23 @@ Menus:
 
     ListRoles:
       Name: "§b§lРоли"
-      Lore: []
+      Lore: [ ]
 
     SelectRoleTitle: "§8§lВыбор роли"
     FilterRolesTitle: "§8§lФильр ролей"
     SelectRole:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]
 
   Role:
     Title: "§8§lГруппа: %1$s"
 
     SettingToggleOn:
       Name: "§a§lВКЛЮЧЕНА"
-      Lore: []
+      Lore: [ ]
     SettingToggleOff:
       Name: "§c§lВЫКЛЮЧЕНА"
-      Lore: []
+      Lore: [ ]
     SettingInfoAdmin:
       Name: "§b§lАдмин"
       Lore:
@@ -286,18 +286,18 @@ Menus:
 
     Rename:
       Name: "§b§lПереименовать роль"
-      Lore: []
+      Lore: [ ]
 
     Delete:
       Name: "§c§lУдалить роль"
-      Lore: []
+      Lore: [ ]
     DeleteConfirmTitle: "§c§lУдалить роль?"
     DeleteConfirmAccept:
       Name: "§c§lУДАЛИТЬ РОЛЬ"
-      Lore: []
+      Lore: [ ]
     DeleteConfirmCancel:
       Name: "§a§lОтмена"
-      Lore: []
+      Lore: [ ]
 
     AssignPlayer:
       Name: "§b§lНазначение игроков"
@@ -321,4 +321,4 @@ Menus:
     FilterPlayersTitle: "§8§lФильтр игроков"
     SelectPlayer:
       Name: "%1$s"
-      Lore: []
+      Lore: [ ]

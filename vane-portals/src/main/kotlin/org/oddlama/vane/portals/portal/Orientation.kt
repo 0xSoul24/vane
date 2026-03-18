@@ -45,7 +45,7 @@ enum class Orientation(private val plane: Plane, private val vector: Vector) {
         flipSourceIfNotOpposing: Boolean
     ): Location {
         val l = location.clone()
-        l.setDirection(apply(reference, location.getDirection(), flipSourceIfNotOpposing))
+        l.direction = apply(reference, location.direction, flipSourceIfNotOpposing)
         return l
     }
 

@@ -61,7 +61,7 @@ EnchantmentLeafchopper:
 EnchantmentLightning:
   # El nombre que se mostrará para este encantamiento. Se incluirá en un paquete de recursos.
   Name: "Rayo"
-  
+
 EnchantmentRake:
   # El nombre que se mostrará para este encantamiento. Se incluirá en un paquete de recursos.
   Name: "Rastrillo"

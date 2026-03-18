@@ -440,33 +440,41 @@ class PortalConstructor(context: Context<Portals?>?) : Listener<Portals?>(contex
             configMaterialConsole -> {
                 type = PortalBlock.Type.CONSOLE
             }
+
             configMaterialBoundary1 -> {
                 type = PortalBlock.Type.BOUNDARY1
             }
+
             configMaterialBoundary2 -> {
                 type = PortalBlock.Type.BOUNDARY2
             }
+
             configMaterialBoundary3 -> {
                 type = PortalBlock.Type.BOUNDARY3
             }
+
             configMaterialBoundary4 -> {
                 type = PortalBlock.Type.BOUNDARY4
             }
+
             configMaterialBoundary5 -> {
                 type = PortalBlock.Type.BOUNDARY5
             }
+
             configMaterialOrigin -> {
                 type = PortalBlock.Type.ORIGIN
             }
+
             configMaterialPortalArea -> {
                 type = PortalBlock.Type.PORTAL
             }
+
             else -> {
                 module!!.log.warning(
-                         "Invalid block type '" +
-                                 mat +
-                                 "' encountered in portal block creation. Assuming boundary variant 1."
-                     )
+                    "Invalid block type '" +
+                            mat +
+                            "' encountered in portal block creation. Assuming boundary variant 1."
+                )
                 type = PortalBlock.Type.BOUNDARY1
             }
         }
@@ -517,9 +525,9 @@ class PortalConstructor(context: Context<Portals?>?) : Listener<Portals?>(contex
 
             // Update portal blocks once
             portal.updateBlocks(module!!)
-             Menu.ClickResult.SUCCESS
-         })
-         .open(player)
+            Menu.ClickResult.SUCCESS
+        })
+            .open(player)
 
         return true
     }

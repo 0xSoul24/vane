@@ -20,33 +20,33 @@ class RegionGlobalRoleOverrides(context: Context<Regions?>) : ModuleComponent<Re
         max = 1,
         desc = "Overrides the admin permission. Be careful, this is almost never what you want and may result in immutable regions."
     )
-    /**
-     * Override value for the `ADMIN` role setting.
-     */
+            /**
+             * Override value for the `ADMIN` role setting.
+             */
     var configAdmin: Int = 0
 
     @ConfigInt(def = 0, min = -1, max = 1, desc = "Overrides the build permission.")
-    /**
-     * Override value for the `BUILD` role setting.
-     */
+            /**
+             * Override value for the `BUILD` role setting.
+             */
     var configBuild: Int = 0
 
     @ConfigInt(def = 0, min = -1, max = 1, desc = "Overrides the use permission.")
-    /**
-     * Override value for the `USE` role setting.
-     */
+            /**
+             * Override value for the `USE` role setting.
+             */
     var configUse: Int = 0
 
     @ConfigInt(def = 0, min = -1, max = 1, desc = "Overrides the container permission.")
-    /**
-     * Override value for the `CONTAINER` role setting.
-     */
+            /**
+             * Override value for the `CONTAINER` role setting.
+             */
     var configContainer: Int = 0
 
     @ConfigInt(def = 0, min = -1, max = 1, desc = "Overrides the portal permission.")
-    /**
-     * Override value for the `PORTAL` role setting.
-     */
+            /**
+             * Override value for the `PORTAL` role setting.
+             */
     var configPortal: Int = 0
 
     /**
