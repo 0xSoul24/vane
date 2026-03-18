@@ -7,6 +7,7 @@ import net.minecraft.world.entity.MobCategory
 import org.bukkit.*
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
 import org.bukkit.event.world.*
 import org.bukkit.inventory.ItemStack
 import org.bukkit.permissions.Permission
@@ -925,6 +926,7 @@ class Portals : Module<Portals?>() {
 
     /** Removes floating console items for consoles in a chunk before unload. */
 
+    @EventHandler
     fun onMonitorChunkUnload(event: ChunkUnloadEvent) {
         val chunk = event.getChunk()
 
@@ -936,6 +938,7 @@ class Portals : Module<Portals?>() {
 
     /** Recreates floating console items for consoles in a chunk after load. */
 
+    @EventHandler
     fun onMonitorChunkLoad(event: ChunkLoadEvent) {
         val chunk = event.getChunk()
 
@@ -962,18 +965,21 @@ class Portals : Module<Portals?>() {
 
     /** Persist portal state when the world is saved. */
 
+    @EventHandler
     fun onSaveWorld(event: WorldSaveEvent) {
         updatePersistentData(event.getWorld())
     }
 
     /** Handle world load to restore portal state from persistent storage. */
 
+    @EventHandler
     fun onLoadWorld(event: WorldLoadEvent) {
         loadPersistentData(event.getWorld())
     }
 
     /** Handle world unload to persist/cleanup portal state. */
 
+    @EventHandler
     fun onUnloadWorld(event: WorldUnloadEvent) {
         // Save data before unloading a world (not called on stop)
         updatePersistentData(event.getWorld())
