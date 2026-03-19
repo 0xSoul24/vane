@@ -1021,6 +1021,20 @@ class Portals : Module<Portals?>() {
         ) { _ -> }
     }
 
+    /**
+     * Ensure portals are loaded for worlds that are already loaded when the plugin
+     * enables. WorldLoadEvent will handle worlds that load later.
+     */
+    override fun onModuleEnable() {
+        // Schedule on next tick to avoid running during plugin enable timing where
+        // some services/world state might not yet be fully available.
+        scheduleNextTick {
+            for (world in server.worlds) {
+                loadPersistentData(world)
+            }
+        }
+    }
+
     /** Load portals from world storage and perform legacy-storage migration for the given world. */
 
     fun loadPersistentData(world: World) {
@@ -1047,6 +1061,19 @@ class Portals : Module<Portals?>() {
             java.util.logging.Level.INFO,
             "Loaded " + pdcPortals.size + " portals for world " + world.name + "(" + world.uid + ")"
         )
+
+        if (pdcPortals.isEmpty()) {
+            // Helpful debug info: log the keys present in the world's persistent data container
+            try {
+                val keys = data.keys.joinToString(", ") { it.toString() }
+                logger.log(
+                    java.util.logging.Level.INFO,
+                    "No stored portals found for world ${world.name}(${world.uid}). PersistentDataContainer keys: $keys"
+                )
+            } catch (e: Exception) {
+                // Ignore any issues while trying to log debug info
+            }
+        }
 
         // Convert portals from legacy storage
         val removeFromLegacyStorage: MutableSet<UUID?> = HashSet<UUID?>()
