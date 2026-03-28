@@ -1,7 +1,7 @@
 [versions]
 paper = "1.21.11-R0.1-SNAPSHOT"
 bstats = "3.2.1"
-dokka = "2.1.0"
+dokka = "2.2.0"
 
 [libraries]
 annotations = {group = "org.jetbrains", name = "annotations", version = "26.1.0"}
