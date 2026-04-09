@@ -32,7 +32,7 @@ dynmap = {group = "us.dynmap", name = "DynmapCoreAPI", version = "3.7-beta-6"}
 bluemap = {group = "de.bluecolored", name = "bluemap-api", version = "2.7.7"}
 
 [plugins]
-paperweightUserdev = {id = "io.papermc.paperweight.userdev", version = "2.0.0-beta.19"}
+paperweightUserdev = {id = "io.papermc.paperweight.userdev", version = "2.0.0-beta.21"}
 runPaper = {id = "xyz.jpenilla.run-paper", version = "3.0.2"}
 shadow = {id = "com.gradleup.shadow", version = "9.4.1"}
 blossom = {id = "net.kyori.blossom", version = "2.2.0"}
