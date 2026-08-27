@@ -3,7 +3,7 @@ paper = "26.2.build.+"
 velocity = "4.1.1"
 bstats = "3.2.1"
 dokka = "2.2.0"
-geyser = "2.11.1-SNAPSHOT"
+geyser = "2.11.2-SNAPSHOT"
 
 [libraries]
 annotations = { group = "org.jetbrains", name = "annotations", version = "26.1.0" }
