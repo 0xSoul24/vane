@@ -64,8 +64,12 @@ class Portal {
     /** Whether the target selection is locked. */
     private var targetLocked = false
 
-    // Whether the portal should be saved on the next occasion.
-    // Not a saved field.
+    /**
+     * Whether this portal has unsaved changes and must be written out on the next save pass.
+     *
+     * Set by every mutating setter and cleared once the portal has been persisted. This flag is
+     * itself transient and is never serialized.
+     */
     @JvmField
     var invalidated: Boolean = true
 

@@ -21,21 +21,27 @@ class AutostopGroup(context: Context<Admin?>) : ModuleGroup<Admin?>(
     private val admin: Admin
         get() = requireNotNull(module)
 
+    /** Delay in seconds between scheduling and shutdown, used as the default for [schedule]. */
     @ConfigLong(def = 20 * 60, min = 0, desc = "Delay in seconds after which to stop the server.")
     var configDelay: Long = 0
 
+    /** Sent and logged when a pending shutdown is cancelled by [abort]. */
     @LangMessage
     var langAborted: TranslatedMessage? = null
 
+    /** Sent and logged when a shutdown is scheduled. Takes the formatted delay as its argument. */
     @LangMessage
     var langScheduled: TranslatedMessage? = null
 
+    /** Status reply while a shutdown is pending. Takes the formatted remaining time as its argument. */
     @LangMessage
     var langStatus: TranslatedMessage? = null
 
+    /** Status reply when no shutdown is pending, also used when [abort] finds nothing to cancel. */
     @LangMessage
     var langStatusNotScheduled: TranslatedMessage? = null
 
+    /** Broadcast and logged immediately before the server is actually shut down. */
     @LangMessage
     var langShutdown: TranslatedMessage? = null
 

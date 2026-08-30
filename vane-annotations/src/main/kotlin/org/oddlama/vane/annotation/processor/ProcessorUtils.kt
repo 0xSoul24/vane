@@ -7,7 +7,7 @@ import javax.lang.model.element.TypeElement
 import javax.lang.model.type.DeclaredType
 import javax.tools.Diagnostic
 
-/** Utility helpers used by annotation processors in this module. */
+// Shared validation helpers used by the annotation processors in this package.
 
 /**
  * Verifies that the provided element is a class. Prints a compiler error message

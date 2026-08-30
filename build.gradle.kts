@@ -114,6 +114,13 @@ subprojects {
     configure<org.jetbrains.dokka.gradle.DokkaExtension> {
         moduleName.set(project.name)
         dokkaSourceSets.configureEach {
+            // Module-level overview and per-package docs, if the module provides them.
+            // The `# Module <name>` heading inside must match moduleName above.
+            val moduleDoc = project.file("Module.md")
+            if (moduleDoc.exists()) {
+                includes.from(moduleDoc)
+            }
+
             sourceLink {
                 localDirectory.set(file("src/main/kotlin"))
                 remoteUrl("https://github.com/oddlama/vane/blob/main/${project.name}/src/main/kotlin")
