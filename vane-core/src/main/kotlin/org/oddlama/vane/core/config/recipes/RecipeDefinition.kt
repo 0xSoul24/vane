@@ -24,7 +24,7 @@ abstract class RecipeDefinition(val name: String?) {
     /** Creates a Bukkit recipe from this definition. */
     abstract fun toRecipe(baseKey: NamespacedKey?): Recipe?
 
-    /** Serializes this recipe definition to dictionary form. */
+    /** Serializes this recipe definition to a dictionary form. */
     abstract fun toDict(): Any?
 
     /** Loads this recipe definition from dictionary data. */
