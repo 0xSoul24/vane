@@ -64,10 +64,8 @@ abstract class Command<T : Module<T?>?> @JvmOverloads constructor(
          */
         @Throws(IllegalArgumentException::class)
         override fun execute(sender: CommandSender, commandLabel: String, args: Array<String>): Boolean {
-            println("exec $commandLabel from $sender")
             if (!sender.hasPermission(this@Command.permission)) {
                 module!!.core?.langCommandPermissionDenied?.send(sender)
-                println("no perms!")
                 return true
             }
 
