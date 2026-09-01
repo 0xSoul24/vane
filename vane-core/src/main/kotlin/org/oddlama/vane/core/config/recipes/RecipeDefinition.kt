@@ -5,7 +5,6 @@ import org.bukkit.NamespacedKey
 import org.bukkit.Tag
 import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.RecipeChoice
-import org.bukkit.inventory.RecipeChoice.ExactChoice
 import org.bukkit.inventory.RecipeChoice.MaterialChoice
 import org.oddlama.vane.util.ItemUtil
 import org.oddlama.vane.util.MaterialUtil.materialFrom
@@ -106,7 +105,7 @@ abstract class RecipeDefinition(val name: String?) {
             if (isSimpleMat && amount == 1) return MaterialChoice(itemStack.type)
 
             itemStack.amount = amount
-            return ExactChoice(itemStack)
+            return RecipeChoice.exactChoice(itemStack)
         }
     }
 }
