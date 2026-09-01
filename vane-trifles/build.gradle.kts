@@ -1,7 +1,5 @@
 plugins {
     alias(libs.plugins.shadow)
-    kotlin("jvm")
-    kotlin("kapt")
 }
 
 repositories {
@@ -18,9 +16,7 @@ dependencies {
         exclude(group = "io.netty")
     }
     compileOnly(libs.json)
-    implementation(kotlin("stdlib"))
     compileOnly(project(":vane-core"))
-    testImplementation(kotlin("test"))
 }
 
 tasks {
@@ -31,7 +27,4 @@ tasks {
         relocate("org.json", "org.oddlama.vane.external.json")
         relocate("kotlin", "org.oddlama.vane.external.kotlin")
     }
-}
-kotlin {
-    jvmToolchain(25)
 }

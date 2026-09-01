@@ -1,17 +1,9 @@
 plugins {
     alias(libs.plugins.shadow)
-    kotlin("jvm")
-    kotlin("kapt")
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
     compileOnly(project(":vane-core"))
-    testImplementation(kotlin("test"))
 }
 
 tasks {
@@ -21,8 +13,4 @@ tasks {
         }
         relocate("kotlin", "org.oddlama.vane.external.kotlin")
     }
-}
-
-kotlin {
-    jvmToolchain(25)
 }

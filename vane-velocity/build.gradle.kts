@@ -1,8 +1,6 @@
 plugins {
     alias(libs.plugins.shadow)
     id("xyz.jpenilla.run-velocity")
-    kotlin("jvm")
-    kotlin("kapt")
 }
 
 dependencies {
@@ -13,12 +11,6 @@ dependencies {
     implementation(libs.bstatsBase)
     implementation(libs.json)
     implementation(project(":vane-proxy-core"))
-    implementation(kotlin("stdlib"))
-    testImplementation(kotlin("test"))
-}
-
-kotlin {
-    jvmToolchain(25)
 }
 
 tasks.register<Copy>("copyJar") {
@@ -70,7 +62,4 @@ tasks {
             expand(mapOf("version" to velocityPluginVersion))
         }
     }
-}
-repositories {
-    mavenCentral()
 }

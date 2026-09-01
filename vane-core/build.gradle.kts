@@ -2,19 +2,33 @@ import java.security.MessageDigest
 
 plugins {
     alias(libs.plugins.shadow)
-    alias(libs.plugins.blossom) // Text replacement for version numbers
-    kotlin("jvm")
-    kotlin("kapt")
 }
 
-sourceSets {
-    main {
-        blossom {
-            javaSources {
-                property($$"$VERSION", project.version.toString())
-            }
-        }
+// The version constant used to be produced by blossom's `javaSources`, but this project has no
+// Java sources at all, so nothing was ever templated and `VERSION` compiled to the literal
+// string "$VERSION". Generating the file directly is both correct and one plugin lighter.
+val generateVersionSource = tasks.register("generateVersionSource") {
+    description = "Generates the build-time VERSION constant"
+    val versionString = project.version.toString()
+    val outputDir = layout.buildDirectory.dir("generated/sources/version/kotlin/main")
+    inputs.property("version", versionString)
+    outputs.dir(outputDir)
+    doLast {
+        val packageDir = outputDir.get().asFile.resolve("org/oddlama/vane/util")
+        packageDir.mkdirs()
+        packageDir.resolve("Version.kt").writeText(
+            """
+            package org.oddlama.vane.util
+
+            /** Build-time injected plugin version string. */
+            const val VERSION: String = "$versionString"
+            """.trimIndent() + "\n"
+        )
     }
+}
+
+kotlin.sourceSets.named("main") {
+    kotlin.srcDir(generateVersionSource)
 }
 
 dependencies {
@@ -25,8 +39,6 @@ dependencies {
     implementation(libs.commonsText)
     api(libs.json)
     implementation(project(":vane-annotations"))
-    implementation(kotlin("stdlib"))
-    testImplementation(kotlin("test"))
 }
 
 val resourcePackSha1: String by lazy {
@@ -70,11 +82,4 @@ tasks {
             expand(mapOf("version" to projectVersion, "resourcePackSha1" to localResourcePackSha1))
         }
     }
-}
-repositories {
-    mavenCentral()
-}
-
-kotlin {
-    jvmToolchain(25)
 }

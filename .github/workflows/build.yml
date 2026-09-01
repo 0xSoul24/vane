@@ -15,18 +15,20 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v6
-        with:
-          java-version: 21
-          distribution: 'corretto'
-
-
+      # The Gradle toolchain requires JDK 25; the previous "set up JDK 21" step was
+      # immediately overridden by this one and only cost time.
       - name: Set up JDK 25
         uses: actions/setup-java@v6
         with:
           java-version: 25
           distribution: 'corretto'
+
+      # Caches ~/.gradle/caches and the Gradle daemon state across runs. Without this every
+      # matrix job re-downloaded the Paper dev bundle and recompiled vane-core from scratch.
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-read-only: ${{ github.ref != format('refs/heads/{0}', github.event.repository.default_branch) }}
 
       - name: Gradle build
         run: |

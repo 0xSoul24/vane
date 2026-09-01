@@ -1,7 +1,5 @@
 plugins {
     alias(libs.plugins.shadow)
-    kotlin("jvm")
-    kotlin("kapt")
 }
 val id = project.property("id") as String
 val extensionName = project.property("name") as String
@@ -10,7 +8,6 @@ val version = project.version as String
 
 // Resolve the Geyser version now and strip any qualifier like "-SNAPSHOT"
 val geyserApiVersion: String = rootProject.libs.versions.geyser.get().substringBefore("-")
-
 
 repositories {
     // Add other repositories here (main repo moved to root build.gradle.kts)
@@ -22,35 +19,40 @@ dependencies {
     compileOnly(rootProject.libs.geyserApi)
 
     // Include other dependencies here - e.g. configuration libraries.
-    implementation(kotlin("stdlib"))
-    testImplementation(kotlin("test"))
 }
 
-afterEvaluate {
-    val idRegex = Regex("[a-z][a-z0-9-_]{0,63}")
-    if (idRegex.matches(id).not()) {
-        throw IllegalArgumentException(
-            "Invalid extension id $id! Must only contain lowercase letters, " +
-                    "and cannot start with a number."
-        )
-    }
-
-    val nameRegex = Regex("^[A-Za-z_.-]+$")
-    if (nameRegex.matches(extensionName).not()) {
-        throw IllegalArgumentException("Invalid extension name $extensionName! Must fit regex: ${nameRegex.pattern})")
-    }
+// These are plain constants from gradle.properties, so they can be validated right away
+// instead of deferring to afterEvaluate.
+require(Regex("[a-z][a-z0-9-_]{0,63}").matches(id)) {
+    "Invalid extension id $id! Must only contain lowercase letters, and cannot start with a number."
+}
+require(Regex("^[A-Za-z_.-]+$").matches(extensionName)) {
+    "Invalid extension name $extensionName! Must only contain letters, dots, dashes and underscores."
 }
 
 tasks {
     // This automatically fills in the extension.yml file.
+    // The values are copied into locals first: capturing the script-level properties directly
+    // makes the task hold a reference to the build script, which the configuration cache
+    // cannot serialize.
+    val extensionId = id
+    val displayName = extensionName
+    val extensionAuthor = author
+    val extensionVersion = version
+    val apiVersion = geyserApiVersion
     processResources {
+        inputs.property("id", extensionId)
+        inputs.property("name", displayName)
+        inputs.property("api", apiVersion)
+        inputs.property("version", extensionVersion)
+        inputs.property("author", extensionAuthor)
         filesMatching("extension.yml") {
             expand(
-                "id" to id,
-                "name" to extensionName,
-                "api" to geyserApiVersion,
-                "version" to version,
-                "author" to author
+                "id" to extensionId,
+                "name" to displayName,
+                "api" to apiVersion,
+                "version" to extensionVersion,
+                "author" to extensionAuthor
             )
         }
     }
@@ -88,7 +90,7 @@ tasks {
 tasks.register<Copy>("copyJar") {
     description = "Copy the produced shadow jar to the repository target directory"
     from(tasks.named("shadowJar"))
-    into("${project.rootProject.projectDir}/target")
+    into(rootProject.layout.projectDirectory.dir("target"))
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
     rename("(.*)-all.jar", "$1.jar")
 }
@@ -97,7 +99,3 @@ tasks.register<Copy>("copyJar") {
 tasks.named("build") {
     dependsOn("copyJar")
 }
-kotlin {
-    jvmToolchain(25)
-}
-

@@ -1,22 +1,27 @@
 # Module vane-annotations
 
 Declarative annotations that drive vane's configuration, translation, command and content
-registration, plus the `kapt` annotation processors that validate their use at compile time.
+registration, plus a set of `javax.annotation.processing` validators for their use.
 
-This module has no runtime dependency on the rest of vane. Every other vane plugin depends on it
-twice — once as `compileOnly` for the annotation types and once as `annotationProcessor` for the
-validators — so it must stay free of `vane-core` imports.
+This module has no runtime dependency on the rest of vane. Every other vane plugin depends on it as
+`compileOnly` for the annotation types, so it must stay free of `vane-core` imports.
+
+> **Note:** the validators in `org.oddlama.vane.annotation.processor` are not wired into the build.
+> They are `javax.annotation.processing` processors, which only run over Java sources or through
+> `kapt`; vane is now entirely Kotlin and no longer applies `kapt`, so nothing invokes them. They
+> are kept as the reference for what each annotation expects, and as the starting point should the
+> checks be ported to KSP.
 
 ## How the pipeline fits together
 
 The annotations here are pure metadata; none of them generate code. They are read at two separate
 points in a plugin's life:
 
-1. **At compile time** by the processors in `org.oddlama.vane.annotation.processor`. These only
-   *validate* — they check that an annotation is on the right kind of element, that the annotated
-   class inherits from the framework base type it claims to extend, and that an annotated field has
-   exactly the Java type the corresponding runtime field reader expects. A mistake here is a
-   compiler error, not a startup crash.
+1. **At compile time** — historically, by the processors in `org.oddlama.vane.annotation.processor`.
+   These only *validate* — they check that an annotation is on the right kind of element, that the
+   annotated class inherits from the framework base type it claims to extend, and that an annotated
+   field has exactly the Java type the corresponding runtime field reader expects. See the note
+   above: they are currently dormant, so these rules are conventions rather than enforced checks.
 2. **At runtime** by `vane-core`. `ConfigManager` scans a module's fields for any annotation whose
    name starts with `org.oddlama.vane.annotation.config.Config` and builds a matching
    `ConfigField` for each; `LangManager` does the same for the `lang` annotations. The `desc`
@@ -87,7 +92,7 @@ these carry no metadata at all: everything is derived from the field itself. The
 with `lang`, and the remainder becomes the YAML path — `vane-core`'s `LangField` throws at startup
 otherwise. The full translation key is that path prefixed with the module namespace. The field's
 type (`TranslatedMessage` versus `TranslatedMessageArray`) selects how the value is parsed, which
-is exactly what `ConfigAndLangProcessor` checks at compile time.
+is exactly what `ConfigAndLangProcessor` describes.
 
 # Package org.oddlama.vane.annotation.persistent
 
@@ -95,8 +100,9 @@ Marks fields that `vane-core`'s persistence layer serializes into the module's `
 
 # Package org.oddlama.vane.annotation.processor
 
-The `kapt` processors and their shared helpers. They report problems through
-`ProcessingEnvironment.messager` with `Diagnostic.Kind.ERROR` and never generate sources.
+The annotation processors and their shared helpers. They report problems through
+`ProcessingEnvironment.messager` with `Diagnostic.Kind.ERROR` and never generate sources. They are
+not currently run by the build — see the note at the top of this module.
 
 `ProcessorUtils` holds the two checks every processor needs: that an annotation landed on a class,
 and that the class inherits — at any depth — from a required framework base type. The inheritance

@@ -6,6 +6,11 @@ plugins {
     kotlin("jvm")
 }
 
+repositories {
+    mavenCentral()
+    maven("https://repo.papermc.io/repository/maven-public/")
+}
+
 dependencies {
     paperweight.paperDevBundle(rootProject.libs.versions.paper)
     implementation(kotlin("stdlib"))
@@ -81,9 +86,12 @@ tasks {
 
 // Common settings to all subprojects.
 subprojects {
+    // `java-library` already applies `java`, so applying both is redundant.
     pluginManager.apply("java-library")
-    pluginManager.apply("java")
     pluginManager.apply("org.jetbrains.dokka")
+    // Every module is pure Kotlin, so the JVM plugin and toolchain are applied centrally
+    // instead of being repeated in all twelve module scripts.
+    pluginManager.apply("org.jetbrains.kotlin.jvm")
 
     group = "org.oddlama.vane"
     version = "1.21.1"
@@ -106,9 +114,23 @@ subprojects {
         options.encoding = "UTF-8"
     }
 
+    configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
+        jvmToolchain(25)
+    }
+
+    // The shadowed jars must not carry Kotlin's per-file module metadata, which collides
+    // whenever two vane jars are loaded by the same class loader.
+    tasks.withType<Jar>().configureEach {
+        if (name == "shadowJar") {
+            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+            exclude("META-INF/*.kotlin_module")
+        }
+    }
+
     dependencies {
         compileOnly(rootProject.libs.annotations)
-        annotationProcessor(rootProject.libs.annotations)
+        implementation(kotlin("stdlib"))
+        testImplementation(kotlin("test"))
     }
 
     configure<org.jetbrains.dokka.gradle.DokkaExtension> {
@@ -131,8 +153,10 @@ subprojects {
 }
 
 // All Paper Plugins + Annotations.
+// (vane-geyser-extension targets the Geyser API only and never touches Bukkit/Paper,
+// so pulling in the multi-hundred-megabyte Paper dev bundle there is pure overhead.)
 configure(subprojects.filter {
-    !listOf("vane-velocity", "vane-proxy-core").contains(it.name)
+    !listOf("vane-velocity", "vane-proxy-core", "vane-geyser-extension").contains(it.name)
 }) {
     pluginManager.apply("io.papermc.paperweight.userdev")
 
@@ -153,15 +177,14 @@ configure(subprojects.filter {
 // All Projects with jar shadow
 configure(subprojects.filter {
     listOf(
-        "vane-regions",
+        "vane-admin",
+        "vane-bedtime",
         "vane-core",
-        "vane-portals",
-        "vane-regions",
-        "vane-trifles",
         "vane-enchantments",
         "vane-permissions",
-        "vane-admin",
-        "vane-bedtime"
+        "vane-portals",
+        "vane-regions",
+        "vane-trifles"
     ).contains(it.name)
 }) {
     tasks.register<Copy>("copyJar") {
@@ -197,7 +220,6 @@ configure(vanePlugins) {
 
     dependencies {
         compileOnly(project(":vane-annotations"))
-        annotationProcessor(project(path = ":vane-annotations"))
     }
 }
 
@@ -272,16 +294,4 @@ tasks.register<Delete>("cleanWorld") {
             "world_the_end"
         )
     })
-}
-repositories {
-    mavenCentral()
-}
-
-subprojects {
-    tasks.withType<Jar>().configureEach {
-        if (name == "shadowJar") {
-            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-            exclude("META-INF/*.kotlin_module")
-        }
-    }
 }
