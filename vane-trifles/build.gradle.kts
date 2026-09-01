@@ -11,7 +11,12 @@ repositories {
 }
 
 dependencies {
-    compileOnly(libs.packetEvents)
+    compileOnly(libs.packetEvents) {
+        // PacketEvents ships a hard dependency on the ancient netty-all 4.1.72.Final, which is
+        // flagged for several CVEs and would shadow the much newer netty provided by Paper.
+        // Netty is supplied by the server at runtime, so it is not needed on our classpath.
+        exclude(group = "io.netty")
+    }
     compileOnly(libs.json)
     implementation(kotlin("stdlib"))
     compileOnly(project(":vane-core"))
