@@ -10,7 +10,8 @@ This module has no runtime dependency on the rest of vane. Every other vane plug
 > They are `javax.annotation.processing` processors, which only run over Java sources or through
 > `kapt`; vane is now entirely Kotlin and no longer applies `kapt`, so nothing invokes them. They
 > are kept as the reference for what each annotation expects, and as the starting point should the
-> checks be ported to KSP.
+> checks be ported to KSP. Because they are compile-time-only tooling, `vane-core`'s `shadowJar`
+> excludes both the package and its service file from the shipped plugin jar.
 
 ## How the pipeline fits together
 
@@ -38,8 +39,17 @@ The four processors are registered through
 `src/main/resources/META-INF/services/javax.annotation.processing.Processor`. A processor that is
 not listed in that file will be silently ignored, so new processors must be added there by hand.
 
-All four declare `@SupportedSourceVersion(SourceVersion.RELEASE_21)` while the build targets a
-newer toolchain; javac tolerates this but warns.
+They report the source version as `SourceVersion.latestSupported()` rather than pinning a release,
+so moving the toolchain forward does not make javac warn about an outdated processor.
+
+## Build dependencies
+
+This module names exactly one Paper type — `org.bukkit.Material`, used as an annotation member
+type by `ConfigMaterial`, `ConfigMaterialSet`, `ConfigMaterialMapEntry`, `ConfigItemStackDef` and
+`VaneItem`. It therefore does **not** apply `paperweight`; the root build excludes it and the
+module declares a plain `compileOnly(libs.paperApi)` instead, which avoids resolving the Paper dev
+bundle and remapping a per-module server jar just to look up an enum. If a future annotation ever
+needs a Mojang-mapped or server-internal type, that trade has to be revisited.
 
 # Package org.oddlama.vane.annotation
 
@@ -59,9 +69,15 @@ are `RUNTIME`-retained because the command registration code reads them when the
 One annotation per supported configuration value type. Each generates a key in the module's
 `config.yml`, documented by its `desc` and defaulted from its `def`.
 
-Annotations ending in `Entry` (for example `ConfigMaterialMapEntry`) are not applied to fields
-themselves — they are nested inside the `def` array of a map-valued annotation to express a default
-map literal, which is the only way to write nested defaults given Java's annotation constant rules.
+Annotations ending in `Entry` (plus `ConfigItemStackDef`) are not applied to fields themselves —
+they are nested inside the `def` of a map-valued annotation to express a default map literal, which
+is the only way to write nested defaults given Java's annotation constant rules. They declare an
+empty `@Target()` to say exactly that: nesting a Kotlin annotation inside another is never target
+checked, but an empty target list makes applying one to a field a compile error. That matters
+because their names begin with `Config`, and `ConfigManager` builds a `ConfigField` for *every*
+field annotation under `org.oddlama.vane.annotation.config.Config*` — without the restriction a
+misplaced `@ConfigMaterialMapEntry` would only surface as a "Missing ConfigField handler" crash
+when the plugin enables.
 
 The annotated field's name determines the YAML key. `vane-core` strips the mandatory `config`
 prefix and uses the remainder verbatim, so `configMinRegionExtentX` becomes `MinRegionExtentX`. The
@@ -109,3 +125,9 @@ and that the class inherits — at any depth — from a required framework base 
 check matches on a *prefix* of the erased supertype name (for example
 `org.oddlama.vane.core.module.Module<`) so that it works against the generic base classes vane uses
 throughout.
+
+`ClassPlacementProcessor` pairs those two checks into the round loop that every placement-only
+processor runs, so `VaneModuleProcessor` and `VaneEnchantmentProcessor` are one line each and
+`CommandAnnotationProcessor` only adds its mandatory-`@Name` check on top. `ConfigAndLangProcessor`
+stands apart because it validates field types rather than placement; it derives its supported
+annotation types from `fieldTypeMapping` so the two can never drift apart.

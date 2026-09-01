@@ -71,6 +71,12 @@ tasks {
         relocate("org.apache.commons.lang3", "org.oddlama.vane.external.apache.commons.lang3")
         relocate("org.apache.commons.text", "org.oddlama.vane.external.apache.commons.text")
         relocate("kotlin", "org.oddlama.vane.external.kotlin")
+
+        // The vane-annotations jar carries `javax.annotation.processing` validators alongside the
+        // annotations themselves. Those are compile-time-only tooling, so neither the classes nor
+        // their service registration belong in a runtime plugin jar.
+        exclude("org/oddlama/vane/annotation/processor/**")
+        exclude("META-INF/services/javax.annotation.processing.Processor")
     }
 
     val projectVersion = project.version.toString()

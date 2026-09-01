@@ -7,5 +7,8 @@ package org.oddlama.vane.annotation.config
  * @property list List of string values mapped to [key].
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FIELD)
+// Nested value only: this annotation is written inside [ConfigStringListMap]'s `def`, never on a
+// field. An empty target list is what says so, and it also keeps `ConfigManager`'s
+// `Config*` field scan from ever picking it up as a config field of its own.
+@Target()
 annotation class ConfigStringListMapEntry(val key: String, val list: Array<String>)

@@ -152,11 +152,16 @@ subprojects {
     }
 }
 
-// All Paper Plugins + Annotations.
-// (vane-geyser-extension targets the Geyser API only and never touches Bukkit/Paper,
-// so pulling in the multi-hundred-megabyte Paper dev bundle there is pure overhead.)
+// All Paper plugins.
+// Excluded modules never touch Paper internals, so pulling in the multi-hundred-megabyte
+// Paper dev bundle (and its per-module remapping cache) there is pure overhead:
+//   - vane-geyser-extension targets the Geyser API only,
+//   - vane-velocity / vane-proxy-core are proxy-side,
+//   - vane-annotations only names `org.bukkit.Material` in annotation members, which the
+//     plain `paper-api` artifact provides just as well (see its own build script).
 configure(subprojects.filter {
-    !listOf("vane-velocity", "vane-proxy-core", "vane-geyser-extension").contains(it.name)
+    !listOf("vane-velocity", "vane-proxy-core", "vane-geyser-extension", "vane-annotations")
+        .contains(it.name)
 }) {
     pluginManager.apply("io.papermc.paperweight.userdev")
 

@@ -21,6 +21,7 @@ geyserApi = { group = "org.geysermc.geyser", name = "api", version.ref = "geyser
 bstatsBase = { group = "org.bstats", name = "bstats-base", version.ref = "bstats" }
 bstatsBukkit = { group = "org.bstats", name = "bstats-bukkit", version.ref = "bstats" }
 bstatsVelocity = { group = "org.bstats", name = "bstats-velocity", version.ref = "bstats" }
+paperApi = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper" }
 serviceIo = { group = "net.thenextlvl", name = "service-io", version = "2.6.0" }
 velocity = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity" }
 packetEvents = { group = "com.github.retrooper", name = "packetevents-spigot", version = "2.13.0" }

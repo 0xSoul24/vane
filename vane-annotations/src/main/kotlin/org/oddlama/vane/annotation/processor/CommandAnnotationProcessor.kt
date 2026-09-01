@@ -1,82 +1,62 @@
 package org.oddlama.vane.annotation.processor
 
 import org.oddlama.vane.annotation.command.Name
-import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.RoundEnvironment
 import javax.annotation.processing.SupportedAnnotationTypes
-import javax.annotation.processing.SupportedSourceVersion
-import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic
 
-/** Required annotations that must be present on classes using `@VaneCommand`. */
+/** Fully qualified name of the marker annotation that pulls in the mandatory-annotation check. */
+private const val VANE_COMMAND = "org.oddlama.vane.annotation.command.VaneCommand"
+
+/** Annotations that must accompany `@VaneCommand` on a command class. */
 private val mandatoryAnnotations = listOf(Name::class.java)
 
 /**
- * Validates command-related annotations such as `@VaneCommand`, `@Name` and `@Aliases`.
- *
- * Ensures annotated classes are valid command implementations and warns/errors when
- * required annotations are missing.
+ * Validates the command annotations: `@VaneCommand`, `@Name` and `@Aliases` must all sit on a
+ * class extending vane-core's `Command`, and a `@VaneCommand` class must additionally carry every
+ * annotation in [mandatoryAnnotations].
  */
 @SupportedAnnotationTypes(
     "org.oddlama.vane.annotation.command.Aliases",
     "org.oddlama.vane.annotation.command.Name",
-    "org.oddlama.vane.annotation.command.VaneCommand"
+    VANE_COMMAND
 )
-@SupportedSourceVersion(SourceVersion.RELEASE_21)
-class CommandAnnotationProcessor : AbstractProcessor() {
+class CommandAnnotationProcessor : ClassPlacementProcessor("org.oddlama.vane.core.command.Command") {
     /**
-     * Processes command-related annotations and validates their usage.
-     *
-     * Checks that annotated elements are classes and extend the expected
-     * command base type. For `@VaneCommand` annotated classes it also verifies
-     * that mandatory annotations (like `@Name`) are present.
+     * Runs the inherited placement checks, then the `@VaneCommand`-only completeness check.
      *
      * @param annotations Annotation types to process.
      * @param roundEnv Information about the current processing round.
      * @return true to indicate that the annotations have been claimed.
      */
     override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
-        annotations.forEach { annotation ->
-            val elements = roundEnv.getElementsAnnotatedWith(annotation)
-            elements.forEach {
-                verifyIsClass(processingEnv, it, annotation.simpleName.toString())
-                verifyExtendsType(
-                    processingEnv,
-                    it,
-                    "org.oddlama.vane.core.command.Command<",
-                    annotation.simpleName.toString(),
-                    "org.oddlama.vane.core.command.Command"
-                )
-            }
+        super.process(annotations, roundEnv)
 
-            // Verify that all mandatory annotations are present
-            if (annotation.asType().toString() == "org.oddlama.vane.annotation.command.VaneCommand") {
-                elements.forEach { verifyHasAnnotations(it) }
-            }
-        }
+        annotations
+            .filter { it.asType().toString() == VANE_COMMAND }
+            .forEach { roundEnv.getElementsAnnotatedWith(it).forEach(::verifyHasAnnotations) }
 
         return true
     }
 
     /**
-     * Ensures that required command annotations (like `@Name`) are present on the class.
-     * Skips checks for classes that are already subclasses of the framework's generic Command.
+     * Ensures the required command annotations are present on the class. The generic base
+     * `Command` itself is exempt — only its subclasses name a command.
      *
      * @param element The element (class) to validate for required annotations.
      */
     private fun verifyHasAnnotations(element: Element) {
-        // Only check subclasses
         if (element.asType().toString().startsWith("org.oddlama.vane.core.command.Command<")) return
 
-        mandatoryAnnotations.forEach { aCls ->
-            if (element.getAnnotation(aCls) == null) {
+        mandatoryAnnotations
+            .filter { element.getAnnotation(it) == null }
+            .forEach {
                 processingEnv.messager.printMessage(
                     Diagnostic.Kind.ERROR,
-                    "${element.asType()}: missing @${aCls.simpleName} annotation"
+                    "${element.asType()}: missing @${it.simpleName} annotation"
                 )
             }
-        }
     }
 }
