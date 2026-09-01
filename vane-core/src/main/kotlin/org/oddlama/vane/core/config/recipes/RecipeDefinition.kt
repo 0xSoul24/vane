@@ -100,8 +100,8 @@ abstract class RecipeDefinition(val name: String?) {
 
             // Exact choice of itemstack including NBT
             val itemStackAndIsSimpleMat = ItemUtil.itemstackFromString(itemDef)
-            val itemStack = itemStackAndIsSimpleMat.getLeft()!!
-            val isSimpleMat = itemStackAndIsSimpleMat.getRight() ?: false
+            val itemStack = itemStackAndIsSimpleMat.first!!
+            val isSimpleMat = itemStackAndIsSimpleMat.second ?: false
             if (isSimpleMat && amount == 1) return MaterialChoice(itemStack.type)
 
             itemStack.amount = amount

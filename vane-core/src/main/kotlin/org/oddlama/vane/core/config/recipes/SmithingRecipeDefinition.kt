@@ -124,7 +124,7 @@ class SmithingRecipeDefinition(name: String?) : RecipeDefinition(name) {
 
         return SmithingTransformRecipe(
             key(bk),
-            ItemUtil.itemstackFromString(resultDef).getLeft()!!,
+            ItemUtil.itemstackFromString(resultDef).first!!,
             MaterialChoice(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE),
             recipeChoice(baseDef),
             recipeChoice(additionDef),

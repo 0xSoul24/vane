@@ -1,9 +1,5 @@
 package org.oddlama.vane.core.persistent
 
-import org.json.JSONObject
-import org.oddlama.vane.annotation.persistent.Persistent
-import org.oddlama.vane.core.module.Module
-import org.reflections.ReflectionUtils
 import java.io.File
 import java.io.IOException
 import java.lang.reflect.Field
@@ -12,6 +8,10 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.util.function.Consumer
 import java.util.logging.Level
+import org.json.JSONObject
+import org.oddlama.vane.annotation.persistent.Persistent
+import org.oddlama.vane.core.module.Module
+import org.oddlama.vane.util.ReflectionUtil
 
 /**
  * Manages discovery, migration, loading, and saving of persistent module fields.
@@ -71,7 +71,7 @@ class PersistentStorageManager(var module: Module<*>) {
     /** Discovers and compiles persistent fields on the given owner object. */
     fun compile(owner: Any, mapName: (String?) -> String?) {
         persistentFields.addAll(
-            ReflectionUtils.getAllFields(owner.javaClass)
+            ReflectionUtil.allFields(owner.javaClass)
                 .filter { hasPersistentAnnotation(it) }
                 .map { compileField(owner, it, mapName) }
         )

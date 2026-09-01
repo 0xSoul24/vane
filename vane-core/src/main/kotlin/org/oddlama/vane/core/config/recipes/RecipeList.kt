@@ -30,6 +30,9 @@ class RecipeList(private var recipes: MutableList<RecipeDefinition?> = mutableLi
      * Construction and name-mapping helpers.
      */
     companion object {
+        /** Underscores and whitespace, stripped before matching a YAML recipe name. */
+        private val YAML_NAME_NOISE = Regex("[_\\s]")
+
         @JvmStatic
                 /** Creates a [RecipeList] from vararg definitions. */
         fun of(vararg defs: RecipeDefinition?): RecipeList = RecipeList(defs.toMutableList())
@@ -52,7 +55,7 @@ class RecipeList(private var recipes: MutableList<RecipeDefinition?> = mutableLi
         /** Maps YAML display names back to internal recipe names. */
         private fun fromYamlName(s: String?): String? {
             if (s.isNullOrEmpty()) return s
-            val low = s.lowercase(Locale.getDefault()).replace("[_\\s]".toRegex(), "")
+            val low = s.lowercase(Locale.getDefault()).replace(YAML_NAME_NOISE, "")
             return when (low) {
                 "generic" -> "generic"
                 "terralithgeneric" -> "terralith_generic"

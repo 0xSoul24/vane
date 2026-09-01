@@ -75,7 +75,7 @@ class ExistingItemConverter(context: Context<Core?>) : Listener<Core?>(context.n
             if (modelDataInt == null ||
                 modelDataInt != customItem.customModelData() ||
                 item.type != customItem.baseMaterial() ||
-                keyAndVersion?.getRight() != customItem.version()
+                keyAndVersion?.second != customItem.version()
             ) {
                 contents[i] = customItem.convertExistingStack(item)
                 module!!.log.info("Updated item ${customItem.key()}")

@@ -21,7 +21,6 @@ import org.oddlama.vane.core.Listener
 import org.oddlama.vane.core.item.api.CustomItem
 import org.oddlama.vane.core.lang.TranslatedMessage
 import org.oddlama.vane.core.module.Context
-import org.oddlama.vane.external.apache.commons.lang3.tuple.Pair
 import org.oddlama.vane.trifles.items.storage.Backpack
 import org.oddlama.vane.trifles.items.storage.Pouch
 import org.oddlama.vane.util.StorageUtil
@@ -214,35 +213,35 @@ class StorageGroup(context: Context<Trifles?>) :
         }
 
         val ownerAndItem = openBlockStateInventories[inventory]
-        if (ownerAndItem == null || ownerAndItem.left != whoClicked.uniqueId) {
+        if (ownerAndItem == null || ownerAndItem.first != whoClicked.uniqueId) {
             return
         }
 
-        updateStorageItem(ownerAndItem.right, inventory, whoClicked)
+        updateStorageItem(ownerAndItem.second, inventory, whoClicked)
     }
 
     /** Final persistence and cleanup when a managed transient inventory is closed. */
     @EventHandler(priority = EventPriority.MONITOR)
     fun saveAfterClose(event: InventoryCloseEvent) {
         val ownerAndItem = openBlockStateInventories[event.inventory]
-        if (ownerAndItem == null || ownerAndItem.left != event.player.uniqueId) {
+        if (ownerAndItem == null || ownerAndItem.first != event.player.uniqueId) {
             return
         }
 
         // Mark backing item as closed before writing inventory content.
-        ownerAndItem.right.editMeta { meta: ItemMeta ->
+        ownerAndItem.second.editMeta { meta: ItemMeta ->
             meta.persistentDataContainer.set(
                 STORAGE_IS_OPEN, PersistentDataType.BOOLEAN, false
             )
         }
-        updateStorageItem(ownerAndItem.right, event.inventory, event.player as Player)
+        updateStorageItem(ownerAndItem.second, event.inventory, event.player as Player)
         openBlockStateInventories.remove(event.inventory)
     }
 
     /** Returns owner/item mapping only when the player owns the tracked inventory session. */
     private fun getOwnerAndItemIfValid(inventory: Inventory, player: Player): Pair<UUID, ItemStack>? {
         val ownerAndItem = openBlockStateInventories[inventory] ?: return null
-        return if (ownerAndItem.left == player.uniqueId) ownerAndItem else null
+        return if (ownerAndItem.first == player.uniqueId) ownerAndItem else null
     }
 
     /** Returns whether an item is treated as a storage item by this module. */
@@ -281,7 +280,7 @@ class StorageGroup(context: Context<Trifles?>) :
             val cursorItem: ItemStack = player.openInventory.cursor
             if (cursorItem.hasItemMeta() && isCurrentlyOpen(cursorItem)) {
                 currentItem = cursorItem
-                openBlockStateInventories[inventory] = Pair.of(player.uniqueId, currentItem)
+                openBlockStateInventories[inventory] = Pair(player.uniqueId, currentItem)
             } else {
                 // Fallback: scan inventory slots for the active open marker.
                 for (checkedItem in player.inventory.contents) {
@@ -290,7 +289,7 @@ class StorageGroup(context: Context<Trifles?>) :
                     }
                     if (isCurrentlyOpen(checkedItem)) {
                         currentItem = checkedItem
-                        openBlockStateInventories[inventory] = Pair.of(player.uniqueId, currentItem)
+                        openBlockStateInventories[inventory] = Pair(player.uniqueId, currentItem)
                         break
                     }
                 }
@@ -345,7 +344,7 @@ class StorageGroup(context: Context<Trifles?>) :
         transientInventory.contents = container.inventory.contents
 
         // Track open session and show inventory to player.
-        openBlockStateInventories[transientInventory] = Pair.of(player.uniqueId, item)
+        openBlockStateInventories[transientInventory] = Pair(player.uniqueId, item)
         player.openInventory(transientInventory)
         return true
     }

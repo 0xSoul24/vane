@@ -4,11 +4,11 @@ import de.bluecolored.bluemap.api.BlueMapAPI
 import de.bluecolored.bluemap.api.BlueMapWorld
 import de.bluecolored.bluemap.api.markers.HtmlMarker
 import de.bluecolored.bluemap.api.markers.MarkerSet
-import org.bukkit.World
-import org.oddlama.vane.external.apache.commons.text.StringEscapeUtils
-import org.oddlama.vane.portals.portal.Portal
 import java.util.*
 import java.util.function.Consumer
+import org.bukkit.World
+import org.oddlama.vane.portals.portal.Portal
+import org.oddlama.vane.util.TextUtil
 
 /** Internal BlueMap integration helper used by [PortalBlueMapLayer]. */
 class PortalBlueMapLayerDelegate(private val parent: PortalBlueMapLayer) {
@@ -83,7 +83,7 @@ class PortalBlueMapLayerDelegate(private val parent: PortalBlueMapLayer) {
         val marker = HtmlMarker.builder()
             .position(loc.x, loc.y, loc.z)
             .label("Portal " + portal.name())
-            .html(parent.langMarkerLabel!!.str(StringEscapeUtils.escapeHtml4(portal.name())))
+            .html(parent.langMarkerLabel!!.str(TextUtil.escapeHtml(portal.name())))
             .build()
 
         // Existing markers will be overwritten.

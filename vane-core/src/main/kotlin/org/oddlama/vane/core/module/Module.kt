@@ -49,6 +49,9 @@ import java.util.logging.Logger
 import java.util.regex.Pattern
 import kotlin.math.max
 
+/** Matches the per-language files a module ships and regenerates: `lang-<code>.yml`. */
+private val LANG_FILE_PATTERN: Pattern = Pattern.compile("lang-.*\\.yml")
+
 /**
  * Base class for all vane Bukkit modules.
  *
@@ -273,8 +276,7 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
         if (pack == null) return
 
         // Generate language files
-        val langPattern = Pattern.compile("lang-.*\\.yml")
-        val langFiles = dataFolder.listFiles { _, name -> name != null && langPattern.matcher(name).matches() }
+        val langFiles = dataFolder.listFiles { _, name -> name != null && LANG_FILE_PATTERN.matcher(name).matches() }
             ?: emptyArray()
         langFiles.sorted().forEach { langFile ->
             val yaml = YamlConfiguration.loadConfiguration(langFile)
@@ -344,7 +346,7 @@ abstract class Module<T : Module<T?>?> : JavaPlugin(), Context<T?>, Listener {
 
     /** Tries to reload localization files for this module. */
     private fun tryReloadLocalization(): Boolean {
-        ResourceList.getResources(javaClass, Pattern.compile("lang-.*\\.yml"))
+        ResourceList.getResources(javaClass, LANG_FILE_PATTERN)
             .forEach { updateLangFile(it) }
 
         var langCode = configLang

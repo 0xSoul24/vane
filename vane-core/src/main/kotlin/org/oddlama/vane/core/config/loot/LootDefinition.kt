@@ -97,7 +97,7 @@ class LootDefinition(val name: String?) {
     fun entries(): List<LootTable.LootTableEntry> = entries.map { e ->
         LootTable.LootTableEntry(
             e.chance,
-            ItemUtil.itemstackFromString(e.itemDefinition!!).getLeft()!!,
+            ItemUtil.itemstackFromString(e.itemDefinition!!).first!!,
             e.amountMin,
             e.amountMax
         )

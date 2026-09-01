@@ -46,7 +46,7 @@ class CustomItemRegistry : CustomItemRegistry {
      */
     override fun get(itemStack: ItemStack?): CustomItem? {
         val keyAndVersion = CustomItemHelper.customItemTagsFromItemStack(itemStack) ?: return null
-        val key = keyAndVersion.getLeft() ?: return null
+        val key = keyAndVersion.first ?: return null
         return get(key)
     }
 

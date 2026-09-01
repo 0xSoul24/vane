@@ -1,6 +1,5 @@
 package org.oddlama.vane.core.config
 
-import org.apache.commons.lang3.ArrayUtils
 import org.bukkit.configuration.file.YamlConfiguration
 import org.oddlama.vane.annotation.config.ConfigDoubleList
 import org.oddlama.vane.core.YamlLoadException
@@ -33,7 +32,7 @@ class ConfigDoubleListField(
     }
 
     /** Returns the default value for this config field. */
-    override fun def(): MutableList<Double?> = overriddenDef() ?: ArrayUtils.toObject(annotation.def).toMutableList()
+    override fun def(): MutableList<Double?> = overriddenDef() ?: annotation.def.mapTo(mutableListOf<Double?>()) { it }
 
     /** Returns whether metrics collection is enabled for this field. */
     override fun metrics(): Boolean = overriddenMetrics() ?: annotation.metrics

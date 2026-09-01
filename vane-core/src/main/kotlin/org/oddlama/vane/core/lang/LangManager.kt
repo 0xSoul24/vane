@@ -1,5 +1,8 @@
 package org.oddlama.vane.core.lang
 
+import java.io.File
+import java.lang.reflect.Field
+import java.util.logging.Level
 import org.bukkit.configuration.file.YamlConfiguration
 import org.oddlama.vane.annotation.lang.LangMessage
 import org.oddlama.vane.annotation.lang.LangMessageArray
@@ -7,10 +10,7 @@ import org.oddlama.vane.annotation.lang.LangVersion
 import org.oddlama.vane.core.YamlLoadException
 import org.oddlama.vane.core.module.Module
 import org.oddlama.vane.core.resourcepack.ResourcePackGenerator
-import org.reflections.ReflectionUtils
-import java.io.File
-import java.lang.reflect.Field
-import java.util.logging.Level
+import org.oddlama.vane.util.ReflectionUtil
 
 /**
  * Discovers, validates, and loads language fields for a module.
@@ -118,7 +118,7 @@ class LangManager(var module: Module<*>) {
      */
     fun compile(owner: Any, mapName: (String?) -> String) {
         langFields.addAll(
-            ReflectionUtils.getAllFields(owner.javaClass)
+            ReflectionUtil.allFields(owner.javaClass)
                 .filter { hasLangAnnotation(it) }
                 .map { compileField(owner, it, mapName) }
         )

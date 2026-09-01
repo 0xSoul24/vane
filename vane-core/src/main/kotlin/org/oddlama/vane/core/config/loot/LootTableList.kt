@@ -30,6 +30,9 @@ class LootTableList : ConfigDictSerializable {
      * Construction and name-mapping helpers.
      */
     companion object {
+        /** Underscores and whitespace, stripped before matching a YAML loot name. */
+        private val YAML_NAME_NOISE = Regex("[_\\s]")
+
         @JvmStatic
                 /** Creates a [LootTableList] from vararg definitions. */
         fun of(vararg defs: LootDefinition?): LootTableList =
@@ -51,7 +54,7 @@ class LootTableList : ConfigDictSerializable {
         /** Maps YAML display names back to internal loot names. */
         private fun fromYamlName(s: String?): String? {
             if (s.isNullOrEmpty()) return s
-            return when (s.lowercase(Locale.getDefault()).replace("[_\\s]".toRegex(), "")) {
+            return when (s.lowercase(Locale.getDefault()).replace(YAML_NAME_NOISE, "")) {
                 "generic" -> "generic"
                 "terralithgeneric" -> "terralith_generic"
                 "terralithrare" -> "terralith_rare"

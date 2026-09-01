@@ -5,7 +5,6 @@ package org.oddlama.vane.portals.portal
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
-import org.oddlama.vane.external.apache.commons.lang3.tuple.Pair
 import org.oddlama.vane.portals.PortalConstructor
 import java.util.*
 import kotlin.math.abs
@@ -266,9 +265,9 @@ class PortalBoundary private constructor(private val plane: Plane?) {
             }
 
             if (areas[0] != null && floodFillStack0.isEmpty()) {
-                return Pair.of(boundary0, portalArea0)
+                return Pair(boundary0, portalArea0)
             } else if (areas[1] != null && floodFillStack1.isEmpty()) {
-                return Pair.of(boundary1, portalArea1)
+                return Pair(boundary1, portalArea1)
             }
 
             // Cannot occur.
@@ -467,8 +466,8 @@ class PortalBoundary private constructor(private val plane: Plane?) {
                 simultaneousFloodFill4(portalConstructor, potentialAreaBlocks, plane) ?: return null
 
             val boundary = PortalBoundary(plane)
-            boundary.boundaryBlocks = result.getLeft()
-            boundary.portalAreaBlocks = result.getRight()
+            boundary.boundaryBlocks = result.first
+            boundary.portalAreaBlocks = result.second
 
             // Remove origin block from a boundary list
             val iterator = boundary.boundaryBlocks!!.iterator()

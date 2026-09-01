@@ -75,7 +75,7 @@ class StonecuttingRecipeDefinition(name: String?) : RecipeDefinition(name) {
         val bk = baseKey ?: throw IllegalArgumentException("baseKey cannot be null")
         val inputDef = input ?: throw IllegalArgumentException("Invalid stonecutting recipe: input must be set")
         val resultDef = result ?: throw IllegalArgumentException("Invalid stonecutting recipe: result must be set")
-        val out = ItemUtil.itemstackFromString(resultDef).getLeft()!!
+        val out = ItemUtil.itemstackFromString(resultDef).first!!
         val `in` = recipeChoice(inputDef)
         return StonecuttingRecipe(key(bk), out, `in`)
     }

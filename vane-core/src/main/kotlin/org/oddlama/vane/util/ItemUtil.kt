@@ -15,7 +15,6 @@ import net.minecraft.commands.Commands
 import net.minecraft.commands.arguments.item.ItemParser
 import net.minecraft.data.registries.VanillaRegistries
 import net.minecraft.world.item.Item
-import org.apache.commons.lang3.tuple.Pair
 import org.bukkit.*
 import org.bukkit.craftbukkit.inventory.CraftItemStack
 import org.bukkit.enchantments.Enchantment
@@ -217,12 +216,9 @@ object ItemUtil {
         enchants = enchants.trim { it <= ' ' }
         require(!(!enchants.startsWith("{") || !enchants.endsWith("}"))) { "enchantments must be of form {<namespace:enchant>[*<level>][,<namespace:enchant>[*<level>]]...}" }
 
-        val parts: Array<String?> =
-            enchants.substring(1, enchants.length - 1).split(",".toRegex()).dropLastWhile { it.isEmpty() }
-                .toTypedArray()
-        for (part in parts) {
-            var part: String = part!!
-            part = part.trim { it <= ' ' }
+        val parts = enchants.substring(1, enchants.length - 1).split(',').dropLastWhile { it.isEmpty() }
+        for (rawPart in parts) {
+            var part: String = rawPart.trim { it <= ' ' }
 
             var key = part
             var level = 1
@@ -292,7 +288,7 @@ object ItemUtil {
 
         // If there is no NBT information, we can return here.
         if (nbtDelim == -1) {
-            return Pair.of(
+            return Pair(
                 applyEnchants(itemStack!!, enchants),
                 emat.isSimpleMaterial && enchants == null
             )
@@ -310,7 +306,7 @@ object ItemUtil {
             val nmsItem = itemHandle(itemStack)!!.copy()
             nmsItem.applyComponents(parsedNbt)
 
-            return Pair.of(applyEnchants(CraftItemStack.asCraftMirror(nmsItem), enchants), false)
+            return Pair(applyEnchants(CraftItemStack.asCraftMirror(nmsItem), enchants), false)
         } catch (e: CommandSyntaxException) {
             throw IllegalArgumentException("Could not parse NBT of item definition: $definition", e)
         }

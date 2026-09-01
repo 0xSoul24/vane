@@ -96,7 +96,7 @@ class ShapedRecipeDefinition(name: String?) : RecipeDefinition(name) {
     /** Converts this definition into a Bukkit [ShapedRecipe]. */
     override fun toRecipe(baseKey: NamespacedKey?): Recipe {
         val bk = baseKey ?: throw IllegalArgumentException("baseKey cannot be null")
-        val recipe = ShapedRecipe(key(bk), ItemUtil.itemstackFromString(this.result!!).getLeft()!!)
+        val recipe = ShapedRecipe(key(bk), ItemUtil.itemstackFromString(this.result!!).first!!)
         recipe.shape(*this.shape.toTypedArray())
         this.ingredients.forEach { (name, definition) ->
             recipe.setIngredient(name!![0], recipeChoice(definition!!))

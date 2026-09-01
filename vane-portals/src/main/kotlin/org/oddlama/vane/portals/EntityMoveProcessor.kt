@@ -7,7 +7,6 @@ import org.bukkit.plugin.PluginManager
 import org.bukkit.scheduler.BukkitTask
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.core.module.ModuleComponent
-import org.oddlama.vane.external.apache.commons.lang3.tuple.Pair
 import org.oddlama.vane.portals.event.EntityMoveEvent
 import java.util.*
 
@@ -71,7 +70,7 @@ class EntityMoveProcessor(context: Context<Portals?>?) : ModuleComponent<Portals
             val world: World? = module.server.getWorld(worldId)
             if (world != null) {
                 for (entity in world.entities) {
-                    moveEventCurrentPositions[entity.uniqueId] = Pair.of(entity, entity.location)
+                    moveEventCurrentPositions[entity.uniqueId] = Pair(entity, entity.location)
                 }
             }
         }
@@ -85,15 +84,15 @@ class EntityMoveProcessor(context: Context<Portals?>?) : ModuleComponent<Portals
             val oldEntityAndLoc = moveEventOldPositions[eid]
             val newEntityAndLoc = moveEventCurrentPositions[eid]
             if (oldEntityAndLoc == null || newEntityAndLoc == null || !isMovement(
-                    oldEntityAndLoc.getRight()!!,
-                    newEntityAndLoc.getRight()!!
+                    oldEntityAndLoc.second!!,
+                    newEntityAndLoc.second!!
                 )
             ) {
                 continue
             }
 
             // oldEntityAndLoc contains nullable entity/location; the processing queue requires a non-null entity
-            moveEventProcessingQueue[eid] = Pair.of(oldEntityAndLoc.getLeft()!!, oldEntityAndLoc.getRight())
+            moveEventProcessingQueue[eid] = Pair(oldEntityAndLoc.first!!, oldEntityAndLoc.second)
         }
 
         // Swap old and current position hash maps, and only retain the now-old positions.
@@ -114,8 +113,8 @@ class EntityMoveProcessor(context: Context<Portals?>?) : ModuleComponent<Portals
             iter.remove()
 
             // Dispatch event.
-            val entity = eAndOldLoc.getLeft()
-            val event = EntityMoveEvent(entity, eAndOldLoc.getRight(), entity.location)
+            val entity = eAndOldLoc.first
+            val event = EntityMoveEvent(entity, eAndOldLoc.second, entity.location)
             pm.callEvent(event)
 
             // Abort if we exceed the threshold time

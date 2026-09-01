@@ -1,15 +1,15 @@
 package org.oddlama.vane.core.config
 
-import org.apache.commons.text.WordUtils
+import java.lang.reflect.Field
+import java.lang.reflect.InvocationTargetException
+import kotlin.math.max
+import kotlin.math.min
 import org.bstats.bukkit.Metrics
 import org.bstats.charts.SimplePie
 import org.bukkit.configuration.file.YamlConfiguration
 import org.oddlama.vane.core.YamlLoadException
 import org.oddlama.vane.core.functional.Consumer2
-import java.lang.reflect.Field
-import java.lang.reflect.InvocationTargetException
-import kotlin.math.max
-import kotlin.math.min
+import org.oddlama.vane.util.TextUtil
 
 /**
  * Base class for reflected configuration fields.
@@ -50,7 +50,7 @@ abstract class ConfigField<T>(
      * Split YAML path components.
      */
     private val yamlPathComponents: Array<String?> =
-        path.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        path.split('.').dropLastWhile { it.isEmpty() }.toTypedArray()
 
     /**
      * Group path part (without leaf basename).
@@ -192,7 +192,10 @@ abstract class ConfigField<T>(
      * Appends a wrapped description comment line.
      */
     protected fun appendDescription(builder: StringBuilder, indent: String) {
-        builder.append("$indent# ${WordUtils.wrap(description(), max(60, 80 - indent.length), "\n$indent# ", false)}\n")
+        // A `<field>Desc()` override may return null; `WordUtils.wrap` passed null straight
+        // through, so the interpolation below keeps emitting the same "# null" line it always has.
+        val wrapped = description()?.let { TextUtil.wordWrap(it, max(60, 80 - indent.length), "\n$indent# ") }
+        builder.append("$indent# $wrapped\n")
     }
 
     /**

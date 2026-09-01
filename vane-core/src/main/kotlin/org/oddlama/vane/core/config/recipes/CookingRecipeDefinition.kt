@@ -104,7 +104,7 @@ class CookingRecipeDefinition(name: String?, private val type: String) : RecipeD
     /** Converts this definition into a concrete Bukkit cooking recipe. */
     override fun toRecipe(baseKey: NamespacedKey?): Recipe? {
         val bk = baseKey ?: throw IllegalArgumentException("baseKey cannot be null")
-        val out = ItemUtil.itemstackFromString(this.result!!).getLeft()!!
+        val out = ItemUtil.itemstackFromString(this.result!!).first!!
         val `in` = recipeChoice(input!!)
         return when (this.type) {
             "blasting" -> BlastingRecipe(key(bk), out, `in`, experience, cookingTime)

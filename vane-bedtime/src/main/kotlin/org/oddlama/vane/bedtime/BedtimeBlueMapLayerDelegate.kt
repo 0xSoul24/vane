@@ -4,10 +4,10 @@ import de.bluecolored.bluemap.api.BlueMapAPI
 import de.bluecolored.bluemap.api.BlueMapWorld
 import de.bluecolored.bluemap.api.markers.HtmlMarker
 import de.bluecolored.bluemap.api.markers.MarkerSet
+import java.util.*
 import org.bukkit.OfflinePlayer
 import org.bukkit.World
-import org.oddlama.vane.external.apache.commons.text.StringEscapeUtils
-import java.util.*
+import org.oddlama.vane.util.TextUtil
 
 /**
  * Handles BlueMap API integration and bedtime marker synchronization.
@@ -81,7 +81,7 @@ class BedtimeBlueMapLayerDelegate(private val parent: BedtimeBlueMapLayer) {
         val marker = HtmlMarker.builder()
             .position(loc.x, loc.y, loc.z)
             .label("Bed for ${player.name}")
-            .html(requireNotNull(parent.langMarkerLabel).str(StringEscapeUtils.escapeHtml4(player.name)))
+            .html(requireNotNull(parent.langMarkerLabel).str(TextUtil.escapeHtml(player.name)))
             .build()
 
         /* Existing markers are overwritten. */

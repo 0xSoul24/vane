@@ -34,9 +34,6 @@ kotlin.sourceSets.named("main") {
 dependencies {
     implementation(libs.bstatsBase)
     implementation(libs.bstatsBukkit)
-    implementation(libs.reflections)
-    implementation(libs.commonsLang)
-    implementation(libs.commonsText)
     api(libs.json)
     implementation(project(":vane-annotations"))
 }
@@ -58,18 +55,12 @@ tasks {
         dependencies {
             include(dependency("org.bstats:bstats-base"))
             include(dependency("org.bstats:bstats-bukkit"))
-            include(dependency("org.reflections:reflections"))
             include(dependency("org.json:json"))
             include(dependency(":vane-annotations"))
-            include(dependency("org.apache.commons:commons-lang3"))
-            include(dependency("org.apache.commons:commons-text"))
             include(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
         }
         relocate("org.bstats", "org.oddlama.vane.external.bstats")
-        relocate("org.reflections", "org.oddlama.vane.external.reflections")
         relocate("org.json", "org.oddlama.vane.external.json")
-        relocate("org.apache.commons.lang3", "org.oddlama.vane.external.apache.commons.lang3")
-        relocate("org.apache.commons.text", "org.oddlama.vane.external.apache.commons.text")
         relocate("kotlin", "org.oddlama.vane.external.kotlin")
 
         // The vane-annotations jar carries `javax.annotation.processing` validators alongside the

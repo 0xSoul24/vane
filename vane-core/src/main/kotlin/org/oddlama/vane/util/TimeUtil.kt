@@ -12,6 +12,15 @@ private val timeMultiplier: Map<Char, Long> = mapOf(
     'y' to 31_536_000_000L
 )
 
+/** Boundary between a unit and the digits of the next segment, e.g. `1h|30m`. */
+private val SEGMENT_BOUNDARY = Regex("(?<=[^0-9])(?=[0-9])")
+
+/** Boundary between a segment's digits and its unit, e.g. `30|m`. */
+private val NUMBER_UNIT_BOUNDARY = Regex("(?=[^0-9])")
+
+/** Separators and filler punctuation allowed inside a unit, e.g. `2d, and 6h`. */
+private val UNIT_NOISE = Regex("[,+.\\s]+")
+
 /**
  * Parses a compact duration string into milliseconds.
  *
@@ -27,12 +36,12 @@ fun parseTime(input: String): Long {
     var ret = 0L
 
     /** Parsed alternating numeric/unit segments. */
-    val parts = input.split("(?<=[^0-9])(?=[0-9])".toRegex()).filter { it.isNotEmpty() }
+    val parts = input.split(SEGMENT_BOUNDARY).filter { it.isNotEmpty() }
     for (time in parts) {
-        val content = time.split("(?=[^0-9])".toRegex()).filter { it.isNotEmpty() }
+        val content = time.split(NUMBER_UNIT_BOUNDARY).filter { it.isNotEmpty() }
         if (content.size != 2) throw NumberFormatException("missing multiplier")
         val numberPart = content[0]
-        val unitPart = content[1].replace("and", "").replace("[,+.\\s]+".toRegex(), "")
+        val unitPart = content[1].replace("and", "").replace(UNIT_NOISE, "")
         if (unitPart.isEmpty()) throw NumberFormatException("missing multiplier")
         val mult = timeMultiplier[unitPart[0]] ?: throw NumberFormatException("unknown multiplier: ${unitPart[0]}")
         ret += numberPart.toLong() * mult

@@ -89,16 +89,22 @@ class ConfigStringListMapField(
 
     /** Static key transformation helpers for map serialization. */
     companion object {
+        /** Runs of characters that separate words in an internal key. */
+        private val KEY_SEPARATORS = Regex("[^A-Za-z0-9]+")
+
+        /** Runs of characters that are folded to a single `_` when normalizing a YAML heading. */
+        private val NON_KEY_CHARS = Regex("[^a-z0-9]+")
+
         /** Converts internal snake/case keys to PascalCase YAML headings. */
         private fun toPascalCase(key: String?): String? {
             if (key.isNullOrEmpty()) return key
-            return key.split("[^A-Za-z0-9]+".toRegex())
+            return key.split(KEY_SEPARATORS)
                 .filter { it.isNotEmpty() }
                 .joinToString("") { it[0].uppercaseChar() + it.substring(1) }
         }
 
         /** Normalizes YAML headings back to lowercase snake_case keys. */
         private fun normalizeKey(key: String?): String? =
-            key?.lowercase(Locale.getDefault())?.replace("[^a-z0-9]+".toRegex(), "_")
+            key?.lowercase(Locale.getDefault())?.replace(NON_KEY_CHARS, "_")
     }
 }

@@ -1,13 +1,5 @@
 package org.oddlama.vane.core.config
 
-import org.apache.commons.text.WordUtils
-import org.bstats.bukkit.Metrics
-import org.bukkit.configuration.file.YamlConfiguration
-import org.oddlama.vane.annotation.config.*
-import org.oddlama.vane.core.YamlLoadException
-import org.oddlama.vane.core.module.Context
-import org.oddlama.vane.core.module.Module
-import org.reflections.ReflectionUtils
 import java.io.File
 import java.io.IOException
 import java.lang.reflect.Field
@@ -15,6 +7,14 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.util.logging.Level
 import kotlin.math.max
+import org.bstats.bukkit.Metrics
+import org.bukkit.configuration.file.YamlConfiguration
+import org.oddlama.vane.annotation.config.*
+import org.oddlama.vane.core.YamlLoadException
+import org.oddlama.vane.core.module.Context
+import org.oddlama.vane.core.module.Module
+import org.oddlama.vane.util.ReflectionUtil
+import org.oddlama.vane.util.TextUtil
 
 /**
  * Discovers, validates, loads, and regenerates module configuration fields.
@@ -168,7 +168,7 @@ class ConfigManager(var module: Module<*>) {
      */
     fun compile(owner: Any, mapName: (String?) -> String?) {
         configFields.addAll(
-            ReflectionUtils.getAllFields(owner.javaClass)
+            ReflectionUtil.allFields(owner.javaClass)
                 .filter { hasConfigAnnotation(it) }
                 .map { compileField(owner, it, mapName) }
         )
@@ -216,7 +216,7 @@ class ConfigManager(var module: Module<*>) {
                     sectionPath = Context.appendYamlPath(sectionPath!!, f.components()[i], ".")
 
                     sectionDescriptions[sectionPath]?.let { sectionDesc ->
-                        val wrapped = WordUtils.wrap(sectionDesc, max(60, 80 - indent.length), "\n$indent# ", false)
+                        val wrapped = TextUtil.wordWrap(sectionDesc, max(60, 80 - indent.length), "\n$indent# ")
                         builder.append("$indent# $wrapped\n")
                     }
 

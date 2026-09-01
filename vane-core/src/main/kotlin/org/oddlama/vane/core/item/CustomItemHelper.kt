@@ -2,7 +2,6 @@
 
 package org.oddlama.vane.core.item
 
-import org.apache.commons.lang3.tuple.Pair
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
@@ -60,9 +59,11 @@ object CustomItemHelper {
             return null
         }
 
-        val parts: Array<String?> = key.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        // Char-delimiter split: the regex overload used to compile a fresh Pattern on every
+        // item lookup, and this runs for each stack an interaction or inventory event touches.
+        val parts = key.split(':').dropLastWhile { it.isEmpty() }
         check(parts.size == 2) { "Invalid namespaced key '$key'" }
-        return Pair.of(namespacedKey(parts[0]!!, parts[1]!!), version)
+        return Pair(namespacedKey(parts[0], parts[1]), version)
     }
 
     /**

@@ -76,7 +76,7 @@ class ShapelessRecipeDefinition(name: String?) : RecipeDefinition(name) {
     /** Converts this definition into a Bukkit [ShapelessRecipe]. */
     override fun toRecipe(baseKey: NamespacedKey?): Recipe {
         val bk = baseKey ?: throw IllegalArgumentException("baseKey cannot be null")
-        val recipe = ShapelessRecipe(key(bk), ItemUtil.itemstackFromString(this.result!!).getLeft()!!)
+        val recipe = ShapelessRecipe(key(bk), ItemUtil.itemstackFromString(this.result!!).first!!)
         this.ingredients.forEach { i -> recipe.addIngredient(recipeChoice(i)) }
         return recipe
     }
