@@ -71,6 +71,11 @@ tasks {
         // matches the standard jar name (single output file).
         archiveClassifier.set("")
 
+        // Three classes of extension code sit on top of a ~5.3 MB shaded Kotlin runtime, and a
+        // Geyser extension has no other artifact to share one with. Pruning to what is actually
+        // reachable is by far the largest thing that can be done to this jar.
+        minimize()
+
         dependencies {
             include(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
         }

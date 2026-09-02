@@ -62,13 +62,18 @@ class VaneGeyser : Extension {
     }
 
     /**
-     * Handles the [GeyserPreInitializeEvent] to support extension reloading.
+     * Handles the [GeyserPreReloadEvent] to support extension reloading.
      *
      * Logs a reload message when the Geyser reload cycle is triggered.
      * Extension configuration could be re-read here if needed.
+     *
+     * Note: Geyser's extension template declares this handler with a
+     * [GeyserPreInitializeEvent] parameter while its documentation points at the reload event.
+     * Following the parameter rather than the docs subscribes a second handler to
+     * pre-initialize, so every startup logs a "Reloading" line and no reload is ever observed.
      */
     @Subscribe
-    fun onGeyserReload(event: GeyserPreInitializeEvent?) {
+    fun onGeyserReload(event: GeyserPreReloadEvent) {
         logger().info("Reloading ${description().name()}!")
     }
 

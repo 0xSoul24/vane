@@ -229,9 +229,14 @@ configure(vanePlugins) {
     }
 }
 
-// All paper plugins except core.
+// All Paper plugins except core.
+// vane-geyser-extension is excluded for the same reason it is excluded from paperweight above: it
+// targets the Geyser API only and imports nothing from vane-core, so depending on it just put
+// vane-core (and everything vane-core resolves) on this module's compile classpath and made its
+// build wait on :vane-core:shadowJar for nothing.
 configure(subprojects.filter {
-    !listOf("vane-annotations", "vane-core", "vane-velocity", "vane-proxy-core").contains(it.name)
+    !listOf("vane-annotations", "vane-core", "vane-velocity", "vane-proxy-core", "vane-geyser-extension")
+        .contains(it.name)
 }) {
     dependencies {
         // https://imperceptiblethoughts.com/shadow/multi-project/#depending-on-the-shadow-jar-from-another-project
