@@ -8,6 +8,28 @@ menu toolkit and the resource pack generator.
 Every other vane plugin declares a hard dependency on it, and most of them shade against its
 `shadow` configuration as well as depending on the project directly.
 
+## The head library
+
+`src/main/resources/head_library.json` backs `/heads` and the player-head drop replacement in
+`org.oddlama.vane.core.misc.HeadLibrary`. It holds 32075 entries and is read and parsed in full on
+every server start, so its size is startup cost and heap, not just jar weight.
+
+Each entry is `{"id", "name", "category", "tags"}` plus **one** of:
+
+- `hash` — the texture hash alone. [org.oddlama.vane.core.material.HeadMaterial] rebuilds the
+  base64 payload from it as `{"textures":{"SKIN":{"url":"<prefix><hash>"}}}`.
+- `texture` — the full base64 payload, kept verbatim for the 99 entries whose payload carries extra
+  fields (`id`, `type`) and so cannot be rebuilt byte-identically.
+
+The file used to store the full payload for every entry: ~180 characters of base64 wrapping a ~64
+character hash, which made the texture field about half of an 11.76 MB pretty-printed file. Storing
+the hash and minifying brings it to 6.12 MB.
+
+The rebuilt payload must stay **byte-identical** to what was stored, because
+`HeadMaterialLibrary.fromTexture` matches skulls by exact string — a payload that differs by a
+space or key order silently stops matching. When regenerating this file, verify that: load both the
+old and new file and compare every entry's key, name, category, tags and texture.
+
 ## Third-party dependencies
 
 The shadowed jar carries only what is genuinely needed at runtime: bStats, `org.json`, and the
