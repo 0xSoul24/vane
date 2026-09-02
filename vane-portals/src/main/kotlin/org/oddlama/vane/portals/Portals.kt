@@ -274,12 +274,13 @@ class Portals : Module<Portals?>() {
         styles.clear()
 
         configStyles!!.forEach { (styleKey: String?, v1: MutableMap<String?, MutableMap<String?, Material?>?>?) ->
-            val split: Array<String?> = styleKey!!.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            // Char-delimiter split; the regex overload compiled a fresh Pattern per style.
+            val split = styleKey!!.split(':').dropLastWhile { it.isEmpty() }
             if (split.size != 2) {
                 throw RuntimeException("Invalid style key: '$styleKey' is not a valid namespaced key")
             }
 
-            val style = Style(StorageUtil.namespacedKey(split[0]!!, split[1]!!))
+            val style = Style(StorageUtil.namespacedKey(split[0], split[1]))
             v1!!.forEach { (isActive: String?, v2: MutableMap<String?, Material?>?) ->
                 val active: Boolean = when (isActive) {
                     "Active" -> true
