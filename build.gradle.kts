@@ -132,6 +132,23 @@ subprojects {
         compileOnly(rootProject.libs.annotations)
         implementation(kotlin("stdlib"))
         testImplementation(kotlin("test"))
+
+        // paper-api pulls maven-resolver-provider 3.9.6, whose maven-artifact/maven-model chain
+        // resolves commons-lang3 3.12.0 (CVE-2025-48924, fixed in 3.18.0) and plexus-utils 3.5.1
+        // (CVE-2025-67030, fixed in 3.6.1). No vane code touches either library and both stay
+        // compile-only -- nothing shadows them into a jar -- but dependency scanners report the
+        // resolved graph, so pin the patched releases. 3.20.0 is also the commons-lang3 Paper
+        // itself ships in its bundled libraries, so the pin matches what runs on the server.
+        //
+        // `compileOnly` is constrained next to `implementation` because it does not extend it, and
+        // the Paper artifact arrives through it in every module (plain `paper-api` in
+        // vane-annotations, the paperweight dev bundle everywhere else).
+        constraints {
+            implementation(rootProject.libs.commonsLang3)
+            implementation(rootProject.libs.plexusUtils)
+            compileOnly(rootProject.libs.commonsLang3)
+            compileOnly(rootProject.libs.plexusUtils)
+        }
     }
 
     configure<org.jetbrains.dokka.gradle.DokkaExtension> {

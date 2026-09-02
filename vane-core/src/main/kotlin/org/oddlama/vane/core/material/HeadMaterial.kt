@@ -36,7 +36,7 @@ class HeadMaterial(
     /** JSON deserialization helpers. */
     companion object {
         /** Every head texture payload in the library points at this host. */
-        private const val TEXTURE_URL_PREFIX = "http://textures.minecraft.net/texture/"
+        private const val TEXTURE_URL_PREFIX = "https://textures.minecraft.net/texture/"
 
         /**
          * Rebuilds the base64 texture payload for a bare texture hash.
