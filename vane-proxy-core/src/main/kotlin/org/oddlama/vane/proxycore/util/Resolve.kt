@@ -10,6 +10,10 @@ import java.util.*
  * Mojang profile resolution helpers.
  */
 object Resolve {
+    /** The five groups of a Mojang UUID as returned undashed by the profile API. */
+    private val UNDASHED_UUID =
+        Regex("(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)")
+
     /**
      * Resolves signed skin texture data for a player UUID.
      */
@@ -33,7 +37,7 @@ object Resolve {
         val json = readJsonFromUrl("https://api.mojang.com/users/profiles/minecraft/$name")
         val uuidStr = json.getString("id")
             .replace(
-                "(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)".toRegex(),
+                UNDASHED_UUID,
                 "$1-$2-$3-$4-$5"
             )
         return UUID.fromString(uuidStr)
