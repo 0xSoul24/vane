@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.paperweightUserdev)
     alias(libs.plugins.runPaper) // Adds runServer and runMojangMappedServer tasks for testing
     alias(libs.plugins.dokka)
+    alias(libs.plugins.shadow) apply false
     kotlin("jvm")
 }
 
@@ -240,6 +241,41 @@ configure(subprojects.filter {
         implementation(project(path = ":vane-core", configuration = "shadow"))
         // But also depend on core itself.
         implementation(project(path = ":vane-core"))
+    }
+}
+
+// Shipped Paper plugins other than vane-core.
+//
+// vane-core is the only plugin that bundles shared third-party code. Every other vane plugin
+// declares `vane-core: required: true` in its paper-plugin.yml, which places it in the same Paper
+// class loader group, so it can use the copy vane-core already ships instead of carrying its own.
+// The project has always relied on this for `org.json`; extending it to the Kotlin standard
+// library drops an identical ~4.9 MB / 989 classes from each of these seven jars.
+//
+// The relocations still have to be declared: they rewrite the references inside each plugin's own
+// bytecode to the names vane-core publishes.
+//
+// vane-enchantments is deliberately absent: it is the one plugin with a `bootstrapper`, and a
+// bootstrapper runs inside `Bootstrap.bootStrap` before any plugin is loaded, so its class loader
+// has no dependency group yet and can only see its own jar. Sharing there fails with
+// NoClassDefFoundError on kotlin.jvm.internal.Intrinsics, so it keeps its own copy.
+configure(subprojects.filter {
+    listOf(
+        "vane-admin",
+        "vane-bedtime",
+        "vane-permissions",
+        "vane-portals",
+        "vane-regions",
+        "vane-trifles"
+    ).contains(it.name)
+}) {
+    tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>().configureEach {
+        // Bundle none of the resolved dependencies; vane-core provides them all at runtime.
+        dependencies {
+            exclude { true }
+        }
+        relocate("kotlin", "org.oddlama.vane.external.kotlin")
+        relocate("org.json", "org.oddlama.vane.external.json")
     }
 }
 
