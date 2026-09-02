@@ -26,7 +26,7 @@ jobs:
       # Caches ~/.gradle/caches and the Gradle daemon state across runs. Without this every
       # matrix job re-downloaded the Paper dev bundle and recompiled vane-core from scratch.
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
         with:
           cache-read-only: ${{ github.ref != format('refs/heads/{0}', github.event.repository.default_branch) }}
 
