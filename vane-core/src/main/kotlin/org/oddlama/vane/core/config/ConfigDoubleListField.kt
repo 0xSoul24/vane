@@ -32,7 +32,7 @@ class ConfigDoubleListField(
     }
 
     /** Returns the default value for this config field. */
-    override fun def(): MutableList<Double?> = overriddenDef() ?: annotation.def.mapTo(mutableListOf<Double?>()) { it }
+    override fun def(): MutableList<Double?> = overriddenDef() ?: annotation.def.mapTo(mutableListOf()) { it }
 
     /** Returns whether metrics collection is enabled for this field. */
     override fun metrics(): Boolean = overriddenMetrics() ?: annotation.metrics

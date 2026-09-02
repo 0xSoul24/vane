@@ -24,7 +24,7 @@ object ReflectionUtil {
      */
     @JvmStatic
     fun allFields(cls: Class<*>): List<Field> =
-        generateSequence<Class<*>>(cls) { it.superclass }
+        generateSequence(cls) { it.superclass }
             .flatMap { it.declaredFields.asSequence() }
             .toList()
 }

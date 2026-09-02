@@ -218,7 +218,7 @@ object ItemUtil {
 
         val parts = enchants.substring(1, enchants.length - 1).split(',').dropLastWhile { it.isEmpty() }
         for (rawPart in parts) {
-            var part: String = rawPart.trim { it <= ' ' }
+            val part: String = rawPart.trim { it <= ' ' }
 
             var key = part
             var level = 1
