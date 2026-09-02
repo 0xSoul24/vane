@@ -13,7 +13,7 @@ slf4j = { group = "org.slf4j", name = "slf4j-api", version = "2.0.18" }
 # Pins for vulnerable transitive dependencies dragged in by paper-api's
 # maven-resolver-provider chain; see the constraints in the root build script.
 commonsLang3 = { group = "org.apache.commons", name = "commons-lang3", version = "3.20.0" }
-plexusUtils = { group = "org.codehaus.plexus", name = "plexus-utils", version = "3.6.2" }
+plexusUtils = { group = "org.codehaus.plexus", name = "plexus-utils", version = "4.1.0" }
 
 nightConfig = { group = "com.electronwill.night-config", name = "toml", version = "3.9.0" }
 
