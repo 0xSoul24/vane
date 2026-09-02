@@ -13,7 +13,7 @@ import org.oddlama.vane.geyserextension.CommandsRegistration.sendVaneMenu
  * Registers Bedrock-specific commands and provides form-based UI menus for Geyser connections.
  *
  * This singleton handles the entire Bedrock form navigation tree for the Vane plugin suite.
- * When a Bedrock player executes the `/menu` command, a hierarchical [SimpleForm] / [CustomForm]
+ * When a Bedrock player executes the `/vanegeyser menu` command, a hierarchical [SimpleForm] / [CustomForm]
  * navigation system is presented, allowing access to all vane modules without typing commands.
  *
  * Menu hierarchy:
@@ -27,7 +27,13 @@ import org.oddlama.vane.geyserextension.CommandsRegistration.sendVaneMenu
 object CommandsRegistration {
 
     /**
-     * Registers the `/vane menu` command for Bedrock players.
+     * Registers the `menu` subcommand, reachable as `/vanegeyser menu` for Bedrock players.
+     *
+     * Geyser roots an extension's commands at [Extension.rootCommand], which defaults to the
+     * extension id from `extension.yml` — hence the `vanegeyser` prefix. Overriding that to
+     * `vane` shortens the command but registers a `/vane` root on the proxy, which then answers
+     * it instead of forwarding to vane-core's own `/vane` on the backend server. The longer
+     * prefix is deliberate.
      *
      * The command is restricted to Bedrock-only, player-only connections and
      * opens the main [sendVaneMenu] form when executed.

@@ -80,7 +80,7 @@ class VaneGeyser : Extension {
     /**
      * Handles the [GeyserDefineCommandsEvent] to register Bedrock-specific commands.
      *
-     * Delegates to [CommandsRegistration] which registers the `/menu` command
+     * Delegates to [CommandsRegistration] which registers the `/vanegeyser menu` command
      * and all associated Bedrock form-based UI menus.
      */
     @Subscribe
