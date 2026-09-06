@@ -8,7 +8,7 @@ geyser = "2.11.2-SNAPSHOT"
 [libraries]
 annotations = { group = "org.jetbrains", name = "annotations", version = "26.1.0" }
 json = { group = "org.json", name = "json", version = "20260814" }
-slf4j = { group = "org.slf4j", name = "slf4j-api", version = "2.0.18" }
+slf4j = { group = "org.slf4j", name = "slf4j-api", version = "2.0.19" }
 
 # Pins for vulnerable transitive dependencies dragged in by paper-api's
 # maven-resolver-provider chain; see the constraints in the root build script.
