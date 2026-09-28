@@ -1,0 +1,71 @@
+name: Release
+
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to (re)build and upload, e.g. v1.22.0'
+        required: true
+
+permissions:
+  contents: write
+
+# Never run two releases for the same tag at once; a re-pushed tag waits for the previous run.
+concurrency:
+  group: release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: refs/tags/${{ env.TAG }}
+
+      # The jars carry the project version (and vane-core the matching resource pack URL),
+      # so a tag that disagrees with build.gradle.kts would publish mislabeled artifacts.
+      - name: Check tag matches project version
+        run: |
+          version=$(sed -n 's/^ *version = "\(.*\)"$/\1/p' build.gradle.kts)
+          if [ "v$version" != "$TAG" ]; then
+            echo "::error::Tag $TAG does not match project version $version in build.gradle.kts"
+            exit 1
+          fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v6
+        with:
+          java-version: 25
+          distribution: 'corretto'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: true
+
+      - name: Gradle build
+        run: ./gradlew build
+
+      # Same layout as upstream: only the Paper server plugins, flat. vane-velocity goes on the
+      # proxy and vane-geyser-extension into Geyser, so both are uploaded separately only.
+      - name: Create all-plugins.zip
+        run: |
+          cd target
+          zip -X all-plugins.zip vane-{admin,bedtime,core,enchantments,permissions,portals,regions,trifles}-"$VERSION".jar
+
+      # A new tag gets a draft with generated notes to edit before publishing by hand. If a
+      # release already exists (draft or published), only its assets are replaced.
+      - name: Upload to GitHub release
+        run: |
+          if ! gh release view "$TAG" > /dev/null 2>&1; then
+            gh release create "$TAG" --draft --verify-tag --generate-notes --title "$TAG"
+          fi
+          gh release upload "$TAG" --clobber target/vane-*-"$VERSION".jar target/all-plugins.zip
