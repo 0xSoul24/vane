@@ -4,12 +4,10 @@ on: pull_request
 
 permissions:
   contents: read
-  pull-requests: read
 
 jobs:
   lint_commits:
     runs-on: ubuntu-latest
-    if: always() && github.repository == 'oddlama/vane'
 
     steps:
       - uses: actions/checkout@v7.0.1
@@ -18,48 +16,37 @@ jobs:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - uses: actions/setup-node@v7.0.0
-        with:
-          node-version: 24
-      - run: |
-          # Setup commitlint
-          if ! yarn add {ts-node, @commitlint/{config-conventional,cli}} >> /dev/null 2>&1; then
-            exit 0
-          fi
-          
-          echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js
-          
-          # Get the PR commits
-          FIRST_COMMIT_SHA=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" ${{ github.event.pull_request.commits_url }} | jq -r '.[0].sha')
-          commit_log=$(git log $FIRST_COMMIT_SHA^...HEAD --pretty=format:"%s")
-          readarray -t commits <<<"$commit_log"
-          
-          errors=()
-          for commit in "${commits[@]}"; do
-            if ! echo $commit | yarn -s run commitlint -q; then
-              errors+=( "$commit" )
-            fi
-          done
-          
-          if (( ${#errors[@]} )); then
-            printf "One or more of the commits in this PR do not follow the Conventional Commits style:\n\n"
-          
-            for error in "${errors[@]}"; do
-              echo "$error"
-            done
-          
-            echo "CONTAINS_ERRORS=1" >> $GITHUB_ENV
-            exit 1
-          else
-            exit 0
-          fi
+      - uses: oven-sh/setup-bun@v2.2.0
 
-      - name: Comment on PR
-        if: ${{ failure() && env.CONTAINS_ERRORS == '1' && !github.event.pull_request.draft }}
-        uses: thollander/actions-comment-pull-request@v3
-        with:
-          message: |
-            Hello!
-            
-            One or more of the commits in this PR do not follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) style. See the `lint_commits` job for more details. Please modify your commit message(s) with [git commit --amend](https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/changing-a-commit-message) and force push those changes to update this PR.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup commitlint
+        run: |
+          bun add --no-save @commitlint/cli@21 @commitlint/config-conventional@21
+          echo "module.exports = {extends: ['@commitlint/config-conventional'], rules: {'body-max-line-length': [0]}}" > commitlint.config.js
+
+      - name: Lint PR commits
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          errors=()
+          while IFS= read -r sha; do
+            subject=$(git log -1 --format=%s "$sha")
+            if ! git log -1 --format=%B "$sha" | bun x --bun commitlint; then
+              errors+=("$subject")
+            fi
+          done < <(git rev-list --no-merges --reverse "$BASE_SHA..$HEAD_SHA")
+
+          if (( ${#errors[@]} )); then
+            {
+              echo "### Commit messages don't follow Conventional Commits"
+              echo
+              echo "These commits need rewording (see <https://www.conventionalcommits.org/en/v1.0.0/>):"
+              echo
+              for subject in "${errors[@]}"; do
+                echo "- \`$subject\`"
+              done
+              echo
+              echo "Fix them with \`git commit --amend\` or \`git rebase -i\`, then force push to update this PR."
+            } | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
