@@ -5,8 +5,8 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-informational.svg)](./LICENSE)
 [![Join us on Discord](https://img.shields.io/discord/907277628816388106.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/RueJ6A59x2)
 [![Features](https://img.shields.io/badge/link-Features-informational.svg)](https://0xsoul24.github.io/vane/)
-[![Installation Guide](https://img.shields.io/badge/wiki-Installation-informational.svg)](https://github.com/oddlama/vane/wiki/Installation-Guide)
-[![FAQ](https://img.shields.io/badge/wiki-FAQ-informational.svg)](https://github.com/oddlama/vane/wiki/FAQ)
+[![Installation Guide](https://img.shields.io/badge/wiki-Installation-informational.svg)](https://github.com/0xSoul24/vane/wiki/Installation-Guide)
+[![FAQ](https://img.shields.io/badge/wiki-FAQ-informational.svg)](https://github.com/0xSoul24/vane/wiki/FAQ)
 
 </div>
 
@@ -68,7 +68,7 @@ download vane from [Modrinth](https://modrinth.com/plugin/vane). Make sure that:
 - Beware that `vane-velocity` and `vane-plexmap` (plexmap addon) are not classical server plugins! Use them only if you
   know what you are doing.
 
-For a comprehensive guide, visit the [Installation Guide](https://github.com/oddlama/vane/wiki/Installation-Guide) on
+For a comprehensive guide, visit the [Installation Guide](https://github.com/0xSoul24/vane/wiki/Installation-Guide) on
 the wiki.
 
 ## Proxy Installation (vane-velocity)
@@ -92,7 +92,7 @@ Gradle and Maven repositories.
 
 ## FAQ
 
-Please refer to the [FAQ](https://github.com/oddlama/vane/wiki/FAQ) in the wiki.
+Please refer to the [FAQ](https://github.com/0xSoul24/vane/wiki/FAQ) in the wiki.
 
 ## Acknowledgements & 3rd-party software
 
