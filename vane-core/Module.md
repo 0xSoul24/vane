@@ -37,12 +37,12 @@ Kotlin standard library. `org.reflections`, `commons-lang3` and `commons-text` u
 too — together about 2.4 MB and 663 classes — for four call shapes in total, all of which now have
 small local equivalents:
 
-| Was | Now | Why it was replaceable |
-| --- | --- | --- |
-| `ReflectionUtils.getAllFields` | [org.oddlama.vane.util.ReflectionUtil.allFields] | A superclass walk; verified to agree on every annotated field in the project. |
-| `WordUtils.wrap` | [org.oddlama.vane.util.TextUtil.wordWrap] | Greedy wrap; verified byte-identical on every `desc` in the project. |
-| `StringEscapeUtils.escapeHtml4` | [org.oddlama.vane.util.TextUtil.escapeHtml] | Only the five markup-significant characters have to be escaped in a UTF-8 page. |
-| `ArrayUtils.toObject` / `tuple.Pair` | `kotlin.Pair` and stdlib collection calls | Direct equivalents the codebase already used elsewhere. |
+| Was                                  | Now                                              | Why it was replaceable                                                          |
+|--------------------------------------|--------------------------------------------------|---------------------------------------------------------------------------------|
+| `ReflectionUtils.getAllFields`       | [org.oddlama.vane.util.ReflectionUtil.allFields] | A superclass walk; verified to agree on every annotated field in the project.   |
+| `WordUtils.wrap`                     | [org.oddlama.vane.util.TextUtil.wordWrap]        | Greedy wrap; verified byte-identical on every `desc` in the project.            |
+| `StringEscapeUtils.escapeHtml4`      | [org.oddlama.vane.util.TextUtil.escapeHtml]      | Only the five markup-significant characters have to be escaped in a UTF-8 page. |
+| `ArrayUtils.toObject` / `tuple.Pair` | `kotlin.Pair` and stdlib collection calls        | Direct equivalents the codebase already used elsewhere.                         |
 
 Anything added back here is shaded into every downstream plugin's compile classpath, so prefer a
 local helper over a library pulled in for a single call.
