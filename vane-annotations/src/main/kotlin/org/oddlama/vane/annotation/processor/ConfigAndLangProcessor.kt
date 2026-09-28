@@ -13,7 +13,7 @@ private const val ANY_TYPE = "<any>"
 /**
  * Maps each config/lang annotation to the exact Java type string the matching `ConfigField` or
  * `LangField` reader in vane-core expects on the annotated field. This map is also the single
- * source of truth for the annotations this processor claims — see [getSupportedAnnotationTypes].
+ * source of truth for the annotations this processor claims — see [ConfigAndLangProcessor.getSupportedAnnotationTypes].
  */
 private val fieldTypeMapping: Map<String, String> = mapOf(
     "org.oddlama.vane.annotation.config.ConfigBoolean" to "boolean",
