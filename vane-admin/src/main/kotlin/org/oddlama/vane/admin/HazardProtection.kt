@@ -25,7 +25,8 @@ class HazardProtection(context: Context<Admin?>) : Listener<Admin?>(
         "Enable hazard protection. The options below allow more fine-grained control over the hazards to protect from."
     )
 ) {
-    private val worldRebuild = WorldRebuild(context)
+    // Nested in this group (HazardProtection.WorldRebuild), as it was before the Kotlin rewrite.
+    private val worldRebuild = WorldRebuild(requireNotNull(getContext()))
 
     @ConfigBoolean(def = true, desc = "Restrict wither spawning to a list of worlds defined by wither_world_whitelist.")
     private val configEnableWitherWorldWhitelist = false
