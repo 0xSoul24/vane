@@ -47,6 +47,9 @@ class ConfigManager(private val plugin: VaneProxyPlugin) {
             plugin.getLogger().log(Level.SEVERE, "Error while loading config file '$file'", e)
             return false
         }
+        parsedConfig.legacyBackup?.let {
+            plugin.getLogger().log(Level.INFO, "Migrated legacy keys in '${file.name}' (backup: '${it.name}')")
+        }
 
         val authMultiplex = parsedConfig.authMultiplex
             ?: run {

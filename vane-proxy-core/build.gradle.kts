@@ -36,6 +36,7 @@ kotlin.sourceSets.named("main") {
 // night-config unrelocated, which is what lets it bind to the proxy's copy.
 dependencies {
     compileOnly(libs.nightConfig)
+    testImplementation(libs.nightConfig)
     compileOnly(libs.slf4j)
     compileOnly(libs.json)
 }

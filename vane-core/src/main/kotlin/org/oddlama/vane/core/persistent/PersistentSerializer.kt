@@ -7,6 +7,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.oddlama.vane.util.LazyBlock
 import org.oddlama.vane.util.LazyLocation
+import org.oddlama.vane.util.LegacyKeys
 import org.oddlama.vane.util.MaterialUtil.materialFrom
 import org.oddlama.vane.util.StorageUtil.namespacedKey
 import java.io.IOException
@@ -276,6 +277,9 @@ object PersistentSerializer {
     @Throws(IOException::class)
     fun <U> fromJson(cls: Class<U>?, value: Any?): U? {
         if (isNull(value)) return null
+        // Every serialized object passes through here, so data saved before v1.22.0 is upgraded
+        // on load and written back with the new keys on the next save.
+        if (value is JSONObject) LegacyKeys.upgradeJsonObject(value)
         val deserializer: Function<Any?, Any?> = deserializers[cls]
             ?: if (cls != null && cls.isEnum) {
                 @Suppress("UNCHECKED_CAST")

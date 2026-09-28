@@ -6,6 +6,7 @@ import org.bukkit.Tag
 import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.StonecuttingRecipe
 import org.oddlama.vane.util.ItemUtil
+import org.oddlama.vane.util.LegacyKeys
 
 /**
  * Recipe definition for stonecutting recipes.
@@ -53,14 +54,14 @@ class StonecuttingRecipeDefinition(name: String?) : RecipeDefinition(name) {
     /** Loads this recipe definition from dictionary form. */
     override fun fromDict(dict: Any?): RecipeDefinition {
         require(dict is MutableMap<*, *>) { "Invalid stonecutting recipe dictionary: Argument must be a Map<String, Object>!" }
-        val inputObj = if (dict.containsKey("Input")) dict["Input"] else dict["input"]
+        val inputObj = LegacyKeys.lookup(dict, "Input")
         if (inputObj is String) {
             this.input = inputObj
         } else {
             throw IllegalArgumentException("Invalid stonecutting recipe dictionary: input must be a string")
         }
 
-        val resultObj = if (dict.containsKey("Result")) dict["Result"] else dict["result"]
+        val resultObj = LegacyKeys.lookup(dict, "Result")
         if (resultObj is String) {
             this.result = resultObj
         } else {

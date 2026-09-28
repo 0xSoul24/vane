@@ -13,6 +13,7 @@ import org.oddlama.vane.annotation.config.*
 import org.oddlama.vane.core.YamlLoadException
 import org.oddlama.vane.core.module.Context
 import org.oddlama.vane.core.module.Module
+import org.oddlama.vane.util.LegacyKeys
 import org.oddlama.vane.util.ReflectionUtil
 import org.oddlama.vane.util.TextUtil
 
@@ -270,6 +271,25 @@ class ConfigManager(var module: Module<*>) {
     }
 
     /**
+     * Converts a config written before v1.22.0 (snake_case keys such as `resource_pack.force`)
+     * to the current paths (`ResourcePack.Force`), after backing up [file]. The caller then
+     * regenerates the file from the result.
+     *
+     * @return the converted config, or `null` if the backup could not be written.
+     */
+    private fun migrateLegacyKeys(file: File, legacy: YamlConfiguration): YamlConfiguration? {
+        try {
+            val backup = LegacyKeys.backup(file)
+            module.log.info("Migrating legacy keys in '${file.name}' (backup: '${backup.name}')")
+        } catch (e: IOException) {
+            module.log.log(Level.SEVERE, "Not migrating '${file.name}': could not back it up", e)
+            return null
+        }
+
+        return LegacyKeys.migrateYaml(legacy, configFields.map { it.yamlPath() })
+    }
+
+    /**
      * Reloads and normalizes configuration from disk.
      *
      * @param file source config file.
@@ -277,6 +297,9 @@ class ConfigManager(var module: Module<*>) {
      */
     fun reload(file: File): Boolean {
         var yaml = YamlConfiguration.loadConfiguration(file)
+        if (!yaml.contains("Version") && yaml.contains("version")) {
+            yaml = migrateLegacyKeys(file, yaml) ?: return false
+        }
 
         val version = yaml.getLong("Version", -1)
         if (!verifyVersion(file, version)) return false

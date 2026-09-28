@@ -6,6 +6,7 @@ import org.bukkit.Tag
 import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.ShapelessRecipe
 import org.oddlama.vane.util.ItemUtil
+import org.oddlama.vane.util.LegacyKeys
 
 /**
  * Recipe definition for shapeless crafting recipes.
@@ -54,7 +55,7 @@ class ShapelessRecipeDefinition(name: String?) : RecipeDefinition(name) {
     override fun fromDict(dict: Any?): RecipeDefinition {
         require(dict is MutableMap<*, *>) { "Invalid shapeless recipe dictionary: Argument must be a Map<String, Object>!" }
         val ingredientsObj =
-            if (dict.containsKey("Ingredients")) dict["Ingredients"] else dict["ingredients"]
+            LegacyKeys.lookup(dict, "Ingredients")
         if (ingredientsObj is MutableList<*>) {
             this.ingredients = ingredientsObj.filterIsInstance<String>().toMutableList()
         } else {
@@ -63,7 +64,7 @@ class ShapelessRecipeDefinition(name: String?) : RecipeDefinition(name) {
             )
         }
 
-        val resultObj = if (dict.containsKey("Result")) dict["Result"] else dict["result"]
+        val resultObj = LegacyKeys.lookup(dict, "Result")
         if (resultObj is String) {
             this.result = resultObj
         } else {

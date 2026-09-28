@@ -11,6 +11,7 @@ import java.util.logging.Level
 import org.json.JSONObject
 import org.oddlama.vane.annotation.persistent.Persistent
 import org.oddlama.vane.core.module.Module
+import org.oddlama.vane.util.LegacyKeys
 import org.oddlama.vane.util.ReflectionUtil
 
 /**
@@ -103,6 +104,7 @@ class PersistentStorageManager(var module: Module<*>) {
         }
 
         val versionPath = module.storagePathOf("storageVersion")
+        if (!json.has(versionPath) && !migrateLegacyKeys(file, json, versionPath)) return false
         val version = json.optString(versionPath, "0").toLong()
         val neededVersion = module.annotation.storageVersion
         if (version != neededVersion && migrations.isNotEmpty()) {
@@ -131,6 +133,31 @@ class PersistentStorageManager(var module: Module<*>) {
         }
 
         isLoaded = true
+        return true
+    }
+
+    /**
+     * Renames snake_case keys written before v1.22.0 (`version`, `region_groups`, ...) to the
+     * current paths, after backing up [file]. Without this, the missing version would make [load]
+     * skip every field and the next save would overwrite the old data with empty values.
+     *
+     * @return `false` if legacy keys were found but the backup could not be written.
+     */
+    private fun migrateLegacyKeys(file: File, json: JSONObject, versionPath: String?): Boolean {
+        val paths = listOfNotNull(versionPath) + persistentFields.mapNotNull { it.path() }
+        val renames = paths
+            .filter { !json.has(it) }
+            .mapNotNull { path -> LegacyKeys.findLegacyKey(json.keySet(), path)?.let { it to path } }
+        if (renames.isEmpty()) return true
+
+        try {
+            val backup = LegacyKeys.backup(file)
+            module.log.info("Migrating legacy keys in '${file.name}' (backup: '${backup.name}')")
+        } catch (e: IOException) {
+            module.log.log(Level.SEVERE, "Not migrating '${file.name}': could not back it up", e)
+            return false
+        }
+        renames.forEach { (old, new) -> json.put(new, json.remove(old)) }
         return true
     }
 

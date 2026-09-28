@@ -5,6 +5,7 @@ import org.bukkit.NamespacedKey
 import org.bukkit.Tag
 import org.bukkit.inventory.*
 import org.oddlama.vane.util.ItemUtil
+import org.oddlama.vane.util.LegacyKeys
 
 /**
  * Recipe definition for furnace-like cooking recipes.
@@ -68,14 +69,14 @@ class CookingRecipeDefinition(name: String?, private val type: String) : RecipeD
     /** Loads this recipe definition from dictionary form. */
     override fun fromDict(dict: Any?): RecipeDefinition {
         require(dict is MutableMap<*, *>) { "Invalid $type recipe dictionary: Argument must be a Map<String, Object>!" }
-        val inputObj = if (dict.containsKey("Input")) dict["Input"] else dict["input"]
+        val inputObj = LegacyKeys.lookup(dict, "Input")
         if (inputObj is String) {
             this.input = inputObj
         } else {
             throw IllegalArgumentException("Invalid $type recipe dictionary: input must be a string")
         }
 
-        val resultObj = if (dict.containsKey("Result")) dict["Result"] else dict["result"]
+        val resultObj = LegacyKeys.lookup(dict, "Result")
         if (resultObj is String) {
             this.result = resultObj
         } else {
@@ -83,7 +84,7 @@ class CookingRecipeDefinition(name: String?, private val type: String) : RecipeD
         }
 
         val experienceObj =
-            if (dict.containsKey("Experience")) dict["Experience"] else dict["experience"]
+            LegacyKeys.lookup(dict, "Experience")
         if (experienceObj is Float) {
             this.experience = experienceObj
         } else {
@@ -91,7 +92,7 @@ class CookingRecipeDefinition(name: String?, private val type: String) : RecipeD
         }
 
         val cookingTimeObj =
-            if (dict.containsKey("CookingTime")) dict["CookingTime"] else dict["cookingTime"]
+            LegacyKeys.lookup(dict, "CookingTime")
         if (cookingTimeObj is Int) {
             this.cookingTime = cookingTimeObj
         } else {

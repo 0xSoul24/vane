@@ -6,6 +6,7 @@ import org.bukkit.Tag
 import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.ShapedRecipe
 import org.oddlama.vane.util.ItemUtil
+import org.oddlama.vane.util.LegacyKeys
 
 /**
  * Recipe definition for shaped crafting recipes.
@@ -63,7 +64,7 @@ class ShapedRecipeDefinition(name: String?) : RecipeDefinition(name) {
     /** Loads this recipe definition from dictionary form. */
     override fun fromDict(dict: Any?): RecipeDefinition {
         require(dict is MutableMap<*, *>) { "Invalid shaped recipe dictionary: Argument must be a Map<String, Object>!" }
-        val shapeObj = if (dict.containsKey("Shape")) dict["Shape"] else dict["shape"]
+        val shapeObj = LegacyKeys.lookup(dict, "Shape")
         if (shapeObj is MutableList<*>) {
             this.shape = shapeObj.filterIsInstance<String>().toMutableList()
             require(this.shape.size in 1..3) { "Invalid shaped recipe dictionary: shape must be a list of 1 to 3 strings" }
@@ -72,7 +73,7 @@ class ShapedRecipeDefinition(name: String?) : RecipeDefinition(name) {
         }
 
         val ingredientsObj =
-            if (dict.containsKey("Ingredients")) dict["Ingredients"] else dict["ingredients"]
+            LegacyKeys.lookup(dict, "Ingredients")
         if (ingredientsObj is MutableMap<*, *>) {
             this.ingredients = ingredientsObj.entries
                 .associate { e -> (e.key as String?) to (e.value as String?) }
@@ -83,7 +84,7 @@ class ShapedRecipeDefinition(name: String?) : RecipeDefinition(name) {
             )
         }
 
-        val resultObj = if (dict.containsKey("Result")) dict["Result"] else dict["result"]
+        val resultObj = LegacyKeys.lookup(dict, "Result")
         if (resultObj is String) {
             this.result = resultObj
         } else {

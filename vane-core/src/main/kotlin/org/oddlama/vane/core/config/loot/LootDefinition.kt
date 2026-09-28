@@ -4,6 +4,7 @@ import org.bukkit.NamespacedKey
 import org.bukkit.loot.LootTables
 import org.oddlama.vane.core.LootTable
 import org.oddlama.vane.util.ItemUtil
+import org.oddlama.vane.util.LegacyKeys
 import org.oddlama.vane.util.StorageUtil.namespacedKey
 
 /**
@@ -39,26 +40,26 @@ class LootDefinition(val name: String?) {
         companion object {
             /** Deserializes an [Entry] from map data. */
             fun deserialize(map: Map<String?, Any?>): Entry {
-                val chance = when (val v = map["Chance"]) {
+                val chance = when (val v = LegacyKeys.lookup(map, "Chance")) {
                     is Double -> v
                     is Float -> v.toDouble()
                     is Int -> v.toDouble()
                     is Long -> v.toDouble()
                     else -> throw IllegalArgumentException("Invalid loot table entry: chance must be a number (double)!")
                 }
-                val amountMin = when (val v = map["AmountMin"]) {
+                val amountMin = when (val v = LegacyKeys.lookup(map, "AmountMin")) {
                     is Int -> v
                     is Double -> v.toInt()
                     is Long -> v.toInt()
                     else -> throw IllegalArgumentException("Invalid loot table entry: amountMin must be an int!")
                 }
-                val amountMax = when (val v = map["AmountMax"]) {
+                val amountMax = when (val v = LegacyKeys.lookup(map, "AmountMax")) {
                     is Int -> v
                     is Double -> v.toInt()
                     is Long -> v.toInt()
                     else -> throw IllegalArgumentException("Invalid loot table entry: amountMax must be an int!")
                 }
-                val itemDefinition = map["Item"]?.toString()
+                val itemDefinition = LegacyKeys.lookup(map, "Item")?.toString()
                 return Entry(chance, amountMin, amountMax, itemDefinition)
             }
         }
@@ -117,10 +118,10 @@ class LootDefinition(val name: String?) {
                 .filter { it.key is String }
                 .associate { it.key as String to it.value }
 
-            val tablesObj = tableDict["Tables"] ?: tableDict["tables"]
+            val tablesObj = LegacyKeys.lookup(tableDict, "Tables")
             require(tablesObj is List<*>) { "Invalid loot table: 'tables' must be a list" }
 
-            val itemsObj = tableDict["Items"] ?: tableDict["items"]
+            val itemsObj = LegacyKeys.lookup(tableDict, "Items")
             require(itemsObj is List<*>) { "Invalid loot table: 'items' must be a list" }
 
             return LootDefinition(name).also { table ->

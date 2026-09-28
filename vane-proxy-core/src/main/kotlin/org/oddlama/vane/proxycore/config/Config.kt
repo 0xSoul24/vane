@@ -19,6 +19,9 @@ class Config(file: File) {
     @JvmField
     var managedServers: LinkedHashMap<String?, ManagedServer?>?
 
+    /** Backup of the file taken before legacy keys were migrated, or `null` if none were found. */
+    var legacyBackup: File? = null
+
     init {
         val config = CommentedFileConfig.builder(file)
             .autosave()
@@ -27,6 +30,10 @@ class Config(file: File) {
             .build()
 
         config.load()
+
+        legacyBackup = LegacyConfigMigration(file).apply { migrate(config) }.backup
+        // Autosave only notices top-level changes, so write the renamed nested keys explicitly.
+        if (legacyBackup != null) config.save()
 
         val authMultiplex = linkedMapOf<Int?, AuthMultiplex?>()
         val managedServers = linkedMapOf<String?, ManagedServer?>()

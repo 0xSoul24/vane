@@ -282,17 +282,15 @@ class Portals : Module<Portals?>() {
 
             val style = Style(StorageUtil.namespacedKey(split[0], split[1]))
             v1!!.forEach { (isActive: String?, v2: MutableMap<String?, Material?>?) ->
-                val active: Boolean = when (isActive) {
-                    "Active" -> true
-                    "Inactive" -> false
-                    else -> throw RuntimeException("Invalid active state, must be either 'active' or 'inactive'")
+                // Configs from before v1.22.0 spell these `active` and `boundary_1`.
+                val active: Boolean = when {
+                    LegacyKeys.matches(isActive!!, "Active") -> true
+                    LegacyKeys.matches(isActive, "Inactive") -> false
+                    else -> throw RuntimeException("Invalid active state, must be either 'Active' or 'Inactive'")
                 }
                 v2!!.forEach { (portalBlockType: String?, material: Material?) ->
-                    val type = PortalBlock.Type.valueOf(
-                        portalBlockType!!.uppercase(
-                            Locale.getDefault()
-                        )
-                    )
+                    val type = PortalBlock.Type.entries.firstOrNull { LegacyKeys.matches(portalBlockType!!, it.name) }
+                        ?: throw RuntimeException("Invalid portal block type '$portalBlockType'")
                     style.setMaterial(active, type, material!!)
                 }
             }

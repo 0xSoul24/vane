@@ -7,6 +7,7 @@ import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.RecipeChoice.MaterialChoice
 import org.bukkit.inventory.SmithingTransformRecipe
 import org.oddlama.vane.util.ItemUtil
+import org.oddlama.vane.util.LegacyKeys
 
 /**
  * Recipe definition for smithing transform recipes.
@@ -84,28 +85,28 @@ class SmithingRecipeDefinition(name: String?) : RecipeDefinition(name) {
     /** Loads this recipe definition from dictionary form. */
     override fun fromDict(dict: Any?): RecipeDefinition {
         require(dict is MutableMap<*, *>) { "Invalid smithing recipe dictionary: Argument must be a Map<String, Object>!" }
-        val baseObj = if (dict.containsKey("Base")) dict["Base"] else dict["base"]
+        val baseObj = LegacyKeys.lookup(dict, "Base")
         if (baseObj is String) {
             this.base = baseObj
         } else {
             throw IllegalArgumentException("Invalid smithing recipe dictionary: base must be a string")
         }
 
-        val additionObj = if (dict.containsKey("Addition")) dict["Addition"] else dict["addition"]
+        val additionObj = LegacyKeys.lookup(dict, "Addition")
         if (additionObj is String) {
             this.addition = additionObj
         } else {
             throw IllegalArgumentException("Invalid smithing recipe dictionary: addition must be a string")
         }
 
-        val copyNbtObj = if (dict.containsKey("CopyNbt")) dict["CopyNbt"] else dict["copyNbt"]
+        val copyNbtObj = LegacyKeys.lookup(dict, "CopyNbt")
         if (copyNbtObj is Boolean) {
             this.copyNbt = copyNbtObj
         } else {
             throw IllegalArgumentException("Invalid smithing recipe dictionary: copyNbt must be a bool")
         }
 
-        val resultObj = if (dict.containsKey("Result")) dict["Result"] else dict["result"]
+        val resultObj = LegacyKeys.lookup(dict, "Result")
         if (resultObj is String) {
             this.result = resultObj
         } else {

@@ -7,6 +7,7 @@ import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.RecipeChoice
 import org.bukkit.inventory.RecipeChoice.MaterialChoice
 import org.oddlama.vane.util.ItemUtil
+import org.oddlama.vane.util.LegacyKeys
 import org.oddlama.vane.util.MaterialUtil.materialFrom
 import org.oddlama.vane.util.StorageUtil.namespacedKey
 import java.lang.reflect.Modifier
@@ -40,7 +41,7 @@ abstract class RecipeDefinition(val name: String?) {
             require(dict is Map<*, *>) {
                 "Invalid recipe dictionary: Argument must be a Map<String, Object>, but is ${dict.javaClass}!"
             }
-            val typeObj = dict["Type"] ?: dict["type"]
+            val typeObj = LegacyKeys.lookup(dict, "Type")
             require(typeObj is String) { "Invalid recipe dictionary: recipe type must exist and be a string!" }
 
             return when (typeObj) {
