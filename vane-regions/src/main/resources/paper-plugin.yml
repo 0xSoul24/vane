@@ -23,7 +23,7 @@ dependencies:
     vane-portals:
       required: false
       load: AFTER
-    Vault:
+    ServiceIO:
       required: false
       load: AFTER
     
