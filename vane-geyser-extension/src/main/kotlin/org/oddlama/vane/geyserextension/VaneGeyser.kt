@@ -3,6 +3,11 @@ package org.oddlama.vane.geyserextension
 import org.geysermc.event.subscribe.Subscribe
 import org.geysermc.geyser.api.event.lifecycle.*
 import org.geysermc.geyser.api.extension.Extension
+import org.geysermc.geyser.api.pack.PackCodec
+import org.geysermc.geyser.api.pack.ResourcePack
+import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 
 /**
  * Main entry point for the Vane Geyser extension.
@@ -33,17 +38,42 @@ class VaneGeyser : Extension {
         logger().info("Description: A plugin-suite that provides many immersive and lore-friendly additions to vanilla Minecraft.")
         logger().info("##############################################")
         logger().info("")
+
+        // Must run before Geyser loads any locale, and pre-initialize is the only event that does.
+        try {
+            LocaleOverrides.deploy(this)
+        } catch (e: Exception) {
+            // Never break Geyser's startup over translations; Bedrock players then see raw keys.
+            logger().error("Could not deploy vane translations to Geyser's locales/overrides directory", e)
+        }
     }
 
     /**
-     * Handles the [GeyserDefineResourcePacksEvent] to log resource pack loading.
+     * Handles the [GeyserDefineResourcePacksEvent] to register vane's Bedrock resource pack.
      *
-     * Logs the number of resource packs currently being loaded by Geyser.
-     * Additional resource packs could be registered via [GeyserDefineResourcePacksEvent.register]
-     * if needed.
+     * The pack is generated from vane's Java resource pack at build time and bundled in this jar
+     * (see `generateBedrockPack` in the build script). It is extracted to the data folder on every
+     * start, so an updated extension always serves its matching pack.
      */
     @Subscribe
     fun onGeyserDefineResourcePacksEvent(event: GeyserDefineResourcePacksEvent) {
+        try {
+            val pack = dataFolder().resolve(BEDROCK_PACK_FILE)
+            Files.createDirectories(pack.parent)
+            val bundled = javaClass.getResourceAsStream(BEDROCK_PACK_RESOURCE)
+                ?: throw IOException("$BEDROCK_PACK_RESOURCE is missing from the extension jar")
+            bundled.use { Files.copy(it, pack, StandardCopyOption.REPLACE_EXISTING) }
+            val resourcePack = ResourcePack.create(PackCodec.path(pack))
+            event.register(resourcePack)
+            logger().info("Registered vane Bedrock resource pack ${resourcePack.uuid()}.")
+        } catch (e: Exception) {
+            // Never break Geyser's startup over the pack; Bedrock players then just lack vane's textures.
+            logger().error(
+                "Could not register the vane Bedrock resource pack. If a manually installed copy is in " +
+                    "Geyser's packs folder, remove it: this extension now provides the pack itself.",
+                e
+            )
+        }
         logger().info("Loading: ${event.resourcePacks().size} resource packs.")
     }
 
@@ -97,5 +127,13 @@ class VaneGeyser : Extension {
     @Subscribe
     fun onGeyserDefineCustomItems(event: GeyserDefineCustomItemsEvent) {
         ItemRegistration.onGeyserDefineCustomItems(event)
+    }
+
+    private companion object {
+        /** Classpath location of the pack produced by the `generateBedrockPack` build task. */
+        const val BEDROCK_PACK_RESOURCE = "/bedrock/vane.mcpack"
+
+        /** File name of the extracted pack inside the extension's data folder. */
+        const val BEDROCK_PACK_FILE = "vane.mcpack"
     }
 }

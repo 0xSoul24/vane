@@ -19,6 +19,8 @@ nightConfig = { group = "com.electronwill.night-config", name = "toml", version 
 
 # Geyser
 geyserApi = { group = "org.geysermc.geyser", name = "api", version.ref = "geyser" }
+# Provided at runtime by every Geyser platform, unrelocated; kept at an old version as an API floor.
+gson = { group = "com.google.code.gson", name = "gson", version = "2.10.1" }
 
 # Minecraft
 bstatsBase = { group = "org.bstats", name = "bstats-base", version.ref = "bstats" }
