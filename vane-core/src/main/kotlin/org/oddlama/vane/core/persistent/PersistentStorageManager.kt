@@ -8,6 +8,7 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.util.function.Consumer
 import java.util.logging.Level
+import org.json.JSONException
 import org.json.JSONObject
 import org.oddlama.vane.annotation.persistent.Persistent
 import org.oddlama.vane.core.module.Module
@@ -95,8 +96,10 @@ class PersistentStorageManager(var module: Module<*>) {
             try {
                 JSONObject(Files.readString(file.toPath(), StandardCharsets.UTF_8))
             } catch (e: IOException) {
-                module.log.severe("error while loading persistent data from '${file.name}':")
-                module.log.severe(e.message)
+                module.log.log(Level.SEVERE, "error while loading persistent data from '${file.name}'", e)
+                return false
+            } catch (e: JSONException) {
+                module.log.log(Level.SEVERE, "persistent data in '${file.name}' is not valid JSON", e)
                 return false
             }
         } else {
@@ -111,8 +114,9 @@ class PersistentStorageManager(var module: Module<*>) {
             module.log.info("Persistent storage is out of date.")
             module.log.info("§dMigrating storage from version §b$version → $neededVersion§d:")
 
+            // A migration to version N has already run for storage at version N.
             migrations
-                .filter { it.to >= version }
+                .filter { it.to > version }
                 .sortedBy { it.to }
                 .forEach { m ->
                     module.log.info("  → §b${m.to}§r : Applying migration '§a${m.name}§r'")
@@ -129,6 +133,9 @@ class PersistentStorageManager(var module: Module<*>) {
             }
         } catch (e: IOException) {
             module.log.log(Level.SEVERE, "error while loading persistent variables from '${file.name}'", e)
+            return false
+        } catch (e: JSONException) {
+            module.log.log(Level.SEVERE, "invalid persistent variables in '${file.name}'", e)
             return false
         }
 
@@ -169,12 +176,12 @@ class PersistentStorageManager(var module: Module<*>) {
         val versionPath = module.storagePathOf("storageVersion")
         json.put(versionPath, module.annotation.storageVersion.toString())
 
-        persistentFields.forEach { f ->
-            try {
-                f.save(json)
-            } catch (e: IOException) {
-                module.log.log(Level.SEVERE, "error while serializing persistent data!", e)
-            }
+        // Skip the whole save if any field fails: writing the rest would drop that field's data from disk.
+        try {
+            persistentFields.forEach { it.save(json) }
+        } catch (e: IOException) {
+            module.log.log(Level.SEVERE, "error while serializing persistent data, keeping the previous '${file.name}'", e)
+            return
         }
 
         val tmpFile = File("${file.absolutePath}.tmp")
