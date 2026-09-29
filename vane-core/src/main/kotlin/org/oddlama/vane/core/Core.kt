@@ -118,9 +118,11 @@ class Core : Module<Core?>() {
     var configUpdateNotices: Boolean = false
 
     /** Current running vane version string. */
+    @Volatile
     var currentVersion: String? = null
 
     /** Latest version string fetched from GitHub releases. */
+    @Volatile
     var latestVersion: String? = null
 
     init {
@@ -154,7 +156,8 @@ class Core : Module<Core?>() {
     /** Schedules periodic update checks when configured. */
     override fun onModuleEnable() {
         if (configUpdateNotices) {
-            scheduleTaskTimer(::checkForUpdate, 1L, msToTicks(2 * 60L * 60L * 1000L))
+            // Async: this does blocking network I/O and must never stall the main thread.
+            server.scheduler.runTaskTimerAsynchronously(this, ::checkForUpdate, 1L, msToTicks(2 * 60L * 60L * 1000L))
         }
     }
 
@@ -207,13 +210,13 @@ class Core : Module<Core?>() {
     /** Returns the custom model data registry. */
     fun modelDataRegistry(): CustomModelDataRegistry? = modelDataRegistry
 
-    /** Checks GitHub for newer releases and updates cached version state. */
+    /** Checks GitHub for newer releases and updates cached version state. Runs off the main thread. */
     fun checkForUpdate() {
         if (currentVersion == null) {
             try {
-                currentVersion = "v" + Properties().also { props ->
-                    props.load(Core::class.java.getResourceAsStream("/vane-core.properties"))
-                }.getProperty("version")
+                val stream = Core::class.java.getResourceAsStream("/vane-core.properties")
+                    ?: throw IOException("vane-core.properties is missing from the plugin jar")
+                currentVersion = "v" + stream.use { Properties().apply { load(it) } }.getProperty("version")
             } catch (e: IOException) {
                 log.severe("Could not load current version from included properties file: $e")
                 return
