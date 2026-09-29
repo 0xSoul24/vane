@@ -31,7 +31,7 @@ class FloatingItem(entitytypes: EntityType<out ItemEntity>, world: Level) : Item
 
     init {
         isSilent = true
-        isInvulnerable = true
+        isPermanentlyInvulnerable = true
         isNoGravity = true
         // setSneaking(true); // Names would then only visible on direct line of sight BUT much
         // darker and offset by -0.5 in y direction
@@ -56,7 +56,7 @@ class FloatingItem(entitytypes: EntityType<out ItemEntity>, world: Level) : Item
     /** Returns true because the item body should stay invisible. */
     override fun isInvisible() = true
 
-    /** Returns true because this display entity is fire immune. */
+    /** Returns true because this display entity is fire-immune. */
     override fun fireImmune() = true
 
     /** Disables normal ticking for this display entity. */
@@ -79,7 +79,7 @@ class FloatingItem(entitytypes: EntityType<out ItemEntity>, world: Level) : Item
     /** No-op: this entity is intentionally not persisted. */
     override fun saveWithoutId(output: ValueOutput) {}
 
-    /** No-op: this entity is intentionally not loaded from disk. */
+    /** No-op: this entity is intentionally not loaded from the disk. */
     override fun load(output: ValueInput) {}
 
     /** Sets the displayed item and mirrors its hover name as entity custom name. */

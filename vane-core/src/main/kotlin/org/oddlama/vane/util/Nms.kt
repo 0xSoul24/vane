@@ -45,7 +45,7 @@ object Nms {
 
     /** Converts an NMS item stack to a Bukkit mirror stack. */
     fun bukkitItemStack(stack: net.minecraft.world.item.ItemStack?): ItemStack =
-        CraftItemStack.asCraftMirror(stack)
+        CraftItemStack.asBukkitMirror(stack)
 
     /** Returns or creates the NMS handle for a Bukkit item stack. */
     @JvmStatic

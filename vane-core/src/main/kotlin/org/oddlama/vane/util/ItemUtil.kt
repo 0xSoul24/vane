@@ -45,7 +45,7 @@ object ItemUtil {
         if (player.gameMode == GameMode.CREATIVE) return
         if (amount <= 0) return
         val handle = itemHandle(itemStack) ?: return
-        handle.hurtAndBreak(amount, worldHandle(player.world), playerHandle(player)) { _: Item? ->
+        handle.hurtAndBreak(amount, worldHandle(player.world), playerHandle(player)) { _ ->
             player.broadcastSlotBreak(EquipmentSlot.HAND)
             itemStack.subtract()
         }
@@ -298,7 +298,7 @@ object ItemUtil {
         // of whatever the extended material gave us.
         val vanillaDefinition = itemStack!!.type.key().toString() + definition.substring(nbtDelim)
         try {
-            val parsedNbt = ItemParser(Commands.createValidationContext(VanillaRegistries.createLookup()))
+            val parsedNbt = ItemParser(Commands.createValidationContext(VanillaRegistries.createWorldLookup()))
                 .parse(StringReader(vanillaDefinition))
                 .components()
 
@@ -306,7 +306,7 @@ object ItemUtil {
             val nmsItem = itemHandle(itemStack)!!.copy()
             nmsItem.applyComponents(parsedNbt)
 
-            return Pair(applyEnchants(CraftItemStack.asCraftMirror(nmsItem), enchants), false)
+            return Pair(applyEnchants(CraftItemStack.asBukkitMirror(nmsItem), enchants), false)
         } catch (e: CommandSyntaxException) {
             throw IllegalArgumentException("Could not parse NBT of item definition: $definition", e)
         }

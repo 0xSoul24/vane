@@ -1,5 +1,5 @@
 [versions]
-paper = "26.2.build.+"
+paper = "26.3.build.+"
 velocity = "4.2.0"
 bstats = "3.2.1"
 dokka = "2.2.0"
