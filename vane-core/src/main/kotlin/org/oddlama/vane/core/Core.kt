@@ -33,6 +33,7 @@ import org.oddlama.vane.core.module.ModuleComponent
 import org.oddlama.vane.core.resourcepack.ResourcePackDistributor
 import org.oddlama.vane.core.resourcepack.ResourcePackGenerator
 import org.oddlama.vane.util.IOUtil.readJsonFromUrl
+import org.oddlama.vane.util.VersionUtil
 import org.oddlama.vane.util.msToTicks
 import java.io.File
 import java.io.IOException
@@ -226,7 +227,7 @@ class Core : Module<Core?>() {
         try {
             val json = readJsonFromUrl("https://api.github.com/repos/0xSoul24/vane/releases/latest")
             latestVersion = json.getString("tag_name")
-            if (latestVersion != null && latestVersion != currentVersion) {
+            if (isUpdateAvailable()) {
                 log.warning("A newer version of vane is available online! (current=$currentVersion, new=$latestVersion)")
                 log.warning("Please update as soon as possible to get the latest features and fixes.")
                 log.warning("Get the latest release here: https://github.com/0xSoul24/vane/releases/latest")
@@ -241,13 +242,24 @@ class Core : Module<Core?>() {
         }
     }
 
+    /**
+     * Whether the latest GitHub release is newer than the running version. Compared by semver
+     * rather than inequality: `releases/latest` never returns pre-releases, so a pre-release build
+     * would otherwise be told to "update" to the previous stable release.
+     */
+    private fun isUpdateAvailable(): Boolean {
+        val latest = latestVersion ?: return false
+        val current = currentVersion ?: return false
+        return VersionUtil.isNewer(latest, current)
+    }
+
     /** Sends update notices to operators when a newer version is known. */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
     fun onPlayerJoinSendUpdateNotice(event: PlayerJoinEvent) {
         if (!configUpdateNotices) return
 
         val player = event.player
-        if (latestVersion != null && latestVersion != currentVersion && player.isOp) {
+        if (player.isOp && isUpdateAvailable()) {
             player.sendMessage(
                 Component.text("A new version of vane ", NamedTextColor.GREEN)
                     .append(Component.text("($latestVersion)", NamedTextColor.AQUA))
