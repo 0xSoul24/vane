@@ -105,7 +105,7 @@ object Nms {
      * because the search tab contains every item.
      *
      * Only the client normally builds creative tab contents, so they are built here on first use.
-     * Matching uses the item's default instance, because tabs only contain exact component variants.
+     * Matching uses the item's default instance because tabs only contain exact component variants.
      */
     @JvmStatic
     fun creativeTabId(itemStack: net.minecraft.world.item.ItemStack): Int {
