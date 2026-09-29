@@ -3,7 +3,6 @@ package org.oddlama.vane.util
 import com.mojang.datafixers.DataFixUtils
 import com.mojang.datafixers.types.Type
 import net.minecraft.SharedConstants
-import net.minecraft.core.BlockPos
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
@@ -16,6 +15,7 @@ import net.minecraft.util.datafix.DataFixers
 import net.minecraft.util.datafix.fixes.References
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
+import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.CreativeModeTabs
 import net.minecraft.world.item.crafting.RecipeHolder
 import org.bukkit.Bukkit
@@ -43,24 +43,12 @@ object Nms {
     @JvmStatic
     fun entityHandle(entity: org.bukkit.entity.Entity): Entity = (entity as CraftEntity).handle
 
-    /** Converts an NMS item stack to a Bukkit mirror stack. */
-    fun bukkitItemStack(stack: net.minecraft.world.item.ItemStack?): ItemStack =
-        CraftItemStack.asBukkitMirror(stack)
-
     /** Returns or creates the NMS handle for a Bukkit item stack. */
     @JvmStatic
-    fun itemHandle(itemStack: ItemStack?): net.minecraft.world.item.ItemStack? {
-        itemStack ?: return null
-        if (itemStack !is CraftItemStack) return CraftItemStack.asNMSCopy(itemStack)
-        return try {
-            val handle = CraftItemStack::class.java.getDeclaredField("handle")
-                .also { it.isAccessible = true }
-            handle.get(itemStack) as? net.minecraft.world.item.ItemStack
-        } catch (_: NoSuchFieldException) {
-            null
-        } catch (_: IllegalAccessException) {
-            null
-        }
+    fun itemHandle(itemStack: ItemStack?): net.minecraft.world.item.ItemStack? = when (itemStack) {
+        null -> null
+        is CraftItemStack -> itemStack.handle
+        else -> CraftItemStack.asNMSCopy(itemStack)
     }
 
     /** Returns the NMS handle for a player, or null when incompatible. */
@@ -106,20 +94,33 @@ object Nms {
 
     /** Unlocks all known recipes for a player. */
     @JvmStatic
-    fun unlockAllRecipes(player: Player?): Int {
+    fun unlockAllRecipes(player: Player): Int {
         val recipes: MutableCollection<RecipeHolder<*>> = serverHandle().recipeManager.getRecipes()
-        return playerHandle(player)!!.awardRecipes(recipes)
+        return getPlayer(player).awardRecipes(recipes)
     }
 
-    /** Returns a sortable creative-tab index for an NMS item stack. */
+    /**
+     * Returns a sortable creative-tab index for an NMS item stack, or the number of category tabs
+     * when the item is in none of them. Non-category tabs (search, hotbar, inventory) are skipped
+     * because the search tab contains every item.
+     *
+     * Only the client normally builds creative tab contents, so they are built here on first use.
+     * Matching uses the item's default instance, because tabs only contain exact component variants.
+     */
     @JvmStatic
-    fun creativeTabId(itemStack: net.minecraft.world.item.ItemStack): Int =
-        CreativeModeTabs.allTabs().takeWhile { it.contains(itemStack) }.count()
+    fun creativeTabId(itemStack: net.minecraft.world.item.ItemStack): Int {
+        val server = serverHandle()
+        CreativeModeTabs.tryRebuildTabContents(server.worldData.enabledFeatures(), true, server.registryAccess())
+        val defaultInstance = itemStack.item.defaultInstance
+        return CreativeModeTabs.allTabs()
+            .filter { it.type == CreativeModeTab.Type.CATEGORY }
+            .takeWhile { !it.contains(defaultInstance) }
+            .count()
+    }
 
     /** Sets a block to air without dropping loot. */
     @JvmStatic
     fun setAirNoDrops(block: Block) {
-        worldHandle(block.world).getBlockEntity(BlockPos(block.x, block.y, block.z))
         block.setType(Material.AIR, false)
     }
 }
