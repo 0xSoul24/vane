@@ -63,9 +63,13 @@ jobs:
 
       # A new tag gets a draft with generated notes to edit before publishing by hand. If a
       # release already exists (draft or published), only its assets are replaced.
+      # Tags with a semver pre-release suffix (v1.23.0-beta.1) are marked as pre-releases, which
+      # also keeps them out of `releases/latest` and therefore out of vane's update notices.
       - name: Upload to GitHub release
         run: |
           if ! gh release view "$TAG" > /dev/null 2>&1; then
-            gh release create "$TAG" --draft --verify-tag --generate-notes --title "$TAG"
+            prerelease=()
+            [[ "$TAG" == *-* ]] && prerelease=(--prerelease)
+            gh release create "$TAG" --draft --verify-tag --generate-notes --title "$TAG" "${prerelease[@]}"
           fi
           gh release upload "$TAG" --clobber target/vane-*-"$VERSION".jar target/all-plugins.zip
