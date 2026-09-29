@@ -11,7 +11,7 @@ object VersionUtil {
      * (`1.23.0-beta.1 < 1.23.0`), and pre-release identifiers compare numerically when both are
      * numbers, lexically otherwise.
      *
-     * @return negative, zero or positive like [Comparator.compare], or `null` if either is unparsable.
+     * @return negative, zero or positive like [java.util.Comparator.compare], or `null` if either is unparsable.
      */
     @JvmStatic
     fun compare(a: String, b: String): Int? {

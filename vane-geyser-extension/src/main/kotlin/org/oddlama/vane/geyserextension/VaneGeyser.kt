@@ -100,7 +100,7 @@ class VaneGeyser : Extension {
      * Note: Geyser's extension template declares this handler with a
      * [GeyserPreInitializeEvent] parameter while its documentation points at the reload event.
      * Following the parameter rather than the docs subscribes a second handler to
-     * pre-initialize, so every startup logs a "Reloading" line and no reload is ever observed.
+     * pre-initialize, so every startup logs a "Reloading" line, and no reload is ever observed.
      */
     @Subscribe
     fun onGeyserReload(event: GeyserPreReloadEvent) {

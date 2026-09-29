@@ -3,7 +3,7 @@
 The Velocity implementation of `vane-proxy-core`. Note that this module lives under
 `org.oddlama.velocity`, not `org.oddlama.vane.velocity`.
 
-Almost all behaviour comes from `vane-proxy-core`; what is here is the wiring. `Velocity` is the
+Almost all behavior comes from `vane-proxy-core`; what is here is the wiring. `Velocity` is the
 plugin entry point, constructed by Velocity's dependency injection with the proxy server, logger,
 bStats factory and data directory. The `listeners` package subscribes to Velocity's native events
 and forwards them into the platform-independent event types, and the `compat` package adapts

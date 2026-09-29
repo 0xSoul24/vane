@@ -130,7 +130,7 @@ abstract class GenerateBedrockPack : DefaultTask() {
         val JSON: JsonGenerator = JsonGenerator.Options().disableUnicodeEscaping().build()
         val VERSION = Regex("""(\d+)\.(\d+)\.(\d+)(?:-(.+))?""")
 
-        // Kept from the original hand-converted pack so clients treat this as the same pack.
+        // Kept from the original hand-converted pack, so clients treat this as the same pack.
         const val HEADER_UUID = "577fb1c6-db62-4588-ad1d-cc175558c0c3"
         const val MODULE_UUID = "8854d882-fa96-4fd9-8772-6a49243dc38b"
 
@@ -156,10 +156,10 @@ dependencies {
     compileOnly(rootProject.libs.geyserApi)
     compileOnly(rootProject.libs.gson)
 
-    // Include other dependencies here - e.g. configuration libraries.
+    // Include other dependencies here - e.g., configuration libraries.
 }
 
-// The Bedrock pack is generated from the same Java pack vane-core distributes and bundled into the
+// The Bedrock pack is generated from the same Java pack vane-core distributed and bundled into the
 // jar, where VaneGeyser registers it with Geyser.
 val generateBedrockPack = tasks.register<GenerateBedrockPack>("generateBedrockPack") {
     description = "Converts the Java resource pack into the Bedrock pack bundled with the extension"

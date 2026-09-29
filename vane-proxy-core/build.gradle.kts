@@ -29,7 +29,7 @@ kotlin.sourceSets.named("main") {
 // shaded into vane-velocity, and the Velocity proxy already provides night-config (it parses
 // velocity.toml with it), slf4j and, via vane-velocity's own shading, org.json.
 //
-// This module used to apply the shadow plugin and configure a shadowJar. That configuration was
+// This module is used to apply the shadow plugin and configure a shadowJar. That configuration was
 // dead in two independent ways: nothing consumed the shadow jar (vane-velocity depends on the
 // plain project artifact), and the relocation pattern `com.electronwill.night-config` never
 // matched the real package `com.electronwill.nightconfig`. The shipped jar has always referenced
