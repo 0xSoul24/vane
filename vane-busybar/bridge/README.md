@@ -127,6 +127,45 @@ plugin's `Tls` to `keystore` (a certificate your system already trusts, validate
 your local network: the token then crosses the internet unencrypted. `--server` and `--token`
 (`BARMC_SERVER`, `BARMC_TOKEN`) remain for setting the two parts separately.
 
+## Windows
+
+Install Python from python.org (tick "Add python.exe to PATH"), then in PowerShell:
+
+```powershell
+py -m venv $env:LOCALAPPDATA\barmc
+& $env:LOCALAPPDATA\barmc\Scripts\pip install barmc-<version>-py3-none-any.whl
+```
+
+Try it with the preview first. Use double quotes around the pairing string in `cmd`; PowerShell
+takes either:
+
+```powershell
+& $env:LOCALAPPDATA\barmc\Scripts\barmc --pair "<token>@<ip>:9123#sha256=<fingerprint>" --terminal
+```
+
+The preview looks best in Windows Terminal, the default on Windows 11; the older console works
+too. The keys are the same as on Linux.
+
+For a permanent setup, keep the pairing string and the Bar's password out of the command line by
+storing them in your user environment, which other users of the PC cannot read:
+
+```powershell
+setx BARMC_PAIR "<token>@<ip>:9123#sha256=<fingerprint>"
+setx BUSYBAR_ADDR "192.168.1.20"
+setx BUSYBAR_TOKEN "1234"
+```
+
+`setx` only affects programs started afterwards, so open a new window before testing. To start the
+bridge when you log in, press Win+R, open `shell:startup`, and create `barmc.cmd` there:
+
+```bat
+start "barmc" /min "%LOCALAPPDATA%\barmc\Scripts\barmc.exe"
+```
+
+There is no need to restart it on failure: it reconnects by itself after network problems and
+server restarts, and only stops for exit codes 2 and 3 above, which a new pairing string fixes.
+Ctrl+C in its window stops it (exit code 130).
+
 ## What the Bar shows
 
 Idle screens rotate every 5 seconds; the wheel flips through them.
@@ -166,6 +205,9 @@ a real BUSY Bar. Things to check on the device:
 - Whether the Bar keeps showing the bridge's screen when the selector is on BUSY, since the
   firmware has its own busy screen. `--priority` (1-100) sets how strongly the bridge claims
   the display.
+- On Windows: the tests run there in CI, but the preview's keys, colours and Ctrl+C have only
+  been simulated, not used on a real Windows PC. Whether Windows sets up the Bar's USB network
+  connection (`--bar 10.0.4.20`) without a driver is also open; Wi-Fi does not depend on it.
 
 ## Development
 

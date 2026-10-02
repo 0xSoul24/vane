@@ -176,7 +176,11 @@ def main(argv: list[str] | None = None) -> None:
     logging.getLogger("busylib.client.display").addFilter(
         lambda record: "exceeds front height" not in record.getMessage()
     )
-    sys.exit(asyncio.run(run(args)))
+    try:
+        sys.exit(asyncio.run(run(args)))
+    except KeyboardInterrupt:
+        # Windows has no signal handlers in asyncio, so Ctrl+C arrives here once run() cleaned up.
+        sys.exit(130)
 
 
 if __name__ == "__main__":

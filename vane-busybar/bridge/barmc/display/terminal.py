@@ -3,16 +3,23 @@ A 72x16 preview of the Bar drawn in the terminal with true-colour half blocks.
 
 Uses the same 3x5 font and icons as the web demo. When stdin is a terminal it also reads keys:
 o / Enter = OK, x / Backspace = BACK, [ ] or arrow keys = wheel, b = move the selector to or
-from BUSY.
+from BUSY. On Unix keys arrive through the event loop; Windows has no such hook for consoles, so
+they are polled with msvcrt there.
 """
 
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import os
 import sys
-import termios
-import tty
+from collections.abc import Callable
+
+if sys.platform == "win32":
+    import msvcrt
+else:
+    import termios
+    import tty
 
 from ..icons import Library
 from ..sprites import FONT, text_width
@@ -21,6 +28,41 @@ from . import Inputs
 
 WIDTH, HEIGHT = 72, 16
 OFF = (24, 25, 28)
+
+
+# Seconds between checks for key presses on Windows.
+KEY_POLL_SECONDS = 0.05
+
+# What the keys do, by the text a Unix terminal sends for them.
+KEYS = {
+    "o": "ok", "\n": "ok", "\r": "ok",
+    "x": "back", "\x7f": "back", "\x08": "back", "\x1b": "back",
+    "[": "left", "\x1b[D": "left",
+    "]": "right", "\x1b[C": "right",
+    "b": "busy",
+}
+
+# Windows reports special keys as a prefix and a scan code; these are the arrows, as Unix sends them.
+WINDOWS_ARROWS = {"K": "\x1b[D", "M": "\x1b[C"}
+
+
+def read_windows_key(getwch: Callable[[], str]) -> str:
+    """One key press from msvcrt, with arrow keys translated to the text a Unix terminal sends."""
+    key = getwch()
+    if key in ("\x00", "\xe0"):
+        return WINDOWS_ARROWS.get(getwch(), "")
+    return key
+
+
+def _enable_windows_colors() -> None:
+    """Turn on escape-code processing, which consoles before Windows Terminal leave off."""
+    import ctypes
+
+    kernel32 = ctypes.windll.kernel32  # type: ignore[attr-defined]
+    handle = kernel32.GetStdHandle(-11)  # STD_OUTPUT_HANDLE
+    mode = ctypes.c_uint32()
+    if kernel32.GetConsoleMode(handle, ctypes.byref(mode)):
+        kernel32.SetConsoleMode(handle, mode.value | 0x0004)  # ENABLE_VIRTUAL_TERMINAL_PROCESSING
 
 
 def _rgb(color: str) -> tuple[int, int, int]:
@@ -94,16 +136,23 @@ class TerminalDisplay:
         self._tty_in = sys.stdin.isatty()
         self._tty_out = sys.stdout.isatty()
         self._saved_termios = None
+        self._key_task: asyncio.Task[None] | None = None
 
     async def start(self, inputs: Inputs) -> None:
         self._inputs = inputs
         if self._tty_out:
+            if sys.platform == "win32":
+                _enable_windows_colors()
             sys.stdout.write("\x1b[?25l\x1b[2J")
-        if self._tty_in:
+        if not self._tty_in:
+            return
+        if sys.platform == "win32":
+            self._key_task = asyncio.create_task(self.poll_keys(msvcrt.kbhit, msvcrt.getwch))
+        else:
             fd = sys.stdin.fileno()
             self._saved_termios = termios.tcgetattr(fd)
             tty.setcbreak(fd)
-            asyncio.get_running_loop().add_reader(fd, self._on_key)
+            asyncio.get_running_loop().add_reader(fd, self._on_unix_key)
 
     async def show(self, card: Card, elapsed: float) -> None:
         frame = to_ansi(render(card, elapsed, self._library))
@@ -117,23 +166,39 @@ class TerminalDisplay:
             sys.stdout.write(f"{frame}\n\n")
         sys.stdout.flush()
 
-    def _on_key(self) -> None:
-        data = os.read(sys.stdin.fileno(), 16).decode(errors="ignore")
+    def _on_unix_key(self) -> None:
+        self.press(os.read(sys.stdin.fileno(), 16).decode(errors="ignore"))
+
+    async def poll_keys(self, kbhit: Callable[[], bool], getwch: Callable[[], str]) -> None:
+        """Hand every key waiting in the Windows console to [press], until cancelled."""
+        while True:
+            while kbhit():
+                self.press(read_windows_key(getwch))
+            await asyncio.sleep(KEY_POLL_SECONDS)
+
+    def press(self, key: str) -> None:
+        """Apply one key, as the text a Unix terminal sends for it."""
         inputs = self._inputs
-        if inputs is None:
+        action = KEYS.get(key)
+        if inputs is None or action is None:
             return
-        if data in ("o", "\n", "\r"):
+        if action == "ok":
             inputs.ok()
-        elif data in ("x", "\x7f", "\x1b"):
+        elif action == "back":
             inputs.back()
-        elif data in ("[", "\x1b[D"):
+        elif action == "left":
             inputs.wheel(-1)
-        elif data in ("]", "\x1b[C"):
+        elif action == "right":
             inputs.wheel(1)
-        elif data == "b":
+        elif action == "busy":
             inputs.focus(not inputs.focused())
 
     async def close(self) -> None:
+        if self._key_task is not None:
+            self._key_task.cancel()
+            with contextlib.suppress(asyncio.CancelledError):
+                await self._key_task
+            self._key_task = None
         if self._tty_in and self._saved_termios is not None:
             asyncio.get_running_loop().remove_reader(sys.stdin.fileno())
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, self._saved_termios)
