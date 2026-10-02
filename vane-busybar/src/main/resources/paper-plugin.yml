@@ -1,0 +1,32 @@
+name: ${name}
+version: ${version}
+description: BUSY Bar integration module for vane
+
+authors:
+  - oddlama
+website: 'https://github.com/oddlama/vane'
+
+main: org.oddlama.vane.busybar.BusyBar
+
+api-version: '26.3'
+load: STARTUP
+dependencies:
+  server:
+    vane-core:
+      required: true
+      load: BEFORE
+    vane-admin:
+      required: false
+      load: BEFORE
+    vane-bedtime:
+      required: false
+      load: BEFORE
+    vane-permissions:
+      required: false
+      load: BEFORE
+    vane-portals:
+      required: false
+      load: BEFORE
+    vane-regions:
+      required: false
+      load: BEFORE

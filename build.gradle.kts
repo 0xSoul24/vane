@@ -20,6 +20,7 @@ dependencies {
     dokka(project(":vane-admin"))
     dokka(project(":vane-annotations"))
     dokka(project(":vane-bedtime"))
+    dokka(project(":vane-busybar"))
     dokka(project(":vane-core"))
     dokka(project(":vane-enchantments"))
     dokka(project(":vane-permissions"))
@@ -91,7 +92,7 @@ subprojects {
     pluginManager.apply("java-library")
     pluginManager.apply("org.jetbrains.dokka")
     // Every module is pure Kotlin, so the JVM plugin and toolchain are applied centrally
-    // instead of being repeated in all twelve module scripts.
+    // instead of being repeated in all thirteen module scripts.
     pluginManager.apply("org.jetbrains.kotlin.jvm")
 
     group = "org.oddlama.vane"
@@ -202,6 +203,7 @@ configure(subprojects.filter {
     listOf(
         "vane-admin",
         "vane-bedtime",
+        "vane-busybar",
         "vane-core",
         "vane-enchantments",
         "vane-permissions",
@@ -285,6 +287,7 @@ configure(subprojects.filter {
     listOf(
         "vane-admin",
         "vane-bedtime",
+        "vane-busybar",
         "vane-permissions",
         "vane-portals",
         "vane-regions",

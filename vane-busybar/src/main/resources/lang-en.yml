@@ -1,0 +1,68 @@
+# vim: set tabstop=2 softtabstop=0 expandtab shiftwidth=2:
+#
+# +-----------------------------------+
+# | CAUTION: Do NOT change this file! |
+# +-----------------------------------+
+#
+# It will be silently overwritten with updates! If you want
+# to customize strings yourself, copy this file to lang-custom.yml
+# and set the language in the config.yml to "lang: 'custom'"
+
+# DO NOT CHANGE! The version of this language file. Used to determine
+# if the file needs to be updated.
+Version: 6
+# The corresponding language code used in resource packs. Used for
+# resource pack generation. Typically, this is a combination of the
+# language code (ISO 639) and the country code (ISO 3166).
+ResourcePackLangCode: 'en_us'
+
+# Appended to a player's name in the tab list while their BUSY Bar is in focus mode.
+TabTag: " §c[Busy]"
+
+CommandBusybar:
+  Usage: "%1$s §7<§alink§7|§aunlink§7|§astatus§7|§abusy§7|§alist§7|§aclear§7|§arevoke§7|§arotatekey§7>"
+  Description: "Connects your BUSY Bar to this server."
+  Help: "§alink§7:§r Creates a token for your BUSY Bar bridge. Running it again replaces the old token.\n\
+    §aunlink§7:§r Revokes your token, disconnects your bridge and turns focus mode off.\n\
+    §astatus§7:§r Shows whether your bridge is connected.\n\
+    §abusy §7<§aon§7|§aoff§7>:§r Turns focus mode on or off, as if you moved your BUSY Bar's selector.\n\
+    §alist§7 (admin):§r Lists players with a linked BUSY Bar or focus mode on.\n\
+    §aclear §7<§bplayer§7> (admin):§r Turns off a player's focus mode.\n\
+    §arevoke §7<§bplayer§7> (admin):§r Revokes a player's token and turns their focus mode off.\n\
+    §arotatekey§7 (admin):§r Replaces the TLS key. Every player has to run §blink§r again."
+  # This message is sent when a new token was created. The pairing string, which holds the
+  # token, follows in a separate line.
+  Linked: "§7Paste the line below into your bridge. It holds your token and is shown only once."
+  # Hover text of the pairing string.
+  ClickToCopy: "§7Click to copy"
+  # /busybar link while neither PublicUrl nor server-ip is set.
+  NoPublicUrl: "§7This server has no address set for BUSY Bar bridges yet. Ask an admin to set §bPublicUrl§7 in the vane-busybar config."
+  # This message is sent when the token was revoked.
+  Unlinked: "§7Your BUSY Bar token was revoked."
+  # This message is sent when the player has no token.
+  NotLinked: "§7No BUSY Bar is linked. Use §b/busybar link§7 to create a token."
+  # %1$s: number of connected bridges
+  # %2$s: focus mode state (BusyOn or BusyOff)
+  Status: "§7BUSY Bar linked. Connected bridges: %1$s§7. Focus mode: %2$s"
+  BusyOn: "§con"
+  BusyOff: "§aoff"
+  # Confirms /busybar busy on|off.
+  # %1$s: focus mode state (BusyOn or BusyOff)
+  BusySet: "§7Focus mode: %1$s"
+  # %1$s: number of players
+  ListHeader: "§7BUSY Bar players (%1$s§7):"
+  # %1$s: player name, %2$s: connected bridges, %3$s: focus mode state, %4$s: LinkedYes or LinkedNo
+  ListEntry: "§7- §b%1$s§7 · bridges: %2$s§7 · focus: %3$s§7 · %4$s"
+  ListEmpty: "§7No player has a BUSY Bar linked or focus mode on."
+  LinkedYes: "§alinked"
+  LinkedNo: "§7not linked"
+  # %1$s: player name
+  Cleared: "§7Focus mode turned off for §b%1$s§7."
+  # %1$s: player name
+  Revoked: "§7Revoked the BUSY Bar token of §b%1$s§7."
+  # Sent when clear or revoke finds nothing to do. %1$s: player name
+  NothingToDo: "§b%1$s§7 has nothing to clear: no BUSY Bar token or focus mode."
+  # Confirms /busybar rotatekey.
+  KeyRotated: "§7Generated a new TLS key. Every player with a BUSY Bar has to run §b/busybar link§7 again."
+  # /busybar rotatekey while Tls is not auto.
+  KeyNotRotatable: "§7Only possible with §bTls: auto§7. This server uses its own certificate or no TLS."

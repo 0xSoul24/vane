@@ -9,13 +9,16 @@ import org.oddlama.vane.core.module.Module
  */
 @VaneModule(name = "admin", bstats = 8638, configVersion = 2, langVersion = 2, storageVersion = 1)
 class Admin : Module<Admin?>() {
+    /** Automatic shutdown scheduling. Public so integrations such as vane-busybar can read and abort it. */
+    val autostopGroup: AutostopGroup
+
     init {
         Gamemode(this)
         SlimeChunk(this)
         Time(this)
         Weather(this)
 
-        val autostopGroup = AutostopGroup(this)
+        autostopGroup = AutostopGroup(this)
         AutostopListener(autostopGroup)
         Autostop(autostopGroup)
 

@@ -1,0 +1,52 @@
+# vim: set tabstop=2 softtabstop=0 expandtab shiftwidth=2:
+#
+# >> See lang-en.yml for variable descriptions <<
+#
+# +-----------------------------------+
+# | CAUTION: Do NOT change this file! |
+# +-----------------------------------+
+#
+# It will be silently overwritten with updates! If you want
+# to customize strings yourself, copy this file to lang-custom.yml
+# and set the language in the config.yml to "lang: 'custom'"
+
+# DO NOT CHANGE! The version of this language file. Used to determine
+# if the file needs to be updated.
+Version: 6
+# The corresponding language code used in resource packs. Used for
+# resource pack generation. Typically, this is a combination of the
+# language code (ISO 639) and the country code (ISO 3166).
+ResourcePackLangCode: 'fr_fr'
+
+TabTag: " §c[Occupé·e]"
+
+CommandBusybar:
+  Usage: "%1$s §7<§alink§7|§aunlink§7|§astatus§7|§abusy§7|§alist§7|§aclear§7|§arevoke§7|§arotatekey§7>"
+  Description: "Connecte ta BUSY Bar à ce serveur."
+  Help: "§alink§7:§r Crée un jeton pour le pont de ta BUSY Bar. Le relancer remplace l'ancien jeton.\n\
+    §aunlink§7:§r Révoque ton jeton, déconnecte ton pont et désactive le mode concentration.\n\
+    §astatus§7:§r Indique si ton pont est connecté.\n\
+    §abusy §7<§aon§7|§aoff§7>:§r Active ou désactive le mode concentration, comme si tu bougeais le sélecteur de ta BUSY Bar.\n\
+    §alist§7 (admin):§r Liste les joueur·se·s avec une BUSY Bar liée ou en mode concentration.\n\
+    §aclear §7<§bjoueur·se§7> (admin):§r Désactive le mode concentration d'un·e joueur·se.\n\
+    §arevoke §7<§bjoueur·se§7> (admin):§r Révoque le jeton d'un·e joueur·se et désactive son mode concentration.\n\
+    §arotatekey§7 (admin):§r Remplace la clé TLS. Chaque joueur·se doit relancer §blink§r."
+  Linked: "§7Colle la ligne ci-dessous dans ton pont. Elle contient ton jeton et n'est affichée qu'une seule fois."
+  ClickToCopy: "§7Cliquer pour copier"
+  NoPublicUrl: "§7Ce serveur n'a pas encore d'adresse pour les ponts BUSY Bar. Demande à un·e admin de définir §bPublicUrl§7 dans la configuration de vane-busybar."
+  Unlinked: "§7Le jeton de ta BUSY Bar a été révoqué."
+  NotLinked: "§7Aucune BUSY Bar n'est liée. Utilise §b/busybar link§7 pour créer un jeton."
+  Status: "§7BUSY Bar liée. Ponts connectés : %1$s§7. Mode concentration : %2$s"
+  BusyOn: "§cactivé"
+  BusyOff: "§adésactivé"
+  BusySet: "§7Mode concentration : %1$s"
+  ListHeader: "§7Joueur·se·s avec une BUSY Bar (%1$s§7) :"
+  ListEntry: "§7- §b%1$s§7 · ponts : %2$s§7 · concentration : %3$s§7 · %4$s"
+  ListEmpty: "§7Aucun·e joueur·se n'a de BUSY Bar liée ni de mode concentration actif."
+  LinkedYes: "§aliée"
+  LinkedNo: "§7non liée"
+  Cleared: "§7Mode concentration désactivé pour §b%1$s§7."
+  Revoked: "§7Le jeton BUSY Bar de §b%1$s§7 a été révoqué."
+  NothingToDo: "§7Rien à effacer pour §b%1$s§7 : ni jeton BUSY Bar ni mode concentration."
+  KeyRotated: "§7Nouvelle clé TLS générée. Chaque joueur·se avec une BUSY Bar doit relancer §b/busybar link§7."
+  KeyNotRotatable: "§7Possible uniquement avec §bTls: auto§7. Ce serveur utilise son propre certificat ou pas de TLS."

@@ -1,0 +1,52 @@
+# vim: set tabstop=2 softtabstop=0 expandtab shiftwidth=2:
+#
+# >> See lang-en.yml for variable descriptions <<
+#
+# +-----------------------------------+
+# | CAUTION: Do NOT change this file! |
+# +-----------------------------------+
+#
+# It will be silently overwritten with updates! If you want
+# to customize strings yourself, copy this file to lang-custom.yml
+# and set the language in the config.yml to "lang: 'custom'"
+
+# DO NOT CHANGE! The version of this language file. Used to determine
+# if the file needs to be updated.
+Version: 6
+# The corresponding language code used in resource packs. Used for
+# resource pack generation. Typically, this is a combination of the
+# language code (ISO 639) and the country code (ISO 3166).
+ResourcePackLangCode: 'de_de'
+
+TabTag: " §c[Beschäftigt]"
+
+CommandBusybar:
+  Usage: "%1$s §7<§alink§7|§aunlink§7|§astatus§7|§abusy§7|§alist§7|§aclear§7|§arevoke§7|§arotatekey§7>"
+  Description: "Verbindet deine BUSY Bar mit diesem Server."
+  Help: "§alink§7:§r Erstellt ein Token für deine BUSY-Bar-Bridge. Erneutes Ausführen ersetzt das alte Token.\n\
+    §aunlink§7:§r Widerruft dein Token, trennt deine Bridge und schaltet den Fokusmodus aus.\n\
+    §astatus§7:§r Zeigt, ob deine Bridge verbunden ist.\n\
+    §abusy §7<§aon§7|§aoff§7>:§r Schaltet den Fokusmodus ein oder aus, als würdest du den Wahlschalter deiner BUSY Bar bewegen.\n\
+    §alist§7 (Admin):§r Listet Spieler mit verknüpfter BUSY Bar oder aktivem Fokusmodus auf.\n\
+    §aclear §7<§bSpieler§7> (Admin):§r Schaltet den Fokusmodus eines Spielers aus.\n\
+    §arevoke §7<§bSpieler§7> (Admin):§r Widerruft das Token eines Spielers und schaltet seinen Fokusmodus aus.\n\
+    §arotatekey§7 (Admin):§r Ersetzt den TLS-Schlüssel. Alle Spieler müssen §blink§r erneut ausführen."
+  Linked: "§7Füge die Zeile unten in deine Bridge ein. Sie enthält dein Token und wird nur einmal angezeigt."
+  ClickToCopy: "§7Klicken zum Kopieren"
+  NoPublicUrl: "§7Für BUSY-Bar-Bridges ist auf diesem Server noch keine Adresse eingestellt. Bitte einen Admin, §bPublicUrl§7 in der vane-busybar-Konfiguration zu setzen."
+  Unlinked: "§7Dein BUSY-Bar-Token wurde widerrufen."
+  NotLinked: "§7Keine BUSY Bar verknüpft. Nutze §b/busybar link§7, um ein Token zu erstellen."
+  Status: "§7BUSY Bar verknüpft. Verbundene Bridges: %1$s§7. Fokusmodus: %2$s"
+  BusyOn: "§can"
+  BusyOff: "§aaus"
+  BusySet: "§7Fokusmodus: %1$s"
+  ListHeader: "§7BUSY-Bar-Spieler (%1$s§7):"
+  ListEntry: "§7- §b%1$s§7 · Bridges: %2$s§7 · Fokus: %3$s§7 · %4$s"
+  ListEmpty: "§7Kein Spieler hat eine BUSY Bar verknüpft oder den Fokusmodus aktiv."
+  LinkedYes: "§averknüpft"
+  LinkedNo: "§7nicht verknüpft"
+  Cleared: "§7Fokusmodus für §b%1$s§7 ausgeschaltet."
+  Revoked: "§7BUSY-Bar-Token von §b%1$s§7 widerrufen."
+  NothingToDo: "§7Bei §b%1$s§7 gibt es nichts zurückzusetzen: kein BUSY-Bar-Token und kein Fokusmodus."
+  KeyRotated: "§7Neuer TLS-Schlüssel erzeugt. Alle Spieler mit einer BUSY Bar müssen §b/busybar link§7 erneut ausführen."
+  KeyNotRotatable: "§7Nur mit §bTls: auto§7 möglich. Dieser Server nutzt ein eigenes Zertifikat oder kein TLS."

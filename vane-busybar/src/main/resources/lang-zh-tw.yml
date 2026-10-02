@@ -1,0 +1,52 @@
+# vim: set tabstop=2 softtabstop=0 expandtab shiftwidth=2:
+#
+# >> See lang-en.yml for variable descriptions <<
+#
+# +-----------------------------------+
+# | CAUTION: Do NOT change this file! |
+# +-----------------------------------+
+#
+# It will be silently overwritten with updates! If you want
+# to customize strings yourself, copy this file to lang-custom.yml
+# and set the language in the config.yml to "lang: 'custom'"
+
+# DO NOT CHANGE! The version of this language file. Used to determine
+# if the file needs to be updated.
+Version: 6
+# The corresponding language code used in resource packs. Used for
+# resource pack generation. Typically, this is a combination of the
+# language code (ISO 639) and the country code (ISO 3166).
+ResourcePackLangCode: 'zh_tw'
+
+TabTag: " §c[忙碌]"
+
+CommandBusybar:
+  Usage: "%1$s §7<§alink§7|§aunlink§7|§astatus§7|§abusy§7|§alist§7|§aclear§7|§arevoke§7|§arotatekey§7>"
+  Description: "將你的 BUSY Bar 連接到此伺服器。"
+  Help: "§alink§7:§r 為你的 BUSY Bar 橋接程式建立權杖。再次執行會取代舊權杖。\n\
+    §aunlink§7:§r 撤銷你的權杖，中斷橋接程式並關閉專注模式。\n\
+    §astatus§7:§r 顯示你的橋接程式是否已連線。\n\
+    §abusy §7<§aon§7|§aoff§7>:§r 開啟或關閉專注模式，效果與撥動 BUSY Bar 的選擇開關相同。\n\
+    §alist§7 (管理員):§r 列出已綁定 BUSY Bar 或開啟專注模式的玩家。\n\
+    §aclear §7<§b玩家§7> (管理員):§r 關閉某位玩家的專注模式。\n\
+    §arevoke §7<§b玩家§7> (管理員):§r 撤銷某位玩家的權杖並關閉其專注模式。\n\
+    §arotatekey§7 (管理員):§r 更換 TLS 金鑰。所有玩家都需要重新執行 §blink§r。"
+  Linked: "§7將下面這一行貼到橋接程式中。它包含你的權杖，只會顯示一次。"
+  ClickToCopy: "§7點擊複製"
+  NoPublicUrl: "§7此伺服器尚未為 BUSY Bar 橋接程式設定位址。請管理員在 vane-busybar 設定中設定 §bPublicUrl§7。"
+  Unlinked: "§7你的 BUSY Bar 權杖已撤銷。"
+  NotLinked: "§7尚未綁定 BUSY Bar。使用 §b/busybar link§7 建立權杖。"
+  Status: "§7BUSY Bar 已綁定。已連線的橋接程式：%1$s§7。專注模式：%2$s"
+  BusyOn: "§c開"
+  BusyOff: "§a關"
+  BusySet: "§7專注模式：%1$s"
+  ListHeader: "§7BUSY Bar 玩家（%1$s§7）："
+  ListEntry: "§7- §b%1$s§7 · 橋接程式：%2$s§7 · 專注：%3$s§7 · %4$s"
+  ListEmpty: "§7沒有玩家綁定 BUSY Bar 或開啟專注模式。"
+  LinkedYes: "§a已綁定"
+  LinkedNo: "§7未綁定"
+  Cleared: "§7已關閉 §b%1$s§7 的專注模式。"
+  Revoked: "§7已撤銷 §b%1$s§7 的 BUSY Bar 權杖。"
+  NothingToDo: "§b%1$s§7 沒有可清除的內容：既沒有 BUSY Bar 權杖，也沒有開啟專注模式。"
+  KeyRotated: "§7已產生新的 TLS 金鑰。所有使用 BUSY Bar 的玩家都需要重新執行 §b/busybar link§7。"
+  KeyNotRotatable: "§7僅在 §bTls: auto§7 時可用。此伺服器使用自己的憑證或未啟用 TLS。"

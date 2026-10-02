@@ -1,0 +1,52 @@
+# vim: set tabstop=2 softtabstop=0 expandtab shiftwidth=2:
+#
+# >> See lang-en.yml for variable descriptions <<
+#
+# +-----------------------------------+
+# | CAUTION: Do NOT change this file! |
+# +-----------------------------------+
+#
+# It will be silently overwritten with updates! If you want
+# to customize strings yourself, copy this file to lang-custom.yml
+# and set the language in the config.yml to "lang: 'custom'"
+
+# DO NOT CHANGE! The version of this language file. Used to determine
+# if the file needs to be updated.
+Version: 6
+# The corresponding language code used in resource packs. Used for
+# resource pack generation. Typically, this is a combination of the
+# language code (ISO 639) and the country code (ISO 3166).
+ResourcePackLangCode: 'ru_ru'
+
+TabTag: " §c[Занят]"
+
+CommandBusybar:
+  Usage: "%1$s §7<§alink§7|§aunlink§7|§astatus§7|§abusy§7|§alist§7|§aclear§7|§arevoke§7|§arotatekey§7>"
+  Description: "Подключает вашу BUSY Bar к этому серверу."
+  Help: "§alink§7:§r Создаёт токен для моста вашей BUSY Bar. Повторный запуск заменяет старый токен.\n\
+    §aunlink§7:§r Отзывает ваш токен, отключает мост и выключает режим фокусировки.\n\
+    §astatus§7:§r Показывает, подключён ли ваш мост.\n\
+    §abusy §7<§aon§7|§aoff§7>:§r Включает или выключает режим фокусировки, как переключатель на вашей BUSY Bar.\n\
+    §alist§7 (админ):§r Показывает игроков с привязанной BUSY Bar или включённым режимом фокусировки.\n\
+    §aclear §7<§bигрок§7> (админ):§r Выключает режим фокусировки игрока.\n\
+    §arevoke §7<§bигрок§7> (админ):§r Отзывает токен игрока и выключает его режим фокусировки.\n\
+    §arotatekey§7 (админ):§r Заменяет TLS-ключ. Всем игрокам нужно снова выполнить §blink§r."
+  Linked: "§7Вставьте строку ниже в мост. Она содержит ваш токен и показывается только один раз."
+  ClickToCopy: "§7Нажмите, чтобы скопировать"
+  NoPublicUrl: "§7На этом сервере ещё не задан адрес для мостов BUSY Bar. Попросите администратора указать §bPublicUrl§7 в конфигурации vane-busybar."
+  Unlinked: "§7Токен вашей BUSY Bar отозван."
+  NotLinked: "§7BUSY Bar не привязана. Используйте §b/busybar link§7, чтобы создать токен."
+  Status: "§7BUSY Bar привязана. Подключённые мосты: %1$s§7. Режим фокусировки: %2$s"
+  BusyOn: "§cвкл"
+  BusyOff: "§aвыкл"
+  BusySet: "§7Режим фокусировки: %1$s"
+  ListHeader: "§7Игроки с BUSY Bar (%1$s§7):"
+  ListEntry: "§7- §b%1$s§7 · мосты: %2$s§7 · фокус: %3$s§7 · %4$s"
+  ListEmpty: "§7Ни у одного игрока нет привязанной BUSY Bar или режима фокусировки."
+  LinkedYes: "§aпривязана"
+  LinkedNo: "§7не привязана"
+  Cleared: "§7Режим фокусировки выключен для §b%1$s§7."
+  Revoked: "§7Токен BUSY Bar игрока §b%1$s§7 отозван."
+  NothingToDo: "§7У §b%1$s§7 нечего сбрасывать: нет ни токена BUSY Bar, ни режима фокусировки."
+  KeyRotated: "§7Создан новый TLS-ключ. Всем игрокам с BUSY Bar нужно снова выполнить §b/busybar link§7."
+  KeyNotRotatable: "§7Доступно только при §bTls: auto§7. Этот сервер использует свой сертификат или работает без TLS."

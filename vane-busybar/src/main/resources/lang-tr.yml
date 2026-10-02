@@ -1,0 +1,52 @@
+# vim: set tabstop=2 softtabstop=0 expandtab shiftwidth=2:
+#
+# >> See lang-en.yml for variable descriptions <<
+#
+# +-----------------------------------+
+# | CAUTION: Do NOT change this file! |
+# +-----------------------------------+
+#
+# It will be silently overwritten with updates! If you want
+# to customize strings yourself, copy this file to lang-custom.yml
+# and set the language in the config.yml to "lang: 'custom'"
+
+# DO NOT CHANGE! The version of this language file. Used to determine
+# if the file needs to be updated.
+Version: 6
+# The corresponding language code used in resource packs. Used for
+# resource pack generation. Typically, this is a combination of the
+# language code (ISO 639) and the country code (ISO 3166).
+ResourcePackLangCode: 'tr_tr'
+
+TabTag: " §c[Meşgul]"
+
+CommandBusybar:
+  Usage: "%1$s §7<§alink§7|§aunlink§7|§astatus§7|§abusy§7|§alist§7|§aclear§7|§arevoke§7|§arotatekey§7>"
+  Description: "BUSY Bar'ını bu sunucuya bağlar."
+  Help: "§alink§7:§r BUSY Bar köprün için bir token oluşturur. Tekrar çalıştırmak eski token'ı değiştirir.\n\
+    §aunlink§7:§r Token'ını iptal eder, köprünün bağlantısını keser ve odak modunu kapatır.\n\
+    §astatus§7:§r Köprünün bağlı olup olmadığını gösterir.\n\
+    §abusy §7<§aon§7|§aoff§7>:§r Odak modunu açar veya kapatır; BUSY Bar'ının seçicisini hareket ettirmek gibi.\n\
+    §alist§7 (yönetici):§r BUSY Bar'ı bağlı veya odak modu açık oyuncuları listeler.\n\
+    §aclear §7<§boyuncu§7> (yönetici):§r Bir oyuncunun odak modunu kapatır.\n\
+    §arevoke §7<§boyuncu§7> (yönetici):§r Bir oyuncunun token'ını iptal eder ve odak modunu kapatır.\n\
+    §arotatekey§7 (yönetici):§r TLS anahtarını değiştirir. Tüm oyuncuların §blink§r komutunu yeniden çalıştırması gerekir."
+  Linked: "§7Aşağıdaki satırı köprüne yapıştır. Token'ını içerir ve yalnızca bir kez gösterilir."
+  ClickToCopy: "§7Kopyalamak için tıkla"
+  NoPublicUrl: "§7Bu sunucuda BUSY Bar köprüleri için henüz bir adres ayarlanmamış. Bir yöneticiden vane-busybar yapılandırmasında §bPublicUrl§7 ayarlamasını iste."
+  Unlinked: "§7BUSY Bar token'ın iptal edildi."
+  NotLinked: "§7Bağlı bir BUSY Bar yok. Token oluşturmak için §b/busybar link§7 kullan."
+  Status: "§7BUSY Bar bağlı. Bağlı köprüler: %1$s§7. Odak modu: %2$s"
+  BusyOn: "§caçık"
+  BusyOff: "§akapalı"
+  BusySet: "§7Odak modu: %1$s"
+  ListHeader: "§7BUSY Bar oyuncuları (%1$s§7):"
+  ListEntry: "§7- §b%1$s§7 · köprüler: %2$s§7 · odak: %3$s§7 · %4$s"
+  ListEmpty: "§7Hiçbir oyuncunun bağlı bir BUSY Bar'ı veya açık odak modu yok."
+  LinkedYes: "§abağlı"
+  LinkedNo: "§7bağlı değil"
+  Cleared: "§b%1$s§7 için odak modu kapatıldı."
+  Revoked: "§b%1$s§7 adlı oyuncunun BUSY Bar token'ı iptal edildi."
+  NothingToDo: "§b%1$s§7 için temizlenecek bir şey yok: BUSY Bar token'ı veya odak modu yok."
+  KeyRotated: "§7Yeni bir TLS anahtarı oluşturuldu. BUSY Bar kullanan tüm oyuncuların §b/busybar link§7 komutunu yeniden çalıştırması gerekir."
+  KeyNotRotatable: "§7Yalnızca §bTls: auto§7 ile mümkündür. Bu sunucu kendi sertifikasını kullanıyor veya TLS kullanmıyor."

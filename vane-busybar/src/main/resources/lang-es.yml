@@ -1,0 +1,52 @@
+# vim: set tabstop=2 softtabstop=0 expandtab shiftwidth=2:
+#
+# >> See lang-en.yml for variable descriptions <<
+#
+# +-----------------------------------+
+# | CAUTION: Do NOT change this file! |
+# +-----------------------------------+
+#
+# It will be silently overwritten with updates! If you want
+# to customize strings yourself, copy this file to lang-custom.yml
+# and set the language in the config.yml to "lang: 'custom'"
+
+# DO NOT CHANGE! The version of this language file. Used to determine
+# if the file needs to be updated.
+Version: 6
+# The corresponding language code used in resource packs. Used for
+# resource pack generation. Typically, this is a combination of the
+# language code (ISO 639) and the country code (ISO 3166).
+ResourcePackLangCode: 'es_es'
+
+TabTag: " §c[Ocupado]"
+
+CommandBusybar:
+  Usage: "%1$s §7<§alink§7|§aunlink§7|§astatus§7|§abusy§7|§alist§7|§aclear§7|§arevoke§7|§arotatekey§7>"
+  Description: "Conecta tu BUSY Bar a este servidor."
+  Help: "§alink§7:§r Crea un token para el puente de tu BUSY Bar. Ejecutarlo de nuevo reemplaza el token anterior.\n\
+    §aunlink§7:§r Revoca tu token, desconecta tu puente y desactiva el modo concentración.\n\
+    §astatus§7:§r Muestra si tu puente está conectado.\n\
+    §abusy §7<§aon§7|§aoff§7>:§r Activa o desactiva el modo concentración, como si movieras el selector de tu BUSY Bar.\n\
+    §alist§7 (admin):§r Lista los jugadores con una BUSY Bar vinculada o con el modo concentración activo.\n\
+    §aclear §7<§bjugador§7> (admin):§r Desactiva el modo concentración de un jugador.\n\
+    §arevoke §7<§bjugador§7> (admin):§r Revoca el token de un jugador y desactiva su modo concentración.\n\
+    §arotatekey§7 (admin):§r Reemplaza la clave TLS. Todos los jugadores deben ejecutar §blink§r de nuevo."
+  Linked: "§7Pega la línea de abajo en tu puente. Contiene tu token y solo se muestra una vez."
+  ClickToCopy: "§7Haz clic para copiar"
+  NoPublicUrl: "§7Este servidor aún no tiene una dirección para los puentes de BUSY Bar. Pide a un admin que configure §bPublicUrl§7 en la configuración de vane-busybar."
+  Unlinked: "§7Se revocó el token de tu BUSY Bar."
+  NotLinked: "§7No hay ninguna BUSY Bar vinculada. Usa §b/busybar link§7 para crear un token."
+  Status: "§7BUSY Bar vinculada. Puentes conectados: %1$s§7. Modo concentración: %2$s"
+  BusyOn: "§cactivado"
+  BusyOff: "§adesactivado"
+  BusySet: "§7Modo concentración: %1$s"
+  ListHeader: "§7Jugadores con BUSY Bar (%1$s§7):"
+  ListEntry: "§7- §b%1$s§7 · puentes: %2$s§7 · concentración: %3$s§7 · %4$s"
+  ListEmpty: "§7Ningún jugador tiene una BUSY Bar vinculada ni el modo concentración activo."
+  LinkedYes: "§avinculada"
+  LinkedNo: "§7sin vincular"
+  Cleared: "§7Modo concentración desactivado para §b%1$s§7."
+  Revoked: "§7Se revocó el token de BUSY Bar de §b%1$s§7."
+  NothingToDo: "§b%1$s§7 no tiene nada que borrar: ni token de BUSY Bar ni modo concentración."
+  KeyRotated: "§7Se generó una nueva clave TLS. Todos los jugadores con una BUSY Bar deben ejecutar §b/busybar link§7 de nuevo."
+  KeyNotRotatable: "§7Solo es posible con §bTls: auto§7. Este servidor usa su propio certificado o no usa TLS."
