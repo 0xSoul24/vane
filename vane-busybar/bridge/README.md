@@ -127,6 +127,61 @@ plugin's `Tls` to `keystore` (a certificate your system already trusts, validate
 your local network: the token then crosses the internet unencrypted. `--server` and `--token`
 (`BARMC_SERVER`, `BARMC_TOKEN`) remain for setting the two parts separately.
 
+## macOS
+
+The Python that comes with the Xcode command line tools is 3.9, too old. Install a current one
+with Homebrew (`brew install python`) or from python.org, then:
+
+```sh
+python3 -m venv ~/.local/share/barmc
+~/.local/share/barmc/bin/pip install barmc-<version>-py3-none-any.whl
+```
+
+Running it and the private env file work as on Linux (see [Security](#security)): put
+`BARMC_PAIR`, `BUSYBAR_ADDR` and `BUSYBAR_TOKEN` in `~/.config/barmc.env`, readable only by you.
+
+The preview uses 256 colours in Terminal.app, which garbles 24-bit colour before macOS 26, and
+24-bit colour in iTerm2, Ghostty and other terminals. `--colors 24bit` or `--colors 256` overrides
+the choice.
+
+To start the bridge at login, save this as `~/Library/LaunchAgents/org.oddlama.vane.barmc.plist`,
+with your user name in the log path, since launchd does not expand `~` there:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>org.oddlama.vane.barmc</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/sh</string>
+    <string>-c</string>
+    <string>set -a; . "$HOME/.config/barmc.env"; exec "$HOME/.local/share/barmc/bin/barmc"</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <!-- Restart after a crash, but not after exit codes 2 and 3, which need a new pairing string. -->
+  <key>KeepAlive</key>
+  <dict>
+    <key>Crashed</key>
+    <true/>
+  </dict>
+  <key>StandardErrorPath</key>
+  <string>/Users/you/Library/Logs/barmc.log</string>
+</dict>
+</plist>
+```
+
+```sh
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/org.oddlama.vane.barmc.plist   # start now and at login
+launchctl bootout gui/$(id -u)/org.oddlama.vane.barmc                                   # stop and disable
+```
+
+Its messages end up in `~/Library/Logs/barmc.log`, which Console.app also shows. Like on Windows,
+it reconnects by itself and only stops for exit codes 2 and 3, so it is not restarted for those.
+
 ## Windows
 
 Install Python from python.org (tick "Add python.exe to PATH"), then in PowerShell:
@@ -205,6 +260,9 @@ a real BUSY Bar. Things to check on the device:
 - Whether the Bar keeps showing the bridge's screen when the selector is on BUSY, since the
   firmware has its own busy screen. `--priority` (1-100) sets how strongly the bridge claims
   the display.
+- On macOS: the tests run there in CI, but the LaunchAgent and Terminal.app's colours have not
+  been tried on a real Mac. The Bar's USB connection likely works without a driver, since macOS
+  supports USB network adapters out of the box, but is untested too.
 - On Windows: the tests run there in CI, but the preview's keys, colours and Ctrl+C have only
   been simulated, not used on a real Windows PC. Whether Windows sets up the Bar's USB network
   connection (`--bar 10.0.4.20`) without a driver is also open; Wi-Fi does not depend on it.

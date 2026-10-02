@@ -13,7 +13,7 @@ import asyncio
 import contextlib
 import os
 import sys
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 
 if sys.platform == "win32":
     import msvcrt
@@ -69,6 +69,42 @@ def _rgb(color: str) -> tuple[int, int, int]:
     return int(color[1:3], 16), int(color[3:5], 16), int(color[5:7], 16)
 
 
+def color_mode(requested: str, env: Mapping[str, str]) -> str:
+    """
+    `24bit` or `256` for `requested` (`auto`, `24bit` or `256`).
+
+    Terminals announce 24-bit colour inconsistently, so `auto` only falls back for the one common
+    terminal known to lack it: Terminal.app before macOS 26, which garbles 24-bit codes.
+    """
+    if requested != "auto":
+        return requested
+    if env.get("COLORTERM", "").lower() in ("truecolor", "24bit"):
+        return "24bit"
+    return "256" if env.get("TERM_PROGRAM") == "Apple_Terminal" else "24bit"
+
+
+# Channel levels of the 6x6x6 colour cube in the 256-colour palette (indices 16-231).
+CUBE_LEVELS = (0, 95, 135, 175, 215, 255)
+
+
+def to_256(rgb: tuple[int, int, int]) -> int:
+    """The nearest of the 240 palette colours every 256-colour terminal draws the same way."""
+    def nearest_level(c: int) -> int:
+        return min(range(6), key=lambda i: abs(CUBE_LEVELS[i] - c))
+
+    r, g, b = (nearest_level(c) for c in rgb)
+    cube = (CUBE_LEVELS[r], CUBE_LEVELS[g], CUBE_LEVELS[b])
+    cube_index = 16 + 36 * r + 6 * g + b
+    # The grey ramp (232-255) runs from 8 to 238 in steps of 10.
+    grey_index = min(23, max(0, round((sum(rgb) / 3 - 8) / 10)))
+    grey = (8 + 10 * grey_index,) * 3
+
+    def distance(c: tuple[int, ...]) -> int:
+        return sum((a - b) ** 2 for a, b in zip(c, rgb))
+
+    return 232 + grey_index if distance(grey) < distance(cube) else cube_index
+
+
 def render(card: Card, elapsed: float, library: Library) -> list[list[str | None]]:
     """The card as a 72x16 framebuffer of hex colours, None for off."""
     fb: list[list[str | None]] = [[None] * WIDTH for _ in range(HEIGHT)]
@@ -113,7 +149,7 @@ def render(card: Card, elapsed: float, library: Library) -> list[list[str | None
     return fb
 
 
-def to_ansi(fb: list[list[str | None]]) -> str:
+def to_ansi(fb: list[list[str | None]], colors: str = "24bit") -> str:
     """Two pixel rows per terminal row: foreground is the top pixel, background the bottom."""
     out = []
     for y in range(0, HEIGHT, 2):
@@ -121,7 +157,10 @@ def to_ansi(fb: list[list[str | None]]) -> str:
         for x in range(WIDTH):
             top = _rgb(fb[y][x]) if fb[y][x] else OFF
             bottom = _rgb(fb[y + 1][x]) if fb[y + 1][x] else OFF
-            cells.append(f"\x1b[38;2;{top[0]};{top[1]};{top[2]}m\x1b[48;2;{bottom[0]};{bottom[1]};{bottom[2]}m▀")
+            if colors == "256":
+                cells.append(f"\x1b[38;5;{to_256(top)}m\x1b[48;5;{to_256(bottom)}m▀")
+            else:
+                cells.append(f"\x1b[38;2;{top[0]};{top[1]};{top[2]}m\x1b[48;2;{bottom[0]};{bottom[1]};{bottom[2]}m▀")
         out.append("".join(cells) + "\x1b[0m")
     return "\n".join(out)
 
@@ -129,8 +168,9 @@ def to_ansi(fb: list[list[str | None]]) -> str:
 class TerminalDisplay:
     """Redraws the preview in place; prints a new frame per change when output is not a terminal."""
 
-    def __init__(self, library: Library) -> None:
+    def __init__(self, library: Library, colors: str = "auto") -> None:
         self._library = library
+        self._colors = color_mode(colors, os.environ)
         self._inputs: Inputs | None = None
         self._last = ""
         self._tty_in = sys.stdin.isatty()
@@ -155,7 +195,7 @@ class TerminalDisplay:
             asyncio.get_running_loop().add_reader(fd, self._on_unix_key)
 
     async def show(self, card: Card, elapsed: float) -> None:
-        frame = to_ansi(render(card, elapsed, self._library))
+        frame = to_ansi(render(card, elapsed, self._library), self._colors)
         if frame == self._last:
             return
         self._last = frame

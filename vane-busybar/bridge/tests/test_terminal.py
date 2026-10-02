@@ -84,3 +84,32 @@ def test_imports_on_windows_without_termios(monkeypatch):
     finally:
         monkeypatch.undo()
         importlib.reload(terminal)
+
+
+@pytest.mark.parametrize("rgb, index", [
+    ((0, 0, 0), 16), ((255, 255, 255), 231), ((255, 0, 0), 196), ((0, 255, 0), 46), ((0, 0, 255), 21),
+    ((128, 128, 128), 244), ((8, 8, 8), 232), ((238, 238, 238), 255),
+    ((0x6f, 0xe0, 0x6b), 77),  # the bridge's GREEN: cube levels 95, 215, 95
+])
+def test_converts_colours_to_the_256_palette(rgb, index):
+    assert terminal.to_256(rgb) == index
+
+
+@pytest.mark.parametrize("requested, env, mode", [
+    ("auto", {"TERM_PROGRAM": "Apple_Terminal"}, "256"),
+    ("auto", {"TERM_PROGRAM": "Apple_Terminal", "COLORTERM": "truecolor"}, "24bit"),
+    ("auto", {"TERM_PROGRAM": "iTerm.app", "COLORTERM": "truecolor"}, "24bit"),
+    ("auto", {}, "24bit"),
+    ("256", {"COLORTERM": "truecolor"}, "256"),
+    ("24bit", {"TERM_PROGRAM": "Apple_Terminal"}, "24bit"),
+])
+def test_picks_colours_for_the_terminal(requested, env, mode):
+    assert terminal.color_mode(requested, env) == mode
+
+
+def test_draws_with_palette_codes_in_256_colour_mode():
+    from barmc.state import Card
+    fb = terminal.render(Card("sun", "HI"), 0.0, Library())
+    assert "\x1b[38;2;" in terminal.to_ansi(fb, "24bit")
+    palette = terminal.to_ansi(fb, "256")
+    assert "\x1b[38;5;" in palette and "\x1b[38;2;" not in palette

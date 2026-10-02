@@ -41,6 +41,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     output.add_argument("--bar", default=os.environ.get("BUSYBAR_ADDR"),
                         help="BUSY Bar address: 10.0.4.20 over USB, or its IP on Wi-Fi")
     output.add_argument("--terminal", action="store_true", help="preview the display in this terminal instead")
+    parser.add_argument("--colors", choices=("auto", "24bit", "256"), default="auto",
+                        help="colours for --terminal; auto uses 256 in macOS Terminal.app, 24-bit elsewhere")
     parser.add_argument("--bar-token", default=os.environ.get("BUSYBAR_TOKEN"),
                         help="the Bar's API password, needed over Wi-Fi")
     parser.add_argument("--priority", type=int, default=50, help="draw priority on the Bar, 1-100 (default 50)")
@@ -63,7 +65,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def make_display(args: argparse.Namespace, library: Library) -> Display:
     if args.terminal:
         from .display.terminal import TerminalDisplay
-        return TerminalDisplay(library)
+        return TerminalDisplay(library, args.colors)
     from .display.busybar import BusyBarDisplay
     return BusyBarDisplay(args.bar, args.bar_token, args.priority, library)
 

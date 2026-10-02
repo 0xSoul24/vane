@@ -46,14 +46,14 @@ jobs:
           path: target/vane-${{ matrix.project }}-*.jar
           archive: false
 
-  # The BUSY Bar bridge players run next to their device; Python, outside the Gradle build. Also
-  # tested on Windows, which lacks termios and asyncio signal handlers.
+  # The BUSY Bar bridge players run next to their device; Python, outside the Gradle build. Tested
+  # on every OS players use; Windows in particular lacks termios and asyncio signal handlers.
   bridge:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest, windows-latest ]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
     defaults:
       run:
         shell: bash
