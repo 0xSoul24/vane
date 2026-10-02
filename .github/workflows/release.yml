@@ -62,7 +62,7 @@ jobs:
           zip -X all-plugins.zip vane-{admin,bedtime,busybar,core,enchantments,permissions,portals,regions,trifles}-"$VERSION".jar
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: '3.14'
 
