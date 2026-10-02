@@ -7,7 +7,7 @@ website: 'https://github.com/oddlama/vane'
 
 main: org.oddlama.vane.trifles.Trifles
 
-api-version: '1.21'
+api-version: '26.3'
 load: STARTUP
 dependencies:
   server:

@@ -10,7 +10,7 @@ website: 'https://github.com/oddlama/vane'
 main: org.oddlama.vane.enchantments.Enchantments
 bootstrapper: org.oddlama.vane.enchantments.EnchantmentsBootstrapper
 
-api-version: '1.21'
+api-version: '26.3'
 load: STARTUP
 dependencies:
   server:
