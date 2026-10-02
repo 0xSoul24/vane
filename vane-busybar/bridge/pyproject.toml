@@ -1,0 +1,25 @@
+[project]
+name = "barmc"
+# Matches vane's version in build.gradle.kts; the release workflow sets it from the tag.
+version = "1.23.0b2"
+description = "Bridge between the vane-busybar Minecraft plugin and a BUSY Bar"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "busylib>=2.6,<3",
+    "httpx>=0.27",
+    "pillow>=10",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[project.scripts]
+barmc = "barmc.__main__:main"
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["barmc*"]

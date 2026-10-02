@@ -17,3 +17,9 @@ external/
 !vane-velocity/external
 bin/
 run/
+
+# Python (vane-busybar/bridge)
+.venv/
+__pycache__/
+.pytest_cache/
+*.egg-info/

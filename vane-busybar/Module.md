@@ -7,6 +7,9 @@ The server never connects to a bar. Each player runs a small bridge next to thei
 opens an outbound connection to [org.oddlama.vane.busybar.EventStream] and draws the events on the
 bar over the local network. This works behind NAT and keeps players' home addresses off the server.
 
+The bridge is a Python program in [`vane-busybar/bridge`](bridge/README.md), released alongside the
+plugin with the same version. Its README covers player setup.
+
 ## Protocol
 
 Players create a token with `/busybar link`, which shows it once inside a pairing string (see

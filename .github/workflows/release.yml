@@ -59,7 +59,20 @@ jobs:
       - name: Create all-plugins.zip
         run: |
           cd target
-          zip -X all-plugins.zip vane-{admin,bedtime,core,enchantments,permissions,portals,regions,trifles}-"$VERSION".jar
+          zip -X all-plugins.zip vane-{admin,bedtime,busybar,core,enchantments,permissions,portals,regions,trifles}-"$VERSION".jar
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      # The BUSY Bar bridge carries the same version; PEP 440 normalizes 1.23.0-beta.2 to 1.23.0b2.
+      - name: Build BUSY Bar bridge
+        working-directory: vane-busybar/bridge
+        run: |
+          sed -i "s/^version = .*/version = \"$VERSION\"/" pyproject.toml
+          pip install build
+          python -m build --outdir ../../target/bridge
 
       # A new tag gets a draft with generated notes to edit before publishing by hand. If a
       # release already exists (draft or published), only its assets are replaced.
@@ -72,4 +85,4 @@ jobs:
             [[ "$TAG" == *-* ]] && prerelease=(--prerelease)
             gh release create "$TAG" --draft --verify-tag --generate-notes --title "$TAG" "${prerelease[@]}"
           fi
-          gh release upload "$TAG" --clobber target/vane-*-"$VERSION".jar target/all-plugins.zip
+          gh release upload "$TAG" --clobber target/vane-*-"$VERSION".jar target/all-plugins.zip target/bridge/*

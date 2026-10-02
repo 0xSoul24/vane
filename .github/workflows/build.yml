@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        project: [ 'admin', 'bedtime', 'core', 'enchantments', 'permissions', 'portals', 'regions', 'trifles', 'velocity', 'geyser-extension' ]
+        project: [ 'admin', 'bedtime', 'busybar', 'core', 'enchantments', 'permissions', 'portals', 'regions', 'trifles', 'velocity', 'geyser-extension' ]
 
     steps:
       - uses: actions/checkout@v7
@@ -45,3 +45,24 @@ jobs:
           name: vane-${{ matrix.project }}-${{ env.git_hash }}.jar
           path: target/vane-${{ matrix.project }}-*.jar
           archive: false
+
+  # The BUSY Bar bridge players run next to their device; Python, outside the Gradle build.
+  bridge:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: vane-busybar/bridge
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install
+        run: pip install -e '.[test]'
+
+      - name: Test
+        run: python -m pytest
