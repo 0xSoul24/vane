@@ -39,7 +39,7 @@ dependencies {
 }
 
 val resourcePackSha1: String by lazy {
-    val resourcePack = File("${projectDir}/../docs/resourcepacks/v" + project.version + ".zip")
+    val resourcePack = rootProject.layout.projectDirectory.file("docs/resourcepacks/v${project.version}.zip").asFile
     if (!resourcePack.exists()) {
         throw GradleException("The resource pack file $resourcePack is missing.")
     }
