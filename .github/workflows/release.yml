@@ -85,4 +85,4 @@ jobs:
             [[ "$TAG" == *-* ]] && prerelease=(--prerelease)
             gh release create "$TAG" --draft --verify-tag --generate-notes --title "$TAG" "${prerelease[@]}"
           fi
-          gh release upload "$TAG" --clobber target/vane-*-"$VERSION".jar target/all-plugins.zip target/bridge/*
+          gh release upload "$TAG" --clobber target/vane-*-"$VERSION".jar target/all-plugins.zip target/barmc-"$VERSION".zip target/bridge/*
