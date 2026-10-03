@@ -14,7 +14,8 @@ It only makes outgoing connections, so it works behind a home router.
 
 The bridge lives in the vane repository next to the plugin, `vane-busybar/bridge`, and is
 released with the same version: bridge 1.23 goes with vane-busybar 1.23. Each GitHub release has
-it as `barmc-<version>.tar.gz` and a wheel.
+it as `barmc-<version>.zip` (also built into `target/` by `./gradlew build`), `.tar.gz` and a
+wheel, each installable with `pip install`.
 
 ## Setup
 
@@ -33,6 +34,17 @@ python3 -m venv .venv
 .venv/bin/pip install -e .
 ```
 
+The same on Windows, in PowerShell:
+
+```powershell
+cd vane-busybar\bridge
+py -m venv .venv
+.venv\Scripts\pip install -e .
+```
+
+macOS works like Linux, with a current Python (see [macOS](#macos)). For a release on Windows,
+see [Windows](#windows).
+
 ## Try it with the vane dev server
 
 1. Start the server:
@@ -41,6 +53,8 @@ python3 -m venv .venv
    # from the root of the vane repository
    ./gradlew runServer --no-daemon --warning-mode all
    ```
+
+   On Windows, run `.\gradlew.bat runServer --no-daemon --warning-mode all` instead.
 
 2. Join `localhost` in Minecraft and run `/busybar link`. It prints a pairing string such as
    `<token>@<ip>:9123#sha256=<fingerprint>`. Click it to copy it; it is shown only once.
@@ -63,8 +77,84 @@ python3 -m venv .venv
    .venv/bin/barmc --pair '<pairing string>' --bar 192.168.1.20 --bar-token 1234
    ```
 
+   On Windows, the program is `.venv\Scripts\barmc` and the rest stays the same. In `cmd`, put
+   the pairing string in double quotes; PowerShell takes either.
+
 Options can also come from the environment: `BARMC_PAIR`, `BUSYBAR_ADDR`, `BUSYBAR_TOKEN`
 (and `BARMC_SERVER`, `BARMC_TOKEN`, see below). Add `-v` to log every event.
+
+## Use it on a public server
+
+### Players
+
+Join the server, run `/busybar link` and start the bridge with the pairing string it shows, as in
+steps 3 and 4 above, on Linux, macOS or Windows alike. If it says the server has no address for bridges yet, ask an admin to follow
+the next section. Keep the bridge running for a permanent setup as described in
+[Security](#security), [macOS](#macos) or [Windows](#windows).
+
+### Server admins
+
+Bridges connect to the plugin's own port, TCP 9123 by default, not to the Minecraft port. With
+the default `Tls: auto` there is nothing to buy or renew: the plugin makes its own certificate and
+`/busybar link` hands each player its fingerprint.
+
+1. Open the port to the internet: allow TCP 9123 in the server's firewall and, at home, forward
+   it on the router to the server. On a hosting panel that assigns ports, add an extra port
+   allocation and put its number in `Port`.
+
+   - Linux: `ufw allow 9123/tcp`, or `firewall-cmd --add-port=9123/tcp --permanent` followed by
+     `firewall-cmd --reload`.
+   - Windows, in PowerShell as administrator:
+     `New-NetFirewallRule -DisplayName "vane-busybar" -Direction Inbound -Protocol TCP -LocalPort 9123 -Action Allow`.
+     Windows may also ask to allow Java on first start; allow it for the networks players come
+     from.
+   - macOS: the firewall is off by default. If it is on, allow incoming connections for `java`
+     when asked, or add it under System Settings > Network > Firewall > Options.
+2. Tell the plugin the address players reach it at. In `plugins/vane-busybar/config.yml`, set
+   `PublicUrl` to the server's public domain or IP, the same one players join in Minecraft:
+
+   ```yaml
+   PublicUrl: "mc.example.com"   # Port is added: mc.example.com:9123
+   Port: 9123
+   Tls: "auto"
+   ```
+
+   Without it, the plugin uses `server-ip` from `server.properties`, which is often empty or an
+   internal address; with neither, `/busybar link` gives out no token. If the hosting panel maps
+   the port to a different public one, write it out: `PublicUrl: "mc.example.com:25570"`.
+3. Restart the server, then check from a computer outside its network:
+
+   ```sh
+   curl -k -o /dev/null -w '%{http_code}\n' https://mc.example.com:9123/events
+   ```
+
+   macOS has the same `curl`. On Windows 10 and 11, use `curl.exe` in PowerShell, since plain
+   `curl` there means a different command:
+
+   ```powershell
+   curl.exe -k -o NUL -w "%{http_code}" https://mc.example.com:9123/events
+   ```
+
+   `401` means the port is reachable and the plugin answered; a timeout means the port is still
+   closed or forwarded wrongly. (`-k` only skips the certificate check for this test; the bridge
+   checks the fingerprint.)
+
+- **Online mode.** The fingerprint reaches players through Minecraft's encrypted connection. On
+  an offline-mode server that connection is not encrypted, so someone on the way could swap the
+  pairing string; the plugin warns about this on startup.
+- **What players may see and do** is set by the `vane.busybar.*` permissions and
+  `AllowedActions`; TPS, autostop and region visitor alerts are for ops only by default. See the
+  plugin's [Module.md](../Module.md) for the full list.
+- **Revoking.** `/busybar revoke <player>` disconnects a player's bridge, `/busybar rotatekey`
+  replaces the key if `plugins/vane-busybar/tls-auto.key` ever leaked, after which every player
+  has to link again. Back up the `plugins/vane-busybar` folder with the server: it holds the key
+  and the players' tokens, so players stay linked after a restore. On Linux and macOS the plugin
+  makes `tls-auto.key` readable by the server's user only; on Windows the file inherits the
+  folder's permissions, so on a shared Windows machine keep the server folder private to the
+  account running the server.
+- **A domain with a real certificate** (`Tls: keystore`) or **a reverse proxy** in front of the
+  port (`Tls: off`, `BindAddress: "127.0.0.1"`, `PublicUrl` set to the proxy's `https://` URL) work
+  too; see TLS in [Module.md](../Module.md). Neither is needed for a public server.
 
 ## Security
 
@@ -210,16 +300,42 @@ setx BUSYBAR_ADDR "192.168.1.20"
 setx BUSYBAR_TOKEN "1234"
 ```
 
-`setx` only affects programs started afterwards, so open a new window before testing. To start the
-bridge when you log in, press Win+R, open `shell:startup`, and create `barmc.cmd` there:
+`setx` only affects programs started afterwards, so open a new window before testing.
 
-```bat
-start "barmc" /min "%LOCALAPPDATA%\barmc\Scripts\barmc.exe"
+To start the bridge when you log in, register it with Task Scheduler, the Windows counterpart of
+the systemd service above. In a new PowerShell window, after `setx`:
+
+```powershell
+$barmc    = "$env:LOCALAPPDATA\barmc\Scripts"
+$action   = New-ScheduledTaskAction -Execute "$barmc\pythonw.exe" -Argument "-m barmc"
+$trigger  = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
+$settings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit ([TimeSpan]::Zero) `
+            -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
+Register-ScheduledTask -TaskName barmc -Action $action -Trigger $trigger -Settings $settings
+Start-ScheduledTask barmc
+```
+
+`pythonw.exe` runs the bridge without a console window, so it reads its settings from the `setx`
+variables and keeps no log. The zero `ExecutionTimeLimit` stops Task Scheduler from ending it
+after three days, its default. If registering says access is denied, run PowerShell as
+administrator once; the task still runs as you.
+
+```powershell
+Stop-ScheduledTask barmc                          # stop it
+Start-ScheduledTask barmc                         # start it again, e.g. after a new setx
+(Get-ScheduledTaskInfo barmc).LastTaskResult      # exit code of the last run, 2 or 3 see above
+Unregister-ScheduledTask barmc -Confirm:$false    # remove it
 ```
 
 There is no need to restart it on failure: it reconnects by itself after network problems and
 server restarts, and only stops for exit codes 2 and 3 above, which a new pairing string fixes.
-Ctrl+C in its window stops it (exit code 130).
+For the same reason, leave the task's restart-on-failure setting off; it cannot skip those two.
+To see what it is doing, stop the task and run `barmc` in a window as above, with `-v`.
+
+To run it on an always-on PC before anyone logs in, like `loginctl enable-linger` on Linux, wrap
+`barmc.exe` in a Windows service with [NSSM](https://nssm.cc) or
+[WinSW](https://github.com/winsw/winsw). A service's settings are readable by the PC's
+administrators, so only do that on a machine you trust them with.
 
 ## What the Bar shows
 
@@ -266,6 +382,7 @@ a real BUSY Bar. Things to check on the device:
 - On Windows: the tests run there in CI, but the preview's keys, colours and Ctrl+C have only
   been simulated, not used on a real Windows PC. Whether Windows sets up the Bar's USB network
   connection (`--bar 10.0.4.20`) without a driver is also open; Wi-Fi does not depend on it.
+  The Task Scheduler setup and running under `pythonw.exe` have not been tried there either.
 
 ## Development
 
