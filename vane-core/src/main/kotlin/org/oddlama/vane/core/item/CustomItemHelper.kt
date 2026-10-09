@@ -37,6 +37,8 @@ object CustomItemHelper {
             data.set(CUSTOM_ITEM_VERSION, PersistentDataType.INTEGER, customItem.version())
             meta.customModelDataComponent.floats = listOf(customItem.customModelData().toFloat())
             meta.itemModel = customItem.itemModel()
+            // Refresh the item name so stacks pick up changed translation keys.
+            meta.itemName(customItem.displayName())
         }
 
         DurabilityManager.initializeOrUpdateMax(customItem, itemStack)
