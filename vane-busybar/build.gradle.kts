@@ -19,7 +19,7 @@ dependencies {
 
 // The BUSY Bar bridge (Python, see bridge/README.md) ships next to the plugin jar, with the same
 // version. pip installs the zip directly: `pip install barmc-<version>.zip`.
-val bridgeZip by tasks.registering(Zip::class) {
+val bridgeZip = tasks.register<Zip>("bridgeZip") {
     description = "Packs the BUSY Bar bridge into the target directory"
     val bridgeVersion = project.version.toString()
     inputs.property("version", bridgeVersion)
