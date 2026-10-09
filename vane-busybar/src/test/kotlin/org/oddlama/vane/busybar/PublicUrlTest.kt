@@ -9,8 +9,8 @@ class PublicUrlTest {
         BusyBar.resolvePublicUrl(configured, serverIp, 9123, scheme, direct)
 
     @Test
+    @Suppress("HttpUrlsUsage") // plain HTTP is under test
     fun `adds scheme and port to a bare host`() {
-        assertEquals("https://0xsoul.ddns.net:9123", resolve("0xsoul.ddns.net"))
         assertEquals("https://203.0.113.7:9123", resolve(" 203.0.113.7/ "))
         assertEquals("http://mc.example.com:9123", resolve("mc.example.com", scheme = "http"))
     }

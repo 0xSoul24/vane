@@ -99,7 +99,7 @@ class BusyBar : Module<BusyBar?>() {
     /** Permissions deciding what each bridge receives and may request. */
     val access = BridgeAccess(this)
 
-    /** TLS mode, certificate and key fingerprint of the event stream. */
+    /** TLS mode, certificate, and key fingerprint of the event stream. */
     val tls = Tls(this)
 
     /** Event stream HTTP server and connected bridges. */
@@ -128,7 +128,7 @@ class BusyBar : Module<BusyBar?>() {
     var bedtimeHook: BedtimeHook? = null
         private set
 
-    /** vane-regions integration, present while vane-regions is loaded. */
+    /** vane-regions integration, present while vane-regions are loaded. */
     var regionsHook: RegionsHook? = null
         private set
 
@@ -221,7 +221,7 @@ class BusyBar : Module<BusyBar?>() {
     /**
      * Everything a bridge needs in one line: [token], the address from [publicUrl] and, in auto TLS
      * mode, the key fingerprint to pin, for example `<token>@203.0.113.7:9123#sha256=<base64url>`.
-     * Bridges assume https, so only plain HTTP keeps its `http://` prefix, which a bridge must never
+     * Bridges assume https, so only plain HTTP keeps its prefix, which a bridge must never
      * fall back to on its own. Null while [publicUrl] is unknown.
      */
     fun pairingString(token: String): String? = publicUrl()?.let { pairingString(token, it, tls.pin) }
@@ -305,7 +305,7 @@ class BusyBar : Module<BusyBar?>() {
         }
 
         /** A host with an explicit port: `host:1234` or `[2001:db8::1]:1234`. */
-        private val HOST_WITH_PORT = Regex("""^(\[[^\]]+\]|[^:\[\]/]+):\d+$""")
+        private val HOST_WITH_PORT = Regex("""^(\[[^]]+]|[^:\[\]/]+):\d+$""")
 
         /**
          * The stream URL for bridges, or null when unknown or invalid.
@@ -348,7 +348,7 @@ class BusyBar : Module<BusyBar?>() {
             return URI(uri.scheme, uri.rawUserInfo, uri.host, port, uri.rawPath, uri.rawQuery, uri.rawFragment).toString()
         }
 
-        /** Whether [url] is an http(s) URL with a host and nothing a pairing string adds itself. */
+        /** Whether [url] is an http(s) URL with a host and nothing, a pairing string adds itself. */
         private fun isStreamUrl(url: String): Boolean {
             val uri = try {
                 URI(url)

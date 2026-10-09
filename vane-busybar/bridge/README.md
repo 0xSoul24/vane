@@ -87,8 +87,8 @@ Options can also come from the environment: `BARMC_PAIR`, `BUSYBAR_ADDR`, `BUSYB
 
 ### Players
 
-Join the server, run `/busybar link` and start the bridge with the pairing string it shows, as in
-steps 3 and 4 above, on Linux, macOS or Windows alike. If it says the server has no address for bridges yet, ask an admin to follow
+Join the server, run, and start the bridge with the pairing string it shows, as in
+steps 3 and 4 above, on Linux, macOS, or Windows alike. If it says the server has no address for bridges yet, ask an admin to follow
 the next section. Keep the bridge running for a permanent setup as described in
 [Security](#security), [macOS](#macos) or [Windows](#windows).
 
@@ -106,10 +106,10 @@ the default `Tls: auto` there is nothing to buy or renew: the plugin makes its o
      `firewall-cmd --reload`.
    - Windows, in PowerShell as administrator:
      `New-NetFirewallRule -DisplayName "vane-busybar" -Direction Inbound -Protocol TCP -LocalPort 9123 -Action Allow`.
-     Windows may also ask to allow Java on first start; allow it for the networks players come
+     Windows may also ask to allow Java on the first start; allow it for the networks players come
      from.
    - macOS: the firewall is off by default. If it is on, allow incoming connections for `java`
-     when asked, or add it under System Settings > Network > Firewall > Options.
+     when asked or add it under System Settings > Network > Firewall > Options.
 2. Tell the plugin the address players reach it at. In `plugins/vane-busybar/config.yml`, set
    `PublicUrl` to the server's public domain or IP, the same one players join in Minecraft:
 
@@ -143,7 +143,7 @@ the default `Tls: auto` there is nothing to buy or renew: the plugin makes its o
   an offline-mode server that connection is not encrypted, so someone on the way could swap the
   pairing string; the plugin warns about this on startup.
 - **What players may see and do** is set by the `vane.busybar.*` permissions and
-  `AllowedActions`; TPS, autostop and region visitor alerts are for ops only by default. See the
+  `AllowedActions`; TPS, autostop, and region visitor alerts are for ops only by default. See the
   plugin's [Module.md](../Module.md) for the full list.
 - **Revoking.** `/busybar revoke <player>` disconnects a player's bridge, `/busybar rotatekey`
   replaces the key if `plugins/vane-busybar/tls-auto.key` ever leaked, after which every player
@@ -158,7 +158,7 @@ the default `Tls: auto` there is nothing to buy or renew: the plugin makes its o
 
 ## Security
 
-The pairing string holds everything the bridge needs: the server address, your token and the
+The pairing string holds everything the bridge needs: the server address, your token, and the
 fingerprint of the server's TLS key. The bridge only talks to a server presenting that exact key,
 and checks it before sending anything, so the token never reaches an impostor. This works without
 a domain or a certificate authority; the server's certificate is self-signed on purpose.
@@ -177,7 +177,7 @@ BUSYBAR_TOKEN=1234
 ENV
 ```
 
-and run it as a systemd user service, `~/.config/systemd/user/barmc.service`. Replace the
+And run it as a systemd user service, `~/.config/systemd/user/barmc.service`. Replace the
 `ExecStart` path with your own: `~/.local/share/barmc/bin/barmc` for a release install, or what
 `realpath .venv/bin/barmc` prints inside `vane-busybar/bridge` for a checkout:
 
@@ -203,10 +203,10 @@ loginctl enable-linger "$USER"   # keep it running while logged out, e.g. on a R
 
 When the bridge stops on its own, its exit code says why:
 
-| Exit | Meaning | Fix |
-|------|---------|-----|
-| 2 | The server rejected the token: it was revoked, or replaced by a newer `/busybar link`. | Run `/busybar link` and update the pairing string. |
-| 3 | The server's TLS key does not match the pairing string. Nothing was sent to it. | If an admin ran `/busybar rotatekey`, link again. Otherwise someone may be intercepting the connection. |
+| Exit | Meaning                                                                                | Fix                                                                                                     |
+|------|----------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| 2    | The server rejected the token: it was revoked, or replaced by a newer `/busybar link`. | Run `/busybar link` and update the pairing string.                                                      |
+| 3    | The server's TLS key does not match the pairing string. Nothing was sent to it.        | If an admin ran `/busybar rotatekey`, link again. Otherwise someone may be intercepting the connection. |
 
 Other connection problems are retried with backoff. `RestartPreventExitStatus` keeps systemd from
 retrying 2 and 3, which only a new pairing string fixes.
@@ -227,40 +227,40 @@ python3 -m venv ~/.local/share/barmc
 ~/.local/share/barmc/bin/pip install barmc-<version>-py3-none-any.whl
 ```
 
-Running it and the private env file work as on Linux (see [Security](#security)): put
+Running it, and the private env file works as on Linux (see [Security](#security)): put
 `BARMC_PAIR`, `BUSYBAR_ADDR` and `BUSYBAR_TOKEN` in `~/.config/barmc.env`, readable only by you.
 
-The preview uses 256 colours in Terminal.app, which garbles 24-bit colour before macOS 26, and
-24-bit colour in iTerm2, Ghostty and other terminals. `--colors 24bit` or `--colors 256` overrides
+The preview uses 256 colors in Terminal.app, which garbles 24-bit color before macOS 26, and
+24-bit color in iTerm2, Ghostty, and other terminals. `--colors 24bit` or `--colors 256` overrides
 the choice.
 
 To start the bridge at login, save this as `~/Library/LaunchAgents/org.oddlama.vane.barmc.plist`,
-with your user name in the log path, since launchd does not expand `~` there:
+with your username in the log path, since launchd does not expand `~` there:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>Label</key>
-  <string>org.oddlama.vane.barmc</string>
-  <key>ProgramArguments</key>
-  <array>
-    <string>/bin/sh</string>
-    <string>-c</string>
-    <string>set -a; . "$HOME/.config/barmc.env"; exec "$HOME/.local/share/barmc/bin/barmc"</string>
-  </array>
-  <key>RunAtLoad</key>
-  <true/>
-  <!-- Restart after a crash, but not after exit codes 2 and 3, which need a new pairing string. -->
-  <key>KeepAlive</key>
-  <dict>
-    <key>Crashed</key>
-    <true/>
-  </dict>
-  <key>StandardErrorPath</key>
-  <string>/Users/you/Library/Logs/barmc.log</string>
-</dict>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "https://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist>
+    <dict>
+        <key>Label</key>
+        <string>org.oddlama.vane.barmc</string>
+        <key>ProgramArguments</key>
+        <array>
+            <string>/bin/sh</string>
+            <string>-c</string>
+            <string>set -a; . "$HOME/.config/barmc.env"; exec "$HOME/.local/share/barmc/bin/barmc"</string>
+        </array>
+        <key>RunAtLoad</key>
+        <true/>
+        <!-- Restart after a crash, but not after exit codes 2 and 3, which need a new pairing string. -->
+        <key>KeepAlive</key>
+        <dict>
+            <key>Crashed</key>
+            <true/>
+        </dict>
+        <key>StandardErrorPath</key>
+        <string>/Users/you/Library/Logs/barmc.log</string>
+    </dict>
 </plist>
 ```
 
@@ -300,7 +300,7 @@ setx BUSYBAR_ADDR "192.168.1.20"
 setx BUSYBAR_TOKEN "1234"
 ```
 
-`setx` only affects programs started afterwards, so open a new window before testing.
+`setx` only affects programs started afterward, so open a new window before testing.
 
 To start the bridge when you log in, register it with Task Scheduler, the Windows counterpart of
 the systemd service above. In a new PowerShell window, after `setx`:
@@ -355,7 +355,7 @@ default): when a stranger walks into one of your regions, the Bar shows their fa
 while you are offline. Several visitors show as `ALEX +2`, a crowd as `7 VISITORS`; the server
 reports a region's first visitor at once and the rest at most once a minute.
 
-Events such as joins, portals, night skips and lag appear as alerts on top, most important first.
+Events such as joins, portals, night skips, and lag appear as alerts on top, most important first.
 BACK dismisses one. Join and leave alerts show the player's own face from their skin, at 16x16;
 on offline-mode servers, or until the face has downloaded, a generic head stands in.
 
@@ -371,15 +371,15 @@ a real BUSY Bar. Things to check on the device:
 - Text placement uses busylib's own two-line layout (`small` font, top line at y=0, bottom
   line anchored to y=16). Tune `TEXT_X`, `FONT` and the y values in
   `barmc/display/busybar.py` if lines clip.
-- Lines longer than about 9 characters scroll, following busylib's rule of thumb. Short lines
+- Lines longer than about nine characters scroll, following busylib's rule of thumb. Short lines
   like `TIME 07:30` may fit without scrolling on the device.
 - Whether the Bar keeps showing the bridge's screen when the selector is on BUSY, since the
   firmware has its own busy screen. `--priority` (1-100) sets how strongly the bridge claims
   the display.
-- On macOS: the tests run there in CI, but the LaunchAgent and Terminal.app's colours have not
+- On macOS: the tests run there in CI, but the LaunchAgent and Terminal.app's colors have not
   been tried on a real Mac. The Bar's USB connection likely works without a driver, since macOS
   supports USB network adapters out of the box, but is untested too.
-- On Windows: the tests run there in CI, but the preview's keys, colours and Ctrl+C have only
+- On Windows: the tests run there in CI, but the preview's keys, colors, and Ctrl+C have only
   been simulated, not used on a real Windows PC. Whether Windows sets up the Bar's USB network
   connection (`--bar 10.0.4.20`) without a driver is also open; Wi-Fi does not depend on it.
   The Task Scheduler setup and running under `pythonw.exe` have not been tried there either.
@@ -391,8 +391,8 @@ a real BUSY Bar. Things to check on the device:
 .venv/bin/python -m pytest
 ```
 
-- `barmc/state.py`: screens, alert priorities, focus mode and inputs. Display-independent.
-- `barmc/server.py`: the plugin's event stream, requests and server icon.
+- `barmc/state.py`: screens, alert priorities, focus mode, and inputs. Display-independent.
+- `barmc/server.py`: the plugin's event stream, requests, and server icon.
 - `barmc/pairing.py`: pairing strings and pinning of the server's TLS key.
 - `barmc/display/busybar.py`: drawing on the BUSY Bar and reading its controls.
 - `barmc/display/terminal.py`: the terminal preview.
