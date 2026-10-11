@@ -1,5 +1,8 @@
 package org.oddlama.vane.core.item
 
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TranslatableComponent
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.block.ShulkerBox
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Item
@@ -47,6 +50,18 @@ class ExistingItemConverter(context: Context<Core?>) : Listener<Core?>(context.n
         }
 
         return null
+    }
+
+    /**
+     * Compares item names by translation key or plain text, since components read back from a
+     * stack may not be structurally equal to the ones written to it.
+     */
+    private fun sameName(a: Component?, b: Component?): Boolean {
+        if (a is TranslatableComponent || b is TranslatableComponent) {
+            return (a as? TranslatableComponent)?.key() == (b as? TranslatableComponent)?.key()
+        }
+        val plain = PlainTextComponentSerializer.plainText()
+        return a?.let(plain::serialize) == b?.let(plain::serialize)
     }
 
     /** Result of converting a single stack; [stack] is null when the item should be removed. */
@@ -119,7 +134,7 @@ class ExistingItemConverter(context: Context<Core?>) : Listener<Core?>(context.n
         if (modelDataInt == null ||
             modelDataInt != customItem.customModelData() ||
             meta.itemModel != customItem.itemModel() ||
-            meta.itemName() != customItem.displayName() ||
+            !sameName(meta.itemName(), customItem.displayName()) ||
             item.type != customItem.baseMaterial() ||
             keyAndVersion?.second != customItem.version()
         ) {
